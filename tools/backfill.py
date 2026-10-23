@@ -22,7 +22,7 @@ import urllib.request
 from datetime import datetime, timezone
 
 API = "https://web-api.gt7.game.gran-turismo.com"
-DATA = os.path.join(os.path.dirname(__file__), "..", "data")
+DATA = os.environ.get("GT7_DATA") or os.path.join(os.path.dirname(__file__), "..", "data")
 EVENTS = os.path.join(DATA, "events.json")
 SCAN_STATE = os.path.join(DATA, "scan_state.json")
 BOARDS = os.path.join(DATA, "boards")
