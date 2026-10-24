@@ -4,6 +4,7 @@
             write REPORT.md and report.json, print the report
   report    print the report from the latest saved snapshots (no network)
   backtest  leave-one-event-out accuracy of the prediction features
+  site      build the static website into _site/ from the saved data
 """
 import argparse
 import json
@@ -11,7 +12,7 @@ import os
 import sys
 from datetime import datetime
 
-from . import api, model, report
+from . import api, model, report, site
 from .store import Store, now_utc, parse_time
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
@@ -48,7 +49,14 @@ def daily(store, args):
         if result:
             store.save_board(ev.id, result, at)
 
-    write_report(store, at, boards_now)
+    rep = write_report(store, at, boards_now)
+    for e in rep["events"]:
+        p = e.get("predicted") or {}
+        store.log_prediction(e["event_id"], {
+            "date": local.date().isoformat(), "day": e["days_elapsed"], "entrants": e["entrants"],
+            "wr_ms": e["wr_ms"], "gold_now_ms": e["gold_now_ms"], "top100_spread_pct": e["top100_spread_pct"],
+            **{k: p[k] for k in ("final_wr_ms", "gold_ms", "gold_fast_ms", "gold_slow_ms") if k in p},
+        })
     with open(marker, "w") as f:
         f.write(local.date().isoformat() + "\n")
 
@@ -70,6 +78,7 @@ def write_report(store, at, boards_now):
     with open(os.path.join(ROOT, "REPORT.md"), "w", encoding="utf-8") as f:
         f.write(report.to_markdown(rep))
     print(report.to_text(rep))
+    return rep
 
 
 def show_report(store, args):
@@ -79,6 +88,13 @@ def show_report(store, args):
         print("No snapshots of running time trials saved yet; run `python -m gt7tt daily` first.")
         return
     print(report.to_text(report.build(store, at, boards)))
+
+
+def build_site(store, args):
+    at = now_utc()
+    rep = report.build(store, at, latest_boards(store, at))
+    site.build_site(store, at, rep, args.out)
+    print(f"Site written to {args.out}")
 
 
 def backtest(store, args):
@@ -106,9 +122,11 @@ def main(argv=None):
     r = sub.add_parser("report")
     r.add_argument("--at", help="ISO time to report as of (default now)")
     sub.add_parser("backtest")
+    w = sub.add_parser("site")
+    w.add_argument("--out", default="_site", help="output folder (default _site)")
     args = p.parse_args(argv)
     store = Store()
-    {"daily": daily, "report": show_report, "backtest": backtest}[args.cmd](store, args)
+    {"daily": daily, "report": show_report, "backtest": backtest, "site": build_site}[args.cmd](store, args)
 
 
 if __name__ == "__main__":

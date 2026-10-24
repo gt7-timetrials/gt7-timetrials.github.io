@@ -17,12 +17,21 @@ concurrency: daily
 jobs:
   snapshot:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONUNBUFFERED: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
+      - name: Check the GT7 API is reachable
+        run: |
+          code=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' \
+            -d '{"event_id":15000}' https://web-api.gt7.game.gran-turismo.com/event/get_parameter || true)
+          echo "GT7 API answered HTTP $code"
+          test "$code" = 200
       - name: Fetch, predict, write report
         run: python -m gt7tt daily ${{ github.event_name == 'schedule' && '--not-before-hour 9' || '' }}
       - name: Commit data and report
