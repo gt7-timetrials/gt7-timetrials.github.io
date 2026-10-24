@@ -1,14 +1,14 @@
 # GT7 time trials
 
-Updated 2026-10-24 21:37 UTC
+Updated 2026-10-24 23:08 UTC
 
 ## SUGO International Racing Course — Xiaomi Vision Gran Turismo
 
-Day 9.6 of 14 · event 14980
+Day 9.7 of 14 · event 14980
 
 | | |
 |---|---|
-| Entrants | 126,579  (past events finish with 128,482-196,073, median 162,455) |
+| Entrants | 127,033  (past events finish with 128,482-196,073, median 162,455) |
 | World record | 1:16.796 (AMS__Andrew) |
 | Gold now | 1:19.099 |
 | **Predicted gold** | **1:19.022** (likely 1:18.916 – 1:19.099) |
@@ -18,11 +18,11 @@ Day 9.6 of 14 · event 14980
 
 ## Circuit de Barcelona-Catalunya GP Layout No Chicane — Hyundai ELANTRA N TC '24
 
-Day 2.6 of 14 · event 15000
+Day 2.7 of 14 · event 15000
 
 | | |
 |---|---|
-| Entrants | 81,185  (past events finish with 128,482-196,073, median 162,455) |
+| Entrants | 82,091  (past events finish with 128,482-196,073, median 162,455) |
 | World record | 1:50.142 (Twitch_Pira666) |
 | Gold now | 1:53.446 |
 | **Predicted gold** | **1:53.203** (likely 1:52.927 – 1:53.431) |
