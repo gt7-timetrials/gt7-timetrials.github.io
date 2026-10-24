@@ -54,8 +54,11 @@ On a 1:50 lap, 0.12% is about 0.13 s. With the true top-100 spread known, early 
 ## Data source
 
 This uses the unofficial API behind gran-turismo.com, which may change without notice and is
-rate limited. See [docs/api_findings.md](docs/api_findings.md). Car and track names come from
-[ddm999/gt7info](https://github.com/ddm999/gt7info).
+rate limited. See [docs/api_findings.md](docs/api_findings.md).
+
+Car and track names come from gran-turismo.com's own English strings (`python tools/update_names.py`
+refreshes them when new tracks or cars appear). [ddm999/gt7info](https://github.com/ddm999/gt7info)
+provides the track categories and is the fallback for names.
 
 ## Daily job and website
 

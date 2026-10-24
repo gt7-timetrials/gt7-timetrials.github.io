@@ -4,7 +4,8 @@ data/events.json                     {event_id: event parameters}
 data/boards/<event_id>.json          final (or latest) public top 100 + total
 data/snapshots/<event_id>/<date>.json  daily top 100 + total while running
 data/predictions/<event_id>.json     daily prediction log while running
-data/ref/course.csv, cars.csv        name lookups (from ddm999/gt7info)
+data/ref/official_names.json         course and car names (tools/update_names.py)
+data/ref/course.csv, cars.csv        fallback names and track categories (ddm999/gt7info)
 """
 import csv
 import glob
@@ -147,17 +148,25 @@ class Store:
         with open(path, encoding="utf-8") as f:
             return {int(r["ID"]): r for r in csv.DictReader(f)}
 
+    def _official(self):
+        if not hasattr(self, "_names"):
+            raw = load_json(os.path.join(self.root, "ref", "official_names.json"), {})
+            self._names = {kind: {int(k): v for k, v in raw.get(kind, {}).items()} for kind in ("courses", "cars")}
+        return self._names
+
     def course(self, code):
+        """(name, category). Names from gran-turismo.com, categories from ddm999/gt7info."""
         if not hasattr(self, "_courses"):
             self._courses = self._csv("course.csv")
         r = self._courses.get(code)
-        return (r["Name"], r["Category"]) if r else (f"New track #{code}", "unknown")
+        name = self._official()["courses"].get(code) or (r["Name"] if r else f"Track #{code}")
+        return name, r["Category"] if r else "unknown"
 
     def car(self, code):
         if not hasattr(self, "_cars"):
             self._cars = self._csv("cars.csv")
         r = self._cars.get(code)
-        return r["ShortName"] if r else f"car {code}"
+        return self._official()["cars"].get(code) or (r["ShortName"] if r else f"Car #{code}")
 
 
 def now_utc():

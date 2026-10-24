@@ -30,6 +30,7 @@ def build(store, at, boards_now):
         wr = entries[0]["score"]
         item = {
             "event_id": eid,
+            "leaderboard_url": f"https://www.gran-turismo.com/gb/gt7/sportmode/event/{eid}/",
             "track": name,
             "category": category,
             "car": store.car(entries[0]["ranking_stats"]["car_code"]),
@@ -58,6 +59,8 @@ def build(store, at, boards_now):
                 # more improvement still to come = faster time, so y_hi gives the fast end
                 "gold_fast_ms": gold_time(round(wr / (1 + y_hi))),
                 "gold_slow_ms": gold_time(round(wr / (1 + y_lo))),
+                "final_wr_fast_ms": round(wr / (1 + y_hi)),
+                "final_wr_slow_ms": round(wr / (1 + y_lo)),
                 "method": pred["method"],
             }
         out["events"].append(item)
