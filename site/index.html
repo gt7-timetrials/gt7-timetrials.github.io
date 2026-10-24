@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GT7 Time Trial Tracker</title>
+<meta name="description" content="Gran Turismo 7 online time trials: entrants, world records and predicted gold times.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='1' width='6' height='14' rx='2' fill='%23c8102e'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>GT7 Time Trial Tracker</h1>
+    <p class="sub">Entrants, world records and predicted gold times for Gran Turismo 7 online time trials.
+      Updated every morning, Melbourne time.</p>
+    <nav>
+      <a href="#current" data-tab="current">Current</a>
+      <a href="#past" data-tab="past">Past events</a>
+      <a href="#drivers" data-tab="drivers">Top drivers</a>
+      <a href="#about" data-tab="about">How it works</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="tab-current" class="tab">
+    <div id="current-list"><p class="muted">Loading…</p></div>
+  </section>
+
+  <section id="tab-past" class="tab" hidden>
+    <input id="past-filter" type="search" placeholder="Filter by track, car or driver">
+    <div class="table-scroll">
+      <table id="past-table">
+        <thead><tr><th>Start</th><th>Track</th><th>Car</th><th class="num">Entrants</th>
+          <th class="num">World record</th><th>Holder</th><th class="num">Gold</th><th class="num">P100 gap</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="tab-drivers" class="tab" hidden>
+    <p class="muted">The 50 most consistently fast drivers across past time trials, ranked by their typical
+      gap to the world record when they make the top 100. Drivers with few events are pulled towards the
+      average. Events = times in the top 100; Gap = typical gap to the world record. ★ marks the drivers the
+      prediction watches for.</p>
+    <div class="table-scroll">
+      <table id="driver-table">
+        <thead><tr><th class="num">#</th><th>Driver</th><th>Country</th><th class="num">Events</th>
+          <th class="num">Gap</th><th class="num">Wins</th><th class="num">Top 10s</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="tab-about" class="tab prose" hidden>
+    <h2>What the numbers mean</h2>
+    <ul>
+      <li><b>Gold</b> is the world record + 3%, as in the game. Silver is +5% and bronze +10%.</li>
+      <li><b>Predicted gold</b> is where the gold time is likely to end up when the event closes. The world record
+        usually keeps falling for the first week, so gold gets harder. The range covers 8 out of 10 past events.</li>
+      <li><b>Entrants</b> is everyone who has set a time so far, PS4 and PS5 combined.</li>
+      <li><b>Top-100 spread</b> is how far 100th place is behind the world record, a guide to how hard the course is.</li>
+    </ul>
+    <h2>How the prediction works</h2>
+    <p>It learns from every regular time trial since March 2023 (<span id="n-history"></span> events) how much the
+      world record still falls after each day of an event. It adjusts for how many of the top-rated drivers have
+      already set a time: if the fastest drivers haven't driven yet, expect more to come off. As daily snapshots
+      build up, it also uses the top-100 spread.</p>
+    <p>Typical error in the final gold time, tested on past events: 0.16% after day 1, 0.12% after day 3 and
+      0.08% after day 7. On a 1:50 lap, that's about 0.18 s, 0.13 s and 0.09 s.</p>
+    <h2>Source</h2>
+    <p>Data comes from the public leaderboards on gran-turismo.com. This is an unofficial fan project, not affiliated
+      with Sony Interactive Entertainment or Polyphony Digital. Code and data:
+      <a href="https://github.com/nghiepluu75-alt/Gt7">github.com/nghiepluu75-alt/Gt7</a>.</p>
+  </section>
+</main>
+
+<footer class="wrap muted" id="footer"></footer>
+<script src="app.js"></script>
+</body>
+</html>

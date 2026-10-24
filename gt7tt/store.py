@@ -3,6 +3,7 @@
 data/events.json                     {event_id: event parameters}
 data/boards/<event_id>.json          final (or latest) public top 100 + total
 data/snapshots/<event_id>/<date>.json  daily top 100 + total while running
+data/predictions/<event_id>.json     daily prediction log while running
 data/ref/course.csv, cars.csv        name lookups (from ddm999/gt7info)
 """
 import csv
@@ -129,6 +130,15 @@ class Store:
         paths = sorted(glob.glob(os.path.join(self.root, "snapshots", str(event_id), "*.json")))
         return [load_json(p) for p in paths]
 
+    # daily prediction log, one row per Melbourne date
+    def predictions(self, event_id):
+        return load_json(os.path.join(self.root, "predictions", f"{event_id}.json"), [])
+
+    def log_prediction(self, event_id, row):
+        rows = [r for r in self.predictions(event_id) if r["date"] != row["date"]]
+        save_json(os.path.join(self.root, "predictions", f"{event_id}.json"),
+                  sorted(rows + [row], key=lambda r: r["date"]))
+
     # name lookups
     def _csv(self, name):
         path = os.path.join(self.root, "ref", name)
@@ -141,7 +151,7 @@ class Store:
         if not hasattr(self, "_courses"):
             self._courses = self._csv("course.csv")
         r = self._courses.get(code)
-        return (r["Name"], r["Category"]) if r else (f"course {code}", "unknown")
+        return (r["Name"], r["Category"]) if r else (f"New track #{code}", "unknown")
 
     def car(self, code):
         if not hasattr(self, "_cars"):
