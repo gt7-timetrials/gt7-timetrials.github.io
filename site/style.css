@@ -139,3 +139,5 @@ h2.section + * { margin-bottom: 22px; }
   table.stack td.date { color: var(--muted); font-size: 0.85rem; }
 }
 .chart .pred-dot { fill: var(--gold); }
+.chart .grid.zero { stroke: var(--muted); stroke-dasharray: none; opacity: 0.5; }
+.chart text.offscale { font-size: 10px; }

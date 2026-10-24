@@ -100,14 +100,20 @@ function chart(e) {
   const steps = e.wr_steps.length ? e.wr_steps : [{ day: e.days_elapsed, gold_ms: e.gold_now_ms }];
   const preds = e.history.filter(r => r.gold_ms);
   const W = Math.max(300, Math.round(document.getElementById("current-list").clientWidth - 38));
-  const H = W < 500 ? 190 : 230, L = 64, R = 14, T = 14, B = 28;
-  const vals = [...steps.map(s => s.gold_ms), ...preds.flatMap(r => [r.gold_fast_ms, r.gold_slow_ms])];
-  if (e.predicted) vals.push(e.predicted.gold_fast_ms, e.predicted.gold_slow_ms);
-  let lo = Math.min(...vals), hi = Math.max(...vals);
-  const pad = Math.max((hi - lo) * 0.08, 100);
-  lo -= pad; hi += pad;
+  const H = W < 500 ? 190 : 230, L = 52, R = 14, T = 14, B = 28;
+  const p = e.predicted;
+  // Fixed window: 2 s, or 1.5% of the lap for long laps, so slopes compare across events.
+  // It is placed to keep today's gold and the predicted finish in view; earlier slow times go off the bottom.
+  const need = [e.gold_now_ms, ...preds.flatMap(r => [r.gold_fast_ms, r.gold_slow_ms])];
+  if (p) need.push(p.gold_fast_ms, p.gold_slow_ms);
+  let span = Math.max(2000, 0.015 * e.wr_ms);
+  const margin = 0.1 * span;
+  const needLo = Math.min(...need), needHi = Math.max(...need);
+  span = Math.max(span, needHi - needLo + 2 * margin);
+  const lo = needLo - margin, hi = lo + span;
   const x = d => L + (Math.min(Math.max(d, 0), total) / total) * (W - L - R);
-  const y = v => T + ((v - lo) / (hi - lo)) * (H - T - B); // faster (lower) times at the top
+  const y = v => T + ((Math.min(Math.max(v, lo), hi) - lo) / span) * (H - T - B); // faster at the top, clipped
+  const offScale = steps.some(s => s.gold_ms > hi);
   // gold on the day: a step line that holds each value until the record falls, up to now
   let path = "";
   steps.forEach((s, i) => {
@@ -119,20 +125,26 @@ function chart(e) {
     ? "M" + preds.map(r => `${x(r.day).toFixed(1)},${y(r.gold_fast_ms).toFixed(1)}`).join("L")
       + "L" + preds.slice().reverse().map(r => `${x(r.day).toFixed(1)},${y(r.gold_slow_ms).toFixed(1)}`).join("L") + "Z"
     : "";
-  const p = e.predicted;
   const endBar = p ? `<g class="endbar">
       <line x1="${x(total)}" x2="${x(total)}" y1="${y(p.gold_fast_ms)}" y2="${y(p.gold_slow_ms)}"/>
       <line x1="${x(total) - 5}" x2="${x(total) + 5}" y1="${y(p.gold_fast_ms)}" y2="${y(p.gold_fast_ms)}"/>
       <line x1="${x(total) - 5}" x2="${x(total) + 5}" y1="${y(p.gold_slow_ms)}" y2="${y(p.gold_slow_ms)}"/>
       <circle cx="${x(total)}" cy="${y(p.gold_ms)}" r="4"/></g>` : "";
-  const yTicks = [hi - pad, (lo + hi) / 2, lo + pad].map(v =>
-    `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>
-     <text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${fmt(Math.round(v))}</text>`).join("");
+  // gridlines as gaps from today's gold time
+  const step = span <= 3000 ? 500 : span <= 6000 ? 1000 : 2000;
+  const yTicks = [];
+  for (let k = Math.ceil((lo - e.gold_now_ms) / step); e.gold_now_ms + k * step <= hi; k++) {
+    const v = e.gold_now_ms + k * step;
+    const label = k === 0 ? "today" : `${k < 0 ? "−" : "+"}${(Math.abs(k * step) / 1000).toFixed(1)} s`;
+    yTicks.push(`<line class="grid${k === 0 ? " zero" : ""}" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>
+     <text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${label}</text>`);
+  }
   const xTicks = [...Array(Math.floor(total) + 1).keys()].filter(d => d % 2 === 0).map(d =>
     `<text x="${x(d)}" y="${H - 9}" text-anchor="middle">${d}</text>`).join("");
   return `<figure class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}" role="img"
       aria-label="Gold time over the event and predicted final gold">
-      ${yTicks}${xTicks}
+      ${yTicks.join("")}${xTicks}
+      ${offScale ? `<text x="${L + 6}" y="${H - B - 6}" class="offscale">↓ earlier times off scale</text>` : ""}
       <line class="now" x1="${x(e.days_elapsed)}" x2="${x(e.days_elapsed)}" y1="${T}" y2="${H - B}"/>
       ${band ? `<path d="${band}" class="band"/>` : ""}
       <path d="${path}" class="gold-day"/>
@@ -142,7 +154,7 @@ function chart(e) {
     </svg>
     <figcaption class="legend"><span><i class="k-day"></i>Gold time on the day</span>
       <span><i class="k-pred"></i>Predicted final gold (and likely range)</span>
-      <span>Day of event · faster times at the top</span></figcaption></figure>`;
+      <span>Gap to today's gold · faster at the top · day of event along the bottom</span></figcaption></figure>`;
 }
 
 let DATA;
@@ -191,6 +203,11 @@ function renderCurrent() {
     f.querySelector(".result").innerHTML = lap
       ? checkResult(e, lap) : `<div class="muted">Enter a lap time like 1:53.250</div>`;
   }));
+}
+
+// Only the charts depend on the width; leave the rest (and anything being typed) alone.
+function redrawCharts() {
+  document.querySelectorAll("#current-list figure.chart").forEach((fig, i) => (fig.outerHTML = chart(DATA.current[i])));
 }
 
 function renderScorecard() {
@@ -250,14 +267,12 @@ fetch("data.json")
     renderScorecard();
     renderPast();
     renderDrivers();
+    let lastWidth = window.innerWidth;
     window.addEventListener("resize", () => {
+      if (window.innerWidth === lastWidth) return; // e.g. the on-screen keyboard opening
+      lastWidth = window.innerWidth;
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        // keep anything typed in the time checkers
-        const typed = [...document.querySelectorAll("form.checker input")].map(i => i.value);
-        renderCurrent();
-        document.querySelectorAll("form.checker input").forEach((inp, i) => (inp.value = typed[i] || ""));
-      }, 150);
+      resizeTimer = setTimeout(redrawCharts, 150);
     });
     document.getElementById("n-history").textContent = data.history_events;
     document.getElementById("footer").textContent =
