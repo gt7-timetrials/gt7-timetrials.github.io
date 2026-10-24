@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GT7 Time Trial Tracker</title>
-<meta name="description" content="Gran Turismo 7 online time trials: entrants, world records and predicted gold times.">
+<meta name="description" content="Gran Turismo 7 online time trials: predicted gold, silver and bronze times, entrants and world records, updated daily.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='1' width='6' height='14' rx='2' fill='%23c8102e'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -12,7 +12,7 @@
 <header>
   <div class="wrap">
     <h1>GT7 Time Trial Tracker</h1>
-    <p class="sub">Entrants, world records and predicted gold times for Gran Turismo 7 online time trials.
+    <p class="sub">Predicted gold, silver and bronze times for Gran Turismo 7 online time trials.
       Updated every morning, Melbourne time.</p>
     <nav>
       <a href="#current" data-tab="current">Current</a>
@@ -29,14 +29,18 @@
   </section>
 
   <section id="tab-past" class="tab" hidden>
+    <h2 class="section">Prediction scorecard</h2>
+    <div id="scorecard"></div>
+    <h2 class="section">Past events</h2>
     <input id="past-filter" type="search" placeholder="Filter by track, car or driver">
     <div class="table-scroll">
-      <table id="past-table">
-        <thead><tr><th>Start</th><th>Track</th><th>Car</th><th class="num">Entrants</th>
-          <th class="num">World record</th><th>Holder</th><th class="num">Gold</th><th class="num">P100 gap</th></tr></thead>
-        <tbody></tbody>
+      <table id="past-table" class="stack">
+        <thead><tr><th>Start</th><th>Track · car</th><th class="num">Entrants</th>
+          <th class="num">World record</th><th class="num">Gold</th><th class="num">Difficulty</th></tr></thead>
+        <tbody id="past-list"></tbody>
       </table>
     </div>
+    <button id="past-more" class="more" hidden></button>
   </section>
 
   <section id="tab-drivers" class="tab" hidden>
@@ -60,7 +64,11 @@
       <li><b>Predicted gold</b> is where the gold time is likely to end up when the event closes. The world record
         usually keeps falling for the first week, so gold gets harder. The range covers 8 out of 10 past events.</li>
       <li><b>Entrants</b> is everyone who has set a time so far, PS4 and PS5 combined.</li>
-      <li><b>Top-100 spread</b> is how far 100th place is behind the world record, a guide to how hard the course is.</li>
+      <li><b>Safe target</b> beats the fast end of the predicted range. In 9 out of 10 past events the final gold time
+        was slower than that.</li>
+      <li><b>Course difficulty</b> is how far 100th place is behind the world record. The bigger it is, the harder the
+        course is to master.</li>
+      <li><b>Gold time on the day</b> in the chart is rebuilt from when each current top-100 time was set.</li>
     </ul>
     <h2>How the prediction works</h2>
     <p>It learns from every regular time trial since March 2023 (<span id="n-history"></span> events) how much the

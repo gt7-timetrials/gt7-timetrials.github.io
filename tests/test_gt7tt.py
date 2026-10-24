@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from gt7tt import model, report
+from gt7tt import model, report, site
 from gt7tt.store import Store, slim_entry
 
 FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures")
@@ -101,6 +101,35 @@ class ModelTest(unittest.TestCase):
             self.assertIn("predicted", e)
             self.assertLessEqual(e["predicted"]["gold_ms"], e["gold_now_ms"])
             self.assertIn("Predicted gold", report.to_markdown(rep))
+
+
+class SiteTest(unittest.TestCase):
+    def test_wr_steps_only_record_improvements(self):
+        with tempfile.TemporaryDirectory() as d:
+            store = synthetic_store(d)
+            ev = store.events()[1]
+            steps = site.wr_steps(ev, store.board(1)["list"])
+            self.assertEqual(steps[-1]["wr_ms"], min(x["score"] for x in store.board(1)["list"]))
+            self.assertTrue(all(a["wr_ms"] > b["wr_ms"] for a, b in zip(steps, steps[1:])))
+            self.assertTrue(all(a["day"] <= b["day"] for a, b in zip(steps, steps[1:])))
+
+    def test_scorecard_compares_logged_predictions_with_final_gold(self):
+        with tempfile.TemporaryDirectory() as d:
+            store = synthetic_store(d)
+            wr = store.board(1)["list"][0]["score"]
+            store.log_prediction(1, {"date": "2026-01-02", "day": 1.1, "gold_ms": model.gold_time(wr) + 50,
+                                     "gold_fast_ms": model.gold_time(wr) - 100, "gold_slow_ms": model.gold_time(wr) + 100})
+            fin = model.finished_events(store, store.events(), T0 + timedelta(days=400))
+            rows = site.scorecard(store, fin)
+            self.assertEqual(len(rows), 1)
+            self.assertIn(1, rows[0]["predictions"])
+            self.assertNotIn(7, rows[0]["predictions"])
+            self.assertTrue(rows[0]["predictions"][1]["in_range"])
+
+    def test_names_prefer_official_list(self):
+        store = Store()  # real data/ref
+        self.assertEqual(store.course(1340)[0], "SUGO International Racing Course")
+        self.assertEqual(store.course(10)[0], "Suzuka Circuit")
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ from collections import Counter, defaultdict
 
 from . import report
 from .model import finished_events, gold_time, rate_drivers, strong_drivers
+from .store import parse_time
 
 SITE_SRC = os.path.join(os.path.dirname(__file__), "..", "site")
 TOP_DRIVERS = 50
@@ -18,7 +19,10 @@ def site_data(store, at, rep):
 
     current = []
     for e in rep["events"]:
-        current.append({**e, "history": store.predictions(e["event_id"])})
+        ev = events[e["event_id"]]
+        snaps = store.snapshots(ev.id)
+        current.append({**e, "history": store.predictions(ev.id),
+                        "wr_steps": wr_steps(ev, snaps[-1]["list"] if snaps else [])})
 
     past = []
     for ev, b in reversed(finished):
@@ -51,6 +55,7 @@ def site_data(store, at, rep):
 
     return {
         "generated_at": rep["generated_at"],
+        "scorecard": scorecard(store, finished),
         "history_events": rep["history_events"],
         "snapshot_events": rep["snapshot_events"],
         "historical_entrants": rep["historical_entrants"],
@@ -59,6 +64,42 @@ def site_data(store, at, rep):
         "drivers": driver_rows,
         "median_entrants": int(st.median(p["entrants"] for p in past)) if past else None,
     }
+
+
+def wr_steps(ev, entries):
+    """World record over time, rebuilt from when each current top-100 time was set.
+
+    Only the final best lap of each driver is visible, so this is the best time
+    known to have existed by each moment (the real WR may have been briefly faster
+    earlier by a driver who has since improved further, which this cannot show).
+    """
+    steps, best = [], None
+    for x in sorted(entries, key=lambda x: x["update_time"]):
+        if best is None or x["score"] < best:
+            best = x["score"]
+            steps.append({"day": round(ev.elapsed_days(parse_time(x["update_time"])), 3), "wr_ms": best,
+                          "gold_ms": gold_time(best), "holder": x["user"]["np_online_id"]})
+    return steps
+
+
+def scorecard(store, finished):
+    """Predicted vs actual final gold for finished events that have a prediction log."""
+    rows = []
+    for ev, b in reversed(finished):
+        log = [r for r in store.predictions(ev.id) if r.get("gold_ms")]
+        if not log:
+            continue
+        actual = gold_time(b["list"][0]["score"])
+        name, _ = store.course(ev.course_code)
+        checkpoints = {}
+        for day in (1, 3, 7):
+            r = min(log, key=lambda r: abs(r["day"] - day))
+            if abs(r["day"] - day) <= 1:
+                checkpoints[day] = {"gold_ms": r["gold_ms"], "error_pct": round(100 * (r["gold_ms"] / actual - 1), 3),
+                                    "in_range": r["gold_fast_ms"] <= actual <= r["gold_slow_ms"]}
+        rows.append({"event_id": ev.id, "track": name, "end": ev.end.isoformat(), "actual_gold_ms": actual,
+                     "predictions": checkpoints})
+    return rows
 
 
 def build_site(store, at, rep, out_dir):
