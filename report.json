@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-24T00:28:48.224272+00:00",
+ "generated_at": "2026-10-24T00:47:23.106926+00:00",
  "history_events": 202,
  "snapshot_events": 0,
  "historical_entrants": {
@@ -11,14 +11,14 @@
  "events": [
   {
    "event_id": 14980,
-   "track": "course 1340",
+   "track": "New track #1340",
    "category": "unknown",
    "car": "Xiaomi VGT",
    "starts": "2026-10-15T18:00:00+11:00",
    "ends": "2026-10-29T17:59:59+11:00",
    "days_elapsed": 8.7,
    "days_left": 5.3,
-   "entrants": 118911,
+   "entrants": 118982,
    "entrants_projection": null,
    "wr_ms": 76825,
    "wr_holder": "teryakiwok",
@@ -47,12 +47,12 @@
    "ends": "2026-11-05T17:59:59+11:00",
    "days_elapsed": 1.7,
    "days_left": 12.3,
-   "entrants": 62825,
+   "entrants": 63032,
    "entrants_projection": null,
    "wr_ms": 110146,
    "wr_holder": "SFE_Damian",
    "gold_now_ms": 113450,
-   "top100_spread_pct": 0.584,
+   "top100_spread_pct": 0.581,
    "strong_drivers_posted": [
     "MetalGear9493",
     "SFE_Damian"

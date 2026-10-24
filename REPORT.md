@@ -1,14 +1,14 @@
 # GT7 time trials
 
-Updated 2026-10-24 00:28 UTC
+Updated 2026-10-24 00:47 UTC
 
-## course 1340 — Xiaomi VGT
+## New track #1340 — Xiaomi VGT
 
 Day 8.7 of 14 · event 14980
 
 | | |
 |---|---|
-| Entrants | 118,911  (past events finish with 128,482-196,073, median 162,455) |
+| Entrants | 118,982  (past events finish with 128,482-196,073, median 162,455) |
 | World record | 1:16.825 (teryakiwok) |
 | Gold now | 1:19.129 |
 | **Predicted gold** | **1:19.039** (likely 1:18.921 – 1:19.129) |
@@ -22,7 +22,7 @@ Day 1.7 of 14 · event 15000
 
 | | |
 |---|---|
-| Entrants | 62,825  (past events finish with 128,482-196,073, median 162,455) |
+| Entrants | 63,032  (past events finish with 128,482-196,073, median 162,455) |
 | World record | 1:50.146 (SFE_Damian) |
 | Gold now | 1:53.450 |
 | **Predicted gold** | **1:53.178** (likely 1:52.893 – 1:53.450) |
