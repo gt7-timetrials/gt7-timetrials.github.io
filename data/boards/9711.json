@@ -1,0 +1,1407 @@
+{
+ "event_id": 9711,
+ "fetched_at": "2026-10-24T00:19:28.459931+00:00",
+ "list": [
+  {
+   "display_rank": 1,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92293,
+   "update_time": "2024-04-19T09:02:07Z",
+   "user": {
+    "country_code": "SA",
+    "driver_rating": 4,
+    "np_online_id": "Jeddah_Racing",
+    "user_id": "96173a5b-6125-4442-8fb5-32794d7f2f8d"
+   }
+  },
+  {
+   "display_rank": 2,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92371,
+   "update_time": "2024-05-01T21:04:10Z",
+   "user": {
+    "country_code": "US",
+    "driver_rating": 6,
+    "np_online_id": "VQS_Drifter",
+    "user_id": "aa23f84c-9040-4557-baf2-78396fdca75b"
+   }
+  },
+  {
+   "display_rank": 3,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92515,
+   "update_time": "2024-04-27T22:40:25Z",
+   "user": {
+    "country_code": "ES",
+    "driver_rating": 6,
+    "np_online_id": "KRK_ConToelFlow",
+    "user_id": "f6c1e40d-a7f0-43ae-8e1d-4130898d7b90"
+   }
+  },
+  {
+   "display_rank": 4,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92536,
+   "update_time": "2024-04-19T00:07:21Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 7,
+    "np_online_id": "Calster_25",
+    "user_id": "3fd46c5e-7d11-4f99-8d99-bfc1fc797635"
+   }
+  },
+  {
+   "display_rank": 5,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92572,
+   "update_time": "2024-04-22T20:43:24Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "FGR_Supergt",
+    "user_id": "b9bac6e7-2bf1-403d-9992-9f0441ea3532"
+   }
+  },
+  {
+   "display_rank": 6,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92593,
+   "update_time": "2024-04-27T01:03:14Z",
+   "user": {
+    "country_code": "ES",
+    "driver_rating": 1,
+    "np_online_id": "vicentitoelchoco",
+    "user_id": "02f3c27d-a620-4c2e-a5d6-229ec44233d2"
+   }
+  },
+  {
+   "display_rank": 7,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92639,
+   "update_time": "2024-04-19T10:18:04Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "Jack_Was_Here97",
+    "user_id": "5d089913-9ff3-4e6f-9ea6-eacd5ab677fa"
+   }
+  },
+  {
+   "display_rank": 8,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92689,
+   "update_time": "2024-04-18T22:08:56Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "SFE_Somi",
+    "user_id": "9c9fb26f-f89b-44a9-b27c-82f8948b2ca6"
+   }
+  },
+  {
+   "display_rank": 9,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92712,
+   "update_time": "2024-04-19T18:45:52Z",
+   "user": {
+    "country_code": "GR",
+    "driver_rating": 6,
+    "np_online_id": "Willful-Underdog",
+    "user_id": "41382f2a-f000-45c8-bcd7-f646f43665ce"
+   }
+  },
+  {
+   "display_rank": 10,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92735,
+   "update_time": "2024-04-18T14:35:04Z",
+   "user": {
+    "country_code": "AU",
+    "driver_rating": 6,
+    "np_online_id": "MetalGear9493",
+    "user_id": "22c57596-cc7c-42d7-bc7b-5b904380040e"
+   }
+  },
+  {
+   "display_rank": 11,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92736,
+   "update_time": "2024-04-19T00:31:58Z",
+   "user": {
+    "country_code": "NL",
+    "driver_rating": 6,
+    "np_online_id": "SFE_Damian",
+    "user_id": "20c2dd25-88f6-4998-880f-a3033866ddef"
+   }
+  },
+  {
+   "display_rank": 12,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92744,
+   "update_time": "2024-04-19T00:02:24Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "SRT_Gino",
+    "user_id": "d19713e8-ff60-4306-a240-a7993fb02fda"
+   }
+  },
+  {
+   "display_rank": 13,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92794,
+   "update_time": "2024-04-18T14:12:51Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 5,
+    "np_online_id": "AntonyRaiola",
+    "user_id": "6e06f684-cdba-464c-be08-cd454bc898f1"
+   }
+  },
+  {
+   "display_rank": 14,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92806,
+   "update_time": "2024-05-01T16:11:05Z",
+   "user": {
+    "country_code": "FI",
+    "driver_rating": 6,
+    "np_online_id": "djolliea",
+    "user_id": "76195cd2-4981-4559-8cbe-6af2cdb6a2b2"
+   }
+  },
+  {
+   "display_rank": 15,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92815,
+   "update_time": "2024-04-22T16:08:55Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "tokari7I",
+    "user_id": "066f83fa-3747-498e-83c4-ce9ffaf0a8b9"
+   }
+  },
+  {
+   "display_rank": 16,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92861,
+   "update_time": "2024-04-28T20:16:51Z",
+   "user": {
+    "country_code": "SE",
+    "driver_rating": 1,
+    "np_online_id": "erazer13",
+    "user_id": "d8a2d82b-1c27-4038-9fcf-f8dfc457fc0e"
+   }
+  },
+  {
+   "display_rank": 17,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92891,
+   "update_time": "2024-04-21T09:01:31Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "TobiDa26",
+    "user_id": "8725cc50-7072-40e5-bb6d-a305da74f969"
+   }
+  },
+  {
+   "display_rank": 18,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92905,
+   "update_time": "2024-04-18T18:30:12Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "MnT_Oscar",
+    "user_id": "87aa5a5f-3223-4d58-ad32-b2a343cc6bed"
+   }
+  },
+  {
+   "display_rank": 19,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92917,
+   "update_time": "2024-04-26T09:55:51Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "GR_washi",
+    "user_id": "96869961-fb8a-46c5-a6b1-ed19c5a2c22d"
+   }
+  },
+  {
+   "display_rank": 20,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92921,
+   "update_time": "2024-04-18T19:47:16Z",
+   "user": {
+    "country_code": "NL",
+    "driver_rating": 6,
+    "np_online_id": "zDameee",
+    "user_id": "2c1d8c60-4cfa-432a-a885-b9e84246b911"
+   }
+  },
+  {
+   "display_rank": 21,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92936,
+   "update_time": "2024-04-26T11:10:02Z",
+   "user": {
+    "country_code": "PL",
+    "driver_rating": 6,
+    "np_online_id": "bati-123a",
+    "user_id": "0f448720-4ae6-486f-acf9-9823dd5bc238"
+   }
+  },
+  {
+   "display_rank": 22,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92954,
+   "update_time": "2024-04-20T11:33:05Z",
+   "user": {
+    "country_code": "PL",
+    "driver_rating": 6,
+    "np_online_id": "SRC_Matthew",
+    "user_id": "fe1dd19e-cad2-4d41-b4ff-8b07bbc38c87"
+   }
+  },
+  {
+   "display_rank": 23,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92965,
+   "update_time": "2024-04-22T21:40:57Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 5,
+    "np_online_id": "cosmic-minster",
+    "user_id": "f2a944ce-71ae-4eeb-9ed7-95e94535d9ad"
+   }
+  },
+  {
+   "display_rank": 24,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92967,
+   "update_time": "2024-04-18T08:19:46Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "YouTube_Tidgney",
+    "user_id": "9d3e3cc6-5550-4b54-8da7-6347f5fe5bb9"
+   }
+  },
+  {
+   "display_rank": 25,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92967,
+   "update_time": "2024-04-19T16:16:37Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "FurioGiunta64",
+    "user_id": "fec7ce3e-12a9-4c1b-84d8-8b50ab477aa7"
+   }
+  },
+  {
+   "display_rank": 26,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92976,
+   "update_time": "2024-04-18T09:58:15Z",
+   "user": {
+    "country_code": "ES",
+    "driver_rating": 6,
+    "np_online_id": "N2_MarioSoler",
+    "user_id": "c01d4187-4093-48b2-9e8e-deb5fbf616a1"
+   }
+  },
+  {
+   "display_rank": 27,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92983,
+   "update_time": "2024-04-21T07:56:44Z",
+   "user": {
+    "country_code": "CN",
+    "driver_rating": 6,
+    "np_online_id": "HEGT-PanDaXX",
+    "user_id": "735e98ac-ff4b-4b81-bccb-1553a2ad55fa"
+   }
+  },
+  {
+   "display_rank": 28,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92983,
+   "update_time": "2024-05-01T19:33:01Z",
+   "user": {
+    "country_code": "PA",
+    "driver_rating": 6,
+    "np_online_id": "GTS92_Meg77",
+    "user_id": "5b3d5b70-27e1-44ac-a22c-ea2be74089a9"
+   }
+  },
+  {
+   "display_rank": 29,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92994,
+   "update_time": "2024-04-19T02:41:33Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "KINGT78",
+    "user_id": "bd1a7b77-25f2-4486-8299-7cf99255921b"
+   }
+  },
+  {
+   "display_rank": 30,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 92995,
+   "update_time": "2024-04-18T13:59:21Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 5,
+    "np_online_id": "PGMotorsport",
+    "user_id": "8746182c-997e-4785-867c-e927dc0fe79b"
+   }
+  },
+  {
+   "display_rank": 31,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93002,
+   "update_time": "2024-04-20T11:14:46Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "StanGewalt_",
+    "user_id": "2b5b9d61-33e9-4c00-9bcc-dabf17d2aed4"
+   }
+  },
+  {
+   "display_rank": 32,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93008,
+   "update_time": "2024-04-21T19:59:27Z",
+   "user": {
+    "country_code": "TR",
+    "driver_rating": 6,
+    "np_online_id": "WLR_ilker",
+    "user_id": "82499e6f-5640-4938-ada4-2decc65eb64a"
+   }
+  },
+  {
+   "display_rank": 33,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93011,
+   "update_time": "2024-04-18T14:30:49Z",
+   "user": {
+    "country_code": "FR",
+    "driver_rating": 6,
+    "np_online_id": "Insxnity-AE",
+    "user_id": "385712bd-f0b8-4e54-876e-c76c14685f5e"
+   }
+  },
+  {
+   "display_rank": 34,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93016,
+   "update_time": "2024-04-18T12:58:59Z",
+   "user": {
+    "country_code": "ES",
+    "driver_rating": 6,
+    "np_online_id": "CGT_Sigma",
+    "user_id": "003c7e20-9d2b-4742-807b-e4b1fa4c3c8d"
+   }
+  },
+  {
+   "display_rank": 35,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93019,
+   "update_time": "2024-04-18T20:17:12Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "Rocks_Racing",
+    "user_id": "7dd97da6-212c-452a-9aa5-8a9b23d1d30c"
+   }
+  },
+  {
+   "display_rank": 36,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93019,
+   "update_time": "2024-04-19T16:28:18Z",
+   "user": {
+    "country_code": "HU",
+    "driver_rating": 6,
+    "np_online_id": "csakegyaccount",
+    "user_id": "b9de740b-78e0-4517-8e2f-e5b4fb384564"
+   }
+  },
+  {
+   "display_rank": 37,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93047,
+   "update_time": "2024-05-01T08:08:21Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 7,
+    "np_online_id": "QTD_Kawakana",
+    "user_id": "6cc42da7-e6da-4889-9995-a9c0c8759392"
+   }
+  },
+  {
+   "display_rank": 38,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93053,
+   "update_time": "2024-04-18T13:17:01Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 5,
+    "np_online_id": "GER_PGMotorsport",
+    "user_id": "22566988-252d-44ad-b551-142d76fcb2fb"
+   }
+  },
+  {
+   "display_rank": 39,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93069,
+   "update_time": "2024-04-23T22:10:01Z",
+   "user": {
+    "country_code": "SA",
+    "driver_rating": 6,
+    "np_online_id": "lYousif",
+    "user_id": "2f7b4e6b-7441-4deb-8cea-f5d11ba3d9a9"
+   }
+  },
+  {
+   "display_rank": 40,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93072,
+   "update_time": "2024-04-21T18:15:38Z",
+   "user": {
+    "country_code": "BR",
+    "driver_rating": 6,
+    "np_online_id": "RVT_FARINHA",
+    "user_id": "c46998b9-b793-4570-aba7-a26ff3974109"
+   }
+  },
+  {
+   "display_rank": 41,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93074,
+   "update_time": "2024-04-20T14:27:33Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "TurboTobi_GT-YT",
+    "user_id": "ec9b75f9-73e1-43a9-8a78-54c30bea0bc8"
+   }
+  },
+  {
+   "display_rank": 42,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93085,
+   "update_time": "2024-04-21T09:12:48Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "Momiji_MK",
+    "user_id": "804d5d74-ca4e-48f8-afe5-10a5a28fe602"
+   }
+  },
+  {
+   "display_rank": 43,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93099,
+   "update_time": "2024-04-20T14:00:29Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "LSalvo23",
+    "user_id": "a5e3ff58-4c3e-4bca-87f7-98717d78d1f1"
+   }
+  },
+  {
+   "display_rank": 44,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93100,
+   "update_time": "2024-05-01T22:54:50Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 5,
+    "np_online_id": "Danger_Dan986",
+    "user_id": "2bc8916b-3d87-4f0f-b712-f5558ace824d"
+   }
+  },
+  {
+   "display_rank": 45,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93102,
+   "update_time": "2024-04-18T21:52:10Z",
+   "user": {
+    "country_code": "FR",
+    "driver_rating": 6,
+    "np_online_id": "TGX_ktMs",
+    "user_id": "a14f02b4-133c-46b1-9a1f-a558be9e772d"
+   }
+  },
+  {
+   "display_rank": 46,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93107,
+   "update_time": "2024-04-19T19:34:34Z",
+   "user": {
+    "country_code": "US",
+    "driver_rating": 6,
+    "np_online_id": "Steve_ViperTT",
+    "user_id": "484823a2-a5e7-4c2e-b234-6d600c06f2ee"
+   }
+  },
+  {
+   "display_rank": 47,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93107,
+   "update_time": "2024-04-28T22:20:53Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "GTGhostDriver",
+    "user_id": "b5c09a6a-13c6-42b0-9cb4-486a7ea7162a"
+   }
+  },
+  {
+   "display_rank": 48,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93128,
+   "update_time": "2024-04-25T16:50:13Z",
+   "user": {
+    "country_code": "ES",
+    "driver_rating": 6,
+    "np_online_id": "SanJackGG8",
+    "user_id": "db43fe46-f6c4-4461-91cc-1d1fa5c65096"
+   }
+  },
+  {
+   "display_rank": 49,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93128,
+   "update_time": "2024-05-01T19:22:40Z",
+   "user": {
+    "country_code": "FR",
+    "driver_rating": 1,
+    "np_online_id": "lambeva",
+    "user_id": "1bf88e87-8387-4480-a482-864f5c994767"
+   }
+  },
+  {
+   "display_rank": 50,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93133,
+   "update_time": "2024-04-26T09:50:21Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "GT5_Samet_TR",
+    "user_id": "81d18915-9f35-4597-b57d-52eddde60952"
+   }
+  },
+  {
+   "display_rank": 51,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93133,
+   "update_time": "2024-05-01T17:01:53Z",
+   "user": {
+    "country_code": "SE",
+    "driver_rating": 6,
+    "np_online_id": "schlafhund",
+    "user_id": "5aea5347-3550-4352-83b9-35d1ae861de8"
+   }
+  },
+  {
+   "display_rank": 52,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93143,
+   "update_time": "2024-04-18T15:25:26Z",
+   "user": {
+    "country_code": "TH",
+    "driver_rating": 6,
+    "np_online_id": "Tan_TE71",
+    "user_id": "291ce3dc-d288-4711-8469-92e129498bd8"
+   }
+  },
+  {
+   "display_rank": 53,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93143,
+   "update_time": "2024-04-28T13:50:31Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "vZENOMv",
+    "user_id": "6ac752df-68b1-441c-a431-391399646652"
+   }
+  },
+  {
+   "display_rank": 54,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93145,
+   "update_time": "2024-04-21T09:30:31Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "yononaka_001",
+    "user_id": "82793c47-d1d5-4c57-8d42-0b22fd3337e6"
+   }
+  },
+  {
+   "display_rank": 55,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93146,
+   "update_time": "2024-04-18T17:31:26Z",
+   "user": {
+    "country_code": "HU",
+    "driver_rating": 6,
+    "np_online_id": "IGTSH_mozzzsi",
+    "user_id": "26b9c3ea-68d6-40b8-acf4-319b5b4b1978"
+   }
+  },
+  {
+   "display_rank": 56,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93148,
+   "update_time": "2024-04-27T06:03:05Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "Scarlet-_-Lance",
+    "user_id": "a8010004-5f62-43d5-9163-7a9794e2db4b"
+   }
+  },
+  {
+   "display_rank": 57,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93150,
+   "update_time": "2024-04-20T23:08:23Z",
+   "user": {
+    "country_code": "CA",
+    "driver_rating": 6,
+    "np_online_id": "Anxiety_10",
+    "user_id": "0464294d-efbb-4adf-a2a0-8fec4b023323"
+   }
+  },
+  {
+   "display_rank": 58,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93151,
+   "update_time": "2024-04-18T16:50:45Z",
+   "user": {
+    "country_code": "FR",
+    "driver_rating": 6,
+    "np_online_id": "MYTEAM-Punisher",
+    "user_id": "1e89f31c-4a2a-4020-9261-8e6740cb5ddf"
+   }
+  },
+  {
+   "display_rank": 59,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93154,
+   "update_time": "2024-04-19T22:56:55Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "VQS_Sparks31",
+    "user_id": "a13c078f-7802-4ecc-a964-ee6f11e97e71"
+   }
+  },
+  {
+   "display_rank": 60,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93154,
+   "update_time": "2024-04-23T18:24:22Z",
+   "user": {
+    "country_code": "US",
+    "driver_rating": 5,
+    "np_online_id": "HomesteadOne",
+    "user_id": "c56b0526-c23c-4fc6-9851-9bccceb06dcb"
+   }
+  },
+  {
+   "display_rank": 61,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93159,
+   "update_time": "2024-04-21T15:41:01Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 7,
+    "np_online_id": "HeAvN_-",
+    "user_id": "f3bf1c2d-7af6-4474-991a-dee955b92063"
+   }
+  },
+  {
+   "display_rank": 62,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93164,
+   "update_time": "2024-04-28T08:12:37Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "TakumiHAMILTON44",
+    "user_id": "9cde8764-da4c-4c62-aa8a-363021dcaa8e"
+   }
+  },
+  {
+   "display_rank": 63,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93167,
+   "update_time": "2024-04-27T13:13:46Z",
+   "user": {
+    "country_code": "BR",
+    "driver_rating": 6,
+    "np_online_id": "Yuri_Mariano",
+    "user_id": "d1436613-7700-4001-9ffd-9e4a7b4d6c82"
+   }
+  },
+  {
+   "display_rank": 64,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93182,
+   "update_time": "2024-04-18T08:12:00Z",
+   "user": {
+    "country_code": "AU",
+    "driver_rating": 6,
+    "np_online_id": "MINT_Matt",
+    "user_id": "a302460e-568b-4e47-94b8-e0a8c0bb2349"
+   }
+  },
+  {
+   "display_rank": 65,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93182,
+   "update_time": "2024-04-18T19:26:47Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "Chris_W_XX89",
+    "user_id": "06a59314-e2ff-42e2-99b4-756de90099d0"
+   }
+  },
+  {
+   "display_rank": 66,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93186,
+   "update_time": "2024-04-29T01:07:14Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "ZeroCloni",
+    "user_id": "4bf1f6e9-959e-4133-b282-6a90aa6dfbac"
+   }
+  },
+  {
+   "display_rank": 67,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93188,
+   "update_time": "2024-04-21T22:04:07Z",
+   "user": {
+    "country_code": "US",
+    "driver_rating": 6,
+    "np_online_id": "dctrburdock",
+    "user_id": "01ef5e55-19d8-4729-a74a-d2157423195a"
+   }
+  },
+  {
+   "display_rank": 68,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93194,
+   "update_time": "2024-04-18T07:42:48Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "LewLew05_",
+    "user_id": "fa8826ae-a7b1-41a6-9139-b6174d24f33d"
+   }
+  },
+  {
+   "display_rank": 69,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93197,
+   "update_time": "2024-04-21T16:03:31Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "FRT_S3ri4L_09",
+    "user_id": "b22050c3-55c4-4e21-ad80-029ec8a1b324"
+   }
+  },
+  {
+   "display_rank": 70,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93200,
+   "update_time": "2024-04-21T09:22:56Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "RRM_Burrasca22",
+    "user_id": "0fc08cfc-0d4f-476b-b5bd-f09f89c8d3d2"
+   }
+  },
+  {
+   "display_rank": 71,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93203,
+   "update_time": "2024-04-23T18:30:56Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "Joe_Cubano",
+    "user_id": "266717ce-a7b4-453b-850f-8911c2d30167"
+   }
+  },
+  {
+   "display_rank": 72,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93205,
+   "update_time": "2024-04-19T21:29:47Z",
+   "user": {
+    "country_code": "US",
+    "driver_rating": 6,
+    "np_online_id": "SV-SuperChicken",
+    "user_id": "197d4f62-cb91-41b1-9d80-b513436a645a"
+   }
+  },
+  {
+   "display_rank": 73,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93211,
+   "update_time": "2024-04-18T10:40:16Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "icetrue",
+    "user_id": "872714f8-e9c0-4585-83cb-fcd322fd319f"
+   }
+  },
+  {
+   "display_rank": 74,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93219,
+   "update_time": "2024-04-19T17:16:48Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "SammySnake69",
+    "user_id": "04b676e6-24e7-448b-8e34-ea1bd6d2215f"
+   }
+  },
+  {
+   "display_rank": 75,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93224,
+   "update_time": "2024-04-18T22:49:04Z",
+   "user": {
+    "country_code": "US",
+    "driver_rating": 6,
+    "np_online_id": "Dstinct_Voidzy",
+    "user_id": "9191715e-3c3a-45b6-8fb7-4211e20221e0"
+   }
+  },
+  {
+   "display_rank": 76,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93227,
+   "update_time": "2024-04-27T11:48:52Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "Stradyy",
+    "user_id": "a142447f-ea3c-45ea-b132-44440251cf54"
+   }
+  },
+  {
+   "display_rank": 77,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93235,
+   "update_time": "2024-04-18T20:46:08Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "eRA_King_Ears",
+    "user_id": "4db3bc72-a300-43b3-b5e1-b0a2d6040a2f"
+   }
+  },
+  {
+   "display_rank": 78,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93236,
+   "update_time": "2024-04-24T09:38:03Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 6,
+    "np_online_id": "RKE_MaxEpico1979",
+    "user_id": "4516202f-e675-42e0-a2df-254dd5c74b1f"
+   }
+  },
+  {
+   "display_rank": 79,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93237,
+   "update_time": "2024-04-18T13:18:56Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "AMG_Josh96",
+    "user_id": "fe9e7761-ba5a-4d69-baec-0dd42188b5af"
+   }
+  },
+  {
+   "display_rank": 80,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93254,
+   "update_time": "2024-04-18T18:31:27Z",
+   "user": {
+    "country_code": "PL",
+    "driver_rating": 5,
+    "np_online_id": "goodcat_se",
+    "user_id": "4fa15002-b5a8-40dc-8d4c-5579bf550280"
+   }
+  },
+  {
+   "display_rank": 81,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93258,
+   "update_time": "2024-04-19T13:10:33Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "miumiu79",
+    "user_id": "3f9eb5db-88ea-4017-99ea-ff46c806fc5b"
+   }
+  },
+  {
+   "display_rank": 82,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93259,
+   "update_time": "2024-04-22T19:56:11Z",
+   "user": {
+    "country_code": "FR",
+    "driver_rating": 6,
+    "np_online_id": "JeyM",
+    "user_id": "57b6f17f-83df-4e74-b467-62f6f4717c2c"
+   }
+  },
+  {
+   "display_rank": 83,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93262,
+   "update_time": "2024-04-25T19:45:18Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "Guenay",
+    "user_id": "1b14c172-871a-4c03-ac13-b42d9cf3e40a"
+   }
+  },
+  {
+   "display_rank": 84,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93264,
+   "update_time": "2024-04-18T12:42:30Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "PRST_PGM",
+    "user_id": "2501656f-1948-4abc-bba8-cd72466ecea2"
+   }
+  },
+  {
+   "display_rank": 85,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93272,
+   "update_time": "2024-04-19T11:45:42Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 5,
+    "np_online_id": "pokerjoker1",
+    "user_id": "e10fe804-16e2-482c-9dab-5228030ae32a"
+   }
+  },
+  {
+   "display_rank": 86,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93273,
+   "update_time": "2024-04-24T19:31:06Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "anq3lo29",
+    "user_id": "a25d9376-b21d-418e-b560-7053ad2cb937"
+   }
+  },
+  {
+   "display_rank": 87,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93279,
+   "update_time": "2024-04-18T09:42:19Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "kie25",
+    "user_id": "f529f2c4-5cd2-40d7-b6bb-80cbf2aab784"
+   }
+  },
+  {
+   "display_rank": 88,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93285,
+   "update_time": "2024-04-23T05:47:06Z",
+   "user": {
+    "country_code": "PE",
+    "driver_rating": 6,
+    "np_online_id": "VRP-Jara",
+    "user_id": "9d95de0b-9d90-4d72-a1f3-780e7bdd1c9c"
+   }
+  },
+  {
+   "display_rank": 89,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93286,
+   "update_time": "2024-04-21T10:47:26Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "tukushi200",
+    "user_id": "8f2fd39f-b192-4d6d-b2e4-81fd77cefdb6"
+   }
+  },
+  {
+   "display_rank": 90,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93286,
+   "update_time": "2024-04-22T19:08:04Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 2,
+    "np_online_id": "Cruel_Melody_",
+    "user_id": "da5ead5d-4fad-409d-b8d8-0aea50ed7224"
+   }
+  },
+  {
+   "display_rank": 91,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93289,
+   "update_time": "2024-04-18T22:23:43Z",
+   "user": {
+    "country_code": "AR",
+    "driver_rating": 6,
+    "np_online_id": "TF1--LESZCZUK",
+    "user_id": "d7d98ef7-90b3-48cf-9b63-b799a031fb6b"
+   }
+  },
+  {
+   "display_rank": 92,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93293,
+   "update_time": "2024-04-26T13:33:15Z",
+   "user": {
+    "country_code": "FR",
+    "driver_rating": 6,
+    "np_online_id": "Jonathan0203_",
+    "user_id": "4c551e95-def0-41e1-892c-efd55c691ec0"
+   }
+  },
+  {
+   "display_rank": 93,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93295,
+   "update_time": "2024-04-19T00:35:30Z",
+   "user": {
+    "country_code": "ES",
+    "driver_rating": 6,
+    "np_online_id": "Camposf186",
+    "user_id": "93709063-87ea-4192-98c3-cc1472b1a943"
+   }
+  },
+  {
+   "display_rank": 94,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93299,
+   "update_time": "2024-04-21T02:05:14Z",
+   "user": {
+    "country_code": "BR",
+    "driver_rating": 6,
+    "np_online_id": "RVT_AMAROK23",
+    "user_id": "dc5f70e4-04b6-4e8e-96f7-79fed2b20722"
+   }
+  },
+  {
+   "display_rank": 95,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93302,
+   "update_time": "2024-04-19T01:12:53Z",
+   "user": {
+    "country_code": "BR",
+    "driver_rating": 6,
+    "np_online_id": "USR_MarcosSL",
+    "user_id": "b75acb6e-0904-423e-851b-d823cbb7b40a"
+   }
+  },
+  {
+   "display_rank": 96,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93304,
+   "update_time": "2024-04-22T08:57:38Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 1,
+    "np_online_id": "hiro_20160612",
+    "user_id": "56d8c67c-af2c-443e-8eff-e65cebbec3f5"
+   }
+  },
+  {
+   "display_rank": 97,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93310,
+   "update_time": "2024-04-28T17:15:01Z",
+   "user": {
+    "country_code": "FR",
+    "driver_rating": 1,
+    "np_online_id": "fabricelambert47",
+    "user_id": "63636daf-52d6-4846-ae30-03293743d36e"
+   }
+  },
+  {
+   "display_rank": 98,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93313,
+   "update_time": "2024-04-19T17:39:31Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 6,
+    "np_online_id": "SimSpeedVision",
+    "user_id": "92567375-facf-4da4-ae96-acf1544c7d72"
+   }
+  },
+  {
+   "display_rank": 99,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93314,
+   "update_time": "2024-04-18T20:51:52Z",
+   "user": {
+    "country_code": "AR",
+    "driver_rating": 6,
+    "np_online_id": "MDK_TomasGz93",
+    "user_id": "fbe3ad22-74fd-4e31-876e-243998c38798"
+   }
+  },
+  {
+   "display_rank": 100,
+   "ranking_stats": {
+    "car_code": 1553
+   },
+   "score": 93314,
+   "update_time": "2024-04-19T00:13:26Z",
+   "user": {
+    "country_code": "JP",
+    "driver_rating": 6,
+    "np_online_id": "mm7701",
+    "user_id": "4d15b9ed-03ec-4ad4-b3ce-3cf99accad09"
+   }
+  }
+ ],
+ "total": 144623
+}
