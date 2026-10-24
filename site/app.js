@@ -24,7 +24,8 @@ function chart(e) {
   const rows = e.history.filter(r => r.gold_now_ms);
   if (!rows.length) return "";
   const total = e.days_elapsed + e.days_left;
-  const W = 640, H = 200, L = 64, R = 12, T = 12, B = 26;
+  const W = Math.max(300, Math.round(document.getElementById("current-list").clientWidth - 38));
+  const H = W < 500 ? 170 : 220, L = 64, R = 12, T = 12, B = 26;
   const vals = rows.flatMap(r => [r.gold_now_ms, r.gold_fast_ms, r.gold_slow_ms].filter(Boolean));
   let lo = Math.min(...vals), hi = Math.max(...vals);
   const pad = Math.max((hi - lo) * 0.15, 150);
@@ -38,11 +39,11 @@ function chart(e) {
       + "L" + band.slice().reverse().map(r => `${x(r.day).toFixed(1)},${y(r.gold_slow_ms).toFixed(1)}`).join("L") + "Z"
     : "";
   const dots = key => rows.filter(r => r[key]).map(r => `<circle cx="${x(r.day).toFixed(1)}" cy="${y(r[key]).toFixed(1)}" r="3"/>`).join("");
-  const ticks = [lo + pad, (lo + hi) / 2, hi - pad].map(v =>
+  const ticks = [lo + pad, hi - pad].map(v =>
     `<text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${fmt(Math.round(v))}</text>`).join("");
   const days = [...Array(Math.floor(total) + 1).keys()].filter(d => d % 2 === 0).map(d =>
     `<text x="${x(d)}" y="${H - 8}" text-anchor="middle">${d}</text>`).join("");
-  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gold time by day of event">
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Gold time by day of event">
       <line class="axis" x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}"/>
       ${ticks}${days}
       ${bandPath ? `<path d="${bandPath}" fill="var(--gold-band)"/>` : ""}
@@ -94,7 +95,7 @@ function renderPast(data) {
     q = q.trim().toLowerCase();
     body.innerHTML = data.past
       .filter(p => !q || [p.track, p.car, p.wr_holder].some(s => String(s).toLowerCase().includes(q)))
-      .map(p => `<tr><td>${p.start}</td><td>${esc(p.track)}</td><td>${esc(p.car)}</td>
+      .map(p => `<tr><td class="date">${p.start}</td><td>${esc(p.track)}</td><td>${esc(p.car)}</td>
         <td class="num">${num(p.entrants)}</td><td class="num">${fmt(p.wr_ms)}</td><td>${esc(p.wr_holder)}</td>
         <td class="num">${fmt(p.gold_ms)}</td><td class="num">${p.top100_spread_pct.toFixed(2)}%</td></tr>`)
       .join("");
@@ -110,10 +111,15 @@ function renderDrivers(data) {
       <td class="num">${d.wins}</td><td class="num">${d.top10}</td></tr>`).join("");
 }
 
+let resizeTimer;
 fetch("data.json")
   .then(r => r.json())
   .then(data => {
     renderCurrent(data);
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => renderCurrent(data), 150);
+    });
     renderPast(data);
     renderDrivers(data);
     document.getElementById("n-history").textContent = data.history_events;

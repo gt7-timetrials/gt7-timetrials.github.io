@@ -151,7 +151,7 @@ class Store:
         if not hasattr(self, "_courses"):
             self._courses = self._csv("course.csv")
         r = self._courses.get(code)
-        return (r["Name"], r["Category"]) if r else (f"course {code}", "unknown")
+        return (r["Name"], r["Category"]) if r else (f"New track #{code}", "unknown")
 
     def car(self, code):
         if not hasattr(self, "_cars"):
