@@ -1,0 +1,71 @@
+{
+ "generated_at": "2026-10-24T00:28:48.224272+00:00",
+ "history_events": 202,
+ "snapshot_events": 0,
+ "historical_entrants": {
+  "median": 162455,
+  "p10": 128482,
+  "p90": 196073,
+  "events": 202
+ },
+ "events": [
+  {
+   "event_id": 14980,
+   "track": "course 1340",
+   "category": "unknown",
+   "car": "Xiaomi VGT",
+   "starts": "2026-10-15T18:00:00+11:00",
+   "ends": "2026-10-29T17:59:59+11:00",
+   "days_elapsed": 8.7,
+   "days_left": 5.3,
+   "entrants": 118911,
+   "entrants_projection": null,
+   "wr_ms": 76825,
+   "wr_holder": "teryakiwok",
+   "gold_now_ms": 79129,
+   "top100_spread_pct": 1.343,
+   "strong_drivers_posted": [
+    "AT__1826",
+    "MetalGear9493"
+   ],
+   "strong_drivers_total": 25,
+   "regular_event": true,
+   "predicted": {
+    "final_wr_ms": 76737,
+    "gold_ms": 79039,
+    "gold_fast_ms": 78921,
+    "gold_slow_ms": 79129,
+    "method": "history: time elapsed + top drivers"
+   }
+  },
+  {
+   "event_id": 15000,
+   "track": "Circuit de Barcelona-Catalunya GP Layout No Chicane",
+   "category": "circuit",
+   "car": "ELANTRA N TC '24",
+   "starts": "2026-10-22T18:00:00+11:00",
+   "ends": "2026-11-05T17:59:59+11:00",
+   "days_elapsed": 1.7,
+   "days_left": 12.3,
+   "entrants": 62825,
+   "entrants_projection": null,
+   "wr_ms": 110146,
+   "wr_holder": "SFE_Damian",
+   "gold_now_ms": 113450,
+   "top100_spread_pct": 0.584,
+   "strong_drivers_posted": [
+    "MetalGear9493",
+    "SFE_Damian"
+   ],
+   "strong_drivers_total": 25,
+   "regular_event": true,
+   "predicted": {
+    "final_wr_ms": 109882,
+    "gold_ms": 113178,
+    "gold_fast_ms": 112893,
+    "gold_slow_ms": 113450,
+    "method": "history: time elapsed + top drivers"
+   }
+  }
+ ]
+}
