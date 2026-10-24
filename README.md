@@ -1,9 +1,9 @@
 # Gt7
 Time trial times and predictions for Gran Turismo 7 online time trials.
 
-Every day at 9am Melbourne time a GitHub Action fetches the running time trials and saves a snapshot
+Every morning (Melbourne time) a scheduled job fetches the running time trials and saves a snapshot
 of each leaderboard. It then predicts where the gold time (world record + 3%) will end up and writes
-the results to [REPORT.md](REPORT.md) and `report.json`.
+the results to [REPORT.md](REPORT.md), `report.json` and the website.
 
 For each running time trial the report shows:
 
@@ -22,6 +22,7 @@ Needs Python 3.10+ and numpy (`pip install -r requirements.txt`).
 python -m gt7tt daily      # fetch, save snapshots, write REPORT.md / report.json, print report
 python -m gt7tt report     # print the report from the latest saved snapshot (no network)
 python -m gt7tt backtest   # how accurate each prediction method was on past events
+python -m gt7tt site       # build the website into _site/ (open _site/index.html via a local web server)
 python -m unittest discover tests
 ```
 
@@ -56,8 +57,10 @@ This uses the unofficial API behind gran-turismo.com, which may change without n
 rate limited. See [docs/api_findings.md](docs/api_findings.md). Car and track names come from
 [ddm999/gt7info](https://github.com/ddm999/gt7info).
 
-## Daily job setup
+## Daily job and website
 
-`.github/workflows/daily.yml` runs on GitHub Actions. GitHub only runs scheduled workflows from the
-repository's default branch, so the workflow needs to be merged into `main`. You can also run it
-manually from the Actions tab ("Run workflow").
+- Sony's API answers HTTP 403 to GitHub Actions servers, so the daily fetch runs as a scheduled
+  Claude Code cloud session. It runs `python -m gt7tt daily` and pushes the new data to `main`.
+- Every push to `main` runs `.github/workflows/pages.yml`, which builds the site
+  (`python -m gt7tt site`) and publishes it on GitHub Pages.
+- The site's source is in `site/`; `data.json` is generated.

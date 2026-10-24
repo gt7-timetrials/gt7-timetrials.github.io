@@ -1,13 +1,10 @@
 name: Publish website
 
+# The daily data is fetched by a scheduled Claude Code session (Sony's API blocks
+# GitHub's servers), which pushes to main; every push to main republishes the site.
 on:
-  workflow_run:
-    workflows: ["Daily time trial snapshot"]
-    types: [completed]
-    branches: [main]
   push:
     branches: [main]
-    paths: ["site/**", "gt7tt/**"]
   workflow_dispatch:
 
 permissions:
