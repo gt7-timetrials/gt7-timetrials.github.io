@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-24T00:47:23.106926+00:00",
+ "generated_at": "2026-10-24T21:37:57.663790+00:00",
  "history_events": 202,
  "snapshot_events": 0,
  "historical_entrants": {
@@ -11,19 +11,20 @@
  "events": [
   {
    "event_id": 14980,
-   "track": "New track #1340",
+   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/14980/",
+   "track": "SUGO International Racing Course",
    "category": "unknown",
-   "car": "Xiaomi VGT",
+   "car": "Xiaomi Vision Gran Turismo",
    "starts": "2026-10-15T18:00:00+11:00",
    "ends": "2026-10-29T17:59:59+11:00",
-   "days_elapsed": 8.7,
-   "days_left": 5.3,
-   "entrants": 118982,
+   "days_elapsed": 9.6,
+   "days_left": 4.4,
+   "entrants": 126579,
    "entrants_projection": null,
-   "wr_ms": 76825,
-   "wr_holder": "teryakiwok",
-   "gold_now_ms": 79129,
-   "top100_spread_pct": 1.343,
+   "wr_ms": 76796,
+   "wr_holder": "AMS__Andrew",
+   "gold_now_ms": 79099,
+   "top100_spread_pct": 1.358,
    "strong_drivers_posted": [
     "AT__1826",
     "MetalGear9493"
@@ -31,28 +32,31 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 76737,
-    "gold_ms": 79039,
-    "gold_fast_ms": 78921,
-    "gold_slow_ms": 79129,
+    "final_wr_ms": 76721,
+    "gold_ms": 79022,
+    "gold_fast_ms": 78916,
+    "gold_slow_ms": 79099,
+    "final_wr_fast_ms": 76618,
+    "final_wr_slow_ms": 76796,
     "method": "history: time elapsed + top drivers"
    }
   },
   {
    "event_id": 15000,
+   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15000/",
    "track": "Circuit de Barcelona-Catalunya GP Layout No Chicane",
    "category": "circuit",
-   "car": "ELANTRA N TC '24",
+   "car": "Hyundai ELANTRA N TC '24",
    "starts": "2026-10-22T18:00:00+11:00",
    "ends": "2026-11-05T17:59:59+11:00",
-   "days_elapsed": 1.7,
-   "days_left": 12.3,
-   "entrants": 63032,
+   "days_elapsed": 2.6,
+   "days_left": 11.4,
+   "entrants": 81185,
    "entrants_projection": null,
-   "wr_ms": 110146,
-   "wr_holder": "SFE_Damian",
-   "gold_now_ms": 113450,
-   "top100_spread_pct": 0.581,
+   "wr_ms": 110142,
+   "wr_holder": "Twitch_Pira666",
+   "gold_now_ms": 113446,
+   "top100_spread_pct": 0.52,
    "strong_drivers_posted": [
     "MetalGear9493",
     "SFE_Damian"
@@ -60,10 +64,12 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 109882,
-    "gold_ms": 113178,
-    "gold_fast_ms": 112893,
-    "gold_slow_ms": 113450,
+    "final_wr_ms": 109906,
+    "gold_ms": 113203,
+    "gold_fast_ms": 112927,
+    "gold_slow_ms": 113431,
+    "final_wr_fast_ms": 109638,
+    "final_wr_slow_ms": 110128,
     "method": "history: time elapsed + top drivers"
    }
   }

@@ -1,33 +1,33 @@
 # GT7 time trials
 
-Updated 2026-10-24 00:47 UTC
+Updated 2026-10-24 21:37 UTC
 
-## New track #1340 — Xiaomi VGT
+## SUGO International Racing Course — Xiaomi Vision Gran Turismo
 
-Day 8.7 of 14 · event 14980
+Day 9.6 of 14 · event 14980
 
 | | |
 |---|---|
-| Entrants | 118,982  (past events finish with 128,482-196,073, median 162,455) |
-| World record | 1:16.825 (teryakiwok) |
-| Gold now | 1:19.129 |
-| **Predicted gold** | **1:19.039** (likely 1:18.921 – 1:19.129) |
-| Predicted final WR | 1:16.737 |
-| Top-100 spread | 1.34% |
+| Entrants | 126,579  (past events finish with 128,482-196,073, median 162,455) |
+| World record | 1:16.796 (AMS__Andrew) |
+| Gold now | 1:19.099 |
+| **Predicted gold** | **1:19.022** (likely 1:18.916 – 1:19.099) |
+| Predicted final WR | 1:16.721 |
+| Top-100 spread | 1.36% |
 | Top drivers posted | 2 of 25 |
 
-## Circuit de Barcelona-Catalunya GP Layout No Chicane — ELANTRA N TC '24
+## Circuit de Barcelona-Catalunya GP Layout No Chicane — Hyundai ELANTRA N TC '24
 
-Day 1.7 of 14 · event 15000
+Day 2.6 of 14 · event 15000
 
 | | |
 |---|---|
-| Entrants | 63,032  (past events finish with 128,482-196,073, median 162,455) |
-| World record | 1:50.146 (SFE_Damian) |
-| Gold now | 1:53.450 |
-| **Predicted gold** | **1:53.178** (likely 1:52.893 – 1:53.450) |
-| Predicted final WR | 1:49.882 |
-| Top-100 spread | 0.58% |
+| Entrants | 81,185  (past events finish with 128,482-196,073, median 162,455) |
+| World record | 1:50.142 (Twitch_Pira666) |
+| Gold now | 1:53.446 |
+| **Predicted gold** | **1:53.203** (likely 1:52.927 – 1:53.431) |
+| Predicted final WR | 1:49.906 |
+| Top-100 spread | 0.52% |
 | Top drivers posted | 2 of 25 |
 
 _Prediction: history: time elapsed + top drivers. History: 202 finished events, 0 with daily snapshots._
