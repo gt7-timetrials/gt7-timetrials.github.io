@@ -66,4 +66,4 @@ provides the track categories and is the fallback for names.
   Claude Code cloud session. It runs `python -m gt7tt daily` and pushes the new data to `main`.
 - Every push to `main` runs `.github/workflows/pages.yml`, which builds the site
   (`python -m gt7tt site`) and publishes it on GitHub Pages.
-- The site's source is in `site/`; `data.json` is generated.
+- The site's source is in `site/`; `data.json` and `events/<event_id>.json` (one page per finished event, opened at `#past/<event_id>`) are generated.

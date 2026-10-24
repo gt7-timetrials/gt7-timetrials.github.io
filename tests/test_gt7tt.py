@@ -126,6 +126,26 @@ class SiteTest(unittest.TestCase):
             self.assertNotIn(7, rows[0]["predictions"])
             self.assertTrue(rows[0]["predictions"][1]["in_range"])
 
+    def test_event_detail_has_top10_record_steps_and_predictions(self):
+        with tempfile.TemporaryDirectory() as d:
+            store = synthetic_store(d)
+            store.log_prediction(1, {"date": "2026-01-02", "day": 1.1, "final_wr_ms": 90000, "gold_ms": 92700})
+            ev, board = store.events()[1], store.board(1)
+            detail = site.event_detail(store, ev, board)
+            self.assertEqual(len(detail["top10"]), 10)
+            self.assertEqual(detail["top10"][0]["ms"], detail["wr_ms"])
+            self.assertEqual(detail["wr_steps"][-1]["wr_ms"], detail["wr_ms"])
+            self.assertEqual(len(detail["predictions"]), 1)
+
+    def test_site_build_writes_a_page_per_finished_event(self):
+        with tempfile.TemporaryDirectory() as d:
+            store = synthetic_store(d)
+            at = T0 + timedelta(days=400)
+            out = os.path.join(d, "_site")
+            site.build_site(store, at, report.build(store, at, {}), out)
+            fin = model.finished_events(store, store.events(), at)
+            self.assertEqual(len(os.listdir(os.path.join(out, "events"))), len(fin))
+
     def test_names_prefer_official_list(self):
         store = Store()  # real data/ref
         self.assertEqual(store.course(1340)[0], "SUGO International Racing Course")

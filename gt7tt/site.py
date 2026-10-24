@@ -13,9 +13,9 @@ SITE_SRC = os.path.join(os.path.dirname(__file__), "..", "site")
 TOP_DRIVERS = 50
 
 
-def site_data(store, at, rep):
+def site_data(store, at, rep, finished=None):
     events = store.events()
-    finished = finished_events(store, events, at)
+    finished = finished if finished is not None else finished_events(store, events, at)
 
     current = []
     for e in rep["events"]:
@@ -82,6 +82,31 @@ def wr_steps(ev, entries):
     return steps
 
 
+def event_detail(store, ev, board):
+    """One finished event's page: top 10, how the record fell, and any logged predictions."""
+    top = board["list"]
+    name, category = store.course(ev.course_code)
+    cars = Counter(x["ranking_stats"]["car_code"] for x in top)
+    multi_car = len({x["ranking_stats"]["car_code"] for x in top[:10]}) > 1
+    return {
+        "event_id": ev.id, "track": name, "category": category, "car": store.car(cars.most_common(1)[0][0]),
+        "multi_car": multi_car, "regular_event": ev.is_general,
+        "starts": ev.start.astimezone(report.MELBOURNE).isoformat(),
+        "ends": ev.end.astimezone(report.MELBOURNE).isoformat(), "days": round(ev.duration_days),
+        "leaderboard_url": f"https://www.gran-turismo.com/gb/gt7/sportmode/event/{ev.id}/",
+        "entrants": board["total"], "wr_ms": top[0]["score"], "wr_holder": top[0]["user"]["np_online_id"],
+        "p100_ms": top[-1]["score"], "ranked": len(top),
+        "top100_spread_pct": round(100 * (top[-1]["score"] / top[0]["score"] - 1), 3),
+        "top10": [{
+            "rank": x["display_rank"], "name": x["user"]["np_online_id"], "country": x["user"].get("country_code"),
+            "ms": x["score"], "day": round(ev.elapsed_days(parse_time(x["update_time"])), 2),
+            **({"car": store.car(x["ranking_stats"]["car_code"])} if multi_car else {}),
+        } for x in top[:10]],
+        "wr_steps": wr_steps(ev, top),
+        "predictions": [r for r in store.predictions(ev.id) if r.get("final_wr_ms")],
+    }
+
+
 def scorecard(store, finished):
     """Predicted vs actual final gold for finished events that have a prediction log."""
     rows = []
@@ -106,5 +131,13 @@ def build_site(store, at, rep, out_dir):
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
     shutil.copytree(SITE_SRC, out_dir)
-    with open(os.path.join(out_dir, "data.json"), "w", encoding="utf-8") as f:
-        json.dump(site_data(store, at, rep), f, ensure_ascii=False, separators=(",", ":"))
+    finished = finished_events(store, store.events(), at)
+    write_json(os.path.join(out_dir, "data.json"), site_data(store, at, rep, finished))
+    os.makedirs(os.path.join(out_dir, "events"))
+    for ev, b in finished:
+        write_json(os.path.join(out_dir, "events", f"{ev.id}.json"), event_detail(store, ev, b))
+
+
+def write_json(path, obj):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
