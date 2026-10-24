@@ -30,12 +30,19 @@ function parseLap(text) {
   return null;
 }
 
-function showTab(name) {
-  document.querySelectorAll(".tab").forEach(t => (t.hidden = t.id !== `tab-${name}`));
+// #current, #past, #drivers, #about, or #past/<event id> for one finished event
+const TITLE = document.title;
+let shownEvent = null;
+function route() {
+  const [name, id] = (location.hash.slice(1) || "current").split("/");
+  const tab = name === "past" && id ? "event" : name;
+  document.querySelectorAll(".tab").forEach(t => (t.hidden = t.id !== `tab-${tab}`));
   document.querySelectorAll("nav a").forEach(a => a.classList.toggle("active", a.dataset.tab === name));
+  if (tab === "event") showEvent(id);
+  else document.title = TITLE;
 }
-window.addEventListener("hashchange", () => showTab(location.hash.slice(1) || "current"));
-showTab(location.hash.slice(1) || "current");
+window.addEventListener("hashchange", route);
+route();
 
 function stat(label, value, note) {
   return `<div class="stat"><div class="label">${label}</div><div class="value">${value}</div>
@@ -131,18 +138,9 @@ function chart(e) {
       <line x1="${x(total) - 5}" x2="${x(total) + 5}" y1="${y(p.gold_fast_ms)}" y2="${y(p.gold_fast_ms)}"/>
       <line x1="${x(total) - 5}" x2="${x(total) + 5}" y1="${y(p.gold_slow_ms)}" y2="${y(p.gold_slow_ms)}"/>
       <circle cx="${x(total)}" cy="${y(p.gold_ms)}" r="4"/></g>` : "";
-  // gridlines on round times: every 0.5 s (1 s or 2 s for long laps)
-  const step = span <= 3000 ? 500 : span <= 6000 ? 1000 : 2000;
-  const yTicks = [];
-  for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) {
-    yTicks.push(`<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>
-     <text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${fmtTenths(v)}</text>`);
-  }
-  const xTicks = [...Array(Math.floor(total) + 1).keys()].filter(d => d % 2 === 0).map(d =>
-    `<text x="${x(d)}" y="${H - 9}" text-anchor="middle">${d}</text>`).join("");
   return `<figure class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}" role="img"
       aria-label="Gold time over the event and predicted final gold">
-      ${yTicks.join("")}${xTicks}
+      ${axes(lo, hi, span, total, x, y, { W, H, L, R, B })}
       ${offScale ? `<text x="${L + 6}" y="${T + 10}" class="offscale">↑ earlier times off scale</text>` : ""}
       <line class="now" x1="${x(e.days_elapsed)}" x2="${x(e.days_elapsed)}" y1="${T}" y2="${H - B}"/>
       ${band ? `<path d="${band}" class="band"/>` : ""}
@@ -154,6 +152,18 @@ function chart(e) {
     <figcaption class="legend"><span><i class="k-day"></i>Gold time on the day</span>
       <span><i class="k-pred"></i>Predicted final gold (and likely range)</span>
       <span>Lower is faster · day of event along the bottom</span></figcaption></figure>`;
+}
+
+// Gridlines on round times, every 0.5 s (1 s or 2 s for long laps), and every other day along the bottom.
+function axes(lo, hi, span, total, x, y, { W, H, L, R }) {
+  const step = span <= 3000 ? 500 : span <= 6000 ? 1000 : 2000;
+  let out = "";
+  for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) {
+    out += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>
+     <text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${fmtTenths(v)}</text>`;
+  }
+  return out + [...Array(Math.floor(total) + 1).keys()].filter(d => d % 2 === 0).map(d =>
+    `<text x="${x(d)}" y="${H - 9}" text-anchor="middle">${d}</text>`).join("");
 }
 
 let DATA;
@@ -221,7 +231,7 @@ function renderScorecard() {
   const cell = c => c ? `${fmt(c.gold_ms)} <span class="${c.in_range ? "ok" : "miss"}">${c.error_pct > 0 ? "+" : ""}${c.error_pct.toFixed(2)}%</span>` : "—";
   el.innerHTML = `<div class="table-scroll"><table><thead><tr><th>Event</th><th class="num">Actual gold</th>
       <th class="num">Predicted day 1</th><th class="num">Day 3</th><th class="num">Day 7</th></tr></thead><tbody>
-      ${rows.map(r => `<tr><td>${esc(r.track)}</td><td class="num">${fmt(r.actual_gold_ms)}</td>
+      ${rows.map(r => `<tr><td><a href="#past/${r.event_id}">${esc(r.track)}</a></td><td class="num">${fmt(r.actual_gold_ms)}</td>
         <td class="num">${cell(r.predictions[1])}</td><td class="num">${cell(r.predictions[3])}</td>
         <td class="num">${cell(r.predictions[7])}</td></tr>`).join("")}
       </tbody></table></div>
@@ -237,7 +247,7 @@ function renderPast() {
     const rows = DATA.past.filter(p => !q || [p.track, p.car, p.wr_holder].some(s => String(s).toLowerCase().includes(q)));
     list.innerHTML = rows.slice(0, shown).map(p => `<tr>
         <td class="date" data-label="Start">${p.start}</td>
-        <td class="track" data-label="Track">${esc(p.track)}<div class="sub-car">${esc(p.car)}</div></td>
+        <td class="track" data-label="Track"><a href="#past/${p.event_id}">${esc(p.track)}</a><div class="sub-car">${esc(p.car)}</div></td>
         <td class="num" data-label="Entrants">${num(p.entrants)}</td>
         <td class="num" data-label="Record">${fmt(p.wr_ms)}<div class="sub-car">${esc(p.wr_holder)}</div></td>
         <td class="num" data-label="Gold">${fmt(p.gold_ms)}</td>
@@ -248,6 +258,112 @@ function renderPast() {
   document.getElementById("past-filter").addEventListener("input", ev => { query = ev.target.value; shown = PAGE; draw(); });
   more.addEventListener("click", () => { shown += PAGE; draw(); });
   draw();
+}
+
+// World record over a finished event, on the same fixed window as the current-event charts.
+function recordChart(d, width) {
+  const total = d.days, steps = d.wr_steps, preds = d.predictions;
+  const W = Math.max(300, Math.round(width)), H = W < 500 ? 190 : 230, L = 52, R = 14, T = 14, B = 28;
+  const need = [d.wr_ms, ...preds.map(r => r.final_wr_ms)];
+  let span = Math.max(2000, 0.015 * d.wr_ms);
+  const margin = 0.1 * span;
+  const needLo = Math.min(...need), needHi = Math.max(...need);
+  span = Math.max(span, needHi - needLo + 2 * margin);
+  const lo = needLo - margin, hi = lo + span;
+  const x = v => L + (Math.min(Math.max(v, 0), total) / total) * (W - L - R);
+  const y = v => T + ((hi - Math.min(Math.max(v, lo), hi)) / span) * (H - T - B);
+  let path = "";
+  steps.forEach((s, i) => {
+    path += i ? `H${x(s.day).toFixed(1)}V${y(s.wr_ms).toFixed(1)}` : `M${x(s.day).toFixed(1)},${y(s.wr_ms).toFixed(1)}`;
+  });
+  path += `H${x(total).toFixed(1)}`;
+  const predLine = preds.map((r, i) => `${i ? "L" : "M"}${x(r.day).toFixed(1)},${y(r.final_wr_ms).toFixed(1)}`).join("");
+  return `<figure class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}" role="img"
+      aria-label="World record over the event">
+      ${axes(lo, hi, span, total, x, y, { W, H, L, R, B })}
+      ${steps.some(s => s.wr_ms > hi) ? `<text x="${L + 6}" y="${T + 10}" class="offscale">↑ earlier times off scale</text>` : ""}
+      <path d="${path}" class="gold-day"/>
+      ${steps.map(s => `<circle class="wr-dot" cx="${x(s.day).toFixed(1)}" cy="${y(s.wr_ms).toFixed(1)}" r="2.5"/>`).join("")}
+      ${predLine ? `<path d="${predLine}" class="pred"/>` : ""}
+      ${preds.map(r => `<circle class="pred-dot" cx="${x(r.day).toFixed(1)}" cy="${y(r.final_wr_ms).toFixed(1)}" r="3"/>`).join("")}
+    </svg>
+    <figcaption class="legend"><span><i class="k-day"></i>World record</span>
+      ${preds.length ? `<span><i class="k-pred"></i>Predicted final record on the day</span>` : ""}
+      <span>Lower is faster · day of event along the bottom</span></figcaption></figure>`;
+}
+
+const dayOf = day => Math.max(0, day).toFixed(1);
+const dateRange = (a, b) => {
+  const o = { day: "numeric", month: "short", year: "numeric" };
+  return `${new Date(a).toLocaleDateString(undefined, o)} – ${new Date(b).toLocaleDateString(undefined, o)}`;
+};
+
+function renderEvent(d) {
+  const el = document.getElementById("event-detail");
+  const top10 = d.top10.map(r => `<tr><td class="num">${r.rank}</td>
+      <td class="name">${esc(r.name)}<div class="sub-car">${[r.country, d.multi_car && r.car].filter(Boolean).map(esc).join(" · ")}</div></td>
+      <td class="num">${fmt(r.ms)}</td>
+      <td class="num">${r.rank === 1 ? "—" : "+" + ((r.ms - d.wr_ms) / 1000).toFixed(3)}</td><td class="num">${dayOf(r.day)}</td></tr>`).join("");
+  const progression = d.wr_steps.slice().reverse().map((s, i, a) => `<tr><td class="num">${dayOf(s.day)}</td>
+      <td class="num">${fmt(s.wr_ms)}</td><td class="name">${esc(s.holder)}</td>
+      <td class="num">${a[i + 1] ? "−" + ((a[i + 1].wr_ms - s.wr_ms) / 1000).toFixed(3) : "—"}</td></tr>`).join("");
+  el.innerHTML = `<article class="event">
+      <div class="event-head">
+        <div><h2>${esc(d.track)}${d.regular_event ? "" : '<span class="tag">special event</span>'}</h2>
+          <div class="meta">${esc(d.car)}${d.multi_car ? " and others" : ""}</div></div>
+        <a class="official" href="${d.leaderboard_url}" target="_blank" rel="noopener">Official leaderboard ↗</a>
+      </div>
+      <div class="meta">${dateRange(d.starts, d.ends)} · ${d.days} days · finished</div>
+      <table class="targets"><thead><tr><th></th><th class="num">Final time</th></tr></thead><tbody>
+        ${MEDALS.map(([name, f, cls]) => `<tr><th class="medal ${cls}">${name}</th>
+          <td class="num">${fmt(medalTime(d.wr_ms, f))}</td></tr>`).join("")}
+      </tbody></table>
+      <p class="hint">The medal times when the event closed: the final world record + 3%, 5% and 10%.</p>
+      <div class="stats">
+        ${stat("World record", fmt(d.wr_ms), esc(d.wr_holder))}
+        ${stat("Entrants", num(d.entrants), DATA ? `median for past events ${num(DATA.median_entrants)}` : "")}
+        ${stat("Course difficulty", d.top100_spread_pct.toFixed(2) + "%", "100th place behind the record")}
+        ${stat("100th place", fmt(d.p100_ms), "+" + secs(d.p100_ms - d.wr_ms))}
+      </div>
+      <h3>How the world record fell</h3>
+      <div class="record-chart"></div>
+      <p class="hint">Rebuilt from when each final top-100 lap was set. Only each driver's best lap is kept, so a record
+        that driver later beat themselves doesn't show.</p>
+    </article>
+    <h2 class="section">Top 10</h2>
+    <div class="table-scroll"><table class="compact"><thead><tr><th class="num">#</th><th>Driver</th>
+      <th class="num">Time</th><th class="num">Gap (s)</th><th class="num">Day set</th></tr></thead>
+      <tbody>${top10}</tbody></table></div>
+    <h2 class="section">Record progression</h2>
+    <div class="table-scroll"><table class="compact"><thead><tr><th class="num">Day</th><th class="num">Record</th>
+      <th>Driver</th><th class="num">Gain (s)</th></tr></thead>
+      <tbody>${progression}</tbody></table></div>`;
+  drawRecordChart();
+}
+
+function drawRecordChart() {
+  const box = document.querySelector("#event-detail .record-chart");
+  if (box && shownEvent) box.innerHTML = recordChart(shownEvent, box.clientWidth);
+}
+
+function showEvent(id) {
+  window.scrollTo(0, 0);
+  if (shownEvent && String(shownEvent.event_id) === id) {
+    document.title = `${shownEvent.track} · ${TITLE}`;
+    return;
+  }
+  const el = document.getElementById("event-detail");
+  el.innerHTML = `<p class="muted">Loading…</p>`;
+  shownEvent = null;
+  fetch(`events/${encodeURIComponent(id)}.json`)
+    .then(r => (r.ok ? r.json() : Promise.reject()))
+    .then(d => {
+      if (location.hash !== `#past/${id}`) return; // moved on while loading
+      shownEvent = d;
+      renderEvent(d);
+      document.title = `${d.track} · ${TITLE}`;
+    })
+    .catch(() => { el.innerHTML = `<p class="muted">Could not load this event.</p>`; });
 }
 
 function renderDrivers() {
@@ -266,12 +382,13 @@ fetch("data.json")
     renderScorecard();
     renderPast();
     renderDrivers();
+    if (shownEvent) renderEvent(shownEvent); // opened by a direct link before data.json arrived
     let lastWidth = window.innerWidth;
     window.addEventListener("resize", () => {
       if (window.innerWidth === lastWidth) return; // e.g. the on-screen keyboard opening
       lastWidth = window.innerWidth;
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(redrawCharts, 150);
+      resizeTimer = setTimeout(() => { redrawCharts(); drawRecordChart(); }, 150);
     });
     document.getElementById("n-history").textContent = data.history_events;
     document.getElementById("footer").textContent =
