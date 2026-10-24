@@ -119,6 +119,124 @@
    "weather_id": 8441
   }
  },
+ "13030": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1761807600,
+   "end_date": 1763017199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "499_e1755af58f4dd447ed09cacae60dd514.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-10-30T07:00:00Z",
+   "end_date": "2025-11-13T06:59:59Z",
+   "ranking_id": "p_rt_1013030_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 0
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Dirt",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 600,
+   "course_label": "7518f75e04403138491006837ca09242",
+   "course_layout": 2,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 8468
+  }
+ },
+ "13034": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1761807600,
+   "end_date": 1763017199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "504_3a341da30a795ddb5047f371dc5873b3.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-10-30T07:00:00Z",
+   "end_date": "2025-11-13T06:59:59Z",
+   "ranking_id": "p_rt_1013034_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1240,
+   "course_label": "cf1512077571df867078569b6b7948e4",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 8547
+  }
+ },
  "13051": {
   "championship": {
    "global_ranking_id": "",
@@ -177,6 +295,3426 @@
    "hour": 14,
    "minute": 30,
    "weather_id": 212
+  }
+ },
+ "13092": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1763017200,
+   "end_date": 1764226799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "501_b2710aeea72282307b757d38ed336c4c.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-11-13T07:00:00Z",
+   "end_date": "2025-11-27T06:59:59Z",
+   "ranking_id": "p_rt_1013092_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "NoLimit",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 10,
+   "course_label": "fdbfd002679fd2b90bcfd79958bcd282",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 8741
+  }
+ },
+ "13202": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1763622000,
+   "end_date": 1764831599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "512_6efdef194939caa725277321e75177c4.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-11-20T07:00:00Z",
+   "end_date": "2025-12-04T06:59:59Z",
+   "ranking_id": "p_rt_1013202_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Comfort",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 354,
+   "course_label": "b4c7d727bded08a678d477324b9b2581",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 30,
+   "weather_id": 255
+  }
+ },
+ "13212": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1763622000,
+   "end_date": 1764831599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "512_6efdef194939caa725277321e75177c4.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-11-20T07:00:00Z",
+   "end_date": "2025-12-04T06:59:59Z",
+   "ranking_id": "p_rt_1013212_002"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Comfort",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 354,
+   "course_label": "b4c7d727bded08a678d477324b9b2581",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 30,
+   "weather_id": 255
+  }
+ },
+ "13215": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1764226800,
+   "end_date": 1765436399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "513_9ad41df22ed99ccbe4b7c31bda8acc8e.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-11-27T07:00:00Z",
+   "end_date": "2025-12-11T06:59:59Z",
+   "ranking_id": "p_rt_1013215_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1226,
+   "course_label": "1534043d741ea7e4caa9040c0875be70",
+   "course_layout": 9,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 9391
+  }
+ },
+ "13248": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1764835200,
+   "end_date": 1766041199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "514_76058ac947c72ff4db220d3ec13b3949.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-12-04T08:00:00Z",
+   "end_date": "2025-12-18T06:59:59Z",
+   "ranking_id": "p_rt_1013248_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1333,
+   "course_label": "5f4f426126fe7f8d72be86f726ac9482",
+   "course_layout": 1,
+   "hour": 20,
+   "minute": 0,
+   "weather_id": 10752
+  }
+ },
+ "13275": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1765436400,
+   "end_date": 1766645999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "527_a6cce533feb4a1194741bd79e7fe891d.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-12-11T07:00:00Z",
+   "end_date": "2025-12-25T06:59:59Z",
+   "ranking_id": "p_rt_1013275_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 462,
+   "course_label": "1610fd0ba609f3e2c594f9e90ce9a261",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 45
+  }
+ },
+ "13276": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1765436400,
+   "end_date": 1766645999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "515_44fa07a0c67d816784f106835a969bd2.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-12-11T07:00:00Z",
+   "end_date": "2025-12-25T06:59:59Z",
+   "ranking_id": "p_rt_1013276_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 471,
+   "course_label": "ae115671013d61ec60d2fcf3f720e5d4",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 30,
+   "weather_id": 2844
+  }
+ },
+ "13304": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1766041200,
+   "end_date": 1767250799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "516_c5e9275c965a789cded576cf4097342d.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-12-18T07:00:00Z",
+   "end_date": "2026-01-01T06:59:59Z",
+   "ranking_id": "p_rt_1013304_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1250,
+   "course_label": "a42b6aeccc975c98732f2316dc6f836b",
+   "course_layout": 3,
+   "hour": 20,
+   "minute": 0,
+   "weather_id": 10085
+  }
+ },
+ "13328": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1766646000,
+   "end_date": 1767855599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "531_db62d585de6c0667f8d2b7369442555f.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2025-12-25T07:00:00Z",
+   "end_date": "2026-01-08T06:59:59Z",
+   "ranking_id": "p_rt_1013328_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1292,
+   "course_label": "bb0d7a6daa6d4ff239326a320833cfee",
+   "course_layout": 1,
+   "hour": 15,
+   "minute": 0,
+   "weather_id": 10012
+  }
+ },
+ "13329": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1767250800,
+   "end_date": 1768460399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "532_51615cfaadb3671d0703fe1de230ca87.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-01-01T07:00:00Z",
+   "end_date": "2026-01-15T06:59:59Z",
+   "ranking_id": "p_rt_1013329_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 363,
+   "course_label": "a219855de70e7b0418f61ccb7cca6050",
+   "course_layout": 1,
+   "hour": 12,
+   "minute": 30,
+   "weather_id": 1746
+  }
+ },
+ "13330": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1767855600,
+   "end_date": 1769065199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "533_9541c92bd344bb41d29d9638b519ef1a.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-01-08T07:00:00Z",
+   "end_date": "2026-01-22T06:59:59Z",
+   "ranking_id": "p_rt_1013330_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1240,
+   "course_label": "cf1512077571df867078569b6b7948e4",
+   "course_layout": 1,
+   "hour": 15,
+   "minute": 30,
+   "weather_id": 8547
+  }
+ },
+ "13488": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1768460400,
+   "end_date": 1769669999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "534_1db959740645955a2b194c6287700ab3.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-01-15T07:00:00Z",
+   "end_date": "2026-01-29T06:59:59Z",
+   "ranking_id": "p_rt_1013488_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1163,
+   "course_label": "471fbf6a30e51bfed7ac80e38ec1620d",
+   "course_layout": 2,
+   "hour": 15,
+   "minute": 0,
+   "weather_id": 8326
+  }
+ },
+ "13522": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1769065200,
+   "end_date": 1770274799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "535_c85d4ecdac29520d2b3482a0954534fb.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-01-22T07:00:00Z",
+   "end_date": "2026-02-05T06:59:59Z",
+   "ranking_id": "p_rt_1013522_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1322,
+   "course_label": "1881a5f59904c336747ef2547ec38787",
+   "course_layout": 1,
+   "hour": 12,
+   "minute": 30,
+   "weather_id": 10884
+  }
+ },
+ "13529": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1769670000,
+   "end_date": 1770879599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "555_6767161c5ca7b9f258f0b0a1453b2760.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-01-29T07:00:00Z",
+   "end_date": "2026-02-12T06:59:59Z",
+   "ranking_id": "p_rt_1013529_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 348,
+   "course_label": "3c3dd874e693327568f52c75894a522c",
+   "course_layout": 3,
+   "hour": 15,
+   "minute": 0,
+   "weather_id": 1609
+  }
+ },
+ "13530": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1769670000,
+   "end_date": 1770879599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "556_f5874432fff23ce9f7efcb1b5ae6c0db.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-01-29T07:00:00Z",
+   "end_date": "2026-02-12T06:59:59Z",
+   "ranking_id": "p_rt_1013530_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 469,
+   "course_label": "88e4bb83156313888db77d081110f17f",
+   "course_layout": 1,
+   "hour": 12,
+   "minute": 30,
+   "weather_id": 50
+  }
+ },
+ "13540": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1770274800,
+   "end_date": 1771484399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "557_ef93a36be8caae9b7976d92a80ab8d63.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-02-05T07:00:00Z",
+   "end_date": "2026-02-19T06:59:59Z",
+   "ranking_id": "p_rt_1013540_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 470,
+   "course_label": "9c10d8b2c563db6c38a68a0821b67c11",
+   "course_layout": 1,
+   "hour": 15,
+   "minute": 0,
+   "weather_id": 3165
+  }
+ },
+ "13606": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1770879600,
+   "end_date": 1772089199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "558_ddc91888df92b20488b526762609195d.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-02-12T07:00:00Z",
+   "end_date": "2026-02-26T06:59:59Z",
+   "ranking_id": "p_rt_1013606_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 462,
+   "course_label": "1610fd0ba609f3e2c594f9e90ce9a261",
+   "course_layout": 1,
+   "hour": 12,
+   "minute": 30,
+   "weather_id": 44
+  }
+ },
+ "13622": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1771484400,
+   "end_date": 1772693999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "559_95a2692634d3a29d51ab6d05cca0f1f2.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-02-19T07:00:00Z",
+   "end_date": "2026-03-05T06:59:59Z",
+   "ranking_id": "p_rt_1013622_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 896,
+   "course_label": "8deed7e70433e4e48825f65146c3ea12",
+   "course_layout": 1,
+   "hour": 15,
+   "minute": 0,
+   "weather_id": 9273
+  }
+ },
+ "13655": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1772089200,
+   "end_date": 1773298799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "560_ec91cce178413c0c1e2d76e60e908521.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-02-26T07:00:00Z",
+   "end_date": "2026-03-12T06:59:59Z",
+   "ranking_id": "p_rt_1013655_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 451,
+   "course_label": "c49ee2b9b782ec16b996b6bc1d9bbac7",
+   "course_layout": 2,
+   "hour": 23,
+   "minute": 30,
+   "weather_id": 1693
+  }
+ },
+ "13743": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1772694000,
+   "end_date": 1773903599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "570_8a0c79f0270eda3cae1043f2276aa45d.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-03-05T07:00:00Z",
+   "end_date": "2026-03-19T06:59:59Z",
+   "ranking_id": "p_rt_1013743_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 922,
+   "course_label": "de1302c8167f01de08fb6c8b8683c7b6",
+   "course_layout": 2,
+   "hour": 15,
+   "minute": 0,
+   "weather_id": 4784
+  }
+ },
+ "13753": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1773298800,
+   "end_date": 1774508399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "571_5055f603516afd2e9f837680d25d504b.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-03-12T07:00:00Z",
+   "end_date": "2026-03-26T06:59:59Z",
+   "ranking_id": "p_rt_1013753_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 11,
+   "course_label": "64c64c66bddbeaa630ddcb8a174a8df7",
+   "course_layout": 1,
+   "hour": 23,
+   "minute": 30,
+   "weather_id": 5413
+  }
+ },
+ "13761": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1773903600,
+   "end_date": 1775113199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "572_e1b980c40f3caf1f22da7f0422209877.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-03-19T07:00:00Z",
+   "end_date": "2026-04-02T06:59:59Z",
+   "ranking_id": "p_rt_1013761_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 10,
+   "course_label": "fdbfd002679fd2b90bcfd79958bcd282",
+   "course_layout": 1,
+   "hour": 15,
+   "minute": 0,
+   "weather_id": 8743
+  }
+ },
+ "13810": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1774508400,
+   "end_date": 1775717999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "573_cd4861f4d2ab7f789a9a8a8b9361b9ea.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-03-26T07:00:00Z",
+   "end_date": "2026-04-09T06:59:59Z",
+   "ranking_id": "p_rt_1013810_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1007,
+   "course_label": "d75df0ee1aaedcb858cc502180813e5d",
+   "course_layout": 1,
+   "hour": 19,
+   "minute": 30,
+   "weather_id": 8699
+  }
+ },
+ "13849": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1775113200,
+   "end_date": 1776322799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "574_b58deb73d31a1d281d9373fe37d1ef5e.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-04-02T07:00:00Z",
+   "end_date": "2026-04-16T06:59:59Z",
+   "ranking_id": "p_rt_1013849_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1034,
+   "course_label": "7373776fc00846b0433ad456c191f009",
+   "course_layout": 2,
+   "hour": 9,
+   "minute": 0,
+   "weather_id": 7865
+  }
+ },
+ "13923": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1775718000,
+   "end_date": 1776927599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "589_94dc88891ef053c17cfd08545ec77527.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-04-09T07:00:00Z",
+   "end_date": "2026-04-23T06:59:59Z",
+   "ranking_id": "p_rt_1013923_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 365,
+   "course_label": "ee57e56e3793ca731a25f75f0b5e279d",
+   "course_layout": 1,
+   "hour": 19,
+   "minute": 30,
+   "weather_id": 2418
+  }
+ },
+ "13933": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1776322800,
+   "end_date": 1777532399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "590_e02d758eabbd2f317015294c93ea43ae.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-04-16T07:00:00Z",
+   "end_date": "2026-04-30T06:59:59Z",
+   "ranking_id": "p_rt_1013933_001"
+  },
+  "penalty": {
+   "is_guide_course_off": true,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1333,
+   "course_label": "5f4f426126fe7f8d72be86f726ac9482",
+   "course_layout": 1,
+   "hour": 19,
+   "minute": 30,
+   "weather_id": 10746
+  }
+ },
+ "13972": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1776927600,
+   "end_date": 1778137199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "591_5fec34a7f37985a2ad104e64e959513f.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-04-23T07:00:00Z",
+   "end_date": "2026-05-07T06:59:59Z",
+   "ranking_id": "p_rt_1013972_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1249,
+   "course_label": "40f4b232cab0b551313f4fdb5a046617",
+   "course_layout": 2,
+   "hour": 9,
+   "minute": 0,
+   "weather_id": 10077
+  }
+ },
+ "13992": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1777532400,
+   "end_date": 1778741999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "592_55b28c90f74a9b4976066d9b9d452116.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-04-30T07:00:00Z",
+   "end_date": "2026-05-14T06:59:59Z",
+   "ranking_id": "p_rt_1013992_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1024,
+   "course_label": "622b758be029b83e4b8d3be2203945c7",
+   "course_layout": 1,
+   "hour": 19,
+   "minute": 30,
+   "weather_id": 5049
+  }
+ },
+ "14006": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1778137200,
+   "end_date": 1779346799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "593_93738cef7249624efa2862da513ca371.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-05-07T07:00:00Z",
+   "end_date": "2026-05-21T06:59:59Z",
+   "ranking_id": "p_rt_1014006_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 348,
+   "course_label": "3c3dd874e693327568f52c75894a522c",
+   "course_layout": 3,
+   "hour": 9,
+   "minute": 0,
+   "weather_id": 1615
+  }
+ },
+ "14016": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1778742000,
+   "end_date": 1779951599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "595_f447fe6130883e95bac962558f325743.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-05-14T07:00:00Z",
+   "end_date": "2026-05-28T06:59:59Z",
+   "ranking_id": "p_rt_1014016_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1322,
+   "course_label": "1881a5f59904c336747ef2547ec38787",
+   "course_layout": 1,
+   "hour": 13,
+   "minute": 30,
+   "weather_id": 10382
+  }
+ },
+ "14017": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1778742000,
+   "end_date": 1779951599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "575_288dba50b118d4546cd7f75f4c8f6720.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-05-14T07:00:00Z",
+   "end_date": "2026-05-28T06:59:59Z",
+   "ranking_id": "p_rt_1014017_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 469,
+   "course_label": "88e4bb83156313888db77d081110f17f",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 53
+  }
+ },
+ "14094": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1779346800,
+   "end_date": 1780556399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "596_aece731d957254e0739ee8b1ad5ad08a.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-05-21T07:00:00Z",
+   "end_date": "2026-06-04T06:59:59Z",
+   "ranking_id": "p_rt_1014094_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 469,
+   "course_label": "88e4bb83156313888db77d081110f17f",
+   "course_layout": 1,
+   "hour": 9,
+   "minute": 0,
+   "weather_id": 50
+  }
+ },
+ "14154": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1779951600,
+   "end_date": 1781161199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "597_b4fb817574e609d49995accac40d0cda.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-05-28T07:00:00Z",
+   "end_date": "2026-06-11T06:59:59Z",
+   "ranking_id": "p_rt_1014154_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1327,
+   "course_label": "e7918f23751b7c85862bbaa5c7c50be0",
+   "course_layout": 1,
+   "hour": 13,
+   "minute": 30,
+   "weather_id": 10693
+  }
+ },
+ "14166": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1780556400,
+   "end_date": 1781765999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "598_715cd4af7146b8673e148b810784dda3.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-06-04T07:00:00Z",
+   "end_date": "2026-06-18T06:59:59Z",
+   "ranking_id": "p_rt_1014166_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Comfort",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 747,
+   "course_label": "fd7e0aa04c10ecc3e649fbb7e0015b50",
+   "course_layout": 2,
+   "hour": 9,
+   "minute": 0,
+   "weather_id": 9561
+  }
+ },
+ "14268": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1781161200,
+   "end_date": 1782370799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "599_328bffbef5ef2a79a1fc579303e2fe05.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-06-11T07:00:00Z",
+   "end_date": "2026-06-25T06:59:59Z",
+   "ranking_id": "p_rt_1014268_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 454,
+   "course_label": "5d89d940736551b912baa189925d12b8",
+   "course_layout": 1,
+   "hour": 11,
+   "minute": 30,
+   "weather_id": 225
+  }
+ },
+ "14277": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1781766000,
+   "end_date": 1782975599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "614_c2d615132548bd89e34bf8aaf5064898.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-06-18T07:00:00Z",
+   "end_date": "2026-07-02T06:59:59Z",
+   "ranking_id": "p_rt_1014277_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 470,
+   "course_label": "9c10d8b2c563db6c38a68a0821b67c11",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 8184
+  }
+ },
+ "14286": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1782370800,
+   "end_date": 1783580399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "615_a52a2bd35b8f94e8704b7a282516cc8c.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-06-25T07:00:00Z",
+   "end_date": "2026-07-09T06:59:59Z",
+   "ranking_id": "p_rt_1014286_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 125,
+   "course_label": "53f219f42c4a10981d9c73afcd6fd346",
+   "course_layout": 1,
+   "hour": 11,
+   "minute": 30,
+   "weather_id": 184
+  }
+ },
+ "14297": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1782975600,
+   "end_date": 1784185199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "616_871648fb87d650322a3fe0eac7e8c5e2.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-07-02T07:00:00Z",
+   "end_date": "2026-07-16T06:59:59Z",
+   "ranking_id": "p_rt_1014297_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 152,
+   "course_label": "fc01f1756e55d4e1eb78fd4f6bced5fe",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 212
+  }
+ },
+ "14338": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1783580400,
+   "end_date": 1784789999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "617_9e82658cc300f30bc19d2dcbbd7f6009.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-07-09T07:00:00Z",
+   "end_date": "2026-07-23T06:59:59Z",
+   "ranking_id": "p_rt_1014338_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 462,
+   "course_label": "1610fd0ba609f3e2c594f9e90ce9a261",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 15,
+   "weather_id": 46
+  }
+ },
+ "14360": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1784185200,
+   "end_date": 1785394799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "618_f082be352450d13724687d038df19798.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-07-16T07:00:00Z",
+   "end_date": "2026-07-30T06:59:59Z",
+   "ranking_id": "p_rt_1014360_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 613,
+   "course_label": "76b6e16f228c3041cdff02994ebea794",
+   "course_layout": 4,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 9778
+  }
+ },
+ "14485": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1784790000,
+   "end_date": 1785999599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "624_e3d1d32ccd4a029cfb94e9a9dbb25084.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-07-23T07:00:00Z",
+   "end_date": "2026-08-06T06:59:59Z",
+   "ranking_id": "p_rt_1014485_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 16,
+   "course_label": "66a4dfa7823e8b38eb08deefdf3a3245",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 15,
+   "weather_id": 3415
+  }
+ },
+ "14506": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1785394800,
+   "end_date": 1786604399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "625_c725caf5e4fb041f513e705e7ce33e72.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-07-30T07:00:00Z",
+   "end_date": "2026-08-13T06:59:59Z",
+   "ranking_id": "p_rt_1014506_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 358,
+   "course_label": "401f8c1dba5100c4d948b8f7a1bf0280",
+   "course_layout": 1,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 8253
+  }
+ },
+ "14507": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1785999600,
+   "end_date": 1787209199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "622_bb33cf482043160396e0e1c64babfe83.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-08-06T07:00:00Z",
+   "end_date": "2026-08-20T06:59:59Z",
+   "ranking_id": "p_rt_1014507_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 747,
+   "course_label": "fd7e0aa04c10ecc3e649fbb7e0015b50",
+   "course_layout": 2,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 9561
+  }
+ },
+ "14508": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1785999600,
+   "end_date": 1787209199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "626_2b7e2c5f51bb9d6194abf9f941184639.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-08-06T07:00:00Z",
+   "end_date": "2026-08-20T06:59:59Z",
+   "ranking_id": "p_rt_1014508_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1163,
+   "course_label": "471fbf6a30e51bfed7ac80e38ec1620d",
+   "course_layout": 2,
+   "hour": 14,
+   "minute": 15,
+   "weather_id": 8326
+  }
+ },
+ "14534": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1786604400,
+   "end_date": 1787209199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "627_0a0a4dbedccbec37918734a199a8c200.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-08-13T07:00:00Z",
+   "end_date": "2026-08-20T06:59:59Z",
+   "ranking_id": "p_rt_1014534_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 795,
+   "course_label": "9cfed8967be8296fba3ae88e1b69b4c7",
+   "course_layout": 5,
+   "hour": 14,
+   "minute": 0,
+   "weather_id": 9336
+  }
+ },
+ "14535": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1787209200,
+   "end_date": 1787813999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "641_326347d77f2be03bb2f72f5e2b3b5e81.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-08-20T07:00:00Z",
+   "end_date": "2026-08-27T06:59:59Z",
+   "ranking_id": "p_rt_1014535_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 898,
+   "course_label": "3ac6df1c20d351dbe90f0810d78c317c",
+   "course_layout": 2,
+   "hour": 14,
+   "minute": 15,
+   "weather_id": 9263
+  }
+ },
+ "14567": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1787209200,
+   "end_date": 1788418799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "628_7a0fbf55a0782522220359c131d58f35.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-08-20T07:00:00Z",
+   "end_date": "2026-09-03T06:59:59Z",
+   "ranking_id": "p_rt_1014567_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 348,
+   "course_label": "3c3dd874e693327568f52c75894a522c",
+   "course_layout": 3,
+   "hour": 15,
+   "minute": 15,
+   "weather_id": 1602
+  }
+ },
+ "14574": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1787814000,
+   "end_date": 1789023599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "642_4541fde9d21b7729cffc6c4f11b82923.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-08-27T07:00:00Z",
+   "end_date": "2026-09-10T06:59:59Z",
+   "ranking_id": "p_rt_1014574_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 41,
+   "course_label": "ec52aeed185bb96fd66f8e7565984b0e",
+   "course_layout": 1,
+   "hour": 16,
+   "minute": 30,
+   "weather_id": 5027
+  }
+ },
+ "14588": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1788418800,
+   "end_date": 1789628399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "643_b6ae407f913f7e39b105525fafec382c.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-09-03T07:00:00Z",
+   "end_date": "2026-09-17T06:59:59Z",
+   "ranking_id": "p_rt_1014588_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 10,
+   "course_label": "fdbfd002679fd2b90bcfd79958bcd282",
+   "course_layout": 1,
+   "hour": 19,
+   "minute": 8,
+   "weather_id": 3
+  }
+ },
+ "14739": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1789023600,
+   "end_date": 1790233199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "644_d19db058afa2f3fd7434b8381152186a.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-09-10T07:00:00Z",
+   "end_date": "2026-09-24T06:59:59Z",
+   "ranking_id": "p_rt_1014739_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 122,
+   "course_label": "c56133e28158814da0af4fa96e9bdab0",
+   "course_layout": 1,
+   "hour": 18,
+   "minute": 30,
+   "weather_id": 159
+  }
+ },
+ "14848": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1789628400,
+   "end_date": 1790837999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "645_ac56418dc575f192dbc6c596f561d11b.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-09-17T07:00:00Z",
+   "end_date": "2026-10-01T06:59:59Z",
+   "ranking_id": "p_rt_1014848_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 601,
+   "course_label": "b5b4e0e7af12bcdc9b49a4db490df5e8",
+   "course_layout": 2,
+   "hour": 15,
+   "minute": 10,
+   "weather_id": 378
+  }
+ },
+ "14917": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1790233200,
+   "end_date": 1791442799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "646_bb96b92486a9561064c9d42c6bf679fb.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-09-24T07:00:00Z",
+   "end_date": "2026-10-08T06:59:59Z",
+   "ranking_id": "p_rt_1014917_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Medium"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1007,
+   "course_label": "d75df0ee1aaedcb858cc502180813e5d",
+   "course_layout": 1,
+   "hour": 17,
+   "minute": 0,
+   "weather_id": 8699
+  }
+ },
+ "14922": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1790233200,
+   "end_date": 1791442799,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "647_20f1fe94b6c51f0fb64ffc49229d4472.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-09-24T07:00:00Z",
+   "end_date": "2026-10-08T06:59:59Z",
+   "ranking_id": "p_rt_1014922_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 828,
+   "course_label": "2d8b07e139ed8b2dde9b99a06eaa56f8",
+   "course_layout": 4,
+   "hour": 16,
+   "minute": 0,
+   "weather_id": 8495
+  }
+ },
+ "14957": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1790838000,
+   "end_date": 1792047599,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "660_cc8f762e5fc36df7b7ae805d7c500010.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-10-01T07:00:00Z",
+   "end_date": "2026-10-15T06:59:59Z",
+   "ranking_id": "p_rt_1014957_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 119,
+   "course_label": "1ab5d4f304a13fa2464bb373428ecb92",
+   "course_layout": 1,
+   "hour": 13,
+   "minute": 0,
+   "weather_id": 138
+  }
+ },
+ "14958": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1791442800,
+   "end_date": 1792652399,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "661_d2ffef93bb259ed8f5c193a376510708.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-10-08T07:00:00Z",
+   "end_date": "2026-10-22T06:59:59Z",
+   "ranking_id": "p_rt_1014958_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 847,
+   "course_label": "005963d7417faf601e98cacc0e0c2cfa",
+   "course_layout": 1,
+   "hour": 17,
+   "minute": 0,
+   "weather_id": 3073
+  }
+ },
+ "14980": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1792047600,
+   "end_date": 1793257199,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "662_0a47c61852e518b4daab6f3544a6d024.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-10-15T07:00:00Z",
+   "end_date": "2026-10-29T06:59:59Z",
+   "ranking_id": "p_rt_1014980_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Soft"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Sport",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1340,
+   "course_label": "e01b0cc20ed1eb2505332c4ad9ba7932",
+   "course_layout": 1,
+   "hour": 15,
+   "minute": 0,
+   "weather_id": 10880
+  }
+ },
+ "15000": {
+  "championship": {
+   "global_ranking_id": "",
+   "round_id": -1,
+   "season_id": -1,
+   "total_race_count": 0,
+   "use_divisor_for_valid_races": false,
+   "valid_race_count": 0,
+   "valid_race_divisor": 1
+  },
+  "event": {
+   "begin_date": 1792652400,
+   "end_date": 1793861999,
+   "event_description_key": "OnlineTA_General_Description",
+   "event_title_key": "OnlineTA_General_Title",
+   "flyer_image_path": "663_7670ee45736154f587c13cb79622791a.png",
+   "player_select_type": "FromGarageOrPool",
+   "registration_key": ""
+  },
+  "online": {
+   "begin_date": "2026-10-22T07:00:00Z",
+   "end_date": "2026-11-05T06:59:59Z",
+   "ranking_id": "p_rt_1015000_001"
+  },
+  "penalty": {
+   "is_guide_course_off": false,
+   "penalty_level": 3
+  },
+  "pit": {
+   "refueling_speed": 10
+  },
+  "race": {
+   "behavior_damage": "Weak",
+   "behavior_slip_stream_type": "Real",
+   "consume_fuel": 0,
+   "consume_tire": 0,
+   "limit_fuel_capacity": -1,
+   "pit_constraint": 0,
+   "start_type": "StartAttack"
+  },
+  "regulation": {
+   "compounds": [
+    "Hard"
+   ],
+   "limit_car_settings": true,
+   "limit_nos": "Prohibitted",
+   "limit_wide_fender": "Prohibitted",
+   "required_compounds": [],
+   "tire": "Racing",
+   "use_balance_of_power": true
+  },
+  "track": {
+   "course_code": 1249,
+   "course_label": "40f4b232cab0b551313f4fdb5a046617",
+   "course_layout": 2,
+   "hour": 17,
+   "minute": 0,
+   "weather_id": 10078
   }
  },
  "4401": {
