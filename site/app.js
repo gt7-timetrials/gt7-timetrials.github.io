@@ -5,6 +5,7 @@ const fmt = ms => {
   const m = Math.floor(ms / 60000), s = Math.floor((ms % 60000) / 1000), r = Math.round(ms % 1000);
   return `${m}:${String(s).padStart(2, "0")}.${String(r).padStart(3, "0")}`;
 };
+const fmtTenths = ms => `${Math.floor(ms / 60000)}:${((ms % 60000) / 1000).toFixed(1).padStart(4, "0")}`;
 const secs = ms => (ms / 1000).toFixed(3) + " s";
 const num = n => n.toLocaleString();
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -112,7 +113,7 @@ function chart(e) {
   span = Math.max(span, needHi - needLo + 2 * margin);
   const lo = needLo - margin, hi = lo + span;
   const x = d => L + (Math.min(Math.max(d, 0), total) / total) * (W - L - R);
-  const y = v => T + ((Math.min(Math.max(v, lo), hi) - lo) / span) * (H - T - B); // faster at the top, clipped
+  const y = v => T + ((hi - Math.min(Math.max(v, lo), hi)) / span) * (H - T - B); // faster lower, clipped
   const offScale = steps.some(s => s.gold_ms > hi);
   // gold on the day: a step line that holds each value until the record falls, up to now
   let path = "";
@@ -130,21 +131,19 @@ function chart(e) {
       <line x1="${x(total) - 5}" x2="${x(total) + 5}" y1="${y(p.gold_fast_ms)}" y2="${y(p.gold_fast_ms)}"/>
       <line x1="${x(total) - 5}" x2="${x(total) + 5}" y1="${y(p.gold_slow_ms)}" y2="${y(p.gold_slow_ms)}"/>
       <circle cx="${x(total)}" cy="${y(p.gold_ms)}" r="4"/></g>` : "";
-  // gridlines as gaps from today's gold time
+  // gridlines on round times: every 0.5 s (1 s or 2 s for long laps)
   const step = span <= 3000 ? 500 : span <= 6000 ? 1000 : 2000;
   const yTicks = [];
-  for (let k = Math.ceil((lo - e.gold_now_ms) / step); e.gold_now_ms + k * step <= hi; k++) {
-    const v = e.gold_now_ms + k * step;
-    const label = k === 0 ? "today" : `${k < 0 ? "−" : "+"}${(Math.abs(k * step) / 1000).toFixed(1)} s`;
-    yTicks.push(`<line class="grid${k === 0 ? " zero" : ""}" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>
-     <text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${label}</text>`);
+  for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) {
+    yTicks.push(`<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>
+     <text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${fmtTenths(v)}</text>`);
   }
   const xTicks = [...Array(Math.floor(total) + 1).keys()].filter(d => d % 2 === 0).map(d =>
     `<text x="${x(d)}" y="${H - 9}" text-anchor="middle">${d}</text>`).join("");
   return `<figure class="chart"><svg viewBox="0 0 ${W} ${H}" height="${H}" role="img"
       aria-label="Gold time over the event and predicted final gold">
       ${yTicks.join("")}${xTicks}
-      ${offScale ? `<text x="${L + 6}" y="${H - B - 6}" class="offscale">↓ earlier times off scale</text>` : ""}
+      ${offScale ? `<text x="${L + 6}" y="${T + 10}" class="offscale">↑ earlier times off scale</text>` : ""}
       <line class="now" x1="${x(e.days_elapsed)}" x2="${x(e.days_elapsed)}" y1="${T}" y2="${H - B}"/>
       ${band ? `<path d="${band}" class="band"/>` : ""}
       <path d="${path}" class="gold-day"/>
@@ -154,7 +153,7 @@ function chart(e) {
     </svg>
     <figcaption class="legend"><span><i class="k-day"></i>Gold time on the day</span>
       <span><i class="k-pred"></i>Predicted final gold (and likely range)</span>
-      <span>Gap to today's gold · faster at the top · day of event along the bottom</span></figcaption></figure>`;
+      <span>Lower is faster · day of event along the bottom</span></figcaption></figure>`;
 }
 
 let DATA;
