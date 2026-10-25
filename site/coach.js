@@ -253,6 +253,7 @@ const Coach = (() => {
   function cornerDetail(c, who) {
     const row = (label, f) => `<tr><th>${label}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
     return `<div class="corner-head"><b>Corner ${c.n}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span></div>
+      <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
       <table class="corner-table"><thead><tr><th>Distances from the apex</th><th class="num">You</th><th class="num">${who}</th></tr></thead><tbody>
         ${row("Braking point", m => (m.brakeAt === null ? (m.liftAt === null ? "no braking" : "lift only") : metres(m.brakeAt, c.apex)))}
         ${row("Peak brake", m => (m.brakeAt === null ? "—" : pct(m.peakBrake)))}
@@ -262,11 +263,24 @@ const Coach = (() => {
         ${row("Full throttle", m => metres(m.fullGas, c.apex))}
         ${row("Steering lock", m => `${Math.round(m.maxSteerDeg)}°`)}
         ${row("Exit speed", m => `${Math.round(m.exitSpeed)} km/h`)}
-      </tbody></table>
-      <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>`;
+      </tbody></table>`;
   }
 
-  return { parseCsv, fastestLap, analyse, trackMap, cornerDetail, fmtLost };
+  // The corner whose section of track is nearest to a point on the map (map units), or null if
+  // the point is further than maxDist from the track. Lets a tap anywhere near the line select it.
+  function cornerAt(result, x, z, maxDist) {
+    const { ref, corners } = result;
+    let best = Infinity, bi = 0;
+    for (let i = 0; i < ref.x.length; i++) {
+      const d = (ref.x[i] - x) ** 2 + (ref.z[i] - z) ** 2;
+      if (d < best) { best = d; bi = i; }
+    }
+    if (Math.sqrt(best) > maxDist) return null;
+    const s = ref.s[bi];
+    return corners.find(c => s >= c.from && s < c.to) || corners[corners.length - 1];
+  }
+
+  return { parseCsv, fastestLap, analyse, trackMap, cornerDetail, cornerAt, fmtLost };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;
