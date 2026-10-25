@@ -93,6 +93,8 @@ const Coach = (() => {
     return out;
   }
 
+  const mean = a => a.reduce((x, y) => x + y, 0) / (a.length || 1);
+
   function firstFrom(arr, from, to, test) {
     for (let k = from; k < to; k++) if (test(arr[k], k)) return k;
     return null;
@@ -127,7 +129,8 @@ const Coach = (() => {
     for (let k = turnIn ?? top; k < z1; k++) maxSteer = Math.max(maxSteer, Math.abs(L.steer[k]));
     for (let k = apex; k < z1; k++) if (L.thr[k] > 50) spin = Math.max(spin, L.spin[k]);
     return { top, topSpeed: L.v[top], brakeAt, liftAt, peakBrake, fullBrake, release, turnIn,
-      brakeAtTurnIn: turnIn === null ? 0 : L.brk[turnIn], minAt, minSpeed: L.v[minAt], onGas, fullGas, saw,
+      // averaged over the first 15 m of turning: the brake is often being released fast at this point
+      brakeAtTurnIn: turnIn === null ? 0 : mean(L.brk.slice(turnIn, Math.min(z1, turnIn + 15))), minAt, minSpeed: L.v[minAt], onGas, fullGas, saw,
       maxSteerDeg: maxSteer * 180 / Math.PI, spin, exitSpeed: L.v[z1 - 1], minThrottle: Math.min(...L.thr.slice(top, apex + 1)) };
   }
 
@@ -220,8 +223,18 @@ const Coach = (() => {
     };
     const minX = Math.min(...ref.x), maxX = Math.max(...ref.x), minZ = Math.min(...ref.z), maxZ = Math.max(...ref.z);
     const pad = 0.06 * Math.max(maxX - minX, maxZ - minZ);
-    const vb = [minX - pad, minZ - pad, maxX - minX + 2 * pad, maxZ - minZ + 2 * pad];
-    const sw = vb[2] / 110; // line width relative to map size
+    const sw = (maxX - minX + 2 * pad) / 110; // line width relative to map size
+    // corner numbers sit just off the line, away from the map's centre
+    const cx = minX + (maxX - minX) / 2, cz = minZ + (maxZ - minZ) / 2;
+    const spots = corners.map(c => {
+      const [x, z] = pts(c.apex), dx = x - cx, dz = z - cz, l = Math.hypot(dx, dz) || 1;
+      return [x + (dx / l) * sw * 4.5, z + (dz / l) * sw * 4.5];
+    });
+    // map area: the track plus the numbers, so none are cut off at the edges
+    const r = sw * 2.6, edge = sw * 1.5;
+    const x0 = Math.min(minX - pad, ...spots.map(p => p[0] - r - edge)), x1 = Math.max(maxX + pad, ...spots.map(p => p[0] + r + edge));
+    const z0 = Math.min(minZ - pad, ...spots.map(p => p[1] - r - edge)), z1 = Math.max(maxZ + pad, ...spots.map(p => p[1] + r + edge));
+    const vb = [x0, z0, x1 - x0, z1 - z0];
     const path = (a, b) => {
       let d = "";
       for (let s = a; s <= b; s += 4) { const [x, z] = pts(s); d += (d ? "L" : "M") + x.toFixed(1) + "," + z.toFixed(1); }
@@ -230,12 +243,9 @@ const Coach = (() => {
     const zones = corners.map(c => `<g class="zone" data-n="${c.n}" tabindex="0" role="button" aria-label="Corner ${c.n}, ${fmtLost(c.lost)}">
         <path d="${path(c.from, c.to)}" class="hit" style="stroke-width:${sw * 5}"/>
         <path d="${path(c.from, c.to)}" class="seg ${c.colour}" style="stroke-width:${sw * 1.6}"/></g>`).join("");
-    const labels = corners.map(c => {
-      const [x, z] = pts(c.apex);
-      // nudge the label off the line, towards the outside of the map's centre
-      const cx = minX + (maxX - minX) / 2, cz = minZ + (maxZ - minZ) / 2, dx = x - cx, dz = z - cz, l = Math.hypot(dx, dz) || 1;
-      const lx = x + (dx / l) * sw * 4.5, lz = z + (dz / l) * sw * 4.5;
-      return `<g class="label" data-n="${c.n}"><circle cx="${lx.toFixed(1)}" cy="${lz.toFixed(1)}" r="${sw * 2.6}" class="${c.colour}"/>
+    const labels = corners.map((c, i) => {
+      const [lx, lz] = spots[i];
+      return `<g class="label" data-n="${c.n}"><circle cx="${lx.toFixed(1)}" cy="${lz.toFixed(1)}" r="${r}" class="${c.colour}"/>
         <text x="${lx.toFixed(1)}" y="${(lz + sw * 0.95).toFixed(1)}" style="font-size:${sw * 2.8}px">${c.n}</text></g>`;
     }).join("");
     const [sx, sz] = pts(0), [ax, az] = pts(12);
@@ -247,7 +257,7 @@ const Coach = (() => {
       <path d="${path(0, result.length)}" class="base" style="stroke-width:${sw * 3}"/>${zones}${start}${arrow}${labels}</svg>`;
   }
 
-  const fmtLost = s => `${s >= 0 ? "+" : "−"}${Math.abs(s).toFixed(2)} s`;
+  const fmtLost = s => `${s > -0.005 ? "+" : "−"}${Math.abs(s).toFixed(2)} s`; // no "−0.00"
   const metres = (k, apex) => (k === null ? "—" : k <= apex ? `${apex - k} m before` : `${k - apex} m after`);
   const pct = v => `${Math.round(v)}%`;
   function cornerDetail(c, who) {
