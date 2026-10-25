@@ -99,7 +99,7 @@ def event_detail(store, ev, board):
         "top100_spread_pct": round(100 * (top[-1]["score"] / top[0]["score"] - 1), 3),
         "top10": [{
             "rank": x["display_rank"], "name": x["user"]["np_online_id"], "country": x["user"].get("country_code"),
-            "ms": x["score"], "day": round(ev.elapsed_days(parse_time(x["update_time"])), 2),
+            "ms": x["score"],
             **({"car": store.car(x["ranking_stats"]["car_code"])} if multi_car else {}),
         } for x in top[:10]],
         "wr_steps": wr_steps(ev, top),
