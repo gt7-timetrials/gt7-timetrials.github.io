@@ -8,6 +8,9 @@
   --gold: #b8860b;
   --gold-band: rgba(184, 134, 11, 0.16);
   --wr: #2557d6;
+  --good: #2e9e5b;
+  --warn: #d88a00;
+  --bad: #d7263d;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -20,6 +23,9 @@
     --gold: #e0b44c;
     --gold-band: rgba(224, 180, 76, 0.18);
     --wr: #7aa2ff;
+    --good: #3fb370;
+    --warn: #e5a12a;
+    --bad: #ef4b5f;
   }
 }
 * { box-sizing: border-box; }
@@ -155,3 +161,53 @@ table.compact td.name { white-space: nowrap; width: 100%; }
   table.compact th, table.compact td { padding: 8px 5px; }
   table.compact td.name { white-space: normal; }
 }
+
+/* lap comparison */
+.coach { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; }
+.coach h3 { margin: 0 0 4px; font-size: 1rem; }
+.coach-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.button-link { display: inline-block; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line);
+  color: var(--text); text-decoration: none; font-size: 0.9rem; cursor: pointer; background: var(--bg); }
+.button-link.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.coach-summary { margin: 14px 0 8px; }
+.coach-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 760px) { .coach-grid { grid-template-columns: minmax(0, 1fr); } }
+.trackmap { width: 100%; height: auto; max-height: 480px; display: block; }
+.trackmap path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.trackmap .base { stroke: var(--line); }
+.trackmap .hit { stroke: transparent; cursor: pointer; }
+.trackmap .zone { cursor: pointer; outline: none; }
+.trackmap .seg.good { stroke: var(--good); }
+.trackmap .seg.warn { stroke: var(--warn); }
+.trackmap .seg.bad { stroke: var(--bad); }
+.trackmap .zone.selected .seg, .trackmap .zone:focus .seg { filter: drop-shadow(0 0 3px var(--text)); }
+.trackmap .label { cursor: pointer; }
+.trackmap .label circle { fill: var(--card); stroke-width: 0; }
+.trackmap .label circle.good { fill: var(--good); }
+.trackmap .label circle.warn { fill: var(--warn); }
+.trackmap .label circle.bad { fill: var(--bad); }
+.trackmap .label.selected circle { stroke: var(--text); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+.trackmap .label text { fill: #fff; text-anchor: middle; font-weight: 700; font-family: inherit; }
+.trackmap .sf { stroke: var(--text); }
+.trackmap .arrow { fill: var(--muted); }
+.legend .k { width: 12px; height: 12px; border-radius: 3px; }
+.legend .k.good { background: var(--good); } .legend .k.warn { background: var(--warn); } .legend .k.bad { background: var(--bad); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chip { border: 0; border-radius: 8px; padding: 4px 8px; color: #fff; font: inherit; font-weight: 700; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; line-height: 1.2; min-width: 52px; }
+.chip small { font-weight: 500; font-size: 0.72rem; }
+.chip.good { background: var(--good); } .chip.warn { background: var(--warn); } .chip.bad { background: var(--bad); }
+.chip.selected { outline: 2px solid var(--text); outline-offset: 1px; }
+.corner-detail { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.corner-head { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; font-size: 1.05rem; }
+.pill { color: #fff; border-radius: 999px; padding: 1px 9px; font-size: 0.85rem; font-weight: 700; }
+.pill.good { background: var(--good); } .pill.warn { background: var(--warn); } .pill.bad { background: var(--bad); }
+table.corner-table { font-size: 0.88rem; }
+table.corner-table th, table.corner-table td { padding: 5px 6px; min-width: 0; }
+table.corner-table tbody th { font-weight: 500; color: var(--muted); position: static; }
+.tips { margin: 10px 0 0; padding-left: 18px; font-size: 0.92rem; }
+.tips li + li { margin-top: 6px; }
+.trackmap.has-selection .zone:not(.selected) .seg { opacity: 0.45; }
+table.corner-table thead th:first-child { font-weight: 500; }
+@media (max-width: 640px) { table.corner-table { font-size: 0.82rem; } }
+.trackmap .seg { stroke-linecap: butt; }

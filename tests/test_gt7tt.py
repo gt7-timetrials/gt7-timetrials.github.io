@@ -6,7 +6,10 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from gt7tt import model, report, site
+import shutil
+import subprocess
+
+from gt7tt import model, report, site, telemetry
 from gt7tt.store import Store, slim_entry
 
 FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures")
@@ -150,6 +153,32 @@ class SiteTest(unittest.TestCase):
         store = Store()  # real data/ref
         self.assertEqual(store.course(1340)[0], "SUGO International Racing Course")
         self.assertEqual(store.course(10)[0], "Suzuka Circuit")
+
+
+class TelemetryTest(unittest.TestCase):
+    REF = os.path.join(os.path.dirname(__file__), "..", "data", "reference_laps", "telemetry_20261025_214232.csv")
+    LAP = os.path.join(os.path.dirname(__file__), "fixtures", "telemetry_lap.csv")
+
+    def test_fastest_lap_timed_by_packets(self):
+        lap = telemetry.fastest_lap(telemetry.read_csv(self.REF))
+        self.assertEqual(lap["lap_ms"], 110133)
+        self.assertEqual(lap["car_code"], 3590)
+        self.assertAlmostEqual(lap["t"][-1], 110.133, places=2)
+        self.assertEqual(len(lap["x"]), len(lap["t"]))
+        self.assertIsNone(telemetry.fastest_lap(telemetry.read_csv(self.LAP)[:1000]))
+
+    def test_reference_matched_to_event_by_car_and_closest_record(self):
+        lap = telemetry.fastest_lap(telemetry.read_csv(self.REF))
+        entries = [{"score": 110133, "user": {"np_online_id": "Fast_One"}}]
+        current = [(1, 3590, 140000, []), (2, 3590, 110200, entries), (3, 999, 110133, entries)]
+        refs = telemetry.match_references([lap], current)
+        self.assertEqual(list(refs), [2])
+        self.assertEqual(refs[2]["driver"], "Fast_One")
+
+    @unittest.skipUnless(shutil.which("node"), "node not installed")
+    def test_browser_lap_comparison(self):
+        js = os.path.join(os.path.dirname(__file__), "test_coach.js")
+        subprocess.run(["node", js], check=True, capture_output=True)
 
 
 if __name__ == "__main__":

@@ -203,8 +203,13 @@ function renderCurrent() {
                "fewer means more time likely to come off")}
       </div>
       ${chart(e)}
+      ${coachSection(e, i)}
     </article>`;
   }).join("");
+  el.querySelectorAll("input.lap-file").forEach(inp => inp.addEventListener("change", () => {
+    if (inp.files[0]) compareLap(DATA.current[+inp.dataset.i], inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
+    inp.value = ""; // allow choosing the same file again
+  }));
   el.querySelectorAll("form.checker").forEach(f => f.addEventListener("submit", ev => {
     ev.preventDefault();
     const e = DATA.current[+f.dataset.i];
@@ -212,6 +217,81 @@ function renderCurrent() {
     f.querySelector(".result").innerHTML = lap
       ? checkResult(e, lap) : `<div class="muted">Enter a lap time like 1:53.250</div>`;
   }));
+}
+
+// --- lap comparison (coach.js does the analysis, in the browser) ---
+const refName = r => (r.driver ? `${r.driver}'s` : "the world record");
+function coachSection(e, i) {
+  const r = e.reference;
+  return `<section class="coach">
+      <h3>Compare your lap with the world record</h3>
+      <p class="hint">${r
+        ? `Record your lap with the free recorder, then upload the file to see where you lose time against
+           ${esc(refName(r))} ${fmt(r.lap_ms)}, corner by corner. Your file stays on your device.`
+        : "No reference lap for this event yet. You can already record your laps with the recorder."}</p>
+      <div class="coach-actions">
+        <a class="button-link" href="telemetry.py" download>Download recorder (telemetry.py)</a>
+        <a class="button-link" href="readme.txt" target="_blank" rel="noopener">How to record (readme.txt)</a>
+        ${r ? `<label class="button-link primary">Upload your lap (.csv)<input type="file" accept=".csv,text/csv" class="lap-file" data-i="${i}" hidden></label>` : ""}
+      </div>
+      <div class="coach-result" aria-live="polite"></div>
+    </section>`;
+}
+
+const refCache = {};
+async function compareLap(e, file, out) {
+  out.innerHTML = `<p class="muted">Reading ${esc(file.name)}…</p>`;
+  try {
+    const [text, ref] = await Promise.all([file.text(),
+      refCache[e.event_id] ??= fetch(e.reference.url).then(r => (r.ok ? r.json() : Promise.reject()))]);
+    const lap = Coach.fastestLap(Coach.parseCsv(text));
+    if (!lap) {
+      out.innerHTML = `<p class="miss">No complete lap found in this file. Start recording before you cross the start line
+        and stop after crossing it again.</p>`;
+      return;
+    }
+    const res = Coach.analyse(ref, lap, refName(e.reference) === "the world record" ? "the WR" : e.reference.driver);
+    if (res.error) { out.innerHTML = `<p class="miss">${res.error}</p>`; return; }
+    renderComparison(out, res, e, lap.car_code !== ref.car_code);
+  } catch (err) {
+    delete refCache[e.event_id]; // let the next try fetch the reference again
+    out.innerHTML = `<p class="miss">Couldn't read that file. Is it a CSV saved by telemetry.py?</p>`;
+  }
+}
+
+function renderComparison(out, res, e, otherCar) {
+  const total = (res.lapMs - res.refMs) / 1000;
+  const worst = res.corners.reduce((a, c) => (c.lost > a.lost ? c : a), res.corners[0]);
+  out.innerHTML = `
+    <p class="coach-summary">Your lap <b>${fmt(res.lapMs)}</b> vs ${fmt(res.refMs)}: <b>${Coach.fmtLost(total)}</b>.
+      ${otherCar ? `<span class="miss">This lap is in a different car from the reference.</span>` : ""}</p>
+    <div class="coach-grid">
+      <div class="map-box">${Coach.trackMap(res)}
+        <div class="legend"><span><i class="k good"></i>under 0.2 s lost</span><span><i class="k warn"></i>0.2–0.4 s</span>
+          <span><i class="k bad"></i>0.4 s or more</span></div>
+        <div class="chips">${res.corners.map(c => `<button class="chip ${c.colour}" data-n="${c.n}">${c.n}<small>${Coach.fmtLost(c.lost)}</small></button>`).join("")}</div>
+      </div>
+      <div class="corner-detail"></div>
+    </div>
+    <p class="hint">Hover over or tap a corner on the map. Distances are measured along the reference lap. Steering angles
+      depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.</p>`;
+  const detail = out.querySelector(".corner-detail");
+  const who = e.reference.driver ? esc(e.reference.driver) : "WR";
+  let pinned = worst.n;
+  const show = n => {
+    const c = res.corners[n - 1];
+    detail.innerHTML = Coach.cornerDetail(c, who);
+    out.querySelectorAll("[data-n]").forEach(el => el.classList.toggle("selected", +el.dataset.n === n));
+    out.querySelector(".trackmap").classList.add("has-selection");
+  };
+  out.querySelectorAll(".zone, .label, .chip").forEach(el => {
+    const n = +el.dataset.n;
+    el.addEventListener("mouseenter", () => show(n));
+    el.addEventListener("mouseleave", () => show(pinned));
+    el.addEventListener("click", () => { pinned = n; show(n); });
+    el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pinned = n; show(n); } });
+  });
+  show(pinned);
 }
 
 // Only the charts depend on the width; leave the rest (and anything being typed) alone.
