@@ -76,7 +76,8 @@ table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nu
 th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); }
 td { min-width: 6em; }
 td.num, th.num, td.date { white-space: nowrap; min-width: 0; }
-th { font-size: 0.8rem; color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--card); }
+th { font-size: 0.8rem; color: var(--muted); font-weight: 600; background: var(--card); }
+.table-scroll thead th { position: sticky; top: 0; } /* only column headings of the long scrolling tables */
 td.num, th.num { text-align: right; }
 tbody tr:last-child td { border-bottom: 0; }
 input[type=search] { width: 100%; max-width: 420px; padding: 9px 12px; margin-bottom: 12px; border-radius: 8px;
@@ -204,7 +205,7 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .pill.good { background: var(--good); } .pill.warn { background: var(--warn); } .pill.bad { background: var(--bad); }
 table.corner-table { font-size: 0.88rem; }
 table.corner-table th, table.corner-table td { padding: 5px 6px; min-width: 0; }
-table.corner-table tbody th { font-weight: 500; color: var(--muted); position: static; }
+table.corner-table tbody th { font-weight: 500; color: var(--muted); }
 .tips { margin: 4px 0 12px; padding-left: 18px; font-size: 0.92rem; }
 .tips li + li { margin-top: 6px; }
 .trackmap.has-selection .zone:not(.selected) .seg { opacity: 0.45; }
