@@ -259,38 +259,76 @@ async function compareLap(e, file, out) {
   }
 }
 
+// Phones: corner details slide up from the bottom when a corner is tapped. Wider screens: beside the map.
+const phone = () => matchMedia("(max-width: 760px)").matches;
+
 function renderComparison(out, res, e, otherCar) {
   const total = (res.lapMs - res.refMs) / 1000;
   const worst = res.corners.reduce((a, c) => (c.lost > a.lost ? c : a), res.corners[0]);
   out.innerHTML = `
     <p class="coach-summary">Your lap <b>${fmt(res.lapMs)}</b> vs ${fmt(res.refMs)}: <b>${Coach.fmtLost(total)}</b>.
       ${otherCar ? `<span class="miss">This lap is in a different car from the reference.</span>` : ""}</p>
+    <p class="hint tap-hint">${phone() ? "Tap a corner to see where you lose time." : "Hover over or click a corner on the map."}</p>
     <div class="coach-grid">
       <div class="map-box">${Coach.trackMap(res)}
         <div class="legend"><span><i class="k good"></i>under 0.2 s lost</span><span><i class="k warn"></i>0.2–0.4 s</span>
           <span><i class="k bad"></i>0.4 s or more</span></div>
         <div class="chips">${res.corners.map(c => `<button class="chip ${c.colour}" data-n="${c.n}">${c.n}<small>${Coach.fmtLost(c.lost)}</small></button>`).join("")}</div>
       </div>
-      <div class="corner-detail"></div>
+      <div class="corner-detail" role="region" aria-label="Corner details">
+        <div class="sheet-nav">
+          <button class="nav-btn" data-step="-1" aria-label="Previous corner">‹ Prev</button>
+          <button class="nav-btn" data-step="1" aria-label="Next corner">Next ›</button>
+          <button class="nav-btn close" aria-label="Close">✕</button>
+        </div>
+        <div class="detail-body"></div>
+      </div>
     </div>
-    <p class="hint">Hover over or tap a corner on the map. Distances are measured along the reference lap. Steering angles
-      depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.</p>`;
-  const detail = out.querySelector(".corner-detail");
+    <p class="hint">Distances are measured along the reference lap. Steering angles depend on your controller or wheel
+      settings, so the steering tip compares each corner with your own lap.</p>`;
+  const detail = out.querySelector(".corner-detail"), body = detail.querySelector(".detail-body");
+  const svg = out.querySelector(".trackmap");
   const who = e.reference.driver ? esc(e.reference.driver) : "WR";
   let pinned = worst.n;
   const show = n => {
-    const c = res.corners[n - 1];
-    detail.innerHTML = Coach.cornerDetail(c, who);
+    body.innerHTML = Coach.cornerDetail(res.corners[n - 1], who);
     out.querySelectorAll("[data-n]").forEach(el => el.classList.toggle("selected", +el.dataset.n === n));
-    out.querySelector(".trackmap").classList.add("has-selection");
+    svg.classList.add("has-selection");
   };
+  const select = n => {
+    pinned = n;
+    show(n);
+    if (phone()) {
+      detail.classList.add("open");
+      document.body.classList.add("sheet-open");
+      body.scrollTop = 0;
+      // scroll so the selected corner sits in the middle of the space above the sheet
+      const mark = svg.querySelector(`.label[data-n="${n}"]`).getBoundingClientRect();
+      const visible = innerHeight - detail.getBoundingClientRect().height;
+      window.scrollBy({ top: mark.top + mark.height / 2 - visible / 2, behavior: "smooth" });
+    }
+  };
+  const close = () => { detail.classList.remove("open"); document.body.classList.remove("sheet-open"); };
   out.querySelectorAll(".zone, .label, .chip").forEach(el => {
     const n = +el.dataset.n;
-    el.addEventListener("mouseenter", () => show(n));
-    el.addEventListener("mouseleave", () => show(pinned));
-    el.addEventListener("click", () => { pinned = n; show(n); });
-    el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pinned = n; show(n); } });
+    el.addEventListener("mouseenter", () => { if (!phone()) show(n); });
+    el.addEventListener("mouseleave", () => { if (!phone()) show(pinned); });
+    el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(n); } });
   });
+  out.querySelectorAll(".chip").forEach(el => el.addEventListener("click", () => select(+el.dataset.n)));
+  // a click or tap anywhere near the track selects the nearest corner's section
+  svg.addEventListener("click", ev => {
+    const pt = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(svg.getScreenCTM().inverse());
+    const vb = svg.viewBox.baseVal;
+    const c = Coach.cornerAt(res, pt.x, pt.y, 0.08 * Math.max(vb.width, vb.height));
+    if (c) select(c.n);
+  });
+  detail.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => {
+    const n = ((pinned - 1 + +b.dataset.step + res.corners.length) % res.corners.length) + 1;
+    select(n);
+  }));
+  detail.querySelector(".close").addEventListener("click", close);
+  document.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
   show(pinned);
 }
 
