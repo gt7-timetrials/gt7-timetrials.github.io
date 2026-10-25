@@ -66,4 +66,7 @@ provides the track categories and is the fallback for names.
   Claude Code cloud session. It runs `python -m gt7tt daily` and pushes the new data to `main`.
 - Every push to `main` runs `.github/workflows/pages.yml`, which builds the site
   (`python -m gt7tt site`) and publishes it on GitHub Pages.
+- Lap comparison: players record their lap with `tools/telemetry.py` and upload it on the Current page, which compares
+  it with a world record lap corner by corner in the browser. World record laps are recorded from replays and uploaded
+  to `data/reference_laps/`. See [docs/telemetry.md](docs/telemetry.md).
 - The site's source is in `site/`; `data.json` and `events/<event_id>.json` (one page per finished event, opened at `#past/<event_id>`) are generated.

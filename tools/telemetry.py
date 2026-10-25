@@ -1,10 +1,10 @@
 """Record GT7's telemetry stream from a PS4/PS5 on the same home network.
 
-A first test: does the stream work, and does it keep going (for the replay's car)
-while watching a downloaded replay? Needs only Python 3.8+, nothing to install.
+Upload the CSV on https://gt7-timetrials.github.io/ to compare a lap with the world record
+(the site owner records the world record's replay the same way). Needs only Python 3.8+.
 
-    py telemetry_test.py 192.168.1.23      (Windows; use your PS5's IP address)
-    python3 telemetry_test.py 192.168.1.23 (Mac / Linux)
+    py telemetry.py 192.168.1.23      (Windows; use your PS5's IP address)
+    python3 telemetry.py 192.168.1.23 (Mac / Linux)
 
 The PS5's IP address is under Settings > Network > Connection Status > View Connection Status.
 Press Ctrl+C to stop. Every packet is saved to telemetry_<date>_<time>.csv next to this script.
