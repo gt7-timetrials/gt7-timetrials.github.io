@@ -291,7 +291,7 @@ function renderComparison(out, res, e, otherCar) {
   const who = e.reference.driver ? esc(e.reference.driver) : "WR";
   let pinned = worst.n;
   const show = n => {
-    body.innerHTML = Coach.cornerDetail(res.corners[n - 1], who);
+    body.innerHTML = Coach.cornerDetail(res.corners[n - 1], who, res);
     out.querySelectorAll("[data-n]").forEach(el => el.classList.toggle("selected", +el.dataset.n === n));
     svg.classList.add("has-selection");
   };
@@ -329,6 +329,13 @@ function renderComparison(out, res, e, otherCar) {
   }));
   detail.querySelector(".close").addEventListener("click", close);
   document.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  // Wider screens: hovering swaps the panel's contents, so give it the height of the tallest corner. Otherwise a
+  // shorter corner shrinks the page, the browser scrolls, and the button under the pointer moves away.
+  if (!phone()) {
+    let tallest = 0;
+    for (const c of res.corners) { show(c.n); tallest = Math.max(tallest, detail.offsetHeight); }
+    detail.style.minHeight = `${tallest}px`;
+  }
   show(pinned);
 }
 

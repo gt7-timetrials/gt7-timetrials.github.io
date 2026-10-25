@@ -31,6 +31,13 @@ fastest lap wins. Old files can stay; they only match running events.
 - **Per corner:** braking point (first braking after top speed), peak brake, time above 90% brake, brake when
   turning in (trail braking; averaged over the first 15 m of turning, since the brake is often being released fast there), slowest speed, back on the throttle (20%), full throttle (95%), throttle reversals,
   steering lock, rear wheelspin and exit speed. Throttle while braking (downshift blips) is ignored.
+- **Extra lifts and braking:** anywhere outside the reference's own braking-to-full-throttle part of each corner, a
+  stretch of 10 m or more where the player brakes, or is below 90% throttle and 20 points under the reference, while
+  the reference isn't braking. Stretches within 10 m of that part are early braking or a late exit, which the corner's
+  own tips cover. Kept if it costs 0.03 s or more (time gap from its start until back on full throttle). Shown as a tip
+  in its corner, a dark band on the map, and shading on the corner's chart.
+- **Corner chart:** brake (when either driver brakes here) and throttle, the player's against the reference's, and the
+  time gap building up, by metres from where the reference starts braking (or from the apex where it doesn't brake).
 - **Tips:** fixed rules with thresholds, in `tips()` in `site/coach.js`. Steering is compared with the player's own
   typical ratio to the reference over the lap, because controllers and wheels use different steering angles.
 - **First corner:** if the player crossed the start line slower than the reference, that loss is pointed out as coming
