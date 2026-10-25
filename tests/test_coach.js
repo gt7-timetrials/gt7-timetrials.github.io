@@ -18,6 +18,13 @@ assert.ok(r.corners.every(c => c.tips.length), "every corner gets advice");
 assert.ok(r.corners[0].tips[0].startsWith("Start of the lap"), "slow start-line speed is called out");
 assert.ok(r.corners[6].tips.some(t => t.startsWith("Brake pressure")), "corner 7: WR holds full brake longer");
 assert.ok(Coach.trackMap(r).startsWith("<svg"));
+// the long fast left after turn 1: 34% throttle where the WR averages 80%; early braking into a corner isn't a "lift"
+assert.strictEqual(r.lifts.length, 1);
+assert.ok(r.corners[1].tips.some(t => /^Lift: you average 3\d% throttle for 6\d m/.test(t)), r.corners[1].tips.join(" | "));
+const chart = Coach.cornerDetail(r.corners[6], "WR", r);
+["Brake %", "Throttle %", "Time gap:", "WR brakes"].forEach(t => assert.ok(chart.includes(t), "chart shows " + t));
+const liftChart = Coach.cornerDetail(r.corners[1], "WR", r); // no braking at corner 2: no brake strip, apex as 0
+assert.ok(!liftChart.includes("Brake %") && liftChart.includes("the apex (no braking here)"));
 
 // The site's reference files store rounded values; the same lap from its CSV must still match itself.
 for (const [csv, json] of [["telemetry_20261025_214232.csv", ref], ["telemetry_20261025_224654.csv", null]]) {

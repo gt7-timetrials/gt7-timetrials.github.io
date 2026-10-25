@@ -60,8 +60,18 @@ const Coach = (() => {
         if (d < best) { best = d; bj = k; }
       }
       j = bj;
-      s.push(Math.max(ref.s[bj], s.length ? s[s.length - 1] : 0));
-      off.push(Math.sqrt(best));
+      // the exact spot on the reference line: the nearer of the two segments either side of the nearest sample
+      let along = ref.s[bj], dist = Math.sqrt(best);
+      for (const a of [bj - 1, bj]) {
+        if (a < 0 || a + 1 >= ref.x.length) continue;
+        const sx = ref.x[a + 1] - ref.x[a], sz = ref.z[a + 1] - ref.z[a], len2 = sx * sx + sz * sz;
+        if (!len2) continue;
+        const f = Math.max(0, Math.min(1, ((lap.x[i] - ref.x[a]) * sx + (lap.z[i] - ref.z[a]) * sz) / len2));
+        const d = Math.hypot(ref.x[a] + f * sx - lap.x[i], ref.z[a] + f * sz - lap.z[i]);
+        if (d < dist) { dist = d; along = ref.s[a] + f * (ref.s[a + 1] - ref.s[a]); }
+      }
+      s.push(Math.max(along, s.length ? s[s.length - 1] : 0));
+      off.push(dist);
     }
     return { s, off };
   }
@@ -204,13 +214,61 @@ const Coach = (() => {
   }
 
   function result(corners, steerRatio, R, M, delta, who) {
-    return { corners: corners.map(({ apex, z0, z1, lost, ref_m, me_m }, i) => {
-      const t = tips(me_m, ref_m, lost, who, steerRatio);
+    const lifts = extraLifts(corners, R, M, delta);
+    return { grid: { R, M, delta }, lifts, corners: corners.map(({ apex, z0, z1, lost, ref_m, me_m }, i) => {
+      let t = tips(me_m, ref_m, lost, who, steerRatio);
+      const mine = lifts.filter(z => z.corner === i);
+      if (mine.some(z => z.kind === "brake")) t = t.filter(x => !x.startsWith(`${cap(who)} doesn't brake`)); // said more precisely below
+      mine.forEach(z => t.push(liftTip(z, apex, who)));
+      if (t.length > 1) t = t.filter(x => !x.startsWith("No single big difference") && !x.startsWith("Close to the reference"));
       if (i === 0 && R.v[0] - M.v[0] >= 5) {
         t.unshift(`Start of the lap: you crossed the line at ${r0(M.v[0])} km/h vs ${r0(R.v[0])} km/h, which cost about ${delta[ref_m.top].toFixed(2)} s before the first braking point. That comes from your exit of the last corner on the lap before.`);
       }
-      return { n: i + 1, apex, from: z0, to: z1, lost, colour: COLOURS.find(([lim]) => lost < lim)[1], me: me_m, ref: ref_m, tips: t };
+      return { n: i + 1, apex, from: z0, to: z1, lost, colour: COLOURS.find(([lim]) => lost < lim)[1], me: me_m, ref: ref_m, tips: t, lifts: mine };
     }) };
+  }
+
+  // Lifts and braking the reference doesn't do: anywhere outside the reference's own braking-to-full-throttle
+  // part of each corner, you're on the brake, or below 90% throttle and 20 points under the reference, for 10 m
+  // or more. Stretches that run straight into or out of that part are early braking or a late exit, which the
+  // corner's own tips already cover. Only stretches costing 0.03 s or more are kept.
+  function extraLifts(corners, R, M, delta) {
+    const n = R.v.length, busy = new Uint8Array(n);
+    for (const c of corners) {
+      // from the reference's first lift or braking after its top speed, to its full throttle after the apex
+      const a = firstFrom(R.thr, c.ref_m.top, c.apex + 1, (t, k) => t < 50 || R.brk[k] > 5);
+      if (a === null) continue;
+      for (let k = a; k <= (c.ref_m.fullGas ?? c.z1) && k < n; k++) busy[k] = 1;
+    }
+    const nearBusy = (from, to) => { for (let k = Math.max(0, from); k < Math.min(n, to); k++) if (busy[k]) return true; return false; };
+    const off = k => !busy[k] && R.brk[k] <= 5 && (M.brk[k] > 5 || (M.thr[k] < 90 && M.thr[k] < R.thr[k] - 20));
+    const runs = [];
+    for (let k = 0; k < n; k++) {
+      if (!off(k)) continue;
+      const last = runs[runs.length - 1];
+      if (last && k - last[1] <= 5) last[1] = k + 1; else runs.push([k, k + 1]);
+    }
+    const out = [];
+    for (const [a, b] of runs) {
+      if (b - a < 10 || nearBusy(b, b + 10) || nearBusy(a - 10, a)) continue; // early braking or a late exit
+      let back = b;
+      while (back < n - 1 && back < b + 100 && (M.thr[back] < 95 || M.brk[back] > 5)) back++;
+      const cost = delta[back] - delta[a];
+      if (cost < 0.03) continue;
+      let peakBrake = 0;
+      for (let k = a; k < b; k++) peakBrake = Math.max(peakBrake, M.brk[k]);
+      const thr = mean(M.thr.slice(a, b)), refThr = mean(R.thr.slice(a, b));
+      const corner = Math.max(0, corners.findIndex(c => a >= c.z0 && a < c.z1));
+      out.push({ from: a, to: b, length: b - a, cost, kind: peakBrake > 5 ? "brake" : "lift", peakBrake, thr, refThr, corner });
+    }
+    return out;
+  }
+
+  function liftTip(z, apex, who) {
+    const where = z.from <= apex ? `${apex - z.from} m before the apex` : `${z.from - apex} m after the apex`;
+    return z.kind === "brake"
+      ? `Extra braking: you brake (up to ${r0(z.peakBrake)}%) for ${z.length} m, starting ${where}, where ${who} doesn't brake and averages ${r0(z.refThr)}% throttle. That costs about ${z.cost.toFixed(2)} s.`
+      : `Lift: you average ${r0(z.thr)}% throttle for ${z.length} m, starting ${where}, where ${who} averages ${r0(z.refThr)}%. That costs about ${z.cost.toFixed(2)} s.`;
   }
 
   // --- drawing ---
@@ -248,22 +306,92 @@ const Coach = (() => {
       return `<g class="label" data-n="${c.n}"><circle cx="${lx.toFixed(1)}" cy="${lz.toFixed(1)}" r="${r}" class="${c.colour}"/>
         <text x="${lx.toFixed(1)}" y="${(lz + sw * 0.95).toFixed(1)}" style="font-size:${sw * 2.8}px">${c.n}</text></g>`;
     }).join("");
+    // extra lifts and braking: a short dark band over the track
+    const lifts = (result.lifts || []).map(z => `<path d="${path(z.from, z.to)}" class="lift" style="stroke-width:${sw * 0.9}"/>`).join("");
     const [sx, sz] = pts(0), [ax, az] = pts(12);
     const ang = Math.atan2(az - sz, ax - sx), nx = -Math.sin(ang), nz = Math.cos(ang);
     const start = `<line class="sf" x1="${sx + nx * sw * 3}" y1="${sz + nz * sw * 3}" x2="${sx - nx * sw * 3}" y2="${sz - nz * sw * 3}" style="stroke-width:${sw * 0.8}"/>`;
     const [bx, bz] = pts(70);
     const arrow = `<path class="arrow" d="M${-sw * 2},${-sw * 1.4}L${sw * 1.2},0L${-sw * 2},${sw * 1.4}" transform="translate(${bx.toFixed(1)},${bz.toFixed(1)}) rotate(${(Math.atan2(pts(74)[1] - bz, pts(74)[0] - bx) * 180 / Math.PI).toFixed(1)})"/>`;
     return `<svg class="trackmap" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" role="img" aria-label="Track map coloured by time lost">
-      <path d="${path(0, result.length)}" class="base" style="stroke-width:${sw * 3}"/>${zones}${start}${arrow}${labels}</svg>`;
+      <path d="${path(0, result.length)}" class="base" style="stroke-width:${sw * 3}"/>${zones}${lifts}${start}${arrow}${labels}</svg>`;
   }
 
   const fmtLost = s => `${s > -0.005 ? "+" : "−"}${Math.abs(s).toFixed(2)} s`; // no "−0.00"
   const metres = (k, apex) => (k === null ? "—" : k <= apex ? `${apex - k} m before` : `${k - apex} m after`);
   const pct = v => `${Math.round(v)}%`;
-  function cornerDetail(c, who) {
+  // Brake and throttle (you vs the reference) and the time gap building up, in metres from where the reference
+  // starts braking (or lifting) for this corner.
+  function pedalChart(result, c, who) {
+    const { R, M, delta } = result.grid, n = R.v.length;
+    const anchor = c.ref.brakeAt ?? c.apex;
+    const anchorName = c.ref.brakeAt !== null ? `${who} brakes` : "apex";
+    let x0 = Math.min(anchor - 100, (c.me.brakeAt ?? c.me.liftAt ?? anchor) - 30);
+    let x1 = Math.max(c.ref.fullGas ?? c.to, c.me.fullGas ?? c.to) + 30;
+    for (const z of c.lifts) { x0 = Math.min(x0, z.from - 20); x1 = Math.max(x1, z.to + 20); }
+    x0 = Math.max(0, x0); x1 = Math.min(n - 1, x1, x0 + 700);
+    let braking = false;
+    for (let k = x0; k <= x1 && !braking; k++) braking = R.brk[k] > 5 || M.brk[k] > 5;
+    const W = 360, L = 30, Rt = 8, H1 = 62, gap = 18, H3 = 54, top = 12;
+    const kinds = braking ? [["Brake %", "brk", "brake"], ["Throttle %", "thr", "throttle"]] : [["Throttle %", "thr", "throttle"]];
+    const gTop = top + kinds.length * (H1 + gap), axisY = gTop + H3 + 4, H = axisY + 34;
+    const x = k => L + ((k - x0) / (x1 - x0)) * (W - L - Rt);
+    const g = [];
+    for (let k = x0; k <= x1; k++) g.push(delta[k] - delta[x0]);
+    const gLo = Math.min(0, ...g), gHi = Math.max(0.05, ...g), gPad = 0.12 * (gHi - gLo);
+    const yP = (t0, v) => t0 + H1 - (Math.max(0, Math.min(100, v)) / 100) * H1;
+    const yG = v => gTop + H3 - ((v - gLo + gPad) / (gHi - gLo + 2 * gPad)) * H3;
+    const line = (arr, y) => { let d = ""; for (let k = x0; k <= x1; k++) d += (d ? "L" : "M") + x(k).toFixed(1) + "," + y(arr[k]).toFixed(1); return d; };
+    const secs = v => `${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(2)} s`;
+    const strips = kinds.map(([label, key, cls], i) => {
+      const t0 = top + i * (H1 + gap);
+      return `<text class="pc-title" x="${L}" y="${t0 - 4}">${label}</text>
+        <line class="pc-grid" x1="${L}" x2="${W - Rt}" y1="${yP(t0, 100)}" y2="${yP(t0, 100)}"/>
+        <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yP(t0, 0)}" y2="${yP(t0, 0)}"/>
+        <text class="pc-tick" x="${L - 4}" y="${yP(t0, 100) + 3}" text-anchor="end">100</text>
+        <text class="pc-tick" x="${L - 4}" y="${yP(t0, 0) + 3}" text-anchor="end">0</text>
+        <path class="pc-ref" d="${line(R[key], v => yP(t0, v))}"/>
+        <path class="pc-me ${cls}" d="${line(M[key], v => yP(t0, v))}"/>`;
+    }).join("");
+    let gd = "";
+    g.forEach((v, i) => (gd += (i ? "L" : "M") + x(x0 + i).toFixed(1) + "," + yG(v).toFixed(1)));
+    const ticks = [];
+    for (let m = Math.ceil((x0 - anchor) / 50) * 50; m <= x1 - anchor; m += 50) {
+      ticks.push(`<line class="pc-tickline" x1="${x(anchor + m)}" x2="${x(anchor + m)}" y1="${axisY}" y2="${axisY + 3}"/>
+        <text class="pc-tick" x="${x(anchor + m)}" y="${axisY + 12}" text-anchor="middle">${m > 0 ? "+" + m : m}</text>`);
+    }
+    // vertical markers, named under the distance labels so they never sit on a line
+    const marks = [[anchor, anchorName]];
+    if (anchor !== c.apex) marks.push([c.apex, "apex"]);
+    const markers = marks.filter(([k]) => k >= x0 && k <= x1).map(([k, label], i, all) => {
+      const close = i > 0 && Math.abs(x(k) - x(all[i - 1][0])) < 40; // keep two close labels apart
+      return `<line class="pc-mark" x1="${x(k)}" x2="${x(k)}" y1="${top - 2}" y2="${axisY}"/>
+        <text class="pc-marktext" x="${x(k)}" y="${axisY + 24}" text-anchor="${close ? "start" : "middle"}">${close ? "  " : ""}${label}</text>`;
+    }).join("");
+    const bands = c.lifts.map(z => `<rect class="pc-lift" x="${x(z.from)}" y="${top - 2}" width="${Math.max(1, x(z.to) - x(z.from))}" height="${axisY - top + 2}"/>`).join("");
+    const gTicks = [[0, "0"], [gHi, gHi.toFixed(2)]];
+    if (yG(gLo) - yG(0) > 10) gTicks.push([gLo, gLo.toFixed(2).replace("-", "−")]); // only when clear of the 0
+    return `<figure class="pedal-chart">
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${braking ? "Brake, throttle" : "Throttle"} and time gap through corner ${c.n}, you against ${who}">
+        ${bands}${strips}
+        <text class="pc-title" x="${L}" y="${gTop - 4}">Time gap: <tspan class="pc-gapval">${secs(g[g.length - 1])}</tspan> over this stretch</text>
+        <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yG(0)}" y2="${yG(0)}"/>
+        ${gTicks.map(([v, t]) => `<text class="pc-tick" x="${L - 4}" y="${yG(v) + 3}" text-anchor="end">${t}</text>`).join("")}
+        <path class="pc-me gap" d="${gd}"/>
+        ${markers}${ticks.join("")}
+      </svg>
+      <figcaption class="pc-legend"><span><i class="k-me"></i>You</span><span><i class="k-ref"></i>${who}</span>
+        <span>metres from ${anchorName === "apex" ? "the apex (no braking here)" : `where ${who} starts braking`}</span>
+        ${c.lifts.length ? `<span><i class="k-lift"></i>extra lift or braking</span>` : ""}
+        ${braking ? "" : ""}</figcaption>
+    </figure>`;
+  }
+
+  function cornerDetail(c, who, result) {
     const row = (label, f) => `<tr><th>${label}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
     return `<div class="corner-head"><b>Corner ${c.n}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span></div>
       <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
+      ${result ? pedalChart(result, c, who) : ""}
       <table class="corner-table"><thead><tr><th>Distances from the apex</th><th class="num">You</th><th class="num">${who}</th></tr></thead><tbody>
         ${row("Braking point", m => (m.brakeAt === null ? (m.liftAt === null ? "no braking" : "lift only") : metres(m.brakeAt, c.apex)))}
         ${row("Peak brake", m => (m.brakeAt === null ? "—" : pct(m.peakBrake)))}
