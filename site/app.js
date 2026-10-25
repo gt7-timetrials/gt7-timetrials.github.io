@@ -303,7 +303,7 @@ function renderEvent(d) {
   const top10 = d.top10.map(r => `<tr><td class="num">${r.rank}</td>
       <td class="name">${esc(r.name)}<div class="sub-car">${[r.country, d.multi_car && r.car].filter(Boolean).map(esc).join(" · ")}</div></td>
       <td class="num">${fmt(r.ms)}</td>
-      <td class="num">${r.rank === 1 ? "—" : "+" + ((r.ms - d.wr_ms) / 1000).toFixed(3)}</td><td class="num">${dayOf(r.day)}</td></tr>`).join("");
+      <td class="num">${r.rank === 1 ? "—" : "+" + ((r.ms - d.wr_ms) / 1000).toFixed(3)}</td></tr>`).join("");
   const progression = d.wr_steps.slice().reverse().map((s, i, a) => `<tr><td class="num">${dayOf(s.day)}</td>
       <td class="num">${fmt(s.wr_ms)}</td><td class="name">${esc(s.holder)}</td>
       <td class="num">${a[i + 1] ? "−" + ((a[i + 1].wr_ms - s.wr_ms) / 1000).toFixed(3) : "—"}</td></tr>`).join("");
@@ -330,14 +330,14 @@ function renderEvent(d) {
       <p class="hint">Rebuilt from when each final top-100 lap was set. Only each driver's best lap is kept, so a record
         that driver later beat themselves doesn't show.</p>
     </article>
-    <h2 class="section">Top 10</h2>
-    <div class="table-scroll"><table class="compact"><thead><tr><th class="num">#</th><th>Driver</th>
-      <th class="num">Time</th><th class="num">Gap (s)</th><th class="num">Day set</th></tr></thead>
-      <tbody>${top10}</tbody></table></div>
     <h2 class="section">Record progression</h2>
     <div class="table-scroll"><table class="compact"><thead><tr><th class="num">Day</th><th class="num">Record</th>
       <th>Driver</th><th class="num">Gain (s)</th></tr></thead>
-      <tbody>${progression}</tbody></table></div>`;
+      <tbody>${progression}</tbody></table></div>
+    <h2 class="section">Top 10</h2>
+    <div class="table-scroll"><table class="compact"><thead><tr><th class="num">#</th><th>Driver</th>
+      <th class="num">Time</th><th class="num">Gap (s)</th></tr></thead>
+      <tbody>${top10}</tbody></table></div>`;
   drawRecordChart();
 }
 
