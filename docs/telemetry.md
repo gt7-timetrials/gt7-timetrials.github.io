@@ -29,7 +29,7 @@ fastest lap wins. Old files can stay; they only match running events.
 - **Corners:** the reference's slowest points (at least 10 km/h slower than either side). Each corner's section runs
   from halfway after the previous corner to halfway before the next, so the sections add up to the whole lap gap.
 - **Per corner:** braking point (first braking after top speed), peak brake, time above 90% brake, brake when
-  turning in (trail braking), slowest speed, back on the throttle (20%), full throttle (95%), throttle reversals,
+  turning in (trail braking; averaged over the first 15 m of turning, since the brake is often being released fast there), slowest speed, back on the throttle (20%), full throttle (95%), throttle reversals,
   steering lock, rear wheelspin and exit speed. Throttle while braking (downshift blips) is ignored.
 - **Tips:** fixed rules with thresholds, in `tips()` in `site/coach.js`. Steering is compared with the player's own
   typical ratio to the reference over the lap, because controllers and wheels use different steering angles.
