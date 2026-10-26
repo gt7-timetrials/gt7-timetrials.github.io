@@ -11,7 +11,8 @@
   --good: #2e9e5b;
   --warn: #d88a00;
   --bad: #d7263d;
-  --wr-light: #8fb0f5;
+  --you: #d7263d;
+  --you-light: #f2a0aa;
   --line-ref: #8a919c;
   --ref-light: #c9cdd4;
 }
@@ -29,7 +30,8 @@
     --good: #3fb370;
     --warn: #e5a12a;
     --bad: #ef4b5f;
-    --wr-light: #c2d3ff;
+    --you: #ff5468;
+    --you-light: #ffb8c1;
     --line-ref: #8a919c;
     --ref-light: #d6dae0;
   }
@@ -270,12 +272,12 @@ table.corner-table thead th:first-child { font-weight: 500; }
 .corner-lines svg { width: 100%; height: auto; display: block; max-height: 360px; }
 .corner-lines path { fill: none; stroke-linecap: round; }
 .cl-ref { stroke: var(--line-ref); }
-.cl-me { stroke: var(--wr); }
+.cl-me { stroke: var(--you); }
 .cl-me-line { opacity: 0.82; } /* faded as one, so the pieces don't show where they overlap */
 .cl-dot { stroke-width: 2; }
-.cl-dot.me.brake { fill: var(--wr); stroke: var(--card); }
-.cl-dot.me.slow { fill: var(--card); stroke: var(--wr); }
-.cl-dot.me.gas { fill: var(--wr-light); stroke: var(--card); }
+.cl-dot.me.brake { fill: var(--you); stroke: var(--card); }
+.cl-dot.me.slow { fill: var(--card); stroke: var(--you); }
+.cl-dot.me.gas { fill: var(--you-light); stroke: var(--card); }
 .cl-dot.ref.brake { fill: var(--line-ref); stroke: var(--card); }
 .cl-dot.ref.slow { fill: var(--card); stroke: var(--line-ref); }
 .cl-dot.ref.gas { fill: var(--ref-light); stroke: var(--card); }
@@ -283,8 +285,13 @@ table.corner-table thead th:first-child { font-weight: 500; }
 .cl-scale { stroke: var(--muted); stroke-width: 2; }
 .cl-scaletext { fill: var(--muted); font-size: 9px; }
 .pc-legend .k-line { height: 4px; }
-.pc-legend .k-line.me { background: var(--wr); } .pc-legend .k-line.ref { background: var(--line-ref); }
+.pc-legend .k-line.me { background: var(--you); } .pc-legend .k-line.ref { background: var(--line-ref); }
 .pc-legend .k-dot { width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box; }
-.pc-legend .k-dot.brake { background: var(--wr); }
-.pc-legend .k-dot.slow { border: 2px solid var(--wr); }
-.pc-legend .k-dot.gas { background: var(--wr-light); }
+.pc-legend .k-dot.brake { background: var(--you); }
+.pc-legend .k-dot.slow { border: 2px solid var(--you); }
+.pc-legend .k-dot.gas { background: var(--you-light); }
+.corner-lines { position: relative; }
+.cl-toggle { position: absolute; top: 0; right: 0; z-index: 1; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--card); color: var(--text); font: inherit; font-size: 0.8rem; cursor: pointer; }
+.cl-toggle:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.corner-lines.hide-mine .cl-me-line, .corner-lines.hide-mine .cl-dot.me { display: none; }

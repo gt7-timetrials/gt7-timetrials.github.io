@@ -41,9 +41,10 @@ fastest lap wins. Old files can stay; they only match running events.
   It is measured at the reference's turn-in, apex and exit (20 m after full throttle), averaged over ±5 m. A tip
   appears for differences of 1.5 m or more, except in kinks under 15° of turn. The corner close-up draws both lines
   to scale, the same way round as the lap map, from just before the earlier braking point to just after the exit.
-  Line thickness shows the pedals: brake pressure from the braking point to the slowest point, throttle elsewhere
-  (thin = none, full thickness = 100%). Dots: solid = braking starts, hollow = slowest point, light = full throttle;
-  blue for the player, grey for the reference. The data has no track edges.
+  Line thickness shows the pedals: brake pressure from the braking point to the slowest point, throttle before
+  braking and after the slowest point (thin = none, full thickness = 100%), so throttle in the braking zone and braking
+  outside it don't show. Dots: solid = braking starts, hollow = slowest point, light = full throttle; red for the
+  player, grey for the reference. A button hides the player's line to see the reference's where they overlap. The data has no track edges.
 - **Corner chart:** brake (when either driver brakes here) and throttle, the player's against the reference's, and the
   time gap building up, by metres from where the reference starts braking (or from the apex where it doesn't brake).
 - **Tips:** fixed rules with thresholds, in `tips()` in `site/coach.js`. Steering is compared with the player's own

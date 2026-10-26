@@ -461,6 +461,7 @@ const Coach = (() => {
     const k2 = Math.min(b, a + 8), ang = (Math.atan2(R.z[k2] - R.z[a], R.x[k2] - R.x[a]) * 180) / Math.PI;
     const ten = 10 * scale, sy = H - 8;
     return `<figure class="corner-lines">
+      <button type="button" class="cl-toggle" aria-pressed="true">Hide your line</button>
       <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale with your line and ${who}'s line">
         <g>${line(R, c.ref, "cl-ref")}</g><g class="cl-me-line">${line(M, c.me, "cl-me")}</g>
         ${dots(R, c.ref, "ref")}${dots(M, c.me, "me")}
@@ -475,8 +476,10 @@ const Coach = (() => {
         ${shows("fullGas") ? `<span><i class="k-dot gas"></i>full throttle</span>` : ""}
       </figcaption>
       <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: brake pressure from the braking
-        point to the slowest point, then throttle (thin = none, full = 100%). Grey dots are ${who}'s. The track edges
-        aren't in the data: where ${who} uses the whole width, ${who}'s line shows roughly where they are.</p>
+        point to the slowest point, then throttle before braking and after the slowest point (thin = none, full = 100%).
+        It doesn't show throttle used in the braking zone, or braking outside it: the pedal chart below shows all of it.
+        Grey is ${who}. The track edges aren't in the data: where ${who} uses the whole width, ${who}'s line shows
+        roughly where they are.</p>
     </figure>`;
   }
 

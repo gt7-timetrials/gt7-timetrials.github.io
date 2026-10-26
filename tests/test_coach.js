@@ -75,5 +75,6 @@ assert.ok(closeUp.includes('class="corner-lines"'));
 assert.strictEqual((closeUp.match(/cl-dot brake/g) || []).length, 2);
 const widths = new Set([...closeUp.matchAll(/class="cl-me"[^>]*stroke-width:([\d.]+)/g)].map(m => m[1]));
 assert.ok(widths.size > 5, "line thickness follows the pedals");
+assert.ok(closeUp.includes('class="cl-toggle"'), "has the hide/show button for your line");
 
 console.log("coach.js tests passed");
