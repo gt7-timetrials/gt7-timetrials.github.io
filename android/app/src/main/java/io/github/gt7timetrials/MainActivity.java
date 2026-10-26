@@ -7,6 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Insets;
+import android.net.ConnectivityManager;
+import android.net.LinkAddress;
+import android.net.LinkProperties;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +29,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.io.OutputStream;
+import java.net.Inet4Address;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -36,6 +42,7 @@ public class MainActivity extends Activity {
 
     private WebView web;
     private Recorder recorder;
+    private Thread recorderThread;
     private ValueCallback<Uri[]> fileCallback;
 
     @Override
@@ -139,6 +146,23 @@ public class MainActivity extends Activity {
         });
     }
 
+    /** The phone's Wi-Fi (or Ethernet) network, so the search goes there even if mobile data or a VPN is on. */
+    private Network homeNetwork() {
+        ConnectivityManager cm = getSystemService(ConnectivityManager.class);
+        for (Network n : cm.getAllNetworks()) {
+            NetworkCapabilities c = cm.getNetworkCapabilities(n);
+            if (c != null && (c.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || c.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))) return n;
+        }
+        return null;
+    }
+
+    private String ipv4(Network n) {
+        LinkProperties lp = n == null ? null : getSystemService(ConnectivityManager.class).getLinkProperties(n);
+        if (lp == null) return null;
+        for (LinkAddress a : lp.getLinkAddresses()) if (a.getAddress() instanceof Inet4Address) return a.getAddress().getHostAddress();
+        return null;
+    }
+
     /** What the page can call, as window.GT7App. */
     private class Bridge {
         @JavascriptInterface
@@ -150,20 +174,52 @@ public class MainActivity extends Activity {
             }
         }
 
-        /** Find the PlayStation and record until stop(). Events go to window.GT7AppEvent. */
+        /** The address the PlayStation answered from last time, or "". */
         @JavascriptInterface
-        public synchronized void start() {
-            if (recorder != null) recorder.stop();
-            Recorder r = new Recorder(json -> {
-                if (json.contains("\"connected\"") && recorder != null && recorder.ip() != null) {
-                    prefs().edit().putString("ip", recorder.ip()).apply(); // tried first next time
+        public String savedIp() {
+            return prefs().getString("ip", "");
+        }
+
+        /** The website before typed-in addresses: search the whole network. */
+        @JavascriptInterface
+        public void start() {
+            start("");
+        }
+
+        /**
+         * Find the PlayStation (at the address given, or anywhere on the Wi-Fi network if it's "") and record until
+         * stop(). Events go to window.GT7AppEvent.
+         */
+        @JavascriptInterface
+        public synchronized void start(String ip) {
+            stopRecorder(); // the old one must let go of the port first
+            Network net = homeNetwork();
+            Recorder[] self = new Recorder[1];
+            self[0] = new Recorder(json -> {
+                Recorder r = self[0];
+                if (json.contains("\"connected\"") && r.ip() != null) {
+                    prefs().edit().putString("ip", r.ip()).apply(); // tried first next time
                 }
-                if (json.contains("\"stopped\"")) keepScreenOn(false);
+                if (json.contains("\"stopped\"") && recorder == r) keepScreenOn(false);
                 runOnUiThread(() -> web.evaluateJavascript("window.GT7AppEvent && GT7AppEvent(" + json + ")", null));
-            }, prefs().getString("ip", null), null);
-            recorder = r;
+            }, prefs().getString("ip", null), ip, ipv4(net), sock -> {
+                if (net != null) net.bindSocket(sock);
+            });
+            recorder = self[0];
             keepScreenOn(true);
-            new Thread(r, "recorder").start();
+            recorderThread = new Thread(recorder, "recorder");
+            recorderThread.start();
+        }
+
+        private void stopRecorder() {
+            if (recorder != null) recorder.stop();
+            if (recorderThread != null) {
+                try {
+                    recorderThread.join(2000);
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
 
         @JavascriptInterface
