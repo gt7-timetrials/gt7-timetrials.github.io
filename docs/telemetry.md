@@ -42,9 +42,10 @@ notes the difference.
   to 150 m earlier); where neither brakes nor lifts, where the bend starts turning. The first section starts at the line and the
   last one ends at the finish, so the sections add up to the whole lap gap. The corner part ends 20 m after the
   reference's full throttle (or, if it's flat out by the apex, where the bend stops turning). When the straight after it is 150 m or longer,
-  the map colours it separately and a "Where the time goes" tip splits the section's loss between the corner and the
+  a "Where the time goes" tip splits the section's loss between the corner and the
   straight, with the exit speed difference and any lifts on the straight. The first section's run from the start
-  line to the braking zone is split off the same way when it's 150 m or longer. Three or more lifts in a section are
+  line to the braking zone is split off in the tip the same way when it's 150 m or longer. The map has one colour per
+  section, matching its corner number. Three or more lifts in a section are
   summed up in one tip.
 - **Per corner:** braking point (first braking after top speed), peak brake, time above 90% brake, brake when
   turning in (trail braking; averaged over the first 15 m of turning, since the brake is often being released fast there), slowest speed, back on the throttle (20%), full throttle (95%), throttle reversals,

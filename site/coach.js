@@ -412,16 +412,9 @@ const Coach = (() => {
       for (let s = a; s <= b; s += 4) { const [x, z] = pts(s); d += (d ? "L" : "M") + x.toFixed(1) + "," + z.toFixed(1); }
       const [x, z] = pts(b); return d + "L" + x.toFixed(1) + "," + z.toFixed(1);
     };
-    // a long straight after a corner gets its own colour, for the time lost on it
-    const colour = lost => COLOURS.find(([lim]) => lost < lim)[1];
-    const parts = c => {
-      const out = c.entry > c.from ? [[c.from, c.entry, colour(c.approachLost)]] : [];
-      if (c.to - c.exit < 150) return [...out, [c.entry, c.to, colour(c.lost - c.approachLost)]];
-      return [...out, [c.entry, c.exit, colour(c.cornerLost)], [c.exit, c.to, colour(c.lost - c.cornerLost - c.approachLost)]];
-    };
     const zones = corners.map(c => `<g class="zone" data-n="${c.n}" tabindex="0" role="button" aria-label="Corner ${c.n}, ${fmtLost(c.lost)}">
         <path d="${path(c.from, c.to)}" class="hit" style="stroke-width:${sw * 5}"/>
-        ${parts(c).map(([a, b, cls]) => `<path d="${path(a, b)}" class="seg ${cls}" style="stroke-width:${sw * 1.6}"/>`).join("")}</g>`).join("");
+        <path d="${path(c.from, c.to)}" class="seg ${c.colour}" style="stroke-width:${sw * 1.6}"/></g>`).join("");
     const labels = corners.map((c, i) => {
       const [lx, lz] = spots[i];
       return `<g class="label" data-n="${c.n}"><circle cx="${lx.toFixed(1)}" cy="${lz.toFixed(1)}" r="${r}" class="${c.colour}"/>

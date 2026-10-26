@@ -105,6 +105,6 @@ assert.ok(/^Where the time goes: \+1\.64 s on the 1500 m from the start line to 
 assert.ok(s1.corners[0].tips.some(t => t.includes("517 m, starting 573 m after the start line")), "the coast before corner 1");
 assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several lifts are one tip");
 assert.ok(!s1.corners[2].tips.some(t => t.startsWith("Exit:")), "the straight tip says it instead");
-assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 8, "long straights and the run from the line get their own colour");
+assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "one colour per section");
 
 console.log("coach.js tests passed");
