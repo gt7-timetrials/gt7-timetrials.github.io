@@ -84,8 +84,12 @@ public class MainActivity extends Activity {
             public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
                 if (fileCallback != null) fileCallback.onReceiveValue(null);
                 fileCallback = callback;
+                // any file type: phones label CSV files inconsistently (text/csv, text/comma-separated-values,
+                // application/octet-stream...), so filtering on the page's ".csv,text/csv" greys them out.
+                // The page checks the file itself.
+                Intent pick = new Intent(Intent.ACTION_GET_CONTENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*");
                 try {
-                    startActivityForResult(params.createIntent(), PICK_FILE);
+                    startActivityForResult(Intent.createChooser(pick, "Choose a recording (.csv)"), PICK_FILE);
                 } catch (ActivityNotFoundException e) {
                     fileCallback = null;
                     return false;
