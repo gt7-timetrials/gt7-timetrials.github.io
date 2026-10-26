@@ -276,22 +276,29 @@ table.corner-table thead th:first-child { font-weight: 500; }
 .cl-me-line { opacity: 0.82; } /* faded as one, so the pieces don't show where they overlap */
 .cl-dot { stroke-width: 2; }
 .cl-dot.me.brake { fill: var(--you); stroke: var(--card); }
-.cl-dot.me.slow { fill: var(--card); stroke: var(--you); }
+.cl-dot.me.slow { fill: none; stroke: var(--you); }
 .cl-dot.me.gas { fill: var(--you-light); stroke: var(--card); }
 .cl-dot.ref.brake { fill: var(--line-ref); stroke: var(--card); }
-.cl-dot.ref.slow { fill: var(--card); stroke: var(--line-ref); }
+.cl-dot.ref.slow { fill: none; stroke: var(--line-ref); }
 .cl-dot.ref.gas { fill: var(--ref-light); stroke: var(--card); }
 .cl-arrow { fill: var(--muted); stroke: none; }
 .cl-scale { stroke: var(--muted); stroke-width: 2; }
 .cl-scaletext { fill: var(--muted); font-size: 9px; }
 .pc-legend .k-line { height: 4px; }
 .pc-legend .k-line.me { background: var(--you); } .pc-legend .k-line.ref { background: var(--line-ref); }
-.pc-legend .k-dot { width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box; }
-.pc-legend .k-dot.brake { background: var(--you); }
-.pc-legend .k-dot.slow { border: 2px solid var(--you); }
-.pc-legend .k-dot.gas { background: var(--you-light); }
 .corner-lines { position: relative; }
 .cl-toggle { position: absolute; top: 0; right: 0; z-index: 1; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line);
   background: var(--card); color: var(--text); font: inherit; font-size: 0.8rem; cursor: pointer; }
 .cl-toggle:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 .corner-lines.hide-mine .cl-me-line, .corner-lines.hide-mine .cl-dot.me { display: none; }
+/* close-up legend: a small grid of you / the reference against each dot */
+table.cl-legend { width: auto; margin: 6px 0 2px; font-size: 0.78rem; color: var(--muted); }
+table.cl-legend th, table.cl-legend td { padding: 2px 10px 2px 0; border: 0; min-width: 0; text-align: center;
+  font-weight: 500; position: static; background: none; }
+table.cl-legend tbody th { text-align: left; color: var(--text); white-space: nowrap; }
+.cl-legend .k-line { display: inline-block; width: 14px; height: 4px; vertical-align: middle; margin-right: 5px; }
+.cl-legend .k-line.me { background: var(--you); } .cl-legend .k-line.ref { background: var(--line-ref); }
+.cl-legend .k-dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; box-sizing: border-box; vertical-align: middle; }
+.cl-legend .k-dot.brake.me { background: var(--you); } .cl-legend .k-dot.brake.ref { background: var(--line-ref); }
+.cl-legend .k-dot.slow.me { border: 2px solid var(--you); } .cl-legend .k-dot.slow.ref { border: 2px solid var(--line-ref); }
+.cl-legend .k-dot.gas.me { background: var(--you-light); } .cl-legend .k-dot.gas.ref { background: var(--ref-light); }

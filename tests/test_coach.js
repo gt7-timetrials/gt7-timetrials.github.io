@@ -76,5 +76,9 @@ assert.strictEqual((closeUp.match(/cl-dot brake/g) || []).length, 2);
 const widths = new Set([...closeUp.matchAll(/class="cl-me"[^>]*stroke-width:([\d.]+)/g)].map(m => m[1]));
 assert.ok(widths.size > 5, "line thickness follows the pedals");
 assert.ok(closeUp.includes('class="cl-toggle"'), "has the hide/show button for your line");
+assert.ok(closeUp.includes('class="cl-legend"') && closeUp.includes("k-dot slow ref"), "legend grid for you and the WR");
+// corner 2: your slowest point and full throttle are at the same spot, so the ring is drawn last, round the dot
+const c2 = Coach.cornerDetail(r.corners[1], "WR", r);
+assert.ok(c2.indexOf("cl-dot gas me") < c2.indexOf("cl-dot slow me"));
 
 console.log("coach.js tests passed");

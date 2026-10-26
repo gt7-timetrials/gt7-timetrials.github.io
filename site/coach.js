@@ -455,7 +455,8 @@ const Coach = (() => {
     };
     const dot = (L, k, cls, r = 4) => (k === null || k < a || k > b ? "" :
       `<circle class="cl-dot ${cls}" cx="${X(L.x[k])}" cy="${Y(L.z[k])}" r="${r}"/>`);
-    const dots = (L, m, who2) => dot(L, m.brakeAt, `brake ${who2}`) + dot(L, m.minAt, `slow ${who2}`, 3.5) + dot(L, m.fullGas, `gas ${who2}`);
+    // the slowest-point ring goes last and a little larger, so it still shows round a dot at the same spot
+    const dots = (L, m, who2) => dot(L, m.brakeAt, `brake ${who2}`) + dot(L, m.fullGas, `gas ${who2}`) + dot(L, m.minAt, `slow ${who2}`, 5);
     const shows = key => [c.ref[key], c.me[key]].some(k => k !== null && k >= a && k <= b);
     // direction arrow at the start, scale bar in the bottom corner
     const k2 = Math.min(b, a + 8), ang = (Math.atan2(R.z[k2] - R.z[a], R.x[k2] - R.x[a]) * 180) / Math.PI;
@@ -469,16 +470,17 @@ const Coach = (() => {
         <line class="cl-scale" x1="4" x2="${(4 + ten).toFixed(1)}" y1="${sy}" y2="${sy}"/>
         <text class="cl-scaletext" x="${(8 + ten).toFixed(1)}" y="${sy + 3}">10 m</text>
       </svg>
-      <figcaption class="pc-legend">
-        <span><i class="k-line me"></i>Your line</span><span><i class="k-line ref"></i>${who}</span>
-        ${shows("brakeAt") ? `<span><i class="k-dot brake"></i>braking starts</span>` : ""}
-        ${shows("minAt") ? `<span><i class="k-dot slow"></i>slowest point</span>` : ""}
-        ${shows("fullGas") ? `<span><i class="k-dot gas"></i>full throttle</span>` : ""}
-      </figcaption>
+      <table class="cl-legend">
+        <thead><tr><th></th>${shows("brakeAt") ? "<th>braking starts</th>" : ""}${shows("minAt") ? "<th>slowest point</th>" : ""}
+          ${shows("fullGas") ? "<th>full throttle</th>" : ""}</tr></thead>
+        <tbody>${[["me", "You"], ["ref", who]].map(([k, name]) => `<tr><th><i class="k-line ${k}"></i>${name}</th>
+          ${shows("brakeAt") ? `<td><i class="k-dot brake ${k}"></i></td>` : ""}${shows("minAt") ? `<td><i class="k-dot slow ${k}"></i></td>` : ""}
+          ${shows("fullGas") ? `<td><i class="k-dot gas ${k}"></i></td>` : ""}</tr>`).join("")}</tbody>
+      </table>
       <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: brake pressure from the braking
         point to the slowest point, then throttle before braking and after the slowest point (thin = none, full = 100%).
         It doesn't show throttle used in the braking zone, or braking outside it: the pedal chart below shows all of it.
-        Grey is ${who}. The track edges aren't in the data: where ${who} uses the whole width, ${who}'s line shows
+        The track edges aren't in the data: where ${who} uses the whole width, ${who}'s line shows
         roughly where they are.</p>
     </figure>`;
   }
