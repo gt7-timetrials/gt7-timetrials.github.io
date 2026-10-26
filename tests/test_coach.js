@@ -69,6 +69,11 @@ for (const mirror of [false, true]) {
 }
 // on the real lap: turning in from further inside at corner 7, and a close-up drawing
 assert.ok(r.corners[6].tips.some(t => /^Track use: at turn-in you're 2\.\d m tighter/.test(t)), r.corners[6].tips.join(" | "));
-assert.ok(Coach.cornerDetail(r.corners[6], "WR", r).includes('class="corner-lines"'));
+const closeUp = Coach.cornerDetail(r.corners[6], "WR", r);
+assert.ok(closeUp.includes('class="corner-lines"'));
+// both braking points are in the picture, and the line thickness varies with the pedals
+assert.strictEqual((closeUp.match(/cl-dot brake/g) || []).length, 2);
+const widths = new Set([...closeUp.matchAll(/class="cl-me"[^>]*stroke-width:([\d.]+)/g)].map(m => m[1]));
+assert.ok(widths.size > 5, "line thickness follows the pedals");
 
 console.log("coach.js tests passed");

@@ -429,45 +429,54 @@ const Coach = (() => {
     </figure>`;
   }
 
-  // The corner drawn to scale with both racing lines, turned so the car drives up the picture.
+  // The corner drawn to scale with both racing lines, the same way round as the lap map. Line thickness shows
+  // the pedals: brake pressure from the braking point to the slowest point, throttle everywhere else
+  // (thin = none, full thickness = 100%).
   function cornerLines(result, c, who) {
     const { R, M } = result.grid, n = R.x.length;
-    // the corner itself: from just before either driver turns in to just after the exit
-    const turnIns = [c.line.turnIn, c.me.turnIn].filter(k => k !== null);
-    let a = Math.max(0, Math.min(...turnIns) - 30), b = Math.min(n - 1, c.line.exit + 25);
-    if (b - a > 250) a = Math.max(0, b - 250);
-    const [dx, dz] = direction(R, a), rot = -Math.PI / 2 - Math.atan2(dz, dx), cs = Math.cos(rot), sn = Math.sin(rot);
-    const turn = (x, z) => [x * cs - z * sn, x * sn + z * cs];
-    const ref = [], me = [];
-    for (let k = a; k <= b; k++) { ref.push(turn(R.x[k], R.z[k])); me.push(turn(M.x[k], M.z[k])); }
-    const all = ref.concat(me), xs = all.map(p => p[0]), ys = all.map(p => p[1]);
-    const pad = 6, minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad, minY = Math.min(...ys) - pad, maxY = Math.max(...ys) + pad;
-    const W = 360, scale = Math.min(W / (maxX - minX), 300 / (maxY - minY)), H = Math.round((maxY - minY) * scale) + 22;
-    const X = p => ((p[0] - minX) * scale).toFixed(1), Y = p => ((p[1] - minY) * scale).toFixed(1);
-    const path = arr => arr.map((p, i) => `${i ? "L" : "M"}${X(p)},${Y(p)}`).join("");
-    const at = (arr, k) => (k === null || k < a || k > b ? null : arr[k - a]);
-    const mark = (arr, k, cls, r = 4) => { const p = at(arr, k); return p ? `<circle class="cl-mark ${cls}" cx="${X(p)}" cy="${Y(p)}" r="${r}"/>` : ""; };
-    const marks = (arr, m, who2) => mark(arr, m.brakeAt, `brake ${who2}`) + mark(arr, m.minAt, `slow ${who2}`, 3) + mark(arr, m.fullGas, `gas ${who2}`);
+    const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
+    let a = Math.max(0, Math.min(...starts) - 15), b = Math.min(n - 1, c.line.exit + 25);
+    if (b - a > 450) a = Math.max(0, b - 450);
+    const xs = [], zs = [];
+    for (let k = a; k <= b; k++) xs.push(R.x[k], M.x[k]), zs.push(R.z[k], M.z[k]);
+    const pad = 8, minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad, minZ = Math.min(...zs) - pad, maxZ = Math.max(...zs) + pad;
+    const W = 360, scale = Math.min(W / (maxX - minX), 340 / (maxZ - minZ));
+    const w = Math.round((maxX - minX) * scale), H = Math.round((maxZ - minZ) * scale) + 22;
+    const X = x => ((x - minX) * scale).toFixed(1), Y = z => ((z - minZ) * scale).toFixed(1);
+    const THIN = 1, FULL = 5.5;
+    const pedal = (L, m, k) => (m.brakeAt !== null && k >= m.brakeAt && k < m.minAt ? L.brk[k] : L.thr[k]);
+    const line = (L, m, cls) => {
+      let out = "";
+      for (let k = a; k < b; k += 2) {
+        const e = Math.min(b, k + 2), width = THIN + ((FULL - THIN) * Math.max(0, Math.min(100, pedal(L, m, k)))) / 100;
+        out += `<path class="${cls}" d="M${X(L.x[k])},${Y(L.z[k])}L${X(L.x[e])},${Y(L.z[e])}" style="stroke-width:${width.toFixed(2)}"/>`;
+      }
+      return out;
+    };
+    const dot = (L, k, cls, r = 4) => (k === null || k < a || k > b ? "" :
+      `<circle class="cl-dot ${cls}" cx="${X(L.x[k])}" cy="${Y(L.z[k])}" r="${r}"/>`);
+    const dots = (L, m, who2) => dot(L, m.brakeAt, `brake ${who2}`) + dot(L, m.minAt, `slow ${who2}`, 3.5) + dot(L, m.fullGas, `gas ${who2}`);
     const shows = key => [c.ref[key], c.me[key]].some(k => k !== null && k >= a && k <= b);
+    // direction arrow at the start, scale bar in the bottom corner
+    const k2 = Math.min(b, a + 8), ang = (Math.atan2(R.z[k2] - R.z[a], R.x[k2] - R.x[a]) * 180) / Math.PI;
     const ten = 10 * scale, sy = H - 8;
-    const startP = ref[0], next = ref[Math.min(8, ref.length - 1)];
-    const ang = (Math.atan2(next[1] - startP[1], next[0] - startP[0]) * 180) / Math.PI;
     return `<figure class="corner-lines">
-      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale with your line and ${who}'s line">
-        <path class="cl-ref" d="${path(ref)}"/>
-        <path class="cl-me" d="${path(me)}"/>
-        ${marks(ref, c.ref, "ref")}${marks(me, c.me, "me")}
-        <path class="cl-arrow" d="M-6,-4L4,0L-6,4Z" transform="translate(${X(startP)},${Y(startP)}) rotate(${ang.toFixed(1)})"/>
+      <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale with your line and ${who}'s line">
+        <g>${line(R, c.ref, "cl-ref")}</g><g class="cl-me-line">${line(M, c.me, "cl-me")}</g>
+        ${dots(R, c.ref, "ref")}${dots(M, c.me, "me")}
+        <path class="cl-arrow" d="M-7,-5L5,0L-7,5Z" transform="translate(${X(R.x[a])},${Y(R.z[a])}) rotate(${ang.toFixed(1)})"/>
         <line class="cl-scale" x1="4" x2="${(4 + ten).toFixed(1)}" y1="${sy}" y2="${sy}"/>
         <text class="cl-scaletext" x="${(8 + ten).toFixed(1)}" y="${sy + 3}">10 m</text>
       </svg>
-      <figcaption class="pc-legend"><span><i class="k-line-me"></i>Your line</span><span><i class="k-ref"></i>${who}</span>
+      <figcaption class="pc-legend">
+        <span><i class="k-line me"></i>Your line</span><span><i class="k-line ref"></i>${who}</span>
         ${shows("brakeAt") ? `<span><i class="k-dot brake"></i>braking starts</span>` : ""}
         ${shows("minAt") ? `<span><i class="k-dot slow"></i>slowest point</span>` : ""}
         ${shows("fullGas") ? `<span><i class="k-dot gas"></i>full throttle</span>` : ""}
-        <span>filled: you · hollow: ${who}</span></figcaption>
-      <p class="hint">Drawn to scale, the car driving up the picture. The track edges aren't in the data: where ${who} uses
-        the whole width, ${who}'s line shows roughly where they are.</p>
+      </figcaption>
+      <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: brake pressure from the braking
+        point to the slowest point, then throttle (thin = none, full = 100%). Grey dots are ${who}'s. The track edges
+        aren't in the data: where ${who} uses the whole width, ${who}'s line shows roughly where they are.</p>
     </figure>`;
   }
 
