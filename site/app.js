@@ -220,7 +220,12 @@ function renderCurrent() {
 }
 
 // --- lap comparison (coach.js does the analysis, in the browser) ---
+// A reference is a time trial's world record lap (key = event id, maybe a driver's name) or a license test's
+// gold-medal run (key = test id, with medal times).
 const refName = r => (r.driver ? `${r.driver}'s` : "the world record");
+const refKey = e => e.reference.key ?? e.event_id;
+const tipWho = e => (e.medals ? "the reference lap" : e.reference.driver || "the WR"); // used in the tips
+const shortWho = e => (e.medals ? "Reference" : e.reference.driver ? esc(e.reference.driver) : "WR"); // labels
 function coachSection(e, i) {
   const r = e.reference;
   return `<section class="coach">
@@ -243,7 +248,7 @@ async function compareLap(e, file, out) {
   out.innerHTML = `<p class="muted">Reading ${esc(file.name)}…</p>`;
   try {
     const [text, ref] = await Promise.all([file.text(),
-      refCache[e.event_id] ??= fetch(e.reference.url).then(r => (r.ok ? r.json() : Promise.reject()))]);
+      refCache[refKey(e)] ??= fetch(e.reference.url).then(r => (r.ok ? r.json() : Promise.reject()))]);
     if (!Coach.isRecording(text)) {
       out.innerHTML = `<p class="miss">This doesn't look like a recording from telemetry.py. Upload the CSV file the recorder
         saved (named like telemetry_20261025_214804.csv).</p>`;
@@ -255,13 +260,48 @@ async function compareLap(e, file, out) {
         and stop after crossing it again.</p>`;
       return;
     }
-    const res = Coach.analyse(ref, lap, refName(e.reference) === "the world record" ? "the WR" : e.reference.driver);
+    const res = Coach.analyse(ref, lap, tipWho(e));
     if (res.error) { out.innerHTML = `<p class="miss">${res.error}</p>`; return; }
     renderComparison(out, res, e, lap.car_code !== ref.car_code);
   } catch (err) {
-    delete refCache[e.event_id]; // let the next try fetch the reference again
+    delete refCache[refKey(e)]; // let the next try fetch the reference again
     out.innerHTML = `<p class="miss">Couldn't read that file. Is it a CSV saved by telemetry.py?</p>`;
   }
+}
+
+// --- Super License tab ---
+const MEDAL_KEYS = [["gold", "Gold"], ["silver", "Silver"], ["bronze", "Bronze"]];
+function medalLine(ms, medals) {
+  const won = MEDAL_KEYS.find(([k]) => ms <= medals[k]);
+  const better = MEDAL_KEYS.filter(([k]) => ms > medals[k]).slice(-1)[0]; // the next medal up
+  return `<span class="medal-result">${won ? `<b class="medal ${won[0]}">${won[1]}</b>` : "<b>No medal</b>"}${better
+    ? `. ${better[1]} needs ${fmt(medals[better[0]])}, ${secs(ms - medals[better[0]])} faster.` : "."}</span>`;
+}
+
+let LICENSE;
+function renderLicense() {
+  const el = document.getElementById("license-list");
+  el.innerHTML = LICENSE.tests.map((t, i) => {
+    const medals = t.gold ? `<div class="license-medals">${MEDAL_KEYS.map(([k, name]) =>
+      `<span><b class="medal ${k}">${name}</b> ${fmt(t[k])}</span>`).join("")}</div>`
+      : `<p class="muted">Medal times and a reference run coming soon.</p>`;
+    return `<article class="event license-test">
+      <div class="license-head"><span class="license-id">${esc(t.id)}</span>
+        <div><h2>${esc(t.track)}</h2><div class="meta">${esc(t.car)}</div></div></div>
+      ${medals}
+      ${t.reference ? `<section class="coach">
+        <p class="hint">Reference: a gold-medal run of ${fmt(t.reference.lap_ms)}.</p>
+        <div class="coach-actions"><label class="button-link primary">Upload your run (.csv)<input type="file"
+          accept=".csv,text/csv" class="license-file" data-i="${i}" hidden></label></div>
+        <div class="coach-result" aria-live="polite"></div></section>` : ""}
+    </article>`;
+  }).join("");
+  el.querySelectorAll("input.license-file").forEach(inp => inp.addEventListener("change", () => {
+    const t = LICENSE.tests[+inp.dataset.i];
+    const e = { reference: t.reference, medals: { gold: t.gold, silver: t.silver, bronze: t.bronze } };
+    if (inp.files[0]) compareLap(e, inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
+    inp.value = "";
+  }));
 }
 
 // Phones: corner details slide up from the bottom when a corner is tapped. Wider screens: beside the map.
@@ -272,7 +312,11 @@ function renderComparison(out, res, e, otherCar) {
   const worst = res.corners.reduce((a, c) => (c.lost > a.lost ? c : a), res.corners[0]);
   out.innerHTML = `
     <p class="coach-summary">Your lap <b>${fmt(res.lapMs)}</b> vs ${fmt(res.refMs)}: <b>${Coach.fmtLost(total)}</b>.
+      ${e.medals ? medalLine(res.lapMs, e.medals) : ""}
       ${otherCar ? `<span class="miss">This lap is in a different car from the reference.</span>` : ""}</p>
+    ${Math.abs(res.gameGap - res.recordedGap) > 0.1 ? `<p class="hint">The game's times include
+      ${Math.abs(res.gameGap - res.recordedGap).toFixed(2)} s that isn't in the recorded laps (in a license test the timer can
+      start before the car reaches the line), so the corners below add up to ${Coach.fmtLost(res.recordedGap)}.</p>` : ""}
     <p class="hint tap-hint">${phone() ? "Tap a corner to see where you lose time." : "Hover over or click a corner on the map."}</p>
     <div class="coach-grid">
       <div class="map-box">${Coach.trackMap(res)}
@@ -293,7 +337,7 @@ function renderComparison(out, res, e, otherCar) {
       settings, so the steering tip compares each corner with your own lap.</p>`;
   const detail = out.querySelector(".corner-detail"), body = detail.querySelector(".detail-body");
   const svg = out.querySelector(".trackmap");
-  const who = e.reference.driver ? esc(e.reference.driver) : "WR";
+  const who = shortWho(e);
   let pinned = worst.n;
   let hideMine = false; // the close-up's "Hide your line" button, kept while moving between corners
   const applyHide = () => body.querySelectorAll(".corner-lines").forEach(f => {
@@ -525,6 +569,8 @@ fetch("data.json")
     renderScorecard();
     renderPast();
     renderDrivers();
+    fetch("license.json").then(r => r.json()).then(d => { LICENSE = d; renderLicense(); })
+      .catch(() => { document.getElementById("license-list").innerHTML = `<p class="muted">Could not load the tests.</p>`; });
     if (shownEvent) renderEvent(shownEvent); // opened by a direct link before data.json arrived
     let lastWidth = window.innerWidth;
     window.addEventListener("resize", () => {

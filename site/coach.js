@@ -200,18 +200,23 @@ const Coach = (() => {
     }
     const R = resample(ref, ref.s, n), M = resample(myLap, p.s, n);
     const delta = M.t.map((t, i) => t - R.t[i]);
+    // The game's lap times can include time the recordings don't, e.g. a license test's timer starting before the
+    // car reaches the line. The corners use the recorded laps, so they always add up to the recorded gap.
+    const recordedGap = myLap.t[myLap.t.length - 1] - refLap.t[refLap.t.length - 1];
     const apexes = findApexes(R.v);
     const corners = apexes.map((apex, i) => {
       const z0 = i === 0 ? 0 : Math.round((apexes[i - 1] + apex) / 2);
       const z1 = i === apexes.length - 1 ? n : Math.round((apex + apexes[i + 1]) / 2);
-      const lost = (i === apexes.length - 1 ? myLap.lap_ms / 1000 - refLap.lap_ms / 1000 : delta[z1]) - delta[z0];
+      // the last section runs to the finish line, timed from the recordings (see recordedGap below)
+      const lost = (i === apexes.length - 1 ? recordedGap : delta[z1]) - delta[z0];
       let peak = 0;
       for (let k = z0; k < z1; k++) peak = Math.max(peak, Math.abs(R.steer[k]));
       return { apex, z0, z1, lost, ref_m: cornerMetrics(R, z0, z1, apex, 0.3 * peak), me_m: cornerMetrics(M, z0, z1, apex, 0.3 * peak) };
     });
     const ratios = corners.filter(c => c.ref_m.maxSteerDeg >= 20).map(c => c.me_m.maxSteerDeg / c.ref_m.maxSteerDeg).sort((a, b) => a - b);
     const steerRatio = ratios.length >= 3 ? ratios[Math.floor(ratios.length / 2)] : null;
-    return { ...result(corners, steerRatio, R, M, delta, who), lapMs: myLap.lap_ms, refMs: refLap.lap_ms, length: n, ref };
+    return { ...result(corners, steerRatio, R, M, delta, who), lapMs: myLap.lap_ms, refMs: refLap.lap_ms, length: n, ref,
+      recordedGap, gameGap: (myLap.lap_ms - refLap.lap_ms) / 1000 };
   }
 
   // Where you are across the track compared with the reference: metres to the outside of the reference's line
@@ -370,7 +375,8 @@ const Coach = (() => {
     const anchorName = c.ref.brakeAt !== null ? `${who} brakes` : "apex";
     let x0 = Math.min(anchor - 100, (c.me.brakeAt ?? c.me.liftAt ?? anchor) - 30);
     let x1 = Math.max(c.ref.fullGas ?? c.to, c.me.fullGas ?? c.to) + 30;
-    for (const z of c.lifts) { x0 = Math.min(x0, z.from - 20); x1 = Math.max(x1, z.to + 20); }
+    // include extra lifts, but never so far back that the corner itself drops out of the chart
+    for (const z of c.lifts) { x0 = Math.min(x0, Math.max(z.from - 20, anchor - 300)); x1 = Math.max(x1, z.to + 20); }
     x0 = Math.max(0, x0); x1 = Math.min(n - 1, x1, x0 + 700);
     let braking = false;
     for (let k = x0; k <= x1 && !braking; k++) braking = R.brk[k] > 5 || M.brk[k] > 5;
@@ -480,8 +486,8 @@ const Coach = (() => {
       <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: brake pressure from the braking
         point to the slowest point, then throttle before braking and after the slowest point (thin = none, full = 100%).
         It doesn't show throttle used in the braking zone, or braking outside it: the pedal chart below shows all of it.
-        The track edges aren't in the data: where ${who} uses the whole width, ${who}'s line shows
-        roughly where they are.</p>
+        The track edges aren't in the data: where the grey line uses the whole width, it shows roughly where
+        they are.</p>
     </figure>`;
   }
 

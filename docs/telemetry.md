@@ -20,6 +20,15 @@ and gives it to the running event with the same car whose world record is closes
 is shown if the lap time matches a time on the saved leaderboard. If a better replay comes along, upload it too: the
 fastest lap wins. Old files can stay; they only match running events.
 
+## Super License tab
+
+`data/license/super.json` lists the tests (id, track, car, gold/silver/bronze in milliseconds). Each test's reference
+run (a replay beating gold, recorded with telemetry.py) goes in `data/license/laps/<id>.csv`, e.g. `S-1.csv`; the build
+takes the fastest complete lap in it. License tests count laps like time trials (0 → 1 at the start line, 1 → 2 at the
+finish), so the same comparison works. In some tests the game's time includes up to about 0.9 s more than the recorded
+lap (the timer starting before the car reaches the line), so corner losses add up to the recorded gap and the page
+notes the difference.
+
 ## How the comparison works
 
 - **Lap:** the game's lap counter going up twice. The lap is timed by packet number (60 a second), which matches the

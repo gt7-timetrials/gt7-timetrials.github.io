@@ -7,10 +7,18 @@ The comparison itself runs in the browser (site/coach.js); this only extracts th
 """
 import csv
 import glob
+import json
 import os
 
 FIELDS = {"x": 2, "z": 2, "speed_kmh": 1, "throttle_pct": 0, "brake_pct": 0, "steering_rad": 3,
           "wheel_rl_kmh": 1, "wheel_rr_kmh": 1}
+
+
+def load_json(path):
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
 
 
 def read_csv(path):

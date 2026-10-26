@@ -302,3 +302,15 @@ table.cl-legend tbody th { text-align: left; color: var(--text); white-space: no
 .cl-legend .k-dot.brake.me { background: var(--you); } .cl-legend .k-dot.brake.ref { background: var(--line-ref); }
 .cl-legend .k-dot.slow.me { border: 2px solid var(--you); } .cl-legend .k-dot.slow.ref { border: 2px solid var(--line-ref); }
 .cl-legend .k-dot.gas.me { background: var(--you-light); } .cl-legend .k-dot.gas.ref { background: var(--ref-light); }
+
+/* Super License tab */
+.license-intro { margin-top: 0; max-width: 760px; }
+.license-head { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+.license-id { font-weight: 800; font-size: 1.05rem; color: #fff; background: var(--accent); border-radius: 8px; padding: 6px 9px;
+  min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
+.license-head h2 { margin: 0; font-size: 1.1rem; }
+.license-head .meta { margin: 0; }
+.license-medals { display: flex; flex-wrap: wrap; gap: 6px 18px; font-variant-numeric: tabular-nums; margin: 4px 0 2px; }
+.license-medals b, .medal-result b.medal { font-weight: 600; }
+.license-test .coach { margin-top: 10px; padding-top: 10px; }
+.medal-result { margin-left: 4px; }
