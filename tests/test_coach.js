@@ -72,15 +72,15 @@ for (const mirror of [false, true]) {
 assert.ok(r.corners[6].tips.some(t => /^Track use: at turn-in you're 2\.\d m tighter/.test(t)), r.corners[6].tips.join(" | "));
 const closeUp = Coach.cornerDetail(r.corners[6], "WR", r);
 assert.ok(closeUp.includes('class="corner-lines"'));
-// both braking points are in the picture, and the line thickness varies with the pedals
-assert.strictEqual((closeUp.match(/cl-dot brake/g) || []).length, 2);
-const widths = new Set([...closeUp.matchAll(/class="cl-me"[^>]*stroke-width:([\d.]+)/g)].map(m => m[1]));
-assert.ok(widths.size > 5, "line thickness follows the pedals");
-assert.ok(closeUp.includes('class="cl-toggle"'), "has the hide/show button for your line");
-assert.ok(closeUp.includes('class="cl-legend"') && closeUp.includes("k-dot slow ref"), "legend grid for you and the WR");
-// corner 2: your slowest point and full throttle are at the same spot, so the ring is drawn last, round the dot
-const c2 = Coach.cornerDetail(r.corners[1], "WR", r);
-assert.ok(c2.indexOf("cl-dot gas me") < c2.indexOf("cl-dot slow me"));
+// both first-brake badges are in the picture; you brake 20 m earlier than the WR, so there are big filled red dots
+// (more brake) before the WR's braking point
+assert.strictEqual((closeUp.match(/class="cl-badge (me|ref)">[\s\S]*?>B<\/text>/g) || []).length, 2);
+assert.ok(/cl-diff brk more"[^>]*r="4.6"/.test(closeUp), "early braking shows as large filled red dots");
+assert.ok(closeUp.includes("Hide WR's line"), "the button hides the reference's line");
+assert.ok(closeUp.includes('class="cl-legend"') && !closeUp.includes("slowest"), "legend; no slowest-point marker");
+// the WR lap against itself: every dot is "about the same"
+const selfClose = Coach.cornerDetail(self.corners[6], "WR", self);
+assert.ok(selfClose.includes("cl-same") && !/<circle class="cl-diff[^>]*cx=/.test(selfClose), "the WR against itself: all the same");
 
 // only telemetry.py recordings are accepted; anything else gets its own message
 assert.ok(Coach.isRecording(read("tests/fixtures/telemetry_lap.csv")));

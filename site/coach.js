@@ -502,59 +502,76 @@ const Coach = (() => {
     </figure>`;
   }
 
-  // The corner drawn to scale with both racing lines, the same way round as the lap map. Line thickness shows
-  // the pedals: brake pressure from the braking point to the slowest point, throttle everywhere else
-  // (thin = none, full thickness = 100%).
-  function cornerLines(result, c, who) {
+  // The corner drawn to scale, the same way round as the lap map. The reference's line is thin and plain; yours is a
+  // dot every 3 m or more (so they don't overlap on long corners) showing how your pedals differ from the reference's at that point: the brake wherever either of you
+  // is braking, the throttle everywhere else. Filled = more than the reference, ring = less, size = how much.
+  // Letter badges mark the first brake (B), back on the gas (G) and full throttle (F) on both lines.
+  const DOT_STEP = 3, SAME = 10; // points of pedal travel that count as the same
+  const dotSize = d => (d < 30 ? 2.2 : d < 60 ? 3.3 : 4.6);
+  function pedalDiff(R, M, k) {
+    const braking = R.brk[k] > 5 || M.brk[k] > 5;
+    return { pedal: braking ? "brk" : "gas", d: braking ? M.brk[k] - R.brk[k] : M.thr[k] - R.thr[k] };
+  }
+  function cornerLines(result, c, label) {
+    const who = label === "Reference" ? "the reference" : label; // a license test's gold run reads as a name otherwise
     const { R, M } = result.grid, n = R.x.length;
     const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
     let a = Math.max(0, Math.min(...starts) - 15), b = Math.min(n - 1, c.line.exit + 25);
     if (b - a > 450) a = Math.max(0, b - 450);
     const xs = [], zs = [];
     for (let k = a; k <= b; k++) xs.push(R.x[k], M.x[k]), zs.push(R.z[k], M.z[k]);
-    const pad = 8, minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad, minZ = Math.min(...zs) - pad, maxZ = Math.max(...zs) + pad;
+    const pad = 12, minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad, minZ = Math.min(...zs) - pad, maxZ = Math.max(...zs) + pad;
     const W = 360, scale = Math.min(W / (maxX - minX), 340 / (maxZ - minZ));
     const w = Math.round((maxX - minX) * scale), H = Math.round((maxZ - minZ) * scale) + 22;
-    const X = x => ((x - minX) * scale).toFixed(1), Y = z => ((z - minZ) * scale).toFixed(1);
-    const THIN = 1, FULL = 5.5;
-    const pedal = (L, m, k) => (m.brakeAt !== null && k >= m.brakeAt && k < m.minAt ? L.brk[k] : L.thr[k]);
-    const line = (L, m, cls) => {
-      let out = "";
-      for (let k = a; k < b; k += 2) {
-        const e = Math.min(b, k + 2), width = THIN + ((FULL - THIN) * Math.max(0, Math.min(100, pedal(L, m, k)))) / 100;
-        out += `<path class="${cls}" d="M${X(L.x[k])},${Y(L.z[k])}L${X(L.x[e])},${Y(L.z[e])}" style="stroke-width:${width.toFixed(2)}"/>`;
-      }
-      return out;
+    const sx = x => (x - minX) * scale, sz = z => (z - minZ) * scale;
+    const X = x => sx(x).toFixed(1), Y = z => sz(z).toFixed(1);
+    let ref = "";
+    for (let k = a; k <= b; k += 2) ref += (ref ? "L" : "M") + X(R.x[k]) + "," + Y(R.z[k]);
+    const step = Math.max(DOT_STEP, Math.ceil(9 / scale)); // at least 9 px apart
+    let dots = "";
+    for (let k = a; k <= b; k += step) {
+      const { pedal, d } = pedalDiff(R, M, k), m = Math.abs(d);
+      dots += m < SAME ? `<circle class="cl-same" cx="${X(M.x[k])}" cy="${Y(M.z[k])}" r="1.2"/>`
+        : `<circle class="cl-diff ${pedal} ${d > 0 ? "more" : "less"}" cx="${X(M.x[k])}" cy="${Y(M.z[k])}" r="${dotSize(m)}"/>`;
+    }
+    // letter badges, set off to either side of the line (you on one side, the reference on the other) so they don't
+    // cover each other or the dots
+    const badge = (L, k, letter, who2, side) => {
+      if (k === null || k < a || k > b) return "";
+      const [dx, dz] = direction(R, k), px = sx(L.x[k]), py = sz(L.z[k]);
+      const bx = px - dz * side * 11, by = py + dx * side * 11;
+      return `<g class="cl-badge ${who2}"><line x1="${px.toFixed(1)}" y1="${py.toFixed(1)}" x2="${bx.toFixed(1)}" y2="${by.toFixed(1)}"/>
+        <circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="6"/><text x="${bx.toFixed(1)}" y="${(by + 3).toFixed(1)}">${letter}</text></g>`;
     };
-    const dot = (L, k, cls, r = 4) => (k === null || k < a || k > b ? "" :
-      `<circle class="cl-dot ${cls}" cx="${X(L.x[k])}" cy="${Y(L.z[k])}" r="${r}"/>`);
-    // the slowest-point ring goes last and a little larger, so it still shows round a dot at the same spot
-    const dots = (L, m, who2) => dot(L, m.brakeAt, `brake ${who2}`) + dot(L, m.fullGas, `gas ${who2}`) + dot(L, m.minAt, `slow ${who2}`, 5);
-    const shows = key => [c.ref[key], c.me[key]].some(k => k !== null && k >= a && k <= b);
+    const badges = (L, m, who2, side) => badge(L, m.brakeAt, "B", who2, side) + badge(L, m.onGas, "G", who2, side) + badge(L, m.fullGas, "F", who2, side);
     // direction arrow at the start, scale bar in the bottom corner
     const k2 = Math.min(b, a + 8), ang = (Math.atan2(R.z[k2] - R.z[a], R.x[k2] - R.x[a]) * 180) / Math.PI;
     const ten = 10 * scale, sy = H - 8;
+    const key = (cls, r) => `<svg class="k-dot" viewBox="-6 -6 12 12" aria-hidden="true"><circle class="${cls}" r="${r}"/></svg>`;
     return `<figure class="corner-lines">
-      <button type="button" class="cl-toggle" aria-pressed="true">Hide your line</button>
-      <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale with your line and ${who}'s line">
-        <g>${line(R, c.ref, "cl-ref")}</g><g class="cl-me-line">${line(M, c.me, "cl-me")}</g>
-        ${dots(R, c.ref, "ref")}${dots(M, c.me, "me")}
+      <button type="button" class="cl-toggle" aria-pressed="true">Hide ${label === "Reference" ? "the reference" : who + "'s"} line</button>
+      <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale: your line coloured by how your pedals differ from ${who}'s">
+        <g class="cl-ref-line"><path class="cl-ref" d="${ref}"/>${badges(R, c.ref, "ref", -1)}</g>
+        ${dots}${badges(M, c.me, "me", 1)}
         <path class="cl-arrow" d="M-7,-5L5,0L-7,5Z" transform="translate(${X(R.x[a])},${Y(R.z[a])}) rotate(${ang.toFixed(1)})"/>
         <line class="cl-scale" x1="4" x2="${(4 + ten).toFixed(1)}" y1="${sy}" y2="${sy}"/>
         <text class="cl-scaletext" x="${(8 + ten).toFixed(1)}" y="${sy + 3}">10 m</text>
       </svg>
-      <table class="cl-legend">
-        <thead><tr><th></th>${shows("brakeAt") ? "<th>braking starts</th>" : ""}${shows("minAt") ? "<th>slowest point</th>" : ""}
-          ${shows("fullGas") ? "<th>full throttle</th>" : ""}</tr></thead>
-        <tbody>${[["me", "You"], ["ref", who]].map(([k, name]) => `<tr><th><i class="k-line ${k}"></i>${name}</th>
-          ${shows("brakeAt") ? `<td><i class="k-dot brake ${k}"></i></td>` : ""}${shows("minAt") ? `<td><i class="k-dot slow ${k}"></i></td>` : ""}
-          ${shows("fullGas") ? `<td><i class="k-dot gas ${k}"></i></td>` : ""}</tr>`).join("")}</tbody>
-      </table>
-      <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: brake pressure from the braking
-        point to the slowest point, then throttle before braking and after the slowest point (thin = none, full = 100%).
-        It doesn't show throttle used in the braking zone, or braking outside it: the pedal chart below shows all of it.
-        The track edges aren't in the data: where the grey line uses the whole width, it shows roughly where
-        they are.</p>
+      <div class="cl-legend">
+        <span>${key("cl-diff brk more", 4)}more brake than ${who}</span><span>${key("cl-diff brk less", 4)}less brake</span>
+        <span>${key("cl-diff gas more", 4)}more throttle</span><span>${key("cl-diff gas less", 4)}less throttle</span>
+        <span>${key("cl-same", 1.6)}about the same</span>
+      </div>
+      <div class="cl-legend">
+        <span><b class="cl-key-badge me">B</b><b class="cl-key-badge ref">B</b>first brake</span>
+        <span><b class="cl-key-badge me">G</b><b class="cl-key-badge ref">G</b>back on the gas</span>
+        <span><b class="cl-key-badge me">F</b><b class="cl-key-badge ref">F</b>full throttle</span>
+        <span>dark = you, grey = ${who}</span>
+      </div>
+      <p class="hint">Drawn to scale, the same way round as the lap map. Your line is a dot every ${step} m comparing your pedals
+        with ${who}'s at the same point: the brake wherever either of you is braking, the throttle everywhere else. Bigger
+        dots = bigger difference (${SAME}–30, 30–60, 60+ points of pedal travel). The track edges aren't in the data: where
+        the grey line uses the whole width, it shows roughly where they are.</p>
     </figure>`;
   }
 

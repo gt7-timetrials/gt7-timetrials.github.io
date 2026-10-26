@@ -13,6 +13,7 @@
   --bad: #d7263d;
   --you: #d7263d;
   --you-light: #f2a0aa;
+  --gas: #2563eb;
   --line-ref: #8a919c;
   --ref-light: #c9cdd4;
 }
@@ -32,6 +33,7 @@
     --bad: #ef4b5f;
     --you: #ff5468;
     --you-light: #ffb8c1;
+    --gas: #6b9bff;
     --line-ref: #8a919c;
     --ref-light: #d6dae0;
   }
@@ -259,7 +261,7 @@ table.corner-table thead th:first-child { font-weight: 500; }
 .pc-ref { stroke: var(--muted); stroke-width: 1.2; opacity: 0.8; }
 .pc-me { stroke-width: 2; }
 .pc-me.brake { stroke: var(--bad); }
-.pc-me.throttle { stroke: var(--good); }
+.pc-me.throttle { stroke: var(--gas); }
 .pc-me.gap { stroke: var(--text); }
 .pc-axis { stroke: var(--line); }
 .pc-grid { stroke: var(--line); stroke-dasharray: 2 3; }
@@ -273,46 +275,38 @@ table.corner-table thead th:first-child { font-weight: 500; }
 .pc-lift { fill: var(--warn); opacity: 0.16; }
 .pc-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
 .pc-legend i { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 4px; }
-.pc-legend .k-me { background: linear-gradient(90deg, var(--bad) 50%, var(--good) 50%); height: 4px; }
+.pc-legend .k-me { background: linear-gradient(90deg, var(--bad) 50%, var(--gas) 50%); height: 4px; }
 .pc-legend .k-ref { background: var(--muted); }
 .pc-legend .k-lift { background: var(--warn); opacity: 0.5; height: 10px; width: 10px; border-radius: 2px; }
 .trackmap .lift { stroke: var(--text); stroke-linecap: round; }
 
-/* corner close-up: both racing lines to scale, thickness = pedals */
-.corner-lines { margin: 4px 0 10px; }
+/* corner close-up: the reference's line thin, yours as dots showing how your pedals differ */
+.corner-lines { margin: 4px 0 10px; position: relative; }
 .corner-lines svg { width: 100%; height: auto; display: block; max-height: 360px; }
-.corner-lines path { fill: none; stroke-linecap: round; }
-.cl-ref { stroke: var(--line-ref); }
-.cl-me { stroke: var(--you); }
-.cl-me-line { opacity: 0.82; } /* faded as one, so the pieces don't show where they overlap */
-.cl-dot { stroke-width: 2; }
-.cl-dot.me.brake { fill: var(--you); stroke: var(--card); }
-.cl-dot.me.slow { fill: none; stroke: var(--you); }
-.cl-dot.me.gas { fill: var(--you-light); stroke: var(--card); }
-.cl-dot.ref.brake { fill: var(--line-ref); stroke: var(--card); }
-.cl-dot.ref.slow { fill: none; stroke: var(--line-ref); }
-.cl-dot.ref.gas { fill: var(--ref-light); stroke: var(--card); }
+.cl-ref { fill: none; stroke: var(--line-ref); stroke-width: 1.5; stroke-linecap: round; }
+.cl-same { fill: var(--muted); }
+.cl-diff { stroke-width: 1.6; }
+.cl-diff.brk.more { fill: var(--bad); stroke: var(--bad); } .cl-diff.brk.less { fill: var(--card); stroke: var(--bad); }
+.cl-diff.gas.more { fill: var(--gas); stroke: var(--gas); } .cl-diff.gas.less { fill: var(--card); stroke: var(--gas); }
+.cl-badge line { stroke: var(--muted); stroke-width: 1; }
+.cl-badge circle { stroke: var(--card); stroke-width: 1; }
+.cl-badge.me circle { fill: var(--text); } .cl-badge.ref circle { fill: var(--line-ref); }
+.cl-badge text { fill: var(--card); font-size: 8px; font-weight: 700; text-anchor: middle; }
 .cl-arrow { fill: var(--muted); stroke: none; }
 .cl-scale { stroke: var(--muted); stroke-width: 2; }
 .cl-scaletext { fill: var(--muted); font-size: 9px; }
 .pc-legend .k-line { height: 4px; }
 .pc-legend .k-line.me { background: var(--you); } .pc-legend .k-line.ref { background: var(--line-ref); }
-.corner-lines { position: relative; }
 .cl-toggle { position: absolute; top: 0; right: 0; z-index: 1; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line);
   background: var(--card); color: var(--text); font: inherit; font-size: 0.8rem; cursor: pointer; }
 .cl-toggle:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
-.corner-lines.hide-mine .cl-me-line, .corner-lines.hide-mine .cl-dot.me { display: none; }
-/* close-up legend: a small grid of you / the reference against each dot */
-table.cl-legend { width: auto; margin: 6px 0 2px; font-size: 0.78rem; color: var(--muted); }
-table.cl-legend th, table.cl-legend td { padding: 2px 10px 2px 0; border: 0; min-width: 0; text-align: center;
-  font-weight: 500; position: static; background: none; }
-table.cl-legend tbody th { text-align: left; color: var(--text); white-space: nowrap; }
-.cl-legend .k-line { display: inline-block; width: 14px; height: 4px; vertical-align: middle; margin-right: 5px; }
-.cl-legend .k-line.me { background: var(--you); } .cl-legend .k-line.ref { background: var(--line-ref); }
-.cl-legend .k-dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; box-sizing: border-box; vertical-align: middle; }
-.cl-legend .k-dot.brake.me { background: var(--you); } .cl-legend .k-dot.brake.ref { background: var(--line-ref); }
-.cl-legend .k-dot.slow.me { border: 2px solid var(--you); } .cl-legend .k-dot.slow.ref { border: 2px solid var(--line-ref); }
-.cl-legend .k-dot.gas.me { background: var(--you-light); } .cl-legend .k-dot.gas.ref { background: var(--ref-light); }
+.corner-lines.hide-ref .cl-ref-line { display: none; }
+.cl-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 6px 0 0; font-size: 0.78rem; color: var(--muted); }
+.cl-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.cl-legend .k-dot { width: 12px; height: 12px; }
+.cl-key-badge { display: inline-block; width: 14px; height: 14px; line-height: 14px; border-radius: 50%; text-align: center;
+  font-size: 0.6rem; color: var(--card); }
+.cl-key-badge.me { background: var(--text); } .cl-key-badge.ref { background: var(--line-ref); margin-right: 2px; }
 
 /* Super License tab */
 .license-intro { margin-top: 0; max-width: 760px; }
