@@ -45,7 +45,7 @@ public final class RecorderCheck {
             for (int i = 1; i < rows.size(); i++) {
                 byte[] enc = packet(head, rows.get(i).split(",", -1), i);
                 console.send(new DatagramPacket(enc, enc.length, to));
-                if (i % 20 == 0) Thread.sleep(1); // don't overflow the socket buffer
+                if (i % 5 == 0) Thread.sleep(1); // don't overflow the socket buffer, or the test loses packets on a busy computer
             }
         }
         Thread.sleep(700);
