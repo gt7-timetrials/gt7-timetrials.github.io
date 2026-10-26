@@ -21,34 +21,34 @@ One-off setup (Windows)
 1. Install Python from https://www.python.org/downloads/
    On the first installer screen tick "Add python.exe to PATH", then click Install Now.
 2. Save telemetry.py (the website's "Download recorder" link) in your Downloads folder.
-3. Find your PlayStation's IP address:
-   Settings > Network > Connection Status > View Connection Status > IPv4 Address
-   (for example 192.168.1.23).
 
 Recording a lap
 ---------------
-1. Start GT7 and go to the time trial.
-2. Open Command Prompt (Windows key, type cmd, Enter) and type, using your console's
-   address:
+1. Start GT7 and go to the time trial. (The PlayStation only answers while GT7 is running.)
+2. Open Command Prompt (Windows key, type cmd, Enter) and type:
 
        cd %USERPROFILE%\Downloads
-       py telemetry.py 192.168.1.23
+       py telemetry.py
 
-   (On a Mac or Linux open Terminal, go to the folder and run:
-    python3 telemetry.py 192.168.1.23)
+   It finds your PlayStation by itself and remembers it for next time.
+   (On a Mac or Linux open Terminal, go to the folder and run: python3 telemetry.py)
 
 3. If Windows Firewall asks, allow Python on Private networks.
 4. Drive. Start before you cross the start line and keep going until you have crossed
-   it again: at least one full lap. More laps are fine; the fastest complete lap
-   in the file is used.
+   it again: at least one full lap. Each completed lap is shown with its time.
+   More laps are fine; the fastest complete lap in the file is used.
 5. Press Ctrl+C to stop. The file is saved next to telemetry.py, named like
-   telemetry_20261025_214804.csv.
+   telemetry_20261025_214804.csv, and the window tells you where.
 6. On the website, open Current, find the event and click "Upload your lap".
 
 If it doesn't work
 ------------------
-- "waiting for data..." keeps showing: check the IP address, that GT7 is running (not
-  just the PS5 home screen), and that the firewall allowed Python.
+- "Still no answer": check that GT7 is running (not just the PS5 home screen), that the
+  computer and the PlayStation use the same router, and that the firewall allowed Python.
+  You can also give the address yourself: py telemetry.py 192.168.1.23
+  (PS5: Settings > Network > Connection Status > View Connection Status > IPv4 Address).
+- "The connection dropped": Wi-Fi hiccup. The recorder reconnects by itself; record
+  another lap if the one with the dropout matters.
 - "Could not listen on port 33740": another telemetry app is running. Close it.
 - "py is not recognised": Python isn't installed, or "Add python.exe to PATH" wasn't
   ticked. Run the installer again.

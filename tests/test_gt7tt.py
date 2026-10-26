@@ -155,6 +155,39 @@ class SiteTest(unittest.TestCase):
         self.assertEqual(store.course(10)[0], "Suzuka Circuit")
 
 
+class RecorderTest(unittest.TestCase):
+    """tools/telemetry.py, the script players download."""
+    @classmethod
+    def setUpClass(cls):
+        import importlib.util
+        path = os.path.join(os.path.dirname(__file__), "..", "tools", "telemetry.py")
+        spec = importlib.util.spec_from_file_location("recorder", path)
+        cls.rec = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.rec)
+
+    def test_scans_the_home_network_saved_address_first(self):
+        c = self.rec.candidates("192.168.1.40", saved="192.168.1.23")
+        self.assertEqual(c[0], "192.168.1.23")
+        self.assertEqual(len(c), 253)  # .1 to .254 without this computer, saved address only once
+        self.assertNotIn("192.168.1.40", c)
+        self.assertEqual(self.rec.candidates(None), [])
+
+    def test_lap_time_format(self):
+        self.assertEqual(self.rec.fmt_lap(113057), "1:53.057")
+        self.assertEqual(self.rec.fmt_lap(76684), "1:16.684")
+
+    def test_decrypts_what_it_encrypts(self):
+        p = bytearray(0x13C)
+        p[0:4] = (0x47375330).to_bytes(4, "little")
+        iv1 = 0x1234ABCD
+        nonce = (iv1 ^ 0xDEADBEEF).to_bytes(4, "little") + iv1.to_bytes(4, "little")
+        enc = bytearray(self.rec.salsa20(self.rec.KEY, nonce, bytes(p)))
+        enc[0x40:0x44] = iv1.to_bytes(4, "little")
+        out = self.rec.decrypt(bytes(enc), 0xDEADBEEF)
+        self.assertIsNotNone(out)
+        self.assertIsNone(self.rec.decrypt(bytes(enc), 0xDEADBEAF))  # wrong format: rejected
+
+
 class TelemetryTest(unittest.TestCase):
     REF = os.path.join(os.path.dirname(__file__), "..", "data", "reference_laps", "telemetry_20261025_214232.csv")
     LAP = os.path.join(os.path.dirname(__file__), "fixtures", "telemetry_lap.csv")
