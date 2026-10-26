@@ -7,9 +7,9 @@ Upload the CSV on https://gt7-timetrials.github.io/ to compare a lap with the wo
     py telemetry.py 192.168.1.23      (or give its IP address yourself)
     python3 telemetry.py              (Mac / Linux)
 
-Start GT7 first: the PlayStation only answers while GT7 is running. The address it finds is
-remembered in telemetry_ip.txt next to this script. Press Ctrl+C to stop; every packet is saved
-to telemetry_<date>_<time>.csv next to this script.
+Start GT7 first: the PlayStation only answers while GT7 is running. It searches afresh every time,
+since the PlayStation's address can change. Press Ctrl+C to stop; every packet is saved to
+telemetry_<date>_<time>.csv next to this script.
 
 How it works: GT7 sends ~60 packets a second to whoever sends it a small "heartbeat" on
 UDP port 33739, as long as the heartbeat is repeated every few seconds. Packets arrive on
@@ -105,7 +105,6 @@ def parse(p, t0):
 
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SAVED_IP = os.path.join(HERE, "telemetry_ip.txt")
 
 
 def fmt_lap(ms):
@@ -124,13 +123,12 @@ def local_ip():
         probe.close()
 
 
-def candidates(own_ip, saved=None):
-    """Addresses to try, most likely first: the saved one, then everything on the same /24 network."""
-    out = [saved] if saved else []
-    if own_ip:
-        base = own_ip.rsplit(".", 1)[0]
-        out += [f"{base}.{n}" for n in range(1, 255) if f"{base}.{n}" not in (own_ip, saved)]
-    return out
+def candidates(own_ip):
+    """Every other address on the same /24 network as this computer."""
+    if not own_ip:
+        return []
+    base = own_ip.rsplit(".", 1)[0]
+    return [f"{base}.{n}" for n in range(1, 255) if f"{base}.{n}" != own_ip]
 
 
 def read_packet(sock, fmt):
@@ -141,15 +139,11 @@ def read_packet(sock, fmt):
 
 def find_console(sock, given=None):
     """Send heartbeats until a PlayStation answers. Returns (ip, packet format)."""
-    saved = None
-    if not given and os.path.exists(SAVED_IP):
-        saved = open(SAVED_IP).read().strip() or None
-    targets = [given] if given else candidates(local_ip(), saved)
+    targets = [given] if given else candidates(local_ip())
     if not targets:
         sys.exit("Couldn't work out this computer's network address. Run it with your PlayStation's address,\n"
                  "e.g.  py telemetry.py 192.168.1.23  (PS5: Settings > Network > Connection Status).")
-    where = given or (f"{saved} (last time's address), then your whole network" if saved else
-                      f"your network ({targets[0].rsplit('.', 1)[0]}.x)")
+    where = given or f"your network ({targets[0].rsplit('.', 1)[0]}.x)"
     print(f"Looking for your PlayStation on {where}. Make sure GT7 is running...")
     started = time.time()
     while True:
@@ -201,12 +195,6 @@ def main():
         print("\nStopped before the PlayStation was found. Nothing was recorded.")
         pause_before_closing()
         return
-    if not given:
-        try:
-            with open(SAVED_IP, "w") as f:
-                f.write(ip)
-        except OSError:
-            pass
     print(f"Connected to your PlayStation at {ip}.")
 
     name = os.path.join(HERE, datetime.now().strftime("telemetry_%Y%m%d_%H%M%S.csv"))

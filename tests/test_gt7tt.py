@@ -166,10 +166,10 @@ class RecorderTest(unittest.TestCase):
         cls.rec = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.rec)
 
-    def test_scans_the_home_network_saved_address_first(self):
-        c = self.rec.candidates("192.168.1.40", saved="192.168.1.23")
-        self.assertEqual(c[0], "192.168.1.23")
-        self.assertEqual(len(c), 253)  # .1 to .254 without this computer, saved address only once
+    def test_scans_the_home_network(self):
+        c = self.rec.candidates("192.168.1.40")
+        self.assertEqual(c[0], "192.168.1.1")
+        self.assertEqual(len(c), 253)  # .1 to .254 without this computer
         self.assertNotIn("192.168.1.40", c)
         self.assertEqual(self.rec.candidates(None), [])
 
