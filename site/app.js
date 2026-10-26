@@ -289,9 +289,15 @@ window.GT7AppEvent = ev => {
   if (!recording) return;
   const status = recording.out.querySelector(".rec-status"), laps = recording.out.querySelector(".rec-laps");
   const say = (text, cls = "") => { status.textContent = text; status.className = "rec-status " + cls; };
-  if (ev.type === "searching") say(`Looking for your PlayStation on your network (${ev.network}). Make sure GT7 is running…`);
-  else if (ev.type === "slow") say(`Still looking. Check that GT7 is running on the PlayStation (not just the home screen), and that
-    this phone is on Wi-Fi from the same router as the PlayStation.`, "miss");
+  if (ev.type === "searching") say(`Looking for your PlayStation at ${ev.network}. Make sure GT7 is running…`);
+  else if (ev.type === "slow") {
+    say(`Still looking. Check that GT7 is running on the PlayStation (not just the home screen), that this phone is on Wi-Fi
+      from the same router (not a guest network), and that the computer recorder isn't running at the same time.
+      Or type in the PlayStation's address below.`, "miss");
+    recording.out.querySelector(".rec-ip").open = true;
+    recording.out.querySelector(".rec-debug").textContent = `This phone: ${ev.phone || "no Wi-Fi address"} · searched ${ev.network}
+      (${ev.tried} address${ev.tried === 1 ? "" : "es"}) · ${ev.sendErrors} failed sends · ${ev.heard} replies`;
+  }
   else if (ev.type === "connected") say(`Connected to your PlayStation at ${ev.ip}. ${REC_STATES.menus}`);
   else if (ev.type === "state") say(REC_STATES[ev.state] || "");
   else if (ev.type === "silent") say(`No data for ${ev.seconds} s. Is GT7 still running? Still trying…`, "miss");
@@ -305,7 +311,7 @@ window.GT7AppEvent = ev => {
   }
 };
 
-function startRecording(e, out) {
+function startRecording(e, out, ip) {
   if (recording) finishRecording(false);
   recording = { e, out, laps: 0 };
   out.innerHTML = `<div class="rec-panel">
@@ -314,10 +320,22 @@ function startRecording(e, out) {
       <p class="hint">Keep the app open while you drive: the screen stays on. The fastest complete lap is compared.</p>
       <div class="coach-actions"><button type="button" class="button-link primary rec-stop">Stop and compare</button>
         <button type="button" class="button-link rec-cancel">Cancel</button></div>
+      <details class="rec-ip"><summary>Not finding your PlayStation? Type in its address</summary>
+        <p class="hint">PS5: Settings &gt; Network &gt; Connection Status &gt; View Connection Status (IPv4 address).
+          If the computer recorder has found it, it's also in telemetry_ip.txt next to telemetry.py.</p>
+        <form class="rec-ip-form"><input inputmode="decimal" placeholder="192.168.1.23" value="${esc(ip || (APP.savedIp ? APP.savedIp() : ""))}">
+          <button class="button-link">Try this address</button></form>
+        <p class="hint rec-debug"></p>
+      </details>
     </div>`;
   out.querySelector(".rec-stop").addEventListener("click", () => finishRecording(true));
   out.querySelector(".rec-cancel").addEventListener("click", () => { finishRecording(false); out.innerHTML = ""; });
-  APP.start();
+  out.querySelector(".rec-ip-form").addEventListener("submit", ev => {
+    ev.preventDefault();
+    const typed = out.querySelector(".rec-ip-form input").value.trim();
+    if (/^\d{1,3}(\.\d{1,3}){3}$/.test(typed)) startRecording(e, out, typed);
+  });
+  try { APP.start(ip || ""); } catch (err) { APP.start(); } // the first app version takes no address
 }
 
 async function finishRecording(compare) {

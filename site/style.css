@@ -185,6 +185,11 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .rec-laps { margin: 0 0 6px; padding-left: 20px; }
 .rec-laps:empty { display: none; }
 .rec-save { margin: 10px 0 0; }
+.rec-ip { margin-top: 10px; }
+.rec-ip summary { cursor: pointer; color: var(--muted); }
+.rec-ip-form { display: flex; gap: 8px; flex-wrap: wrap; }
+.rec-ip-form input { font: inherit; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; width: 11em;
+  background: var(--bg); color: var(--text); }
 .coach-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: start; }
 @media (max-width: 760px) { .coach-grid { grid-template-columns: minmax(0, 1fr); } }
 .trackmap { width: 100%; height: auto; max-height: 480px; display: block; }

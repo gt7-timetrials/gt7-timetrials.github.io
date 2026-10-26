@@ -7,6 +7,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
+import java.net.PortUnreachableException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -24,20 +25,33 @@ final class Recorder implements Runnable {
         void event(String json);
     }
 
+    /** Lets the app send and receive through the Wi-Fi network even when mobile data or a VPN is also on. */
+    interface SocketSetup {
+        void setup(DatagramSocket socket) throws IOException;
+    }
+
     private static final long HEARTBEAT_EVERY_MS = 5000;
 
     private final Listener listener;
     private final String savedIp; // last time's address, tried first
-    private final String onlyIp;  // for tests: talk to this address only
+    private final String onlyIp;  // the address the player typed in (or a test's): talk to this one only
+    private final String ownIp;   // this phone's Wi-Fi address, if the app knows it
+    private final SocketSetup setup;
     private volatile boolean running = true;
     private final StringBuilder csv = new StringBuilder(Telemetry.HEADER + "\n");
     private int packets = 0, laps = 0;
     private String ip;
 
-    Recorder(Listener listener, String savedIp, String onlyIp) {
+    Recorder(Listener listener, String savedIp, String onlyIp, String ownIp, SocketSetup setup) {
         this.listener = listener;
         this.savedIp = savedIp;
-        this.onlyIp = onlyIp;
+        this.onlyIp = onlyIp == null || onlyIp.trim().isEmpty() ? null : onlyIp.trim();
+        this.ownIp = ownIp;
+        this.setup = setup;
+    }
+
+    Recorder(Listener listener, String savedIp, String onlyIp) {
+        this(listener, savedIp, onlyIp, null, null);
     }
 
     void stop() {
@@ -97,12 +111,14 @@ final class Recorder implements Runnable {
         return out;
     }
 
-    private static void send(DatagramSocket sock, char format, String to) {
+    /** Sends the heartbeat; false if the phone couldn't send it. */
+    private static boolean send(DatagramSocket sock, char format, String to) {
         try {
             byte[] b = {(byte) format};
             sock.send(new DatagramPacket(b, 1, new InetSocketAddress(to, Telemetry.SEND_PORT)));
-        } catch (IOException | IllegalArgumentException ignored) {
-            // an address that can't be reached: skip it
+            return true;
+        } catch (IOException | IllegalArgumentException e) {
+            return false; // an address that can't be reached: skip it
         }
     }
 
@@ -111,6 +127,7 @@ final class Recorder implements Runnable {
         try (DatagramSocket sock = new DatagramSocket(null)) {
             sock.setReuseAddress(true);
             sock.bind(new InetSocketAddress(Telemetry.RECV_PORT));
+            if (setup != null) setup.setup(sock);
             sock.setSoTimeout(500);
             record(sock);
         } catch (IOException e) {
@@ -123,28 +140,32 @@ final class Recorder implements Runnable {
     private void record(DatagramSocket sock) throws IOException {
         byte[] buf = new byte[4096];
         DatagramPacket dp = new DatagramPacket(buf, buf.length);
-        List<String> targets = onlyIp != null ? Collections.singletonList(onlyIp) : candidates(localIp(), savedIp);
+        String phone = ownIp != null ? ownIp : localIp();
+        List<String> targets = onlyIp != null ? Collections.singletonList(onlyIp) : candidates(phone, savedIp);
         if (targets.isEmpty()) {
             emit("error", "\"message\":" + q("This phone isn't on a Wi-Fi network. Connect to the same router as your PlayStation."));
             return;
         }
-        emit("searching", "\"network\":" + q(targets.get(targets.size() - 1).replaceAll("\\.\\d+$", ".x")));
+        String where = onlyIp != null ? onlyIp : targets.get(targets.size() - 1).replaceAll("\\.\\d+$", ".x");
+        emit("searching", "\"network\":" + q(where) + ",\"phone\":" + q(phone == null ? "" : phone));
 
         // find the console: heartbeat everyone, take the first one that answers with a GT7 packet
         char format = 0;
         long started = System.currentTimeMillis();
         boolean hinted = false;
+        int heard = 0, sendErrors = 0; // for the "still looking" message: anything at all arriving, or sends failing
         search:
         while (running) {
             for (char f : new char[]{'B', 'A'}) {
-                for (String t : targets) send(sock, f, t);
+                for (String t : targets) if (!send(sock, f, t)) sendErrors++;
                 long until = System.currentTimeMillis() + 3000;
                 while (running && System.currentTimeMillis() < until) {
                     try {
                         sock.receive(dp);
-                    } catch (SocketTimeoutException e) {
+                    } catch (SocketTimeoutException | PortUnreachableException e) { // nothing yet, or an "unreachable" reply to a heartbeat
                         continue;
                     }
+                    heard++;
                     if (Telemetry.decrypt(buf, dp.getLength(), Telemetry.nonceXor(f)) != null) {
                         ip = dp.getAddress().getHostAddress();
                         format = f;
@@ -153,7 +174,8 @@ final class Recorder implements Runnable {
                 }
             }
             if (!hinted && System.currentTimeMillis() - started > 20000) {
-                emit("slow", "");
+                emit("slow", "\"phone\":" + q(phone == null ? "" : phone) + ",\"network\":" + q(where)
+                        + ",\"heard\":" + heard + ",\"sendErrors\":" + sendErrors + ",\"tried\":" + targets.size());
                 hinted = true;
             }
         }
@@ -179,7 +201,7 @@ final class Recorder implements Runnable {
             }
             try {
                 sock.receive(dp);
-            } catch (SocketTimeoutException e) {
+            } catch (SocketTimeoutException | PortUnreachableException e) { // nothing yet, or an "unreachable" reply to a heartbeat
                 continue;
             }
             if (!dp.getAddress().getHostAddress().equals(ip)) continue;
