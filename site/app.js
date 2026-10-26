@@ -343,7 +343,7 @@ function startRecording(e, out, ip) {
       <details class="rec-ip"><summary>Not finding your PlayStation? Type in its address</summary>
         <p class="hint">PS5: Settings &gt; Network &gt; Connection Status &gt; View Connection Status (IPv4 address).
           If the computer recorder has found it, it's also in telemetry_ip.txt next to telemetry.py.</p>
-        <form class="rec-ip-form"><input inputmode="decimal" placeholder="192.168.1.23" value="${esc(ip || (APP.savedIp ? APP.savedIp() : ""))}">
+        <form class="rec-ip-form"><input inputmode="decimal" placeholder="192.168.1.23" value="${esc(ip || "")}">
           <button class="button-link">Try this address</button></form>
         <p class="hint rec-debug"></p>
       </details>

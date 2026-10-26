@@ -40,7 +40,7 @@ public final class RecorderCheck {
         Recorder rec = new Recorder(json -> {
             synchronized (events) { events.append(json).append('\n'); }
             System.out.println(json);
-        }, null, "127.0.0.1");
+        }, "127.0.0.1");
         Thread t = new Thread(rec);
         try (DatagramSocket console = new DatagramSocket(new InetSocketAddress("127.0.0.1", Telemetry.SEND_PORT))) {
             t.start(); // only once the fake console is listening, so the first heartbeat isn't lost
@@ -91,7 +91,7 @@ public final class RecorderCheck {
         Recorder rec = new Recorder(json -> {
             System.out.println(json);
             if (json.contains("\"connected\"")) connected[0] = json;
-        }, null, null, "127.0.0.1", null);
+        }, null, "127.0.0.1", null);
         Thread t = new Thread(rec);
         t.start();
         console.setSoTimeout(15000);

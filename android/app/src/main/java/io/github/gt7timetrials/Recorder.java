@@ -36,7 +36,6 @@ final class Recorder implements Runnable {
     private static final long HEARTBEAT_EVERY_MS = 5000;
 
     private final Listener listener;
-    private final String savedIp; // last time's address, tried first
     private final String onlyIp;  // the address the player typed in (or a test's): talk to this one only
     private final String ownIp;   // this phone's Wi-Fi address, if the app knows it
     private final SocketSetup setup;
@@ -47,16 +46,15 @@ final class Recorder implements Runnable {
     // PlayStations that answered the Remote Play discovery broadcast: they get the heartbeat first
     private final Set<String> found = ConcurrentHashMap.newKeySet();
 
-    Recorder(Listener listener, String savedIp, String onlyIp, String ownIp, SocketSetup setup) {
+    Recorder(Listener listener, String onlyIp, String ownIp, SocketSetup setup) {
         this.listener = listener;
-        this.savedIp = savedIp;
         this.onlyIp = onlyIp == null || onlyIp.trim().isEmpty() ? null : onlyIp.trim();
         this.ownIp = ownIp;
         this.setup = setup;
     }
 
-    Recorder(Listener listener, String savedIp, String onlyIp) {
-        this(listener, savedIp, onlyIp, null, null);
+    Recorder(Listener listener, String onlyIp) {
+        this(listener, onlyIp, null, null);
     }
 
     void stop() {
@@ -102,15 +100,14 @@ final class Recorder implements Runnable {
         }
     }
 
-    /** Addresses to try, most likely first: the saved one, then everything on the same /24 network. */
-    static List<String> candidates(String ownIp, String saved) {
+    /** Every other address on the same /24 network as the phone. */
+    static List<String> candidates(String ownIp) {
         List<String> out = new ArrayList<>();
-        if (saved != null && !saved.isEmpty()) out.add(saved);
         if (ownIp != null) {
             String base = ownIp.substring(0, ownIp.lastIndexOf('.'));
             for (int n = 1; n < 255; n++) {
                 String a = base + "." + n;
-                if (!a.equals(ownIp) && !a.equals(saved)) out.add(a);
+                if (!a.equals(ownIp)) out.add(a);
             }
         }
         return out;
@@ -207,7 +204,7 @@ final class Recorder implements Runnable {
         byte[] buf = new byte[4096];
         DatagramPacket dp = new DatagramPacket(buf, buf.length);
         String phone = ownIp != null ? ownIp : localIp();
-        List<String> targets = onlyIp != null ? Collections.singletonList(onlyIp) : candidates(phone, savedIp);
+        List<String> targets = onlyIp != null ? Collections.singletonList(onlyIp) : candidates(phone);
         if (targets.isEmpty()) {
             emit("error", "\"message\":" + q("This phone isn't on a Wi-Fi network. Connect to the same router as your PlayStation."));
             return;

@@ -5,8 +5,8 @@ phone. When the site runs inside the app, `window.GT7App` exists and the lap com
 phone** instead of the computer recorder's download links.
 
 - `Recorder.java` / `Telemetry.java` do what `tools/telemetry.py` does: find the PlayStation, decrypt the packets, and
-  keep them as a CSV with the same columns. To find it, the app tries the following at the same time:
-  - last time's address;
+  keep them as a CSV with the same columns. It searches afresh every time (a PlayStation's address can change),
+  trying these at the same time:
   - the Remote Play discovery broadcast ("SRCH * HTTP/1.1" to UDP 9302 for PS5 and 987 for PS4), which every
     PlayStation answers with its address;
   - a sweep sending the heartbeat to every address on the phone's Wi-Fi network, spread out because some routers and
