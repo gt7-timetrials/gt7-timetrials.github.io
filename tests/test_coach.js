@@ -49,4 +49,26 @@ assert.ok(Coach.analyse(ref, other).error, "a lap on another track is rejected")
 
 assert.strictEqual(Coach.fastestLap(Coach.parseCsv(read("tests/fixtures/telemetry_lap.csv").split("\n").slice(0, 2000).join("\n"))), null,
   "no complete lap -> null");
+// Track use: a 90° corner driven 3 m further out reads as 3 m wider, for right- and left-handers
+function cornerLap(wider, mirror) {
+  const P = [], r = 50 + wider;
+  for (let z = 300; z > 0; z -= 0.5) P.push([-wider, z]);
+  for (let a = Math.PI; a > Math.PI / 2; a -= 0.005) P.push([50 + r * Math.cos(a), -r * Math.sin(a)]);
+  for (let x = 50; x < 350; x += 0.5) P.push([x, -r]);
+  const n = P.length, v = P.map((_, i) => 100 + 200 * Math.abs(i / n - 0.5));
+  const x = P.map(p => (mirror ? -p[0] : p[0])), z = P.map(p => p[1]), t = [0];
+  for (let i = 1; i < n; i++) t.push(t[i - 1] + Math.hypot(x[i] - x[i - 1], z[i] - z[i - 1]) / (v[i] / 3.6));
+  return { lap_ms: Math.round(t[n - 1] * 1000), car_code: 1, t, x, z, speed_kmh: v, throttle_pct: v.map(s => (s > 190 ? 100 : 30)),
+    brake_pct: P.map(() => 0), steering_rad: P.map((_, i) => (i > 600 && i < n - 600 ? 1 : 0)), wheel_rl_kmh: v, wheel_rr_kmh: v };
+}
+for (const mirror of [false, true]) {
+  const c = Coach.analyse(cornerLap(0, mirror), cornerLap(3, mirror)).corners[0];
+  assert.strictEqual(c.line.right, !mirror);
+  for (const k of ["atTurnIn", "atApex", "atExit"]) assert.ok(Math.abs(c.line[k] - 3) < 0.1, `${k} ${c.line[k]}`);
+  assert.ok(c.tips.some(t => t.startsWith("Track use: at turn-in you're 3.0 m wider")));
+}
+// on the real lap: turning in from further inside at corner 7, and a close-up drawing
+assert.ok(r.corners[6].tips.some(t => /^Track use: at turn-in you're 2\.\d m tighter/.test(t)), r.corners[6].tips.join(" | "));
+assert.ok(Coach.cornerDetail(r.corners[6], "WR", r).includes('class="corner-lines"'));
+
 console.log("coach.js tests passed");

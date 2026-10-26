@@ -258,3 +258,22 @@ table.corner-table thead th:first-child { font-weight: 500; }
 .pc-legend .k-ref { background: var(--muted); }
 .pc-legend .k-lift { background: var(--warn); opacity: 0.5; height: 10px; width: 10px; border-radius: 2px; }
 .trackmap .lift { stroke: var(--text); stroke-linecap: round; }
+
+/* corner close-up: both racing lines to scale */
+.corner-lines { margin: 4px 0 10px; }
+.corner-lines svg { width: 100%; height: auto; display: block; max-height: 340px; }
+.corner-lines path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.cl-ref { stroke: var(--muted); stroke-width: 2; opacity: 0.8; }
+.cl-me { stroke: var(--wr); stroke-width: 2.6; }
+.cl-mark { stroke-width: 2; }
+.cl-mark.ref { fill: var(--card); }
+.cl-mark.brake { stroke: var(--bad); } .cl-mark.brake.me { fill: var(--bad); }
+.cl-mark.gas { stroke: var(--good); } .cl-mark.gas.me { fill: var(--good); }
+.cl-mark.slow { stroke: var(--text); } .cl-mark.slow.me { fill: var(--text); }
+.cl-arrow { fill: var(--muted); stroke: none; }
+.cl-scale { stroke: var(--muted); stroke-width: 2; }
+.cl-scaletext { fill: var(--muted); font-size: 9px; }
+.pc-legend .k-line-me { background: var(--wr); }
+.pc-legend .k-dot { width: 9px; height: 9px; border-radius: 50%; border: 2px solid; box-sizing: border-box; }
+.pc-legend .k-dot.brake { border-color: var(--bad); } .pc-legend .k-dot.gas { border-color: var(--good); }
+.pc-legend .k-dot.slow { border-color: var(--text); }

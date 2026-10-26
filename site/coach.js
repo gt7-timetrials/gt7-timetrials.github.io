@@ -82,7 +82,8 @@ const Coach = (() => {
     for (let i = 1; i < s.length; i++) if (s[i] > s[keep[keep.length - 1]]) keep.push(i);
     const xs = keep.map(i => s[i]), col = k => keep.map(i => lap[k][i]);
     const cols = { t: col("t"), v: col("speed_kmh"), thr: col("throttle_pct"), brk: col("brake_pct"),
-      steer: col("steering_rad"), spin: keep.map(i => (lap.wheel_rl_kmh[i] + lap.wheel_rr_kmh[i]) / 2 - lap.speed_kmh[i]) };
+      steer: col("steering_rad"), spin: keep.map(i => (lap.wheel_rl_kmh[i] + lap.wheel_rr_kmh[i]) / 2 - lap.speed_kmh[i]),
+      x: col("x"), z: col("z") };
     const g = {};
     for (const k in cols) g[k] = Array.from({ length: n }, (_, m) => interp(xs, cols[k], m));
     g.thr = g.thr.map((v, m) => (g.brk[m] > 10 ? 0 : v));
@@ -213,10 +214,51 @@ const Coach = (() => {
     return { ...result(corners, steerRatio, R, M, delta, who), lapMs: myLap.lap_ms, refMs: refLap.lap_ms, length: n, ref };
   }
 
+  // Where you are across the track compared with the reference: metres to the outside of the reference's line
+  // (+, wider) or the inside (−, tighter), using the corner's direction of turn. Real positions, not distance.
+  function direction(R, k) {
+    const a = Math.max(0, k - 3), b = Math.min(R.x.length - 1, k + 3);
+    const dx = R.x[b] - R.x[a], dz = R.z[b] - R.z[a], l = Math.hypot(dx, dz) || 1;
+    return [dx / l, dz / l];
+  }
+  function lineUse(R, M, z0, z1, apex, ref_m) {
+    const n = R.x.length, clamp = k => Math.max(0, Math.min(n - 1, Math.round(k)));
+    const turnIn = clamp(ref_m.turnIn ?? apex - 30);
+    const exit = clamp(Math.min(z1 - 1, (ref_m.fullGas ?? apex + 40) + 20));
+    const [ax, az] = direction(R, clamp(Math.min(turnIn, apex - 10) - 10)), [bx, bz] = direction(R, clamp(Math.max(exit, apex + 10)));
+    const cross = ax * bz - az * bx; // > 0: turning right (clockwise on the map)
+    const turnDeg = Math.abs(Math.asin(Math.max(-1, Math.min(1, cross)))) * 180 / Math.PI;
+    const outside = cross > 0 ? -1 : 1; // the normal (−dz, dx) points to the right of travel
+    const wide = k => {
+      let sum = 0, cnt = 0;
+      for (let j = clamp(k - 5); j <= clamp(k + 5); j++) {
+        const [dx, dz] = direction(R, j);
+        sum += ((M.x[j] - R.x[j]) * -dz + (M.z[j] - R.z[j]) * dx) * outside; cnt++;
+      }
+      return sum / cnt;
+    };
+    return { turnIn, exit, turnDeg, right: cross > 0, atTurnIn: wide(turnIn), atApex: wide(apex), atExit: wide(exit), wide };
+  }
+
+  function lineTip(L, who) {
+    if (L.turnDeg < 15) return null; // a kink: inside and outside mean little
+    const m = v => Math.abs(v).toFixed(1), parts = [], advice = [];
+    if (L.atTurnIn <= -1.5) { parts.push(`at turn-in you're ${m(L.atTurnIn)} m tighter than ${who}, who starts the turn from further out`); advice.push("start the turn from the outside edge"); }
+    else if (L.atTurnIn >= 1.5) parts.push(`at turn-in you're ${m(L.atTurnIn)} m wider than ${who}`);
+    if (L.atApex >= 1.5) { parts.push(`at the apex you're ${m(L.atApex)} m wide of ${who}'s line`); advice.push("get closer to the apex"); }
+    else if (L.atApex <= -1.5) parts.push(`at the apex you're ${m(L.atApex)} m tighter than ${who}`);
+    if (L.atExit <= -1.5) { parts.push(`on exit ${who} runs ${m(L.atExit)} m wider than you`); advice.push("let the car run out to the edge on exit"); }
+    else if (L.atExit >= 1.5) parts.push(`on exit you run ${m(L.atExit)} m wider than ${who}`);
+    if (!parts.length) return null;
+    return `Track use: ${parts.join("; ")}.${advice.length ? ` Use more of the track: ${advice.join(", and ")}.` : ""}`;
+  }
+
   function result(corners, steerRatio, R, M, delta, who) {
     const lifts = extraLifts(corners, R, M, delta);
     return { grid: { R, M, delta }, lifts, corners: corners.map(({ apex, z0, z1, lost, ref_m, me_m }, i) => {
       let t = tips(me_m, ref_m, lost, who, steerRatio);
+      const line = lineUse(R, M, z0, z1, apex, ref_m), lt = lineTip(line, who);
+      if (lt) t.push(lt);
       const mine = lifts.filter(z => z.corner === i);
       if (mine.some(z => z.kind === "brake")) t = t.filter(x => !x.startsWith(`${cap(who)} doesn't brake`)); // said more precisely below
       mine.forEach(z => t.push(liftTip(z, apex, who)));
@@ -224,7 +266,7 @@ const Coach = (() => {
       if (i === 0 && R.v[0] - M.v[0] >= 5) {
         t.unshift(`Start of the lap: you crossed the line at ${r0(M.v[0])} km/h vs ${r0(R.v[0])} km/h, which cost about ${delta[ref_m.top].toFixed(2)} s before the first braking point. That comes from your exit of the last corner on the lap before.`);
       }
-      return { n: i + 1, apex, from: z0, to: z1, lost, colour: COLOURS.find(([lim]) => lost < lim)[1], me: me_m, ref: ref_m, tips: t, lifts: mine };
+      return { n: i + 1, apex, from: z0, to: z1, lost, colour: COLOURS.find(([lim]) => lost < lim)[1], me: me_m, ref: ref_m, tips: t, lifts: mine, line };
     }) };
   }
 
@@ -387,11 +429,53 @@ const Coach = (() => {
     </figure>`;
   }
 
+  // The corner drawn to scale with both racing lines, turned so the car drives up the picture.
+  function cornerLines(result, c, who) {
+    const { R, M } = result.grid, n = R.x.length;
+    // the corner itself: from just before either driver turns in to just after the exit
+    const turnIns = [c.line.turnIn, c.me.turnIn].filter(k => k !== null);
+    let a = Math.max(0, Math.min(...turnIns) - 30), b = Math.min(n - 1, c.line.exit + 25);
+    if (b - a > 250) a = Math.max(0, b - 250);
+    const [dx, dz] = direction(R, a), rot = -Math.PI / 2 - Math.atan2(dz, dx), cs = Math.cos(rot), sn = Math.sin(rot);
+    const turn = (x, z) => [x * cs - z * sn, x * sn + z * cs];
+    const ref = [], me = [];
+    for (let k = a; k <= b; k++) { ref.push(turn(R.x[k], R.z[k])); me.push(turn(M.x[k], M.z[k])); }
+    const all = ref.concat(me), xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const pad = 6, minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad, minY = Math.min(...ys) - pad, maxY = Math.max(...ys) + pad;
+    const W = 360, scale = Math.min(W / (maxX - minX), 300 / (maxY - minY)), H = Math.round((maxY - minY) * scale) + 22;
+    const X = p => ((p[0] - minX) * scale).toFixed(1), Y = p => ((p[1] - minY) * scale).toFixed(1);
+    const path = arr => arr.map((p, i) => `${i ? "L" : "M"}${X(p)},${Y(p)}`).join("");
+    const at = (arr, k) => (k === null || k < a || k > b ? null : arr[k - a]);
+    const mark = (arr, k, cls, r = 4) => { const p = at(arr, k); return p ? `<circle class="cl-mark ${cls}" cx="${X(p)}" cy="${Y(p)}" r="${r}"/>` : ""; };
+    const marks = (arr, m, who2) => mark(arr, m.brakeAt, `brake ${who2}`) + mark(arr, m.minAt, `slow ${who2}`, 3) + mark(arr, m.fullGas, `gas ${who2}`);
+    const shows = key => [c.ref[key], c.me[key]].some(k => k !== null && k >= a && k <= b);
+    const ten = 10 * scale, sy = H - 8;
+    const startP = ref[0], next = ref[Math.min(8, ref.length - 1)];
+    const ang = (Math.atan2(next[1] - startP[1], next[0] - startP[0]) * 180) / Math.PI;
+    return `<figure class="corner-lines">
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale with your line and ${who}'s line">
+        <path class="cl-ref" d="${path(ref)}"/>
+        <path class="cl-me" d="${path(me)}"/>
+        ${marks(ref, c.ref, "ref")}${marks(me, c.me, "me")}
+        <path class="cl-arrow" d="M-6,-4L4,0L-6,4Z" transform="translate(${X(startP)},${Y(startP)}) rotate(${ang.toFixed(1)})"/>
+        <line class="cl-scale" x1="4" x2="${(4 + ten).toFixed(1)}" y1="${sy}" y2="${sy}"/>
+        <text class="cl-scaletext" x="${(8 + ten).toFixed(1)}" y="${sy + 3}">10 m</text>
+      </svg>
+      <figcaption class="pc-legend"><span><i class="k-line-me"></i>Your line</span><span><i class="k-ref"></i>${who}</span>
+        ${shows("brakeAt") ? `<span><i class="k-dot brake"></i>braking starts</span>` : ""}
+        ${shows("minAt") ? `<span><i class="k-dot slow"></i>slowest point</span>` : ""}
+        ${shows("fullGas") ? `<span><i class="k-dot gas"></i>full throttle</span>` : ""}
+        <span>filled: you · hollow: ${who}</span></figcaption>
+      <p class="hint">Drawn to scale, the car driving up the picture. The track edges aren't in the data: where ${who} uses
+        the whole width, ${who}'s line shows roughly where they are.</p>
+    </figure>`;
+  }
+
   function cornerDetail(c, who, result) {
     const row = (label, f) => `<tr><th>${label}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
     return `<div class="corner-head"><b>Corner ${c.n}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span></div>
       <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
-      ${result ? pedalChart(result, c, who) : ""}
+      ${result ? cornerLines(result, c, who) + pedalChart(result, c, who) : ""}
       <table class="corner-table"><thead><tr><th>Distances from the apex</th><th class="num">You</th><th class="num">${who}</th></tr></thead><tbody>
         ${row("Braking point", m => (m.brakeAt === null ? (m.liftAt === null ? "no braking" : "lift only") : metres(m.brakeAt, c.apex)))}
         ${row("Peak brake", m => (m.brakeAt === null ? "—" : pct(m.peakBrake)))}
