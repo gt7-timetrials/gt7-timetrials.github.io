@@ -81,4 +81,8 @@ assert.ok(closeUp.includes('class="cl-legend"') && closeUp.includes("k-dot slow 
 const c2 = Coach.cornerDetail(r.corners[1], "WR", r);
 assert.ok(c2.indexOf("cl-dot gas me") < c2.indexOf("cl-dot slow me"));
 
+// only telemetry.py recordings are accepted; anything else gets its own message
+assert.ok(Coach.isRecording(read("tests/fixtures/telemetry_lap.csv")));
+["", "hello\nworld", "Time,Speed,Throttle\n0,100,50", "\u0089PNG\r\n\u001a\n"].forEach(t => assert.ok(!Coach.isRecording(t), JSON.stringify(t)));
+
 console.log("coach.js tests passed");

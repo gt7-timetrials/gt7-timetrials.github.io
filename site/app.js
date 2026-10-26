@@ -244,6 +244,11 @@ async function compareLap(e, file, out) {
   try {
     const [text, ref] = await Promise.all([file.text(),
       refCache[e.event_id] ??= fetch(e.reference.url).then(r => (r.ok ? r.json() : Promise.reject()))]);
+    if (!Coach.isRecording(text)) {
+      out.innerHTML = `<p class="miss">This doesn't look like a recording from telemetry.py. Upload the CSV file the recorder
+        saved (named like telemetry_20261025_214804.csv).</p>`;
+      return;
+    }
     const lap = Coach.fastestLap(Coach.parseCsv(text));
     if (!lap) {
       out.innerHTML = `<p class="miss">No complete lap found in this file. Start recording before you cross the start line
