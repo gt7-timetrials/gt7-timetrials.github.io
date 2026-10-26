@@ -60,10 +60,16 @@ notes the difference.
   It is measured at the reference's turn-in, apex and exit (20 m after full throttle), averaged over ±5 m. A tip
   appears for differences of 1.5 m or more, except in kinks under 15° of turn. The corner close-up draws both lines
   to scale, the same way round as the lap map, from just before the earlier braking point to just after the exit.
-  Line thickness shows the pedals: brake pressure from the braking point to the slowest point, throttle before
-  braking and after the slowest point (thin = none, full thickness = 100%), so throttle in the braking zone and braking
-  outside it don't show. Dots: solid = braking starts, hollow = slowest point, light = full throttle; red for the
-  player, grey for the reference. A button hides the player's line to see the reference's where they overlap. The data has no track edges.
+  The reference's line is thin and plain. The player's line is dots every 3 m (wider apart on long corners, so they
+  stay at least 9 px apart). Each dot compares the pedals with the reference's at the same point:
+  - the brake (red) wherever either driver is braking, the throttle (blue) everywhere else;
+  - filled = more than the reference, ring = less;
+  - size = how much: 10–30, 30–60 or 60+ points;
+  - a tiny grey dot = within 10 points.
+
+  Letter badges mark first brake (B), back on the gas (G, 20%) and full throttle (F, 95%): dark for the player, grey
+  for the reference, set off to either side of the line. A button hides the reference's line. The data has no track
+  edges.
 - **Corner chart:** brake (when either driver brakes here) and throttle, the player's against the reference's, and the
   time gap building up, by metres from where the reference starts braking (or from the apex where it doesn't brake).
 - **Tips:** fixed rules with thresholds, in `tips()` in `site/coach.js`. Steering is compared with the player's own
