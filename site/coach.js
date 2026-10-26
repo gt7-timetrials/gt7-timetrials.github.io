@@ -104,6 +104,35 @@ const Coach = (() => {
     return out;
   }
 
+  // Heading of the reference line in radians, unwrapped so it changes smoothly round each bend.
+  function headings(R) {
+    const n = R.x.length, h = [];
+    for (let k = 0; k < n; k++) { const a = Math.max(0, k - 5), b = Math.min(n - 1, k + 5); h.push(Math.atan2(R.z[b] - R.z[a], R.x[b] - R.x[a])); }
+    for (let k = 1; k < n; k++) { while (h[k] - h[k - 1] > Math.PI) h[k] -= 2 * Math.PI; while (h[k] - h[k - 1] < -Math.PI) h[k] += 2 * Math.PI; }
+    return h;
+  }
+  // How far the reference line turns over 150 m centred on each point, in degrees.
+  const BEND = 75;
+  function turning(R) {
+    const h = headings(R), n = h.length;
+    return h.map((_, k) => Math.abs(h[Math.min(n - 1, k + BEND)] - h[Math.max(0, k - BEND)]) * 180 / Math.PI);
+  }
+  // Where each section starts: just before the reference starts braking or lifting for the corner, or before you do
+  // if that's earlier (up to 150 m), so your braking zone stays with its corner. With no braking or lifting, where
+  // the bend starts to turn. So each section is a corner plus the straight after it, which its exit speed decides.
+  function sectionStart(R, M, turn, from, apex) {
+    const entry = L => {
+      let top = from;
+      for (let k = from; k <= apex; k++) if (L.v[k] > L.v[top]) top = k;
+      return { top, at: firstFrom(L.thr, top, apex, (t, k) => t < 50 || L.brk[k] > 5) };
+    };
+    let at = entry(R).at;
+    if (at === null) { at = apex; while (at > from && turn[at - 1] >= turn[apex] / 2) at--; }
+    const me = entry({ ...M, v: M.v.map((v, k) => (k < at - 150 ? -1 : v)) });
+    if (me.at !== null && me.at > me.top && me.at < at) at = me.at;
+    return Math.max(from + 20, at - 10);
+  }
+
   const mean = a => a.reduce((x, y) => x + y, 0) / (a.length || 1);
 
   function firstFrom(arr, from, to, test) {
@@ -183,7 +212,7 @@ const Coach = (() => {
       out.push(`Steering: here you use ${Math.round(100 * (me.maxSteerDeg / ref.maxSteerDeg / steerRatio - 1))}% more steering lock than you do elsewhere on the lap, compared with ${who}. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle.`);
     }
     if (me.spin >= 8 && me.spin >= ref.spin + 5) out.push(`Wheelspin: your rear wheels turn up to ${r0(me.spin)} km/h faster than the car on exit. That's too much throttle too early.`);
-    if (me.exitSpeed <= ref.exitSpeed - 4) out.push(`Exit: you leave this section at ${r0(me.exitSpeed)} km/h vs ${r0(ref.exitSpeed)} km/h, and that costs time all the way down the next straight.`);
+    if (me.exitSpeed <= ref.exitSpeed - 4) out.push(`Exit: you leave the corner at ${r0(me.exitSpeed)} km/h vs ${r0(ref.exitSpeed)} km/h, and that costs time all the way down the straight after it.`);
     if (!out.length) out.push(lost < 0.1 ? "Close to the reference here." : "No single big difference: small losses through the whole section.");
     return out;
   }
@@ -200,18 +229,34 @@ const Coach = (() => {
     }
     const R = resample(ref, ref.s, n), M = resample(myLap, p.s, n);
     const delta = M.t.map((t, i) => t - R.t[i]);
-    const apexes = findApexes(R.v);
+    // The game's lap times can include time the recordings don't, e.g. a license test's timer starting before the
+    // car reaches the line. The corners use the recorded laps, so they always add up to the recorded gap.
+    const recordedGap = myLap.t[myLap.t.length - 1] - refLap.t[refLap.t.length - 1];
+    const turn = turning(R), apexes = findApexes(R.v);
+    // the first section starts at the line; its corner part starts at the braking zone, like the others
+    const entries = apexes.map((apex, i) => sectionStart(R, M, turn, i === 0 ? 0 : apexes[i - 1], apex));
+    const starts = entries.map((k, i) => (i === 0 ? 0 : k));
     const corners = apexes.map((apex, i) => {
-      const z0 = i === 0 ? 0 : Math.round((apexes[i - 1] + apex) / 2);
-      const z1 = i === apexes.length - 1 ? n : Math.round((apex + apexes[i + 1]) / 2);
-      const lost = (i === apexes.length - 1 ? myLap.lap_ms / 1000 - refLap.lap_ms / 1000 : delta[z1]) - delta[z0];
+      const z0 = starts[i], z1 = i === apexes.length - 1 ? n : starts[i + 1];
+      // the last section runs to the finish line, timed from the recordings (see recordedGap below)
+      const lost = (i === apexes.length - 1 ? recordedGap : delta[z1]) - delta[z0];
       let peak = 0;
       for (let k = z0; k < z1; k++) peak = Math.max(peak, Math.abs(R.steer[k]));
-      return { apex, z0, z1, lost, ref_m: cornerMetrics(R, z0, z1, apex, 0.3 * peak), me_m: cornerMetrics(M, z0, z1, apex, 0.3 * peak) };
+      const ref_m = cornerMetrics(R, z0, z1, apex, 0.3 * peak), me_m = cornerMetrics(M, z0, z1, apex, 0.3 * peak);
+      // the corner ends 20 m after the reference reaches full throttle (or, if it's already flat out at the apex,
+      // where the bend stops turning);
+      // the rest of the section is the straight after it
+      let exit = Math.min(z1 - 1, (ref_m.fullGas ?? apex + 40) + 20);
+      if (ref_m.fullGas !== null && ref_m.fullGas <= apex) { exit = apex; while (exit < z1 - 1 && turn[exit + 1] >= turn[apex] / 2) exit++; }
+      exit = Math.max(Math.min(apex + 20, z1 - 1), exit);
+      ref_m.exitSpeed = R.v[exit]; me_m.exitSpeed = M.v[exit];
+      const entry = i === 0 && entries[0] >= 150 ? entries[0] : z0;
+      return { apex, z0, z1, entry, exit, lost, approachLost: delta[entry] - delta[z0], cornerLost: delta[exit] - delta[entry], ref_m, me_m };
     });
     const ratios = corners.filter(c => c.ref_m.maxSteerDeg >= 20).map(c => c.me_m.maxSteerDeg / c.ref_m.maxSteerDeg).sort((a, b) => a - b);
     const steerRatio = ratios.length >= 3 ? ratios[Math.floor(ratios.length / 2)] : null;
-    return { ...result(corners, steerRatio, R, M, delta, who), lapMs: myLap.lap_ms, refMs: refLap.lap_ms, length: n, ref };
+    return { ...result(corners, steerRatio, R, M, delta, who), lapMs: myLap.lap_ms, refMs: refLap.lap_ms, length: n, ref,
+      recordedGap, gameGap: (myLap.lap_ms - refLap.lap_ms) / 1000 };
   }
 
   // Where you are across the track compared with the reference: metres to the outside of the reference's line
@@ -255,18 +300,21 @@ const Coach = (() => {
 
   function result(corners, steerRatio, R, M, delta, who) {
     const lifts = extraLifts(corners, R, M, delta);
-    return { grid: { R, M, delta }, lifts, corners: corners.map(({ apex, z0, z1, lost, ref_m, me_m }, i) => {
+    return { grid: { R, M, delta }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, approachLost, cornerLost, ref_m, me_m }, i) => {
       let t = tips(me_m, ref_m, lost, who, steerRatio);
       const line = lineUse(R, M, z0, z1, apex, ref_m), lt = lineTip(line, who);
       if (lt) t.push(lt);
       const mine = lifts.filter(z => z.corner === i);
       if (mine.some(z => z.kind === "brake")) t = t.filter(x => !x.startsWith(`${cap(who)} doesn't brake`)); // said more precisely below
-      mine.forEach(z => t.push(liftTip(z, apex, who)));
+      if (mine.length >= 3) t.push(liftsTip(mine, apex, who)); else mine.forEach(z => t.push(liftTip(z, apex, who)));
+      const after = straightTip(entry - z0, approachLost, cornerLost, z1 - exit, lost - cornerLost - approachLost, me_m, ref_m,
+        mine.some(z => z.from >= exit), i === corners.length - 1);
+      if (after) { t = t.filter(x => !x.startsWith("Exit:")); t.unshift(after); }
       if (t.length > 1) t = t.filter(x => !x.startsWith("No single big difference") && !x.startsWith("Close to the reference"));
       if (i === 0 && R.v[0] - M.v[0] >= 5) {
         t.unshift(`Start of the lap: you crossed the line at ${r0(M.v[0])} km/h vs ${r0(R.v[0])} km/h, which cost about ${delta[ref_m.top].toFixed(2)} s before the first braking point. That comes from your exit of the last corner on the lap before.`);
       }
-      return { n: i + 1, apex, from: z0, to: z1, lost, colour: COLOURS.find(([lim]) => lost < lim)[1], me: me_m, ref: ref_m, tips: t, lifts: mine, line };
+      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, approachLost, cornerLost, colour: COLOURS.find(([lim]) => lost < lim)[1], me: me_m, ref: ref_m, tips: t, lifts: mine, line };
     }) };
   }
 
@@ -306,8 +354,32 @@ const Coach = (() => {
     return out;
   }
 
+  // Each section is a corner plus the straight after it (the first one also has the run from the start line):
+  // when they're long, say which part the time went in.
+  function straightTip(before, onApproach, inCorner, length, onStraight, me, ref, lifted, last) {
+    if (length < 150) { inCorner += onStraight; onStraight = 0; }
+    if ((!before || Math.abs(onApproach) < 0.1) && (length < 150 || Math.abs(onStraight) < 0.1)) return null;
+    const why = [];
+    if (me.exitSpeed <= ref.exitSpeed - 2) why.push(`you leave the corner ${r0(ref.exitSpeed - me.exitSpeed)} km/h slower (${r0(me.exitSpeed)} vs ${r0(ref.exitSpeed)} km/h), and that carries all the way down the straight`);
+    if (lifted) why.push(`you lift on the straight (below)`);
+    const parts = [];
+    if (before) parts.push(`${fmtLost(onApproach)} on the ${before} m from the start line to the braking zone`);
+    parts.push(`${fmtLost(inCorner)} in the corner`);
+    if (length >= 150) parts.push(`${fmtLost(onStraight)} on the ${length} m straight after it${last ? " to the finish line" : ""}`);
+    return `Where the time goes: ${parts.join(", ")}` + (why.length && length >= 150 ? `: ${why.join(", and ")}.` : ".");
+  }
+
+  function liftsTip(zs, apex, who) {
+    const where = z => (z.from <= apex ? `${apex - z.from} m before` : `${z.from - apex} m after`);
+    const braking = zs.filter(z => z.kind === "brake").length;
+    return `Lifts: ${zs.length} times in this section you come off the throttle${braking ? ` or brake` : ""} where ${who} doesn't, ` +
+      `for ${zs.reduce((a, z) => a + z.length, 0)} m in all (starting ${zs.map(where).join(", ")} the apex). ` +
+      `Together that costs about ${zs.reduce((a, z) => a + z.cost, 0).toFixed(2)} s. Stay flat out until the braking point.`;
+  }
+
   function liftTip(z, apex, who) {
-    const where = z.from <= apex ? `${apex - z.from} m before the apex` : `${z.from - apex} m after the apex`;
+    const where = z.from < apex - 300 ? `${z.from} m after the start line`
+      : z.from <= apex ? `${apex - z.from} m before the apex` : `${z.from - apex} m after the apex`;
     return z.kind === "brake"
       ? `Extra braking: you brake (up to ${r0(z.peakBrake)}%) for ${z.length} m, starting ${where}, where ${who} doesn't brake and averages ${r0(z.refThr)}% throttle. That costs about ${z.cost.toFixed(2)} s.`
       : `Lift: you average ${r0(z.thr)}% throttle for ${z.length} m, starting ${where}, where ${who} averages ${r0(z.refThr)}%. That costs about ${z.cost.toFixed(2)} s.`;
@@ -370,7 +442,8 @@ const Coach = (() => {
     const anchorName = c.ref.brakeAt !== null ? `${who} brakes` : "apex";
     let x0 = Math.min(anchor - 100, (c.me.brakeAt ?? c.me.liftAt ?? anchor) - 30);
     let x1 = Math.max(c.ref.fullGas ?? c.to, c.me.fullGas ?? c.to) + 30;
-    for (const z of c.lifts) { x0 = Math.min(x0, z.from - 20); x1 = Math.max(x1, z.to + 20); }
+    // include extra lifts, but never so far back that the corner itself drops out of the chart
+    for (const z of c.lifts) { x0 = Math.min(x0, Math.max(z.from - 20, anchor - 300)); x1 = Math.max(x1, z.to + 20); }
     x0 = Math.max(0, x0); x1 = Math.min(n - 1, x1, x0 + 700);
     let braking = false;
     for (let k = x0; k <= x1 && !braking; k++) braking = R.brk[k] > 5 || M.brk[k] > 5;
@@ -480,8 +553,8 @@ const Coach = (() => {
       <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: brake pressure from the braking
         point to the slowest point, then throttle before braking and after the slowest point (thin = none, full = 100%).
         It doesn't show throttle used in the braking zone, or braking outside it: the pedal chart below shows all of it.
-        The track edges aren't in the data: where ${who} uses the whole width, ${who}'s line shows
-        roughly where they are.</p>
+        The track edges aren't in the data: where the grey line uses the whole width, it shows roughly where
+        they are.</p>
     </figure>`;
   }
 

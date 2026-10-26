@@ -20,14 +20,33 @@ and gives it to the running event with the same car whose world record is closes
 is shown if the lap time matches a time on the saved leaderboard. If a better replay comes along, upload it too: the
 fastest lap wins. Old files can stay; they only match running events.
 
+## Super License tab
+
+`data/license/super.json` lists the tests (id, track, car, gold/silver/bronze in milliseconds). Each test's reference
+run (a replay beating gold, recorded with telemetry.py) goes in `data/license/laps/<id>.csv`, e.g. `S-1.csv`; the build
+takes the fastest complete lap in it. License tests count laps like time trials (0 → 1 at the start line, 1 → 2 at the
+finish), so the same comparison works. In some tests the game's time includes up to about 0.9 s more than the recorded
+lap (the timer starting before the car reaches the line), so corner losses add up to the recorded gap and the page
+notes the difference.
+
 ## How the comparison works
 
 - **Lap:** the game's lap counter going up twice. The lap is timed by packet number (60 a second), which matches the
   game's lap time to within a hundredth.
 - **Alignment:** every point of the player's lap is matched to the nearest point of the reference lap, so both are
   measured by distance along the reference line, every metre.
-- **Corners:** the reference's slowest points (at least 10 km/h slower than either side). Each corner's section runs
-  from halfway after the previous corner to halfway before the next, so the sections add up to the whole lap gap.
+- **Corners:** the reference's slowest points (at least 10 km/h slower than either side). Bends the reference takes
+  flat out aren't corners of their own; they're part of the straight after the corner before them.
+- **Sections:** each section is a corner plus the straight after it, since the exit speed decides the straight. It
+  starts 10 m before the reference starts braking or lifting for the corner (or before the player does, if that's up
+  to 150 m earlier); where neither brakes nor lifts, where the bend starts turning. The first section starts at the line and the
+  last one ends at the finish, so the sections add up to the whole lap gap. The corner part ends 20 m after the
+  reference's full throttle (or, if it's flat out by the apex, where the bend stops turning). When the straight after it is 150 m or longer,
+  a "Where the time goes" tip splits the section's loss between the corner and the
+  straight, with the exit speed difference and any lifts on the straight. The first section's run from the start
+  line to the braking zone is split off in the tip the same way when it's 150 m or longer. The map has one colour per
+  section, matching its corner number. Three or more lifts in a section are
+  summed up in one tip.
 - **Per corner:** braking point (first braking after top speed), peak brake, time above 90% brake, brake when
   turning in (trail braking; averaged over the first 15 m of turning, since the brake is often being released fast there), slowest speed, back on the throttle (20%), full throttle (95%), throttle reversals,
   steering lock, rear wheelspin and exit speed. Throttle while braking (downshift blips) is ignored.

@@ -17,6 +17,7 @@
     <nav>
       <a href="#current" data-tab="current">Current</a>
       <a href="#past" data-tab="past">Past events</a>
+      <a href="#license" data-tab="license">Super License</a>
       <a href="#drivers" data-tab="drivers">Top drivers</a>
       <a href="#about" data-tab="about">How it works</a>
     </nav>
@@ -46,6 +47,13 @@
   <section id="tab-event" class="tab" hidden>
     <a href="#past" class="back">← All past events</a>
     <div id="event-detail"></div>
+  </section>
+
+  <section id="tab-license" class="tab" hidden>
+    <p class="muted license-intro">Compare your Super License test runs with a gold-medal run, corner by corner. Record your run
+      with the free recorder (<a href="telemetry.py" download>telemetry.py</a>, <a href="readme.txt" target="_blank"
+      rel="noopener">how to record</a>), then upload the file under the test. Your file stays on your device.</p>
+    <div id="license-list"><p class="muted">Loading…</p></div>
   </section>
 
   <section id="tab-drivers" class="tab" hidden>

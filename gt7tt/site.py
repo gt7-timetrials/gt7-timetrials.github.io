@@ -147,6 +147,23 @@ def build_site(store, at, rep, out_dir):
     os.makedirs(os.path.join(out_dir, "events"))
     for ev, b in finished:
         write_json(os.path.join(out_dir, "events", f"{ev.id}.json"), event_detail(store, ev, b))
+    write_json(os.path.join(out_dir, "license.json"), license_tests(store, out_dir))
+
+
+def license_tests(store, out_dir):
+    """The Super License tab: data/license/super.json plus a reference lap per test from data/license/laps/<id>.csv."""
+    info = telemetry.load_json(os.path.join(store.root, "license", "super.json")) or {"tests": []}
+    os.makedirs(os.path.join(out_dir, "license"), exist_ok=True)
+    tests = []
+    for t in info["tests"]:
+        path = os.path.join(store.root, "license", "laps", f"{t['id']}.csv")
+        lap = telemetry.fastest_lap(telemetry.read_csv(path)) if os.path.exists(path) else None
+        ref = None
+        if lap:
+            write_json(os.path.join(out_dir, "license", f"{t['id']}.json"), lap)
+            ref = {"lap_ms": lap["lap_ms"], "url": f"license/{t['id']}.json", "key": t["id"]}
+        tests.append({**t, "reference": ref})
+    return {"title": info.get("title", "Super License"), "tests": tests}
 
 
 def current_references(store, rep):

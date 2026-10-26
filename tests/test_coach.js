@@ -13,7 +13,8 @@ const r = Coach.analyse(ref, me);
 assert.ok(!r.error, r.error);
 assert.ok(r.corners.length >= 6, "finds the corners");
 const total = r.corners.reduce((a, c) => a + c.lost, 0);
-assert.ok(Math.abs(total - 2.924) < 0.001, "corner losses add up to the lap gap");
+assert.ok(Math.abs(total - r.recordedGap) < 1e-9, "corner losses add up to the recorded gap");
+assert.ok(Math.abs(r.gameGap - 2.924) < 1e-9 && Math.abs(r.recordedGap - r.gameGap) < 0.01, "time trial laps: game and recording agree");
 assert.ok(r.corners.every(c => c.tips.length), "every corner gets advice");
 assert.ok(r.corners[0].tips[0].startsWith("Start of the lap"), "slow start-line speed is called out");
 assert.ok(r.corners[6].tips.some(t => t.startsWith("Brake pressure")), "corner 7: WR holds full brake longer");
@@ -84,5 +85,26 @@ assert.ok(c2.indexOf("cl-dot gas me") < c2.indexOf("cl-dot slow me"));
 // only telemetry.py recordings are accepted; anything else gets its own message
 assert.ok(Coach.isRecording(read("tests/fixtures/telemetry_lap.csv")));
 ["", "hello\nworld", "Time,Speed,Throttle\n0,100,50", "\u0089PNG\r\n\u001a\n"].forEach(t => assert.ok(!Coach.isRecording(t), JSON.stringify(t)));
+
+// Super License S-1: your bronze attempt against the gold reference
+const s1ref = Coach.fastestLap(Coach.parseCsv(read("data/license/laps/S-1.csv")));
+const s1me = Coach.fastestLap(Coach.parseCsv(read("tests/fixtures/license_s1_attempt.csv")));
+assert.strictEqual(s1ref.lap_ms, 71809);
+assert.strictEqual(s1me.lap_ms, 78521);
+const s1 = Coach.analyse(s1ref, s1me, "the reference lap");
+assert.ok(!s1.error, s1.error);
+assert.ok(Math.abs(s1.corners.reduce((a, c) => a + c.lost, 0) - s1.recordedGap) < 1e-9);
+assert.ok(Math.abs(s1.gameGap - 6.712) < 1e-9);
+// High Speed Ring: each section is a corner plus the straight after it, with the time split between the two
+assert.deepStrictEqual(s1.corners.map(c => c.apex), [1779, 2481, 2705, 3605]);
+s1.corners.slice(1).forEach(c => assert.ok(c.from < c.ref.brakeAt && c.ref.brakeAt - c.from <= 10 + 150, `corner ${c.n} starts at its braking zone`));
+assert.ok(/^Where the time goes: \+0\.74 s in the corner, \+1\.40 s on the 712 m straight after it to the finish line: you leave the corner 17 km\/h slower/
+  .test(s1.corners[3].tips[0]), s1.corners[3].tips[0]);
+assert.ok(/^Where the time goes: \+1\.64 s on the 1500 m from the start line to the braking zone, \+1\.04 s in the corner, \+0\.33 s/
+  .test(s1.corners[0].tips[0]), s1.corners[0].tips[0]);
+assert.ok(s1.corners[0].tips.some(t => t.includes("517 m, starting 573 m after the start line")), "the coast before corner 1");
+assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several lifts are one tip");
+assert.ok(!s1.corners[2].tips.some(t => t.startsWith("Exit:")), "the straight tip says it instead");
+assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "one colour per section");
 
 console.log("coach.js tests passed");
