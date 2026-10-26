@@ -1,0 +1,43 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "io.github.gt7timetrials"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "io.github.gt7timetrials"
+        minSdk 29
+        targetSdk 35
+        // each GitHub Actions build gets a higher number, so a new APK installs over the old one
+        versionCode((System.getenv("GITHUB_RUN_NUMBER") ?: "1") as int)
+        versionName "0.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0")
+    }
+
+    signingConfigs {
+        // a key for test builds only, kept in the repository so every build can update the last one.
+        // Google Play builds will need a private upload key instead.
+        test {
+            storeFile file("test.keystore")
+            storePassword "gt7-test"
+            keyAlias "test"
+            keyPassword "gt7-test"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.test
+        }
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.test
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

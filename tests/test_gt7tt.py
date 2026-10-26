@@ -7,6 +7,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 
 import shutil
+import struct
 import subprocess
 
 from gt7tt import model, report, site, telemetry
@@ -186,6 +187,59 @@ class RecorderTest(unittest.TestCase):
         out = self.rec.decrypt(bytes(enc), 0xDEADBEEF)
         self.assertIsNotNone(out)
         self.assertIsNone(self.rec.decrypt(bytes(enc), 0xDEADBEAF))  # wrong format: rejected
+
+
+@unittest.skipUnless(shutil.which("javac") and shutil.which("node"), "javac or node not installed")
+class AndroidRecorderTest(unittest.TestCase):
+    """The Android app's recorder (android/.../Telemetry.java, Recorder.java), compiled and run off the phone."""
+    HERE = os.path.dirname(__file__)
+
+    @classmethod
+    def setUpClass(cls):
+        RecorderTest.setUpClass()
+        cls.rec = RecorderTest.rec
+        cls.tmp = tempfile.mkdtemp()
+        src = os.path.join(cls.HERE, "..", "android", "app", "src", "main", "java", "io", "github", "gt7timetrials")
+        subprocess.run(["javac", "-d", cls.tmp, os.path.join(src, "Telemetry.java"), os.path.join(src, "Recorder.java"),
+                        os.path.join(cls.HERE, "android", "RecorderCheck.java")], check=True, capture_output=True)
+
+    def java(self, *args):
+        return subprocess.run(["java", "-cp", self.tmp, "io.github.gt7timetrials.RecorderCheck", *args],
+                              check=True, capture_output=True, text=True, timeout=120).stdout
+
+    def test_reads_packets_like_the_computer_recorder(self):
+        rng = random.Random(7)
+        packets, expected = b"", []
+        for i in range(3):
+            p = bytearray(rng.randbytes(0x13C))
+            p[0:4] = (0x47375330).to_bytes(4, "little")
+            for off in range(0x04, 0x13C, 4):  # sensible floats everywhere, then the integer fields
+                if off != 0x40:
+                    p[off:off + 4] = struct.pack("<f", rng.uniform(-500, 500))
+            p[0x70:0x74], p[0x74:0x76], p[0x7C:0x80] = (1000 + i).to_bytes(4, "little"), (i).to_bytes(2, "little"), (75000 + i).to_bytes(4, "little")
+            p[0x8E:0x90], p[0x90:0x93] = (0x801).to_bytes(2, "little"), bytes([0x34, 200, 17])
+            iv1 = rng.getrandbits(32)
+            nonce = (iv1 ^ 0xDEADBEEF).to_bytes(4, "little") + iv1.to_bytes(4, "little")
+            enc = bytearray(self.rec.salsa20(self.rec.KEY, nonce, bytes(p)))
+            enc[0x40:0x44] = iv1.to_bytes(4, "little")
+            packets += bytes(enc)
+            expected.append(self.rec.parse(self.rec.decrypt(bytes(enc), 0xDEADBEEF), 0))
+        path = os.path.join(self.tmp, "packets.bin")
+        with open(path, "wb") as f:
+            f.write(packets)
+        for line, want in zip(self.java("decrypt", path).splitlines(), expected):
+            got = dict(zip(self.rec.FIELDS, line.split(",")))
+            for k in self.rec.FIELDS[1:]:
+                self.assertAlmostEqual(float(got[k]), float(want[k]), places=1, msg=k)
+
+    def test_records_a_lap_from_a_fake_playstation(self):
+        out = os.path.join(self.tmp, "phone.csv")
+        events = [json.loads(line) for line in self.java("replay", os.path.join(self.HERE, "fixtures", "telemetry_lap.csv"), out).splitlines()]
+        self.assertEqual([e["type"] for e in events][:2], ["searching", "connected"])
+        self.assertIn({"type": "lap", "lap": 1, "ms": 113057, "time": "1:53.057", "replay": False, "dropout": False}, events)
+        lap = telemetry.fastest_lap(telemetry.read_csv(out))
+        self.assertEqual(lap["lap_ms"], 113057)
+        self.assertGreater(len(lap["t"]), 6000)
 
 
 class TelemetryTest(unittest.TestCase):
