@@ -1,0 +1,40 @@
+name: Build Android app
+
+# Builds the app in android/ whenever it changes, and puts the APK on the "android-test" release page, so it
+# can be downloaded straight to a phone:
+# https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/android-test/gt7-timetrials.apk
+on:
+  push:
+    paths:
+      - "android/**"
+      - ".github/workflows/android.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: android
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+      - name: Build the APK
+        run: gradle --no-daemon -p android assembleRelease
+      - name: Publish it on the android-test release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk gt7-timetrials.apk
+          gh release delete android-test --yes --cleanup-tag || true
+          gh release create android-test gt7-timetrials.apk --prerelease --target "$GITHUB_SHA" \
+            --title "Android app (test build ${GITHUB_RUN_NUMBER})" \
+            --notes "Test build from ${GITHUB_REF_NAME} (${GITHUB_SHA::7}). On your Android phone, download gt7-timetrials.apk and open it to install. Your phone will ask you to allow installing apps from your browser the first time."

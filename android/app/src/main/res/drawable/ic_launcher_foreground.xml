@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- a stopwatch: the safe zone is the middle 66 of 108 units -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5"
+        android:pathData="M54,36 A21,21 0 1,1 53.99,36 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,26 h12 v6 h-12 Z M66.5,33.5 l4.2,-4.2 l4.2,4.2 l-4.2,4.2 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M54,57 L63,47" />
+</vector>

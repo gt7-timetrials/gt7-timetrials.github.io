@@ -7,6 +7,8 @@ const fmt = ms => {
 };
 const fmtTenths = ms => `${Math.floor(ms / 60000)}:${((ms % 60000) / 1000).toFixed(1).padStart(4, "0")}`;
 const secs = ms => (ms / 1000).toFixed(3) + " s";
+// the Android app (android/) adds window.GT7App, for recording on the phone
+const APP = window.GT7App;
 const num = n => n.toLocaleString();
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const medalTime = (wr, factor) => Math.floor(wr * factor); // as in the game: WR + 3% / 5% / 10%
@@ -230,14 +232,17 @@ function coachSection(e, i) {
   const r = e.reference;
   return `<section class="coach">
       <h3>Compare your lap with the world record</h3>
-      <p class="hint">${r
+      <p class="hint">${r && APP
+        ? `Record your lap on this phone while you drive, to see where you lose time against
+           ${esc(refName(r))} ${fmt(r.lap_ms)}, corner by corner.`
+        : r
         ? `Record your lap with the free recorder, then upload the file to see where you lose time against
            ${esc(refName(r))} ${fmt(r.lap_ms)}, corner by corner. Your file stays on your device.`
         : "No reference lap for this event yet. You can already record your laps with the recorder."}</p>
       <div class="coach-actions">
-        <a class="button-link" href="telemetry.py" download>Download recorder (telemetry.py)</a>
-        <a class="button-link" href="readme.txt" target="_blank" rel="noopener">How to record (readme.txt)</a>
-        ${r ? `<label class="button-link primary">Upload your lap (.csv)<input type="file" accept=".csv,text/csv" class="lap-file" data-i="${i}" hidden></label>` : ""}
+        ${APP ? (r ? recordButton("event", i) : "") : `<a class="button-link" href="telemetry.py" download>Download recorder (telemetry.py)</a>
+        <a class="button-link" href="readme.txt" target="_blank" rel="noopener">How to record (readme.txt)</a>`}
+        ${r ? `<label class="button-link${APP ? "" : " primary"}">Upload your lap (.csv)<input type="file" accept=".csv,text/csv" class="lap-file" data-i="${i}" hidden></label>` : ""}
       </div>
       <div class="coach-result" aria-live="polite"></div>
     </section>`;
@@ -269,6 +274,77 @@ async function compareLap(e, file, out) {
   }
 }
 
+// --- recording on the phone, in the Android app: GT7App records GT7's telemetry like telemetry.py and reports
+// progress through window.GT7AppEvent ---
+const recordButton = (kind, i) => `<button type="button" class="button-link primary record-btn" data-kind="${kind}" data-i="${i}">Record on this phone</button>`;
+let recording = null; // { e, out, laps }
+
+const REC_STATES = {
+  paused: "Paused.",
+  menus: "Connected. Waiting for the car to move: start driving, or play a replay.",
+  driving: "Recording: you're driving. Cross the start line, drive a full lap, then tap Stop and compare.",
+  replay: "Recording a replay.",
+};
+window.GT7AppEvent = ev => {
+  if (!recording) return;
+  const status = recording.out.querySelector(".rec-status"), laps = recording.out.querySelector(".rec-laps");
+  const say = (text, cls = "") => { status.textContent = text; status.className = "rec-status " + cls; };
+  if (ev.type === "searching") say(`Looking for your PlayStation on your network (${ev.network}). Make sure GT7 is running…`);
+  else if (ev.type === "slow") say(`Still looking. Check that GT7 is running on the PlayStation (not just the home screen), and that
+    this phone is on Wi-Fi from the same router as the PlayStation.`, "miss");
+  else if (ev.type === "connected") say(`Connected to your PlayStation at ${ev.ip}. ${REC_STATES.menus}`);
+  else if (ev.type === "state") say(REC_STATES[ev.state] || "");
+  else if (ev.type === "silent") say(`No data for ${ev.seconds} s. Is GT7 still running? Still trying…`, "miss");
+  else if (ev.type === "dropout") say(`The connection dropped for ${ev.seconds} s. The lap in progress may be incomplete.`, "miss");
+  else if (ev.type === "error") { say(ev.message, "miss"); finishRecording(false); }
+  else if (ev.type === "lap") {
+    recording.laps++;
+    laps.insertAdjacentHTML("beforeend", `<li>Lap ${ev.lap}: <b>${ev.time}</b>${ev.replay ? " (replay)" : ""}${ev.dropout
+      ? " · the connection dropped during it" : ""}</li>`);
+    say("Lap saved. Keep going for another, or tap Stop and compare.");
+  }
+};
+
+function startRecording(e, out) {
+  if (recording) finishRecording(false);
+  recording = { e, out, laps: 0 };
+  out.innerHTML = `<div class="rec-panel">
+      <p class="rec-status">Starting…</p>
+      <ul class="rec-laps"></ul>
+      <p class="hint">Keep the app open while you drive: the screen stays on. The fastest complete lap is compared.</p>
+      <div class="coach-actions"><button type="button" class="button-link primary rec-stop">Stop and compare</button>
+        <button type="button" class="button-link rec-cancel">Cancel</button></div>
+    </div>`;
+  out.querySelector(".rec-stop").addEventListener("click", () => finishRecording(true));
+  out.querySelector(".rec-cancel").addEventListener("click", () => { finishRecording(false); out.innerHTML = ""; });
+  APP.start();
+}
+
+async function finishRecording(compare) {
+  const r = recording;
+  recording = null;
+  APP.stop();
+  if (!r || !compare) return;
+  const name = `phone_${new Date().toISOString().slice(0, 19).replace(/[-:]/g, "").replace("T", "_")}.csv`;
+  const csv = APP.csv();
+  await compareLap(r.e, new File([csv], name, { type: "text/csv" }), r.out);
+  r.out.insertAdjacentHTML("afterbegin", `<p class="rec-save"><button type="button" class="button-link">Save the recording</button>
+    <span class="muted"></span></p>`);
+  const btn = r.out.querySelector(".rec-save button");
+  btn.addEventListener("click", () => {
+    const saved = APP.save(csv, name);
+    btn.disabled = true;
+    r.out.querySelector(".rec-save span").textContent = saved ? ` Saved to Downloads as ${saved}.` : " Couldn't save the file.";
+  });
+}
+
+document.addEventListener("click", ev => {
+  const b = ev.target.closest(".record-btn");
+  if (!b) return;
+  const e = b.dataset.kind === "license" ? licenseEvent(+b.dataset.i) : DATA.current[+b.dataset.i];
+  startRecording(e, b.closest(".coach").querySelector(".coach-result"));
+});
+
 // --- Super License tab ---
 const MEDAL_KEYS = [["gold", "Gold"], ["silver", "Silver"], ["bronze", "Bronze"]];
 function medalLine(ms, medals) {
@@ -279,6 +355,10 @@ function medalLine(ms, medals) {
 }
 
 let LICENSE;
+const licenseEvent = i => {
+  const t = LICENSE.tests[i];
+  return { reference: t.reference, medals: { gold: t.gold, silver: t.silver, bronze: t.bronze } };
+};
 function renderLicense() {
   const el = document.getElementById("license-list");
   el.innerHTML = LICENSE.tests.map((t, i) => {
@@ -291,15 +371,13 @@ function renderLicense() {
       ${medals}
       ${t.reference ? `<section class="coach">
         <p class="hint">Reference: a gold-medal run of ${fmt(t.reference.lap_ms)}.</p>
-        <div class="coach-actions"><label class="button-link primary">Upload your run (.csv)<input type="file"
+        <div class="coach-actions">${APP ? recordButton("license", i) : ""}<label class="button-link${APP ? "" : " primary"}">Upload your run (.csv)<input type="file"
           accept=".csv,text/csv" class="license-file" data-i="${i}" hidden></label></div>
         <div class="coach-result" aria-live="polite"></div></section>` : ""}
     </article>`;
   }).join("");
   el.querySelectorAll("input.license-file").forEach(inp => inp.addEventListener("change", () => {
-    const t = LICENSE.tests[+inp.dataset.i];
-    const e = { reference: t.reference, medals: { gold: t.gold, silver: t.silver, bronze: t.bronze } };
-    if (inp.files[0]) compareLap(e, inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
+    if (inp.files[0]) compareLap(licenseEvent(+inp.dataset.i), inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
     inp.value = "";
   }));
 }
