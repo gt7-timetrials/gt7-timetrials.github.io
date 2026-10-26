@@ -3,16 +3,20 @@
 Upload the CSV on https://gt7-timetrials.github.io/ to compare a lap with the world record
 (the site owner records the world record's replay the same way). Needs only Python 3.8+.
 
-    py telemetry.py 192.168.1.23      (Windows; use your PS5's IP address)
-    python3 telemetry.py 192.168.1.23 (Mac / Linux)
+    py telemetry.py                   (Windows; finds your PlayStation by itself)
+    py telemetry.py 192.168.1.23      (or give its IP address yourself)
+    python3 telemetry.py              (Mac / Linux)
 
-The PS5's IP address is under Settings > Network > Connection Status > View Connection Status.
-Press Ctrl+C to stop. Every packet is saved to telemetry_<date>_<time>.csv next to this script.
+Start GT7 first: the PlayStation only answers while GT7 is running. The address it finds is
+remembered in telemetry_ip.txt next to this script. Press Ctrl+C to stop; every packet is saved
+to telemetry_<date>_<time>.csv next to this script.
 
 How it works: GT7 sends ~60 packets a second to whoever sends it a small "heartbeat" on
 UDP port 33739, as long as the heartbeat is repeated every few seconds. Packets arrive on
 UDP port 33740 and are encrypted with Salsa20 using a fixed key the community worked out.
-Nothing here touches your PSN account or changes anything on the console.
+To find the PlayStation, the heartbeat is sent to every address on your home network and
+the one that answers is used. Nothing here touches your PSN account or changes anything
+on the console.
 """
 import csv
 import os
@@ -100,91 +104,197 @@ def parse(p, t0):
     }
 
 
+HERE = os.path.dirname(os.path.abspath(__file__))
+SAVED_IP = os.path.join(HERE, "telemetry_ip.txt")
+
+
+def fmt_lap(ms):
+    return f"{ms // 60000}:{ms % 60000 / 1000:06.3f}"
+
+
+def local_ip():
+    """This computer's address on the home network (no packet is sent)."""
+    probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        probe.connect(("8.8.8.8", 80))
+        return probe.getsockname()[0]
+    except OSError:
+        return None
+    finally:
+        probe.close()
+
+
+def candidates(own_ip, saved=None):
+    """Addresses to try, most likely first: the saved one, then everything on the same /24 network."""
+    out = [saved] if saved else []
+    if own_ip:
+        base = own_ip.rsplit(".", 1)[0]
+        out += [f"{base}.{n}" for n in range(1, 255) if f"{base}.{n}" not in (own_ip, saved)]
+    return out
+
+
+def read_packet(sock, fmt):
+    """(decrypted packet, sender address) or (None, sender) for something unreadable; raises socket.timeout."""
+    data, addr = sock.recvfrom(4096)
+    return (decrypt(data, FORMATS[fmt][1]) if len(data) >= 0x128 else None), addr[0]
+
+
+def find_console(sock, given=None):
+    """Send heartbeats until a PlayStation answers. Returns (ip, packet format)."""
+    saved = None
+    if not given and os.path.exists(SAVED_IP):
+        saved = open(SAVED_IP).read().strip() or None
+    targets = [given] if given else candidates(local_ip(), saved)
+    if not targets:
+        sys.exit("Couldn't work out this computer's network address. Run it with your PlayStation's address,\n"
+                 "e.g.  py telemetry.py 192.168.1.23  (PS5: Settings > Network > Connection Status).")
+    where = given or (f"{saved} (last time's address), then your whole network" if saved else
+                      f"your network ({targets[0].rsplit('.', 1)[0]}.x)")
+    print(f"Looking for your PlayStation on {where}. Make sure GT7 is running...")
+    started = time.time()
+    while True:
+        for fmt in (b"B", b"A"):  # "B" adds the steering angle; older game versions only answer "A"
+            for ip in targets:
+                try:
+                    sock.sendto(fmt, (ip, SEND_PORT))
+                except OSError:
+                    pass
+            until = time.time() + 3
+            while time.time() < until:
+                try:
+                    p, sender = read_packet(sock, fmt)
+                except socket.timeout:
+                    continue
+                if p is not None:
+                    return sender, fmt
+        waited = time.time() - started
+        if waited > 20:
+            print("  Still no answer. Check that:")
+            print("   - GT7 is running on the PlayStation (not just the home screen)")
+            print("   - this computer and the PlayStation use the same router (cable or Wi-Fi is fine)")
+            print("   - Windows Firewall allowed Python on Private networks (it asks the first time)")
+            print("  Or give the address yourself: py telemetry.py 192.168.x.x")
+            print("  (PS5: Settings > Network > Connection Status > View Connection Status). Ctrl+C to stop.")
+            started = time.time()
+
+
+def pause_before_closing():
+    try:
+        input("\nPress Enter to close this window.")
+    except (EOFError, KeyboardInterrupt):
+        pass
+
+
 def main():
-    ip = sys.argv[1] if len(sys.argv) > 1 else input("PS5 IP address (e.g. 192.168.1.23): ").strip()
+    given = sys.argv[1] if len(sys.argv) > 1 else None
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         sock.bind(("0.0.0.0", RECV_PORT))
     except OSError as e:
-        sys.exit(f"Could not listen on port {RECV_PORT} ({e}). Is another telemetry app running?")
-    sock.settimeout(1.0)
+        print(f"Could not listen on port {RECV_PORT} ({e}). Is another telemetry app or recorder already running?")
+        pause_before_closing()
+        return
+    sock.settimeout(0.5)
+    try:
+        ip, fmt = find_console(sock, given)
+    except KeyboardInterrupt:
+        print("\nStopped before the PlayStation was found. Nothing was recorded.")
+        pause_before_closing()
+        return
+    if not given:
+        try:
+            with open(SAVED_IP, "w") as f:
+                f.write(ip)
+        except OSError:
+            pass
+    print(f"Connected to your PlayStation at {ip}.")
 
-    name = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        datetime.now().strftime("telemetry_%Y%m%d_%H%M%S.csv"))
+    name = os.path.join(HERE, datetime.now().strftime("telemetry_%Y%m%d_%H%M%S.csv"))
     out = open(name, "w", newline="")
     writer = csv.DictWriter(out, FIELDS)
     writer.writeheader()
+    print(f"Saving to {name}")
+    print("Drive at least one full lap: start before the line and cross it again. Press Ctrl+C when done.\n")
 
-    fmt_order = [b"B", b"A"]
-    heartbeat = fmt_order[0]
     t0 = time.time()
-    last_beat = last_status = 0.0
-    started_fmt_at = t0
-    n = bad = 0
-    row = None
-    seen_cars, laps = set(), set()
-    max_speed = 0.0
-    xs, zs = [], []
-    print(f"Asking {ip} for telemetry. Start driving or play a replay in GT7. Ctrl+C to stop.")
-    print(f"Saving to {name}\n")
+    last_beat = last_packet = last_flush = last_status = time.time()
+    n = 0
+    state = None
+    laps = []  # (lap number, lap time ms, replay?, had a gap?)
+    prev_lap = None
+    gap_in_lap = False
     try:
         while True:
             now = time.time()
-            if now - last_beat > HEARTBEAT_EVERY:
-                sock.sendto(heartbeat, (ip, SEND_PORT))
+            silent = now - last_packet
+            # keep the stream alive; ask again straight away if it goes quiet
+            if now - last_beat > (1 if silent > 1 else HEARTBEAT_EVERY):
+                try:
+                    sock.sendto(fmt, (ip, SEND_PORT))
+                except OSError:
+                    pass
                 last_beat = now
-            # if nothing decodes with the richer format after a while, fall back to the basic one
-            if n == 0 and heartbeat == fmt_order[0] and now - started_fmt_at > 8:
-                heartbeat, last_beat = fmt_order[1], 0.0
-                print("Switching to the basic packet format.")
+            if silent > 5 and now - last_status > 5:
+                print(f"  No data for {silent:.0f} s. Is GT7 still running? Still trying...")
+                last_status = now
             try:
-                data, _ = sock.recvfrom(4096)
+                p, sender = read_packet(sock, fmt)
             except socket.timeout:
-                if now - last_status > 3:
-                    print(f"  waiting for data... (packets so far: {n})")
-                    last_status = now
                 continue
-            nonce_xor = FORMATS[heartbeat][1]
-            p = decrypt(data, nonce_xor) if len(data) >= 0x128 else None
-            if p is None:
-                bad += 1
+            if p is None or sender != ip:
                 continue
+            if silent > 2 and n:
+                print(f"  The connection dropped for {silent:.1f} s. The lap in progress may be incomplete.")
+                gap_in_lap = True
+            last_packet = now
             row = parse(p, t0)
             writer.writerow(row)
             n += 1
-            seen_cars.add(row["car_code"])
-            laps.add(row["lap"])
-            max_speed = max(max_speed, row["speed_kmh"])
-            if n % 30 == 0:
-                xs.append(row["x"]); zs.append(row["z"])
-            if now - last_status > 1:
-                state = "paused" if row["paused"] else "loading" if row["loading"] else \
-                    "on track" if row["on_track"] else "not on track"
-                steer = f" | steer {row['steering_rad']:+.2f}" if row["steering_rad"] != "" else ""
-                print(f"  {n:6d} packets | {row['speed_kmh']:6.1f} km/h | throttle {row['throttle_pct']:5.1f}% | "
-                      f"brake {row['brake_pct']:5.1f}% | gear {row['gear']} | lap {row['lap']}{steer} | {state}")
-                last_status = now
+
+            moving = row["speed_kmh"] > 5
+            new_state = ("paused" if row["paused"] else "menus" if row["loading"] or not moving
+                         else "driving" if row["on_track"] else "replay")
+            if new_state != state:
+                print({"paused": "  Paused.",
+                       "menus": "  Connected. Waiting for the car to move (start driving or play a replay).",
+                       "driving": "  Recording: you're driving.",
+                       "replay": "  Recording a replay."}[new_state])
+                state = new_state
+            lap = row["lap"]
+            if prev_lap is not None and lap == prev_lap + 1 and lap >= 2 and row["last_lap_ms"] > 0:
+                laps.append((lap - 1, row["last_lap_ms"], state == "replay", gap_in_lap))
+                note = " (replay)" if state == "replay" else ""
+                note += ", but the connection dropped during it" if gap_in_lap else ""
+                print(f"  Lap {lap - 1} complete: {fmt_lap(row['last_lap_ms'])}{note}. Saved.")
+                gap_in_lap = False
+            elif prev_lap is not None and lap != prev_lap:
+                gap_in_lap = False  # a restart or a new lap starting: forget gaps from before
+            prev_lap = lap
+            if now - last_flush > 2:
+                out.flush()  # keep what's recorded even if the window is closed
+                last_flush = now
     except KeyboardInterrupt:
         pass
     finally:
         out.close()
 
     secs = time.time() - t0
-    print("\nSummary")
-    print(f"  Packets saved:    {n} in {secs:.0f} s ({n / max(secs, 1):.0f} per second)")
-    print(f"  Packet format:    {heartbeat.decode()} ({'with' if heartbeat == b'B' else 'without'} steering angle)")
-    if bad:
-        print(f"  Unreadable:       {bad} packets")
-    if n:
-        moved = (max(xs) - min(xs) + max(zs) - min(zs)) if xs else 0
-        print(f"  Top speed:        {max_speed:.0f} km/h")
-        print(f"  Laps seen:        {sorted(laps)}")
-        print(f"  Car codes seen:   {sorted(seen_cars)}")
-        print(f"  Car moved about:  {moved:.0f} m (x + z range)")
-        print(f"\nData saved to {name}")
+    print(f"\nStopped after {secs:.0f} s, {n} packets.")
+    if laps:
+        print("Complete laps recorded:")
+        for num, ms, replay, gap in laps:
+            print(f"  Lap {num}: {fmt_lap(ms)}{' (replay)' if replay else ''}{'  - had a dropout' if gap else ''}")
+        best = min(laps, key=lambda l: l[1])
+        print(f"The website uses the fastest complete lap ({fmt_lap(best[1])}).")
+        print(f"\nUpload this file on https://gt7-timetrials.github.io/ :\n  {name}")
+    elif n:
+        print("No complete lap was recorded. Start recording before you cross the start line and keep going")
+        print("until you've crossed it again.")
+        print(f"The data is still saved in {name}")
     else:
-        print("  No telemetry received. Check the IP address, that GT7 is running, and that Windows")
-        print("  Firewall allowed Python on private networks.")
+        print("Nothing was received after connecting. Is GT7 still running?")
+        os.remove(name)
+    pause_before_closing()
 
 
 if __name__ == "__main__":
