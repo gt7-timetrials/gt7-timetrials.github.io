@@ -455,16 +455,16 @@ function renderComparison(out, res, e, otherCar) {
   const svg = out.querySelector(".trackmap");
   const who = shortWho(e);
   let pinned = worst.n;
-  let hideMine = false; // the close-up's "Hide your line" button, kept while moving between corners
+  let hideRef = false; // the close-up's button for the reference's line, kept while moving between corners
   const applyHide = () => body.querySelectorAll(".corner-lines").forEach(f => {
-    f.classList.toggle("hide-mine", hideMine);
+    f.classList.toggle("hide-ref", hideRef);
     const b = f.querySelector(".cl-toggle");
-    b.textContent = hideMine ? "Show your line" : "Hide your line";
-    b.setAttribute("aria-pressed", String(!hideMine));
+    b.textContent = `${hideRef ? "Show" : "Hide"} ${who === "Reference" ? "the reference" : who + "'s"} line`;
+    b.setAttribute("aria-pressed", String(!hideRef));
   });
   body.addEventListener("click", ev => {
     if (!ev.target.closest(".cl-toggle")) return;
-    hideMine = !hideMine;
+    hideRef = !hideRef;
     applyHide();
   });
   const show = n => {
