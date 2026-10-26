@@ -35,8 +35,17 @@ notes the difference.
   game's lap time to within a hundredth.
 - **Alignment:** every point of the player's lap is matched to the nearest point of the reference lap, so both are
   measured by distance along the reference line, every metre.
-- **Corners:** the reference's slowest points (at least 10 km/h slower than either side). Each corner's section runs
-  from halfway after the previous corner to halfway before the next, so the sections add up to the whole lap gap.
+- **Corners:** the reference's slowest points (at least 10 km/h slower than either side), plus fast bends: anywhere the
+  reference line turns 30° or more within 150 m (at least 100 m from a slow corner), such as banked curves and
+  flat-out kinks. A bend the reference takes without braking and above 90% throttle is labelled "flat out".
+- **Sections:** each section is a corner plus the straight after it, since the exit speed decides the straight. It
+  starts 10 m before the reference starts braking or lifting for the corner (or before the player does, if that's up
+  to 150 m earlier); for a flat-out bend, where the bend starts turning. The first section starts at the line and the
+  last one ends at the finish, so the sections add up to the whole lap gap. The corner part ends 20 m after the
+  reference's full throttle (or where a flat-out bend stops turning). When the straight after it is 150 m or longer,
+  the map colours it separately and a "Where the time goes" tip splits the section's loss between the corner and the
+  straight, with the exit speed difference and any lifts on the straight. Three or more lifts in a section are
+  summed up in one tip.
 - **Per corner:** braking point (first braking after top speed), peak brake, time above 90% brake, brake when
   turning in (trail braking; averaged over the first 15 m of turning, since the brake is often being released fast there), slowest speed, back on the throttle (20%), full throttle (95%), throttle reversals,
   steering lock, rear wheelspin and exit speed. Throttle while braking (downshift blips) is ignored.

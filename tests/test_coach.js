@@ -17,14 +17,16 @@ assert.ok(Math.abs(total - r.recordedGap) < 1e-9, "corner losses add up to the r
 assert.ok(Math.abs(r.gameGap - 2.924) < 1e-9 && Math.abs(r.recordedGap - r.gameGap) < 0.01, "time trial laps: game and recording agree");
 assert.ok(r.corners.every(c => c.tips.length), "every corner gets advice");
 assert.ok(r.corners[0].tips[0].startsWith("Start of the lap"), "slow start-line speed is called out");
-assert.ok(r.corners[6].tips.some(t => t.startsWith("Brake pressure")), "corner 7: WR holds full brake longer");
+assert.ok(r.corners[7].tips.some(t => t.startsWith("Brake pressure")), "corner 8: WR holds full brake longer");
 assert.ok(Coach.trackMap(r).startsWith("<svg"));
-// the long fast left after turn 1: 34% throttle where the WR averages 80%; early braking into a corner isn't a "lift"
+// the fast left after turn 1 is a corner of its own, though the WR takes it flat out
+assert.ok(r.corners[1].flat && Coach.cornerDetail(r.corners[1], "WR", r).includes("flat out for WR"));
+// the long fast left after that: 34% throttle where the WR averages 80%; early braking into a corner isn't a "lift"
 assert.strictEqual(r.lifts.length, 1);
-assert.ok(r.corners[1].tips.some(t => /^Lift: you average 3\d% throttle for 6\d m/.test(t)), r.corners[1].tips.join(" | "));
-const chart = Coach.cornerDetail(r.corners[6], "WR", r);
+assert.ok(r.corners[2].tips.some(t => /^Lift: you average 3\d% throttle for 6\d m/.test(t)), r.corners[2].tips.join(" | "));
+const chart = Coach.cornerDetail(r.corners[7], "WR", r);
 ["Brake %", "Throttle %", "Time gap:", "WR brakes"].forEach(t => assert.ok(chart.includes(t), "chart shows " + t));
-const liftChart = Coach.cornerDetail(r.corners[1], "WR", r); // no braking at corner 2: no brake strip, apex as 0
+const liftChart = Coach.cornerDetail(r.corners[2], "WR", r); // no braking at corner 3: no brake strip, apex as 0
 assert.ok(!liftChart.includes("Brake %") && liftChart.includes("the apex (no braking here)"));
 
 // The site's reference files store rounded values; the same lap from its CSV must still match itself.
@@ -68,9 +70,9 @@ for (const mirror of [false, true]) {
   for (const k of ["atTurnIn", "atApex", "atExit"]) assert.ok(Math.abs(c.line[k] - 3) < 0.1, `${k} ${c.line[k]}`);
   assert.ok(c.tips.some(t => t.startsWith("Track use: at turn-in you're 3.0 m wider")));
 }
-// on the real lap: turning in from further inside at corner 7, and a close-up drawing
-assert.ok(r.corners[6].tips.some(t => /^Track use: at turn-in you're 2\.\d m tighter/.test(t)), r.corners[6].tips.join(" | "));
-const closeUp = Coach.cornerDetail(r.corners[6], "WR", r);
+// on the real lap: turning in from further inside at corner 8, and a close-up drawing
+assert.ok(r.corners[7].tips.some(t => /^Track use: at turn-in you're 2\.\d m tighter/.test(t)), r.corners[7].tips.join(" | "));
+const closeUp = Coach.cornerDetail(r.corners[7], "WR", r);
 assert.ok(closeUp.includes('class="corner-lines"'));
 // both braking points are in the picture, and the line thickness varies with the pedals
 assert.strictEqual((closeUp.match(/cl-dot brake/g) || []).length, 2);
@@ -78,8 +80,8 @@ const widths = new Set([...closeUp.matchAll(/class="cl-me"[^>]*stroke-width:([\d
 assert.ok(widths.size > 5, "line thickness follows the pedals");
 assert.ok(closeUp.includes('class="cl-toggle"'), "has the hide/show button for your line");
 assert.ok(closeUp.includes('class="cl-legend"') && closeUp.includes("k-dot slow ref"), "legend grid for you and the WR");
-// corner 2: your slowest point and full throttle are at the same spot, so the ring is drawn last, round the dot
-const c2 = Coach.cornerDetail(r.corners[1], "WR", r);
+// corner 3: your slowest point and full throttle are at the same spot, so the ring is drawn last, round the dot
+const c2 = Coach.cornerDetail(r.corners[2], "WR", r);
 assert.ok(c2.indexOf("cl-dot gas me") < c2.indexOf("cl-dot slow me"));
 
 // only telemetry.py recordings are accepted; anything else gets its own message
@@ -95,5 +97,14 @@ const s1 = Coach.analyse(s1ref, s1me, "the reference lap");
 assert.ok(!s1.error, s1.error);
 assert.ok(Math.abs(s1.corners.reduce((a, c) => a + c.lost, 0) - s1.recordedGap) < 1e-9);
 assert.ok(Math.abs(s1.gameGap - 6.712) < 1e-9);
+// High Speed Ring: the fast banked bend before the first braking point is a corner too, and each section is a
+// corner plus the straight after it, with the time split between the two
+assert.deepStrictEqual(s1.corners.map(c => c.apex), [988, 1779, 2481, 2705, 3605]);
+s1.corners.slice(1).forEach(c => assert.ok(c.from < c.ref.brakeAt && c.ref.brakeAt - c.from <= 10 + 150, `corner ${c.n} starts at its braking zone`));
+assert.ok(/^Where the time goes: \+0\.74 s in the corner, \+1\.40 s on the 712 m straight after it to the finish line: you leave the corner 17 km\/h slower/
+  .test(s1.corners[4].tips[0]), s1.corners[4].tips[0]);
+assert.ok(s1.corners[3].tips.some(t => t.startsWith("Lifts: 5 times")), "several lifts are one tip");
+assert.ok(!s1.corners[3].tips.some(t => t.startsWith("Exit:")), "the straight tip says it instead");
+assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 9, "straights over 150 m get their own colour");
 
 console.log("coach.js tests passed");
