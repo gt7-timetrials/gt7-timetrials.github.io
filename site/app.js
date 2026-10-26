@@ -305,13 +305,18 @@ window.GT7AppEvent = ev => {
     else say(`Looking for your PlayStation at ${ev.network}. Make sure GT7 is running…`);
   } else if (ev.type === "slow") {
     const prefix = ev.phone ? ev.phone.split(".").slice(0, 3).join(".") : "";
-    say(otherNetwork(ev.phone, ev.network) || `Still looking. Check that GT7 is running on the PlayStation (not just the home screen),
+    const seen = ev.consoles || [];
+    if (seen.length) recording.out.querySelector(".rec-ip-form input").value ||= seen[0];
+    say(otherNetwork(ev.phone, ev.network) || (seen.length ? `Found your PlayStation at ${seen.join(", ")}, but no data from GT7
+      yet. Check that GT7 is running (not just the home screen), and that the computer recorder isn't running at the same time.`
+      : null) || `Still looking. Check that GT7 is running on the PlayStation (not just the home screen),
       and that the computer recorder isn't running at the same time.${prefix ? ` This phone's address starts ${prefix}: if the
       PlayStation's doesn't, they're on different networks. That's common with mesh Wi-Fi or a range extender: connect both to the
       same Wi-Fi name, or set the mesh to access point mode.` : ""} Or type in the PlayStation's address below.`, "miss");
     recording.out.querySelector(".rec-ip").open = true;
     recording.out.querySelector(".rec-debug").textContent = `This phone: ${ev.phone || "no Wi-Fi address"} · searched ${ev.network}
-      (${ev.tried} address${ev.tried === 1 ? "" : "es"}) · ${ev.sendErrors} failed sends · ${ev.heard} replies`;
+      (${ev.tried} address${ev.tried === 1 ? "" : "es"}) · ${ev.sendErrors} failed sends · ${ev.heard} replies ·
+      PlayStations seen: ${(ev.consoles || []).length}`;
   }
   else if (ev.type === "connected") say(`Connected to your PlayStation at ${ev.ip}. ${REC_STATES.menus}`);
   else if (ev.type === "state") say(REC_STATES[ev.state] || "");

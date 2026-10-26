@@ -10,10 +10,13 @@ import java.net.NetworkInterface;
 import java.net.PortUnreachableException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Records GT7's telemetry on the phone, the same way tools/telemetry.py does on a computer: find the PlayStation by
@@ -40,7 +43,9 @@ final class Recorder implements Runnable {
     private volatile boolean running = true;
     private final StringBuilder csv = new StringBuilder(Telemetry.HEADER + "\n");
     private int packets = 0, laps = 0;
-    private String ip;
+    private volatile String ip;
+    // PlayStations that answered the Remote Play discovery broadcast: they get the heartbeat first
+    private final Set<String> found = ConcurrentHashMap.newKeySet();
 
     Recorder(Listener listener, String savedIp, String onlyIp, String ownIp, SocketSetup setup) {
         this.listener = listener;
@@ -122,6 +127,67 @@ final class Recorder implements Runnable {
         }
     }
 
+    private static void pause(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
+     * Ask every PlayStation on the network where it is, the way the Remote Play apps do: one broadcast reaches them
+     * all and each answers with its address. Runs until the console is found or recording stops. This is quicker
+     * and gentler than heartbeating every address, which some Wi-Fi routers and mesh systems throttle.
+     */
+    private void discover(String phone) {
+        byte[][] asks = {
+                "SRCH * HTTP/1.1\ndevice-discovery-protocol-version:00030010\n".getBytes(StandardCharsets.US_ASCII), // PS5
+                "SRCH * HTTP/1.1\ndevice-discovery-protocol-version:00020020\n".getBytes(StandardCharsets.US_ASCII), // PS4
+        };
+        int[] ports = {9302, 987};
+        List<String> to = new ArrayList<>();
+        to.add("255.255.255.255");
+        if (phone != null) to.add(phone.substring(0, phone.lastIndexOf('.')) + ".255");
+        try (DatagramSocket ds = new DatagramSocket()) {
+            ds.setBroadcast(true);
+            if (setup != null) setup.setup(ds);
+            ds.setSoTimeout(500);
+            byte[] buf = new byte[2048];
+            DatagramPacket dp = new DatagramPacket(buf, buf.length);
+            while (running && ip == null) {
+                for (String t : to) {
+                    for (int i = 0; i < asks.length; i++) {
+                        try {
+                            ds.send(new DatagramPacket(asks[i], asks[i].length, new InetSocketAddress(t, ports[i])));
+                        } catch (IOException | IllegalArgumentException ignored) {
+                            // broadcasts not allowed here: the address sweep still runs
+                        }
+                    }
+                }
+                long until = System.currentTimeMillis() + 2000;
+                while (running && ip == null && System.currentTimeMillis() < until) {
+                    try {
+                        ds.receive(dp);
+                    } catch (IOException e) {
+                        continue;
+                    }
+                    if (new String(buf, 0, Math.min(dp.getLength(), 8), StandardCharsets.US_ASCII).equals("HTTP/1.1")) {
+                        found.add(dp.getAddress().getHostAddress());
+                    }
+                }
+            }
+        } catch (IOException ignored) {
+            // no discovery: the address sweep still runs
+        }
+    }
+
+    private static String jsonList(Set<String> items) {
+        StringBuilder sb = new StringBuilder("[");
+        for (String s : items) sb.append(sb.length() > 1 ? "," : "").append(q(s));
+        return sb.append(']').toString();
+    }
+
     @Override
     public void run() {
         try (DatagramSocket sock = new DatagramSocket(null)) {
@@ -149,7 +215,10 @@ final class Recorder implements Runnable {
         String where = onlyIp != null ? onlyIp : targets.get(targets.size() - 1).replaceAll("\\.\\d+$", ".x");
         emit("searching", "\"network\":" + q(where) + ",\"phone\":" + q(phone == null ? "" : phone));
 
-        // find the console: heartbeat everyone, take the first one that answers with a GT7 packet
+        // find the console: heartbeat everyone, take the first one that answers with a GT7 packet. Consoles that answer
+        // the discovery broadcast get the heartbeat every half second; the sweep is spread out so the Wi-Fi doesn't
+        // drop it as a flood.
+        if (onlyIp == null) new Thread(() -> discover(phone), "discovery").start();
         char format = 0;
         long started = System.currentTimeMillis();
         boolean hinted = false;
@@ -157,9 +226,17 @@ final class Recorder implements Runnable {
         search:
         while (running) {
             for (char f : new char[]{'B', 'A'}) {
-                for (String t : targets) if (!send(sock, f, t)) sendErrors++;
-                long until = System.currentTimeMillis() + 3000;
+                int sent = 0;
+                for (String t : targets) {
+                    if (!send(sock, f, t)) sendErrors++;
+                    if (++sent % 4 == 0) pause(1);
+                }
+                long until = System.currentTimeMillis() + 3000, lastFound = 0;
                 while (running && System.currentTimeMillis() < until) {
+                    if (System.currentTimeMillis() - lastFound > 500) {
+                        for (String d : found) send(sock, f, d);
+                        lastFound = System.currentTimeMillis();
+                    }
                     try {
                         sock.receive(dp);
                     } catch (SocketTimeoutException | PortUnreachableException e) { // nothing yet, or an "unreachable" reply to a heartbeat
@@ -175,7 +252,8 @@ final class Recorder implements Runnable {
             }
             if (!hinted && System.currentTimeMillis() - started > 20000) {
                 emit("slow", "\"phone\":" + q(phone == null ? "" : phone) + ",\"network\":" + q(where)
-                        + ",\"heard\":" + heard + ",\"sendErrors\":" + sendErrors + ",\"tried\":" + targets.size());
+                        + ",\"heard\":" + heard + ",\"sendErrors\":" + sendErrors + ",\"tried\":" + targets.size()
+                        + ",\"consoles\":" + jsonList(found));
                 hinted = true;
             }
         }

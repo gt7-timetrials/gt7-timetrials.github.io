@@ -232,6 +232,12 @@ class AndroidRecorderTest(unittest.TestCase):
             for k in self.rec.FIELDS[1:]:
                 self.assertAlmostEqual(float(got[k]), float(want[k]), places=1, msg=k)
 
+    def test_finds_the_playstation_without_its_address(self):
+        lap = os.path.join(self.HERE, "fixtures", "telemetry_lap.csv")
+        for how in ("discover", "sweep"):  # it answers the Remote Play discovery broadcast, or only the network sweep
+            events = [json.loads(line) for line in self.java("find", how, lap).splitlines()]
+            self.assertIn({"type": "connected", "ip": "127.0.0.1"}, events, how)
+
     def test_records_a_lap_from_a_fake_playstation(self):
         out = os.path.join(self.tmp, "phone.csv")
         events = [json.loads(line) for line in self.java("replay", os.path.join(self.HERE, "fixtures", "telemetry_lap.csv"), out).splitlines()]

@@ -16,6 +16,9 @@ import java.util.List;
  *   decrypt <packets.bin>         decrypt packets encrypted by tools/telemetry.py and print their CSV rows
  *   replay <recording.csv> <out>  play a recording as a fake PlayStation on this computer, record it with
  *                                 Recorder, and save what it recorded
+ *   find <discover|sweep> <recording.csv>
+ *                                 search without being given the address: a fake PlayStation that only answers the
+ *                                 Remote Play discovery broadcast, or only the sweep of the phone's network
  */
 public final class RecorderCheck {
     public static void main(String[] args) throws Exception {
@@ -26,6 +29,10 @@ public final class RecorderCheck {
                 ByteBuffer p = Telemetry.decrypt(one, one.length, Telemetry.nonceXor('B'));
                 System.out.println(p == null ? "null" : Telemetry.csvRow(p, 0));
             }
+            return;
+        }
+        if (args[0].equals("find")) {
+            find(args[1].equals("discover"), Files.readAllLines(Paths.get(args[2])));
             return;
         }
         List<String> rows = Files.readAllLines(Paths.get(args[1]));
@@ -52,6 +59,55 @@ public final class RecorderCheck {
         rec.stop();
         t.join();
         Files.write(Paths.get(args[2]), rec.csv().getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static void find(boolean discover, List<String> rows) throws Exception {
+        // the "phone" is 127.0.0.1, so the sweep goes to 127.0.0.2-254. Listening on 127.0.0.1 only, the console never
+        // hears the sweep and can only be found by discovery; listening on every address, it hears the sweep.
+        DatagramSocket console = new DatagramSocket(null);
+        console.setReuseAddress(true);
+        console.bind(new InetSocketAddress(discover ? "127.0.0.1" : "0.0.0.0", Telemetry.SEND_PORT));
+        DatagramSocket ask = null;
+        if (discover) {
+            ask = new DatagramSocket(null);
+            ask.setReuseAddress(true);
+            ask.bind(new InetSocketAddress(9302));
+            DatagramSocket answer = new DatagramSocket(new InetSocketAddress("127.0.0.1", 0));
+            DatagramSocket asks = ask;
+            Thread responder = new Thread(() -> {
+                byte[] reply = "HTTP/1.1 620 Server Standby\nhost-type:PS5\n".getBytes(StandardCharsets.US_ASCII);
+                try {
+                    DatagramPacket q = new DatagramPacket(new byte[512], 512);
+                    asks.receive(q);
+                    answer.send(new DatagramPacket(reply, reply.length, q.getSocketAddress()));
+                } catch (IOException ignored) {
+                    // closed at the end of the test
+                }
+            });
+            responder.setDaemon(true);
+            responder.start();
+        }
+        String[] connected = new String[1];
+        Recorder rec = new Recorder(json -> {
+            System.out.println(json);
+            if (json.contains("\"connected\"")) connected[0] = json;
+        }, null, null, "127.0.0.1", null);
+        Thread t = new Thread(rec);
+        t.start();
+        console.setSoTimeout(15000);
+        DatagramPacket beat = new DatagramPacket(new byte[16], 16);
+        console.receive(beat);
+        String[] head = rows.get(0).split(",", -1);
+        InetSocketAddress to = new InetSocketAddress(beat.getAddress(), Telemetry.RECV_PORT);
+        for (int i = 1; i < 200 && connected[0] == null; i++) {
+            byte[] enc = packet(head, rows.get(i).split(",", -1), i);
+            console.send(new DatagramPacket(enc, enc.length, to));
+            Thread.sleep(5);
+        }
+        rec.stop();
+        t.join();
+        console.close();
+        if (ask != null) ask.close();
     }
 
     private static double col(String[] head, String[] row, String name) {
