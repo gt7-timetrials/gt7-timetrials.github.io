@@ -516,7 +516,14 @@ const Coach = (() => {
     return corners.find(c => s >= c.from && s < c.to) || corners[corners.length - 1];
   }
 
-  return { parseCsv, fastestLap, analyse, trackMap, cornerDetail, cornerAt, fmtLost };
+  // Does this text start like a telemetry.py recording? (The column headings it always writes.)
+  const NEEDED = ["packet_id", "lap", "last_lap_ms", "x", "z", "speed_kmh", "throttle_pct", "brake_pct"];
+  function isRecording(text) {
+    const head = text.slice(0, 2000).split(/\r?\n/)[0].split(",").map(h => h.trim());
+    return NEEDED.every(h => head.includes(h));
+  }
+
+  return { parseCsv, fastestLap, analyse, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;
