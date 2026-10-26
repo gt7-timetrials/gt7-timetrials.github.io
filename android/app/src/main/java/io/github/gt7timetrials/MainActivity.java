@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Insets;
 import android.net.ConnectivityManager;
@@ -135,10 +134,6 @@ public class MainActivity extends Activity {
         super.onDestroy();
     }
 
-    private SharedPreferences prefs() {
-        return getSharedPreferences("recorder", MODE_PRIVATE);
-    }
-
     private void keepScreenOn(boolean on) {
         runOnUiThread(() -> {
             if (on) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -174,12 +169,6 @@ public class MainActivity extends Activity {
             }
         }
 
-        /** The address the PlayStation answered from last time, or "". */
-        @JavascriptInterface
-        public String savedIp() {
-            return prefs().getString("ip", "");
-        }
-
         /** The website before typed-in addresses: search the whole network. */
         @JavascriptInterface
         public void start() {
@@ -197,12 +186,9 @@ public class MainActivity extends Activity {
             Recorder[] self = new Recorder[1];
             self[0] = new Recorder(json -> {
                 Recorder r = self[0];
-                if (json.contains("\"connected\"") && r.ip() != null) {
-                    prefs().edit().putString("ip", r.ip()).apply(); // tried first next time
-                }
                 if (json.contains("\"stopped\"") && recorder == r) keepScreenOn(false);
                 runOnUiThread(() -> web.evaluateJavascript("window.GT7AppEvent && GT7AppEvent(" + json + ")", null));
-            }, prefs().getString("ip", null), ip, ipv4(net), sock -> {
+            }, ip, ipv4(net), sock -> {
                 if (net != null) net.bindSocket(sock);
             });
             recorder = self[0];

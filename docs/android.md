@@ -4,9 +4,16 @@
 phone. When the site runs inside the app, `window.GT7App` exists and the lap comparison shows **Record on this
 phone** instead of the computer recorder's download links.
 
-- `Recorder.java` / `Telemetry.java` do what `tools/telemetry.py` does: find the PlayStation by sending the heartbeat
-  to every address on the phone's Wi-Fi network (last time's address first), decrypt the packets, and keep them as a
-  CSV with the same columns. Progress goes to the page as JSON events (`searching`, `slow`, `connected`, `state`,
+- `Recorder.java` / `Telemetry.java` do what `tools/telemetry.py` does: find the PlayStation, decrypt the packets, and
+  keep them as a CSV with the same columns. It searches afresh every time (a PlayStation's address can change),
+  trying these at the same time:
+  - the Remote Play discovery broadcast ("SRCH * HTTP/1.1" to UDP 9302 for PS5 and 987 for PS4), which every
+    PlayStation answers with its address;
+  - a sweep sending the heartbeat to every address on the phone's Wi-Fi network, spread out because some routers and
+    mesh systems drop a burst of 250 address lookups.
+
+  The player can also type the address in. Sockets are bound to the Wi-Fi network, so mobile data or a VPN doesn't
+  get in the way. Progress goes to the page as JSON events (`searching`, `slow`, `connected`, `state`,
   `lap`, `silent`, `dropout`, `error`, `stopped`) through `window.GT7AppEvent`.
 - When the player taps **Stop and compare**, the page takes the CSV from `GT7App.csv()` and runs the same
   comparison as for an uploaded file. **Save the recording** writes it to Downloads.

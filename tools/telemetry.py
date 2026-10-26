@@ -7,16 +7,17 @@ Upload the CSV on https://gt7-timetrials.github.io/ to compare a lap with the wo
     py telemetry.py 192.168.1.23      (or give its IP address yourself)
     python3 telemetry.py              (Mac / Linux)
 
-Start GT7 first: the PlayStation only answers while GT7 is running. The address it finds is
-remembered in telemetry_ip.txt next to this script. Press Ctrl+C to stop; every packet is saved
-to telemetry_<date>_<time>.csv next to this script.
+Start GT7 first: the PlayStation only answers while GT7 is running. It searches afresh every time,
+since the PlayStation's address can change. Press Ctrl+C to stop; every packet is saved to
+telemetry_<date>_<time>.csv next to this script.
 
 How it works: GT7 sends ~60 packets a second to whoever sends it a small "heartbeat" on
 UDP port 33739, as long as the heartbeat is repeated every few seconds. Packets arrive on
 UDP port 33740 and are encrypted with Salsa20 using a fixed key the community worked out.
-To find the PlayStation, the heartbeat is sent to every address on your home network and
-the one that answers is used. Nothing here touches your PSN account or changes anything
-on the console.
+To find the PlayStation, it asks every PlayStation on your home network where it is (the
+same request the Remote Play app uses), and also sends the heartbeat to every address on the
+network; the one that answers is used. Nothing here touches your PSN account or changes
+anything on the console.
 """
 import csv
 import os
@@ -105,7 +106,6 @@ def parse(p, t0):
 
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SAVED_IP = os.path.join(HERE, "telemetry_ip.txt")
 
 
 def fmt_lap(ms):
@@ -124,13 +124,12 @@ def local_ip():
         probe.close()
 
 
-def candidates(own_ip, saved=None):
-    """Addresses to try, most likely first: the saved one, then everything on the same /24 network."""
-    out = [saved] if saved else []
-    if own_ip:
-        base = own_ip.rsplit(".", 1)[0]
-        out += [f"{base}.{n}" for n in range(1, 255) if f"{base}.{n}" not in (own_ip, saved)]
-    return out
+def candidates(own_ip):
+    """Every other address on the same /24 network as this computer."""
+    if not own_ip:
+        return []
+    base = own_ip.rsplit(".", 1)[0]
+    return [f"{base}.{n}" for n in range(1, 255) if f"{base}.{n}" != own_ip]
 
 
 def read_packet(sock, fmt):
@@ -139,39 +138,102 @@ def read_packet(sock, fmt):
     return (decrypt(data, FORMATS[fmt][1]) if len(data) >= 0x128 else None), addr[0]
 
 
+# The Remote Play discovery request: every PlayStation on the network answers it with its address
+DISCOVERY = [(b"SRCH * HTTP/1.1\ndevice-discovery-protocol-version:00030010\n", 9302),  # PS5
+             (b"SRCH * HTTP/1.1\ndevice-discovery-protocol-version:00020020\n", 987)]   # PS4
+
+
+def discovery_socket():
+    """A socket for asking PlayStations where they are, or None if broadcasts aren't allowed here."""
+    try:
+        d = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        d.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        d.setblocking(False)
+        return d
+    except OSError:
+        return None
+
+
+def ask_where(d, own_ip):
+    for to in ["255.255.255.255"] + ([own_ip.rsplit(".", 1)[0] + ".255"] if own_ip else []):
+        for msg, port in DISCOVERY:
+            try:
+                d.sendto(msg, (to, port))
+            except OSError:
+                pass
+
+
+def answers(d):
+    """Addresses of PlayStations that have answered the discovery request so far."""
+    out = set()
+    while True:
+        try:
+            data, addr = d.recvfrom(2048)
+        except (BlockingIOError, OSError):
+            return out
+        if data.startswith(b"HTTP/1.1"):
+            out.add(addr[0])
+
+
 def find_console(sock, given=None):
-    """Send heartbeats until a PlayStation answers. Returns (ip, packet format)."""
-    saved = None
-    if not given and os.path.exists(SAVED_IP):
-        saved = open(SAVED_IP).read().strip() or None
-    targets = [given] if given else candidates(local_ip(), saved)
+    """Send heartbeats until a PlayStation answers. Returns (ip, packet format).
+
+    Without an address it does two things at once: it asks every PlayStation where it is (the Remote Play discovery
+    broadcast) and heartbeats any that answer, and it sweeps every address on the network. The sweep is spread out,
+    since some Wi-Fi routers and mesh systems drop a burst of 250 address lookups.
+    """
+    own_ip = None if given else local_ip()
+    targets = [given] if given else candidates(own_ip)
     if not targets:
         sys.exit("Couldn't work out this computer's network address. Run it with your PlayStation's address,\n"
                  "e.g.  py telemetry.py 192.168.1.23  (PS5: Settings > Network > Connection Status).")
-    where = given or (f"{saved} (last time's address), then your whole network" if saved else
-                      f"your network ({targets[0].rsplit('.', 1)[0]}.x)")
+    where = given or f"your network ({targets[0].rsplit('.', 1)[0]}.x)"
     print(f"Looking for your PlayStation on {where}. Make sure GT7 is running...")
     started = time.time()
+    d = None if given else discovery_socket()
+    found, last_ask, last_found = set(), 0, 0
     while True:
         for fmt in (b"B", b"A"):  # "B" adds the steering angle; older game versions only answer "A"
-            for ip in targets:
+            for i, ip in enumerate(targets):
                 try:
                     sock.sendto(fmt, (ip, SEND_PORT))
                 except OSError:
                     pass
+                if i % 4 == 3:
+                    time.sleep(0.001)
             until = time.time() + 3
             while time.time() < until:
+                if d:
+                    if time.time() - last_ask > 2:
+                        ask_where(d, own_ip)
+                        last_ask = time.time()
+                    found |= answers(d)
+                    if found and time.time() - last_found > 0.5:
+                        for ip in found:
+                            try:
+                                sock.sendto(fmt, (ip, SEND_PORT))
+                            except OSError:
+                                pass
+                        last_found = time.time()
                 try:
                     p, sender = read_packet(sock, fmt)
-                except socket.timeout:
+                except (socket.timeout, ConnectionResetError):  # Windows reports "port unreachable" replies this way
                     continue
                 if p is not None:
+                    if d:
+                        d.close()
                     return sender, fmt
         waited = time.time() - started
-        if waited > 20:
+        if waited > 20 and found:
+            print(f"  Found your PlayStation at {', '.join(sorted(found))}, but no data from GT7 yet. Check that GT7 is")
+            print("  running (not just the home screen), and that the phone app isn't recording at the same time.")
+            started = time.time()
+        elif waited > 20:
             print("  Still no answer. Check that:")
             print("   - GT7 is running on the PlayStation (not just the home screen)")
-            print("   - this computer and the PlayStation use the same router (cable or Wi-Fi is fine)")
+            print("   - this computer and the PlayStation use the same router (cable or Wi-Fi is fine). The first")
+            print("     three numbers of their addresses must match: mesh Wi-Fi, extenders and guest networks can")
+            print("     put them on different networks")
             print("   - Windows Firewall allowed Python on Private networks (it asks the first time)")
             print("  Or give the address yourself: py telemetry.py 192.168.x.x")
             print("  (PS5: Settings > Network > Connection Status > View Connection Status). Ctrl+C to stop.")
@@ -201,12 +263,6 @@ def main():
         print("\nStopped before the PlayStation was found. Nothing was recorded.")
         pause_before_closing()
         return
-    if not given:
-        try:
-            with open(SAVED_IP, "w") as f:
-                f.write(ip)
-        except OSError:
-            pass
     print(f"Connected to your PlayStation at {ip}.")
 
     name = os.path.join(HERE, datetime.now().strftime("telemetry_%Y%m%d_%H%M%S.csv"))
@@ -239,7 +295,7 @@ def main():
                 last_status = now
             try:
                 p, sender = read_packet(sock, fmt)
-            except socket.timeout:
+            except (socket.timeout, ConnectionResetError):  # Windows reports "port unreachable" replies this way
                 continue
             if p is None or sender != ip:
                 continue

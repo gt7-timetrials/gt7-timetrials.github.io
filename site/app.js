@@ -285,18 +285,38 @@ const REC_STATES = {
   driving: "Recording: you're driving. Cross the start line, drive a full lap, then tap Stop and compare.",
   replay: "Recording a replay.",
 };
+// A typed-in PlayStation address on another network than the phone's (mesh Wi-Fi, extenders, guest networks): the
+// heartbeat may get there, but the data comes back to the router in between, not to the phone.
+const net3 = ip => (/^\d+\.\d+\.\d+\.\d+$/.test(ip || "") ? ip.split(".").slice(0, 3).join(".") : null);
+function otherNetwork(phone, ps) {
+  const a = net3(phone), b = net3(ps);
+  if (!a || !b || a === b) return null;
+  return `This phone (${phone}) and the PlayStation (${ps}) are on different networks: the first three numbers must match.
+    That's common with mesh Wi-Fi or a range extender, or a guest network. Connect the phone and the PlayStation to the same
+    Wi-Fi name, or set the mesh to access point mode (also called bridge mode), then try again.`;
+}
 window.GT7AppEvent = ev => {
   if (!recording) return;
   const status = recording.out.querySelector(".rec-status"), laps = recording.out.querySelector(".rec-laps");
   const say = (text, cls = "") => { status.textContent = text; status.className = "rec-status " + cls; };
-  if (ev.type === "searching") say(`Looking for your PlayStation at ${ev.network}. Make sure GT7 is running…`);
-  else if (ev.type === "slow") {
-    say(`Still looking. Check that GT7 is running on the PlayStation (not just the home screen), that this phone is on Wi-Fi
-      from the same router (not a guest network), and that the computer recorder isn't running at the same time.
-      Or type in the PlayStation's address below.`, "miss");
+  if (ev.type === "searching") {
+    const other = otherNetwork(ev.phone, ev.network);
+    if (other) say(other, "miss");
+    else say(`Looking for your PlayStation at ${ev.network}. Make sure GT7 is running…`);
+  } else if (ev.type === "slow") {
+    const prefix = ev.phone ? ev.phone.split(".").slice(0, 3).join(".") : "";
+    const seen = ev.consoles || [];
+    if (seen.length) recording.out.querySelector(".rec-ip-form input").value ||= seen[0];
+    say(otherNetwork(ev.phone, ev.network) || (seen.length ? `Found your PlayStation at ${seen.join(", ")}, but no data from GT7
+      yet. Check that GT7 is running (not just the home screen), and that the computer recorder isn't running at the same time.`
+      : null) || `Still looking. Check that GT7 is running on the PlayStation (not just the home screen),
+      and that the computer recorder isn't running at the same time.${prefix ? ` This phone's address starts ${prefix}: if the
+      PlayStation's doesn't, they're on different networks. That's common with mesh Wi-Fi or a range extender: connect both to the
+      same Wi-Fi name, or set the mesh to access point mode.` : ""} Or type in the PlayStation's address below.`, "miss");
     recording.out.querySelector(".rec-ip").open = true;
     recording.out.querySelector(".rec-debug").textContent = `This phone: ${ev.phone || "no Wi-Fi address"} · searched ${ev.network}
-      (${ev.tried} address${ev.tried === 1 ? "" : "es"}) · ${ev.sendErrors} failed sends · ${ev.heard} replies`;
+      (${ev.tried} address${ev.tried === 1 ? "" : "es"}) · ${ev.sendErrors} failed sends · ${ev.heard} replies ·
+      PlayStations seen: ${(ev.consoles || []).length}`;
   }
   else if (ev.type === "connected") say(`Connected to your PlayStation at ${ev.ip}. ${REC_STATES.menus}`);
   else if (ev.type === "state") say(REC_STATES[ev.state] || "");
@@ -322,8 +342,8 @@ function startRecording(e, out, ip) {
         <button type="button" class="button-link rec-cancel">Cancel</button></div>
       <details class="rec-ip"><summary>Not finding your PlayStation? Type in its address</summary>
         <p class="hint">PS5: Settings &gt; Network &gt; Connection Status &gt; View Connection Status (IPv4 address).
-          If the computer recorder has found it, it's also in telemetry_ip.txt next to telemetry.py.</p>
-        <form class="rec-ip-form"><input inputmode="decimal" placeholder="192.168.1.23" value="${esc(ip || (APP.savedIp ? APP.savedIp() : ""))}">
+          The computer recorder also shows it when it connects ("Connected to your PlayStation at …").</p>
+        <form class="rec-ip-form"><input inputmode="decimal" placeholder="192.168.1.23" value="${esc(ip || "")}">
           <button class="button-link">Try this address</button></form>
         <p class="hint rec-debug"></p>
       </details>

@@ -7,8 +7,10 @@ import unittest
 from datetime import datetime, timedelta, timezone
 
 import shutil
+import socket
 import struct
 import subprocess
+import time
 
 from gt7tt import model, report, site, telemetry
 from gt7tt.store import Store, slim_entry
@@ -166,12 +168,60 @@ class RecorderTest(unittest.TestCase):
         cls.rec = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.rec)
 
-    def test_scans_the_home_network_saved_address_first(self):
-        c = self.rec.candidates("192.168.1.40", saved="192.168.1.23")
-        self.assertEqual(c[0], "192.168.1.23")
-        self.assertEqual(len(c), 253)  # .1 to .254 without this computer, saved address only once
+    def test_scans_the_home_network(self):
+        c = self.rec.candidates("192.168.1.40")
+        self.assertEqual(c[0], "192.168.1.1")
+        self.assertEqual(len(c), 253)  # .1 to .254 without this computer
         self.assertNotIn("192.168.1.40", c)
         self.assertEqual(self.rec.candidates(None), [])
+
+    def test_finds_the_playstation_by_the_discovery_broadcast(self):
+        # a fake PS5 that only answers the Remote Play discovery request (from 127.0.0.1) and the heartbeat sent
+        # to 127.0.0.1; the "computer" is 127.0.0.1, so the sweep (127.0.0.2-254) can't find it
+        import threading
+        console = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        console.bind(("127.0.0.1", self.rec.SEND_PORT))
+        asks = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        asks.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        asks.bind(("", 9302))
+        answer = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        answer.bind(("127.0.0.1", 0))
+        for s in (console, asks):
+            s.settimeout(10)
+        p = bytearray(0x13C)
+        p[0:4] = (0x47375330).to_bytes(4, "little")
+        nonce = (5 ^ 0xDEADBEEF).to_bytes(4, "little") + (5).to_bytes(4, "little")
+        enc = bytearray(self.rec.salsa20(self.rec.KEY, nonce, bytes(p)))
+        enc[0x40:0x44] = (5).to_bytes(4, "little")
+
+        def play():
+            try:
+                q, addr = asks.recvfrom(512)
+                if q.startswith(b"SRCH"):
+                    answer.sendto(b"HTTP/1.1 620 Server Standby\nhost-type:PS5\n", addr)
+                beat, addr = console.recvfrom(16)
+                for _ in range(20):
+                    console.sendto(bytes(enc), (addr[0], self.rec.RECV_PORT))
+                    time.sleep(0.01)
+            except OSError:
+                pass
+
+        t = threading.Thread(target=play, daemon=True)
+        t.start()
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind(("0.0.0.0", self.rec.RECV_PORT))
+        sock.settimeout(0.5)
+        local_ip, self.rec.local_ip = self.rec.local_ip, lambda: "127.0.0.1"
+        try:
+            result = []  # find_console keeps searching until it finds one: give it 15 s
+            finder = threading.Thread(target=lambda: result.append(self.rec.find_console(sock)), daemon=True)
+            finder.start()
+            finder.join(15)
+            self.assertEqual(result, [("127.0.0.1", b"B")])
+        finally:
+            self.rec.local_ip = local_ip
+            for s in (sock, console, asks, answer):
+                s.close()
 
     def test_lap_time_format(self):
         self.assertEqual(self.rec.fmt_lap(113057), "1:53.057")
@@ -231,6 +281,12 @@ class AndroidRecorderTest(unittest.TestCase):
             got = dict(zip(self.rec.FIELDS, line.split(",")))
             for k in self.rec.FIELDS[1:]:
                 self.assertAlmostEqual(float(got[k]), float(want[k]), places=1, msg=k)
+
+    def test_finds_the_playstation_without_its_address(self):
+        lap = os.path.join(self.HERE, "fixtures", "telemetry_lap.csv")
+        for how in ("discover", "sweep"):  # it answers the Remote Play discovery broadcast, or only the network sweep
+            events = [json.loads(line) for line in self.java("find", how, lap).splitlines()]
+            self.assertIn({"type": "connected", "ip": "127.0.0.1"}, events, how)
 
     def test_records_a_lap_from_a_fake_playstation(self):
         out = os.path.join(self.tmp, "phone.csv")
