@@ -36,6 +36,15 @@ fastest lap wins. Old files can stay; they only match running events.
   the reference isn't braking. Stretches within 10 m of that part are early braking or a late exit, which the corner's
   own tips cover. Kept if it costs 0.03 s or more (time gap from its start until back on full throttle). Shown as a tip
   in its corner, a dark band on the map, and shading on the corner's chart.
+- **Track use:** both laps carry the cars' real positions, so at each metre the player's distance to the side of the
+  reference's line is known. The corner's direction of turn makes that "wider" (towards the outside) or "tighter".
+  It is measured at the reference's turn-in, apex and exit (20 m after full throttle), averaged over ±5 m. A tip
+  appears for differences of 1.5 m or more, except in kinks under 15° of turn. The corner close-up draws both lines
+  to scale, the same way round as the lap map, from just before the earlier braking point to just after the exit.
+  Line thickness shows the pedals: brake pressure from the braking point to the slowest point, throttle before
+  braking and after the slowest point (thin = none, full thickness = 100%), so throttle in the braking zone and braking
+  outside it don't show. Dots: solid = braking starts, hollow = slowest point, light = full throttle; red for the
+  player, grey for the reference. A button hides the player's line to see the reference's where they overlap. The data has no track edges.
 - **Corner chart:** brake (when either driver brakes here) and throttle, the player's against the reference's, and the
   time gap building up, by metres from where the reference starts braking (or from the apex where it doesn't brake).
 - **Tips:** fixed rules with thresholds, in `tips()` in `site/coach.js`. Steering is compared with the player's own
