@@ -1,16 +1,86 @@
 {
  "title": "Super License",
- "note": "Medal times as shown in GT7. Reference laps (replays beating gold) go in data/license/laps/<test>.csv.",
+ "note": "Medal times in milliseconds, as shown in GT7 (S-10 not yet known). Reference laps (replays beating gold) go in data/license/laps/<test>.csv.",
  "tests": [
-  {"id": "S-1", "track": "High Speed Ring", "car": "Lamborghini Aventador LP 750-4 Superveloce '15", "gold": null, "silver": null, "bronze": null},
-  {"id": "S-2", "track": "Autodromo Nazionale Monza", "car": "Ferrari F50 '95", "gold": null, "silver": null, "bronze": null},
-  {"id": "S-3", "track": "Tsukuba Circuit", "car": "Nissan Silvia spec-R Aero (S15) Touring Car", "gold": null, "silver": null, "bronze": null},
-  {"id": "S-4", "track": "Tokyo Expressway - South Counterclockwise", "car": "Toyota Supra GT500 '97", "gold": null, "silver": null, "bronze": null},
-  {"id": "S-5", "track": "Sardegna - Windmills", "car": "Toyota GR Yaris 1st Edition RZ \"High Performance\" '20", "gold": null, "silver": null, "bronze": null},
-  {"id": "S-6", "track": "Trial Mountain Circuit", "car": "Ford Shelby GT350R '16", "gold": null, "silver": null, "bronze": null},
-  {"id": "S-7", "track": "WeatherTech Raceway Laguna Seca", "car": "Dallara SF19 Super Formula / Honda '19", "gold": null, "silver": null, "bronze": null},
-  {"id": "S-8", "track": "Autódromo de Interlagos", "car": "Pagani Zonda R '09", "gold": null, "silver": null, "bronze": null},
-  {"id": "S-9", "track": "Deep Forest Raceway", "car": "Nissan GT-R GT500 '08", "gold": null, "silver": null, "bronze": null},
-  {"id": "S-10", "track": "Circuit de Spa-Francorchamps (partly wet)", "car": "Porsche 917K '70", "gold": null, "silver": null, "bronze": null}
+  {
+   "id": "S-1",
+   "track": "High Speed Ring",
+   "car": "Lamborghini Aventador LP 750-4 Superveloce '15",
+   "gold": 73000,
+   "silver": 75200,
+   "bronze": 80700
+  },
+  {
+   "id": "S-2",
+   "track": "Autodromo Nazionale Monza",
+   "car": "Ferrari F50 '95",
+   "gold": 120000,
+   "silver": 123900,
+   "bronze": 132200
+  },
+  {
+   "id": "S-3",
+   "track": "Tsukuba Circuit",
+   "car": "Nissan Silvia spec-R Aero (S15) Touring Car",
+   "gold": 58500,
+   "silver": 60300,
+   "bronze": 64600
+  },
+  {
+   "id": "S-4",
+   "track": "Tokyo Expressway - South Counterclockwise",
+   "car": "Toyota Supra GT500 '97",
+   "gold": 120000,
+   "silver": 123500,
+   "bronze": 132200
+  },
+  {
+   "id": "S-5",
+   "track": "Sardegna - Windmills",
+   "car": "Toyota GR Yaris 1st Edition RZ \"High Performance\" '20",
+   "gold": 95400,
+   "silver": 97800,
+   "bronze": 104300
+  },
+  {
+   "id": "S-6",
+   "track": "Trial Mountain Circuit",
+   "car": "Ford Shelby GT350R '16",
+   "gold": 130500,
+   "silver": 134300,
+   "bronze": 143300
+  },
+  {
+   "id": "S-7",
+   "track": "WeatherTech Raceway Laguna Seca",
+   "car": "Dallara SF19 Super Formula / Honda '19",
+   "gold": 66300,
+   "silver": 68400,
+   "bronze": 73000
+  },
+  {
+   "id": "S-8",
+   "track": "Autódromo de Interlagos",
+   "car": "Pagani Zonda R '09",
+   "gold": 91400,
+   "silver": 94100,
+   "bronze": 100800
+  },
+  {
+   "id": "S-9",
+   "track": "Deep Forest Raceway",
+   "car": "Nissan GT-R GT500 '08",
+   "gold": 82700,
+   "silver": 86500,
+   "bronze": 92700
+  },
+  {
+   "id": "S-10",
+   "track": "Circuit de Spa-Francorchamps (partly wet)",
+   "car": "Porsche 917K '70",
+   "gold": null,
+   "silver": null,
+   "bronze": null
+  }
  ]
 }
