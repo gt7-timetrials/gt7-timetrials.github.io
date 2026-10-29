@@ -40,6 +40,17 @@ notes the difference.
   game's lap time to within a hundredth.
 - **Alignment:** every point of the player's lap is matched to the nearest point of the reference lap, so both are
   measured by distance along the reference line, every metre.
+- **Start here:** the 2–3 differences most worth working on first. Each candidate gets the time it costs, from the
+  time gap over its stretch of track, and a difficulty:
+  - easy: lifts or braking the reference doesn't do, braking 10 m or more early, full throttle 15 m or more late;
+  - medium: a slowest speed 5 km/h or more lower, track use, a slower exit before a straight of 150 m or more;
+  - harder: brake pressure and trail braking.
+
+  The score is the time × 1 (easy), 0.6 (medium) or 0.35 (harder), and only items costing 0.05 s or more count. A
+  corner's "through the corner" item gets the corner's loss minus its early-braking and late-throttle items, and
+  the exit item leaves out lifts on the straight, which are listed on their own.
+- **Your best lap:** the best lap of each recording compared is kept in the browser (localStorage, per event or
+  license test) and shown as a line falling over the event. It's never sent anywhere, and "Forget them" clears it.
 - **Which lap:** every complete lap in the recording is listed, and the fastest is compared by default; the player
   can tap another. GT7's telemetry doesn't say whether a lap was valid, so a lap noticeably shorter than the reference
   (by more than 1%, and at least 30 m) is marked as a likely cut corner and skipped when choosing the default, unless

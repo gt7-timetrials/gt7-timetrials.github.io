@@ -26,13 +26,13 @@ tests: keep it simple, and only take on what one person can look after.
      manual adjustment and Recalibrate.
    - Tested here by playing recordings back as if live, then tuned in the game by the owner.
 
-3. **"Start here" summary** at the top of a comparison: the 2–3 biggest easy wins. Differences are ranked by time lost
+3. **"Start here" summary** (done) at the top of a comparison: the 2–3 biggest easy wins. Differences are ranked by time lost
    and by how hard they are to fix:
    - easy: coasting or lifting, braking far too early, late on the gas;
    - medium: minimum speed, line;
    - hard: trail braking, fine brake release.
 
-4. **Your best lap over the time trial.** The phone remembers the best lap time of each recording or upload, per
+4. **Your best lap over the time trial** (done). The phone remembers the best lap time of each recording or upload, per
    event, on the device only. A small chart shows it falling over the event, with no list of what improved: the time
    coming down is enough.
 

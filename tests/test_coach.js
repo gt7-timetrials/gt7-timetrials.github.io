@@ -135,4 +135,12 @@ assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several
 assert.ok(!s1.corners[2].tips.some(t => t.startsWith("Exit:")), "the straight tip says it instead");
 assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "one colour per section");
 
+// "Start here": at most 3, biggest first after weighting by difficulty; nothing when the lap is the reference itself
+{
+  const items = Coach.startHere(s1, "the reference lap");
+  assert.ok(items.length === 3 && items[0].n === 1 && /lift off for 517 m/.test(items[0].text), JSON.stringify(items));
+  assert.ok(items.every((it, i) => !i || it.score <= items[i - 1].score));
+  assert.deepStrictEqual(Coach.startHere(self, "WR"), []);
+}
+
 console.log("coach.js tests passed");

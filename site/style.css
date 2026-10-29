@@ -181,6 +181,25 @@ table.compact td.name { white-space: nowrap; width: 100%; }
   color: var(--text); text-decoration: none; font-size: 0.9rem; cursor: pointer; background: var(--bg); }
 .button-link.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 .coach-summary { margin: 14px 0 8px; }
+.my-progress:empty { display: none; }
+.my-progress { margin: 10px 0 4px; }
+.mp-head { font-size: 0.95rem; }
+.mp-chart { width: 100%; max-width: 420px; height: auto; display: block; margin: 4px 0; }
+.mp-axis { stroke: var(--line); }
+.mp-tick { fill: var(--muted); font-size: 10px; }
+.mp-best { fill: none; stroke: var(--accent); stroke-width: 2; }
+.mp-dot { fill: var(--muted); }
+.link-btn { border: 0; background: none; padding: 0; color: var(--muted); font: inherit; text-decoration: underline; cursor: pointer; }
+.start-here { margin: 4px 0 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.start-here h4 { margin: 0 0 4px; font-size: 0.95rem; }
+.start-here ol { margin: 0 0 4px; padding-left: 20px; display: grid; gap: 6px; }
+.start-here .hint { margin: 0; }
+.sh-corner { padding: 1px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--text);
+  font: inherit; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+.sh-corner.selected { border-color: var(--text); }
+.ease { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 1px 6px;
+  border-radius: 999px; color: #fff; }
+.ease.easy { background: var(--good); } .ease.medium { background: var(--warn); } .ease.harder { background: var(--bad); }
 .lap-pick { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0 0; }
 .lap-btn { padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text);
   font: inherit; font-size: 0.85rem; cursor: pointer; }

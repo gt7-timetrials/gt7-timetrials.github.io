@@ -352,6 +352,46 @@ const Coach = (() => {
     }) };
   }
 
+  // "Start here": the 2-3 differences most worth working on first. Each candidate gets the time it costs (from the
+  // time gap over its stretch of track) and a rough difficulty; easy fixes count in full, harder ones less, so a
+  // newer driver sees "stop coasting" before "trail brake deeper". Only one "through the corner" item per corner.
+  const EASE = { easy: 1, medium: 0.6, harder: 0.35 };
+  function startHere(res, who) {
+    const { delta } = res.grid, n = delta.length, at = k => delta[Math.max(0, Math.min(n - 1, k))];
+    const items = [];
+    for (const c of res.corners) {
+      const me = c.me, ref = c.ref, add = (ease, cost, text) => cost >= 0.05 && items.push({ n: c.n, ease, cost, text });
+      for (const z of c.lifts) {
+        add("easy", z.cost, z.kind === "brake" ? `you brake for ${z.length} m where ${who} stays on the throttle`
+          : `you lift off for ${z.length} m where ${who} stays on the throttle`);
+      }
+      let counted = 0;
+      if (me.brakeAt !== null && ref.brakeAt !== null && ref.brakeAt - me.brakeAt >= 10) {
+        const cost = at(ref.brakeAt) - at(me.brakeAt);
+        counted += Math.max(0, cost);
+        add("easy", cost, `you brake ${ref.brakeAt - me.brakeAt} m earlier than ${who}`);
+      }
+      if (me.fullGas !== null && ref.fullGas !== null && me.fullGas - ref.fullGas >= 15) {
+        const cost = at(me.fullGas) - at(ref.fullGas);
+        counted += Math.max(0, cost);
+        add("easy", cost, `you reach full throttle ${me.fullGas - ref.fullGas} m later than ${who}`);
+      }
+      // what's left of the time lost through the corner itself
+      const rest = c.cornerLost - counted;
+      if (me.minSpeed <= ref.minSpeed - 5) add("medium", rest, `carry more speed: your slowest is ${r0(me.minSpeed)} km/h, ${who}'s ${r0(ref.minSpeed)} km/h`);
+      else if (c.tips.some(t => t.startsWith("Trail braking") || t.startsWith("Brake pressure"))) add("harder", rest, "brake harder at first, then ease off into the turn (trail braking)");
+      else if (c.tips.some(t => t.startsWith("Track use"))) add("medium", rest, "use more of the track (see the line in the close-up)");
+      // a slow exit costs time all the way down the straight after the corner
+      const straight = c.lost - c.cornerLost - c.approachLost
+        - c.lifts.filter(z => z.from >= c.exit).reduce((a, z) => a + z.cost, 0); // lifts there are listed on their own
+      if (c.to - c.exit >= 150 && me.exitSpeed <= ref.exitSpeed - 3) {
+        add("medium", straight, `a faster exit: you leave the corner ${r0(ref.exitSpeed - me.exitSpeed)} km/h slower, and lose it down the straight`);
+      }
+    }
+    items.forEach(i => (i.score = i.cost * EASE[i.ease]));
+    return items.sort((a, b) => b.score - a.score).slice(0, 3);
+  }
+
   // Lifts and braking the reference doesn't do: anywhere outside the reference's own braking-to-full-throttle
   // part of each corner, you're on the brake, or below 90% throttle and 20 points under the reference, for 10 m
   // or more. Stretches that run straight into or out of that part are early braking or a late exit, which the
@@ -647,7 +687,7 @@ const Coach = (() => {
     return NEEDED.every(h => head.includes(h));
   }
 
-  return { parseCsv, fastestLap, lapChoices, analyse, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
+  return { parseCsv, fastestLap, lapChoices, analyse, startHere, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;
