@@ -16,7 +16,7 @@ phone** instead of the computer recorder's download links.
   get in the way. Progress goes to the page as JSON events (`searching`, `slow`, `connected`, `state`,
   `lap`, `silent`, `dropout`, `error`, `stopped`) through `window.GT7AppEvent`.
 - When the player taps **Stop and compare**, the page takes the CSV from `GT7App.csv()` and runs the same
-  comparison as for an uploaded file. **Save the recording** writes it to Downloads.
+  comparison as for an uploaded file. **Save to Downloads**, on the result line, writes it to Downloads.
 - The screen stays on while recording. Links to other sites open in the browser.
 
 **Builds:** every push that changes `android/` runs `.github/workflows/android.yml`, which builds the APK and puts it on

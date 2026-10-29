@@ -249,7 +249,8 @@ function coachSection(e, i) {
 }
 
 const refCache = {};
-async function compareLap(e, file, out) {
+// save: for a recording made in the app, { csv, name } so the result line can offer "Save to Downloads"
+async function compareLap(e, file, out, save) {
   out.innerHTML = `<p class="muted">Reading ${esc(file.name)}…</p>`;
   try {
     const [text, ref] = await Promise.all([file.text(),
@@ -269,7 +270,7 @@ async function compareLap(e, file, out) {
     const show = i => {
       const lap = choices.laps[i].lap, res = Coach.analyse(ref, lap, tipWho(e));
       if (res.error) { out.innerHTML = `<p class="miss">${res.error}</p>`; return; }
-      renderComparison(out, res, e, lap.car_code !== ref.car_code, { ...choices, chosen: i, show });
+      renderComparison(out, res, e, lap.car_code !== ref.car_code, { ...choices, chosen: i, show }, save);
     };
     show(choices.pick);
   } catch (err) {
@@ -369,15 +370,7 @@ async function finishRecording(compare) {
   if (!r || !compare) return;
   const name = `phone_${new Date().toISOString().slice(0, 19).replace(/[-:]/g, "").replace("T", "_")}.csv`;
   const csv = APP.csv();
-  await compareLap(r.e, new File([csv], name, { type: "text/csv" }), r.out);
-  r.out.insertAdjacentHTML("afterbegin", `<p class="rec-save"><button type="button" class="button-link">Save the recording</button>
-    <span class="muted"></span></p>`);
-  const btn = r.out.querySelector(".rec-save button");
-  btn.addEventListener("click", () => {
-    const saved = APP.save(csv, name);
-    btn.disabled = true;
-    r.out.querySelector(".rec-save span").textContent = saved ? ` Saved to Downloads as ${saved}.` : " Couldn't save the file.";
-  });
+  await compareLap(r.e, new File([csv], name, { type: "text/csv" }), r.out, { csv, name });
 }
 
 document.addEventListener("click", ev => {
@@ -456,13 +449,14 @@ function startHere(res, e) {
     <p class="hint">Ranked by the time each costs, with easier fixes first.</p></div>`;
 }
 
-function renderComparison(out, res, e, otherCar, picker) {
+function renderComparison(out, res, e, otherCar, picker, save) {
   const total = (res.lapMs - res.refMs) / 1000;
   const worst = res.corners.reduce((a, c) => (c.lost > a.lost ? c : a), res.corners[0]);
-  const saveBar = out.querySelector(".rec-save"); // the app's "Save the recording", kept when another lap is chosen
   out.innerHTML = `
     ${lapPicker(picker)}
-    <p class="coach-summary">Your lap <b>${fmt(res.lapMs)}</b> vs ${fmt(res.refMs)}: <b>${Coach.fmtLost(total)}</b>.
+    <p class="coach-summary">Your lap <b>${fmt(res.lapMs)}</b> vs ${fmt(res.refMs)}: <b>${Coach.fmtLost(total)}</b>.${save
+      ? ` <span class="rec-save">${save.saved ? `<span class="muted">Saved to Downloads as ${esc(save.saved)}.</span>`
+        : `<button type="button" class="save-btn">Save to Downloads</button>`}</span>` : ""}
       ${e.medals ? medalLine(res.lapMs, e.medals) : ""}
       ${otherCar ? `<span class="miss">This lap is in a different car from the reference.</span>` : ""}</p>
     ${Math.abs(res.gameGap - res.recordedGap) > 0.1 ? `<p class="hint">The game's times include
@@ -545,7 +539,12 @@ function renderComparison(out, res, e, otherCar, picker) {
   out._keys?.abort(); // one Escape handler per comparison, even after choosing another lap
   out._keys = new AbortController();
   document.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); }, { signal: out._keys.signal });
-  if (saveBar) out.prepend(saveBar);
+  out.querySelector(".save-btn")?.addEventListener("click", () => {
+    const saved = APP.save(save.csv, save.name); // remembered, so choosing another lap still shows it's saved
+    if (saved) save.saved = saved;
+    out.querySelector(".rec-save").innerHTML = saved ? `<span class="muted">Saved to Downloads as ${esc(saved)}.</span>`
+      : `<span class="miss">Couldn't save the file.</span>`;
+  });
   out.querySelectorAll(".lap-btn").forEach(b => b.addEventListener("click", () => picker.show(+b.dataset.lap)));
   // Wider screens: hovering swaps the panel's contents, so give it the height of the tallest corner. Otherwise a
   // shorter corner shrinks the page, the browser scrolls, and the button under the pointer moves away.

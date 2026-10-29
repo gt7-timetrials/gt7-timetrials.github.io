@@ -181,6 +181,9 @@ table.compact td.name { white-space: nowrap; width: 100%; }
   color: var(--text); text-decoration: none; font-size: 0.9rem; cursor: pointer; background: var(--bg); }
 .button-link.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 .coach-summary { margin: 14px 0 8px; }
+.save-btn { padding: 3px 10px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent);
+  font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.save-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 .start-here { margin: 4px 0 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
 .start-here h4 { margin: 0 0 4px; font-size: 0.95rem; }
 .start-here ol { margin: 0 0 4px; padding-left: 20px; display: grid; gap: 6px; }
@@ -202,7 +205,6 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .rec-status.miss { font-weight: 400; }
 .rec-laps { margin: 0 0 6px; padding-left: 20px; }
 .rec-laps:empty { display: none; }
-.rec-save { margin: 10px 0 0; }
 .rec-ip { margin-top: 10px; }
 .rec-ip summary { cursor: pointer; color: var(--muted); }
 .rec-ip-form { display: flex; gap: 8px; flex-wrap: wrap; }
