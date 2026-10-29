@@ -49,8 +49,6 @@ notes the difference.
   The score is the time × 1 (easy), 0.6 (medium) or 0.35 (harder), and only items costing 0.05 s or more count. A
   corner's "through the corner" item gets the corner's loss minus its early-braking and late-throttle items, and
   the exit item leaves out lifts on the straight, which are listed on their own.
-- **Your best lap:** the best lap of each recording compared is kept in the browser (localStorage, per event or
-  license test) and shown as a line falling over the event. It's never sent anywhere, and "Forget them" clears it.
 - **Which lap:** every complete lap in the recording is listed, and the fastest is compared by default; the player
   can tap another. GT7's telemetry doesn't say whether a lap was valid, so a lap noticeably shorter than the reference
   (by more than 1%, and at least 30 m) is marked as a likely cut corner and skipped when choosing the default, unless

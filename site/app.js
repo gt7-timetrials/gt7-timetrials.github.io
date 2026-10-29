@@ -208,7 +208,6 @@ function renderCurrent() {
       ${coachSection(e, i)}
     </article>`;
   }).join("");
-  el.querySelectorAll(".my-progress").forEach(fillProgress);
   el.querySelectorAll("input.lap-file").forEach(inp => inp.addEventListener("change", () => {
     if (inp.files[0]) compareLap(DATA.current[+inp.dataset.i], inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
     inp.value = ""; // allow choosing the same file again
@@ -245,7 +244,6 @@ function coachSection(e, i) {
         <a class="button-link" href="readme.txt" target="_blank" rel="noopener">How to record (readme.txt)</a>`}
         ${r ? `<label class="button-link${APP ? "" : " primary"}">Upload your lap (.csv)<input type="file" accept=".csv,text/csv" class="lap-file" data-i="${i}" hidden></label>` : ""}
       </div>
-      ${r ? `<div class="my-progress" data-kind="event" data-i="${i}"></div>` : ""}
       <div class="coach-result" aria-live="polite"></div>
     </section>`;
 }
@@ -274,8 +272,6 @@ async function compareLap(e, file, out) {
       renderComparison(out, res, e, lap.car_code !== ref.car_code, { ...choices, chosen: i, show });
     };
     show(choices.pick);
-    saveMyLap(e, choices.laps[choices.pick].lap_ms);
-    fillProgress(out.closest(".coach").querySelector(".my-progress"));
   } catch (err) {
     delete refCache[refKey(e)]; // let the next try fetch the reference again
     out.innerHTML = `<p class="miss">Couldn't read that file. Is it a CSV saved by telemetry.py?</p>`;
@@ -419,11 +415,9 @@ function renderLicense() {
         <p class="hint">Reference: a gold-medal run of ${fmt(t.reference.lap_ms)}.</p>
         <div class="coach-actions">${APP ? recordButton("license", i) : ""}<label class="button-link${APP ? "" : " primary"}">Upload your run (.csv)<input type="file"
           accept=".csv,text/csv" class="license-file" data-i="${i}" hidden></label></div>
-        <div class="my-progress" data-kind="license" data-i="${i}"></div>
         <div class="coach-result" aria-live="polite"></div></section>` : ""}
     </article>`;
   }).join("");
-  el.querySelectorAll(".my-progress").forEach(fillProgress);
   el.querySelectorAll("input.license-file").forEach(inp => inp.addEventListener("change", () => {
     if (inp.files[0]) compareLap(licenseEvent(+inp.dataset.i), inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
     inp.value = "";
@@ -432,60 +426,6 @@ function renderLicense() {
 
 // Phones: corner details slide up from the bottom when a corner is tapped. Wider screens: beside the map.
 const phone = () => matchMedia("(max-width: 760px)").matches;
-
-// --- your best lap over the event: the best lap of each recording or upload, kept in this browser (or the app) only ---
-const lapsKey = e => `gt7tt.mylaps.${refKey(e)}`;
-function myLaps(e) {
-  try { return JSON.parse(localStorage.getItem(lapsKey(e))) || []; } catch { return []; }
-}
-function saveMyLap(e, ms) {
-  const laps = myLaps(e);
-  if (laps.some(l => l.ms === ms)) return; // the same recording again
-  laps.push({ at: new Date().toISOString(), ms });
-  try { localStorage.setItem(lapsKey(e), JSON.stringify(laps)); } catch { /* storage off: nothing kept */ }
-}
-const eventFor = el => (el.dataset.kind === "license" ? licenseEvent(+el.dataset.i) : DATA.current[+el.dataset.i]);
-function fillProgress(el) {
-  if (!el) return;
-  const e = eventFor(el), laps = myLaps(e).sort((a, b) => a.at.localeCompare(b.at));
-  if (!laps.length) { el.innerHTML = ""; return; }
-  const best = Math.min(...laps.map(l => l.ms)), first = laps[0].ms;
-  el.innerHTML = `<div class="mp-head"><b>Your best lap: ${fmt(best)}</b>${laps.length > 1 && best < first
-      ? ` <span class="muted">${secs(first - best)} faster than your first (${fmt(first)})</span>` : ""}</div>
-    ${laps.length > 1 ? myChart(laps, e) : ""}
-    <p class="hint">Your best lap from each recording you compare, kept on this device only.
-      <button type="button" class="link-btn mp-clear">Forget them</button></p>`;
-  el.querySelector(".mp-clear").addEventListener("click", () => {
-    try { localStorage.removeItem(lapsKey(e)); } catch { /* nothing kept anyway */ }
-    fillProgress(el);
-  });
-}
-// Each recording's best lap as a dot, and your best so far as a line falling over the event (faster = lower).
-function myChart(laps, e) {
-  const t = l => new Date(l.at).getTime();
-  const t0 = e.starts ? new Date(e.starts).getTime() : t(laps[0]);
-  const t1 = Math.max(e.starts ? Math.min(Date.now(), new Date(e.ends).getTime()) : t(laps[laps.length - 1]), t0 + 3600e3);
-  const W = 360, H = 120, L = 50, R = 10, T = 10, B = 22;
-  const ms = laps.map(l => l.ms), lo = Math.min(...ms), hi = Math.max(...ms), pad = Math.max(100, 0.1 * (hi - lo));
-  const x = v => L + ((v - t0) / (t1 - t0)) * (W - L - R), y = v => T + ((hi + pad - v) / (hi - lo + 2 * pad)) * (H - T - B);
-  let run = Infinity, d = "";
-  laps.forEach((l, i) => {
-    const before = run;
-    run = Math.min(run, l.ms);
-    d += i ? `L${x(t(l)).toFixed(1)},${y(before).toFixed(1)}L${x(t(l)).toFixed(1)},${y(run).toFixed(1)}` : `M${x(t(l)).toFixed(1)},${y(run).toFixed(1)}`;
-  });
-  d += `L${x(t1).toFixed(1)},${y(run).toFixed(1)}`;
-  const day = v => new Date(v).toLocaleDateString(undefined, { day: "numeric", month: "short" });
-  return `<svg class="mp-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Your best lap time over the event">
-    <line class="mp-axis" x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}"/>
-    <text class="mp-tick" x="${L - 4}" y="${y(lo) + 3}" text-anchor="end">${fmt(lo)}</text>
-    ${hi > lo ? `<text class="mp-tick" x="${L - 4}" y="${y(hi) + 3}" text-anchor="end">${fmt(hi)}</text>` : ""}
-    <text class="mp-tick" x="${L}" y="${H - 6}">${day(t0)}</text>
-    <text class="mp-tick" x="${W - R}" y="${H - 6}" text-anchor="end">${day(t1)}</text>
-    <path class="mp-best" d="${d}"/>
-    ${laps.map(l => `<circle class="mp-dot" cx="${x(t(l)).toFixed(1)}" cy="${y(l.ms).toFixed(1)}" r="3"/>`).join("")}
-  </svg>`;
-}
 
 // Which lap of the recording is compared: a button per complete lap when there's more than one, and a note when a
 // lap looks like it cut a corner (noticeably shorter than the reference).

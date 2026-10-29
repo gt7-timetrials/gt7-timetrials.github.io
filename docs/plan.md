@@ -32,15 +32,11 @@ tests: keep it simple, and only take on what one person can look after.
    - medium: minimum speed, line;
    - hard: trail braking, fine brake release.
 
-4. **Your best lap over the time trial** (done). The phone remembers the best lap time of each recording or upload, per
-   event, on the device only. A small chart shows it falling over the event, with no list of what improved: the time
-   coming down is enough.
-
-5. **Skill progression pattern.** Compare laps at several levels (WR, top 100, gold, silver) across events, to find
+4. **Skill progression pattern.** Compare laps at several levels (WR, top 100, gold, silver) across events, to find
    which differences shrink first as drivers improve. Use that to order the tips ("at your level, drivers usually
    gain most from…"). Needs laps at several levels on several tracks, so it builds up over months.
 
-6. **Next-level reference laps.** Compare against a gold-pace lap rather than the WR. Possibly not needed once 3 and 5
+5. **Next-level reference laps.** Compare against a gold-pace lap rather than the WR. Possibly not needed once 3 and 4
    are done. Depends on how far down the leaderboard GT7 lets you download replays.
 
 ## Later, maybe
