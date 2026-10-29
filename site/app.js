@@ -259,15 +259,19 @@ async function compareLap(e, file, out) {
         saved (named like telemetry_20261025_214804.csv).</p>`;
       return;
     }
-    const lap = Coach.fastestLap(Coach.parseCsv(text));
-    if (!lap) {
+    const choices = Coach.lapChoices(Coach.parseCsv(text), ref);
+    if (!choices.laps.length) {
       out.innerHTML = `<p class="miss">No complete lap found in this file. Start recording before you cross the start line
         and stop after crossing it again.</p>`;
       return;
     }
-    const res = Coach.analyse(ref, lap, tipWho(e));
-    if (res.error) { out.innerHTML = `<p class="miss">${res.error}</p>`; return; }
-    renderComparison(out, res, e, lap.car_code !== ref.car_code);
+    // the fastest lap that doesn't look like a cut corner, unless the player picks another one
+    const show = i => {
+      const lap = choices.laps[i].lap, res = Coach.analyse(ref, lap, tipWho(e));
+      if (res.error) { out.innerHTML = `<p class="miss">${res.error}</p>`; return; }
+      renderComparison(out, res, e, lap.car_code !== ref.car_code, { ...choices, chosen: i, show });
+    };
+    show(choices.pick);
   } catch (err) {
     delete refCache[refKey(e)]; // let the next try fetch the reference again
     out.innerHTML = `<p class="miss">Couldn't read that file. Is it a CSV saved by telemetry.py?</p>`;
@@ -423,10 +427,31 @@ function renderLicense() {
 // Phones: corner details slide up from the bottom when a corner is tapped. Wider screens: beside the map.
 const phone = () => matchMedia("(max-width: 760px)").matches;
 
-function renderComparison(out, res, e, otherCar) {
+// Which lap of the recording is compared: a button per complete lap when there's more than one, and a note when a
+// lap looks like it cut a corner (noticeably shorter than the reference).
+function lapPicker(p) {
+  if (!p) return "";
+  const chosen = p.laps[p.chosen], fastest = p.laps[p.fastest];
+  const note = l => `${l.short} m shorter than the reference lap, so it probably cut a corner`;
+  let html = "";
+  if (p.laps.length > 1) {
+    html += `<div class="lap-pick" role="group" aria-label="Lap to compare"><span class="muted">Laps:</span>
+      ${p.laps.map((l, i) => `<button type="button" class="lap-btn${i === p.chosen ? " chosen" : ""}${l.cut ? " cut" : ""}"
+        data-lap="${i}" aria-pressed="${i === p.chosen}">Lap ${l.number} <b>${fmt(l.lap_ms)}</b>${i === p.fastest ? " · fastest" : ""}${l.cut
+        ? " · ⚠ short" : ""}</button>`).join("")}</div>`;
+  }
+  if (chosen.cut) html += `<p class="hint miss">This lap is ${note(chosen)}. The comparison may be misleading.</p>`;
+  else if (fastest.cut && p.chosen === p.pick) html += `<p class="hint">Lap ${fastest.number} (${fmt(fastest.lap_ms)}) was faster,
+    but it's ${note(fastest)}. Comparing lap ${chosen.number} instead: tap lap ${fastest.number} to compare it anyway.</p>`;
+  return html;
+}
+
+function renderComparison(out, res, e, otherCar, picker) {
   const total = (res.lapMs - res.refMs) / 1000;
   const worst = res.corners.reduce((a, c) => (c.lost > a.lost ? c : a), res.corners[0]);
+  const saveBar = out.querySelector(".rec-save"); // the app's "Save the recording", kept when another lap is chosen
   out.innerHTML = `
+    ${lapPicker(picker)}
     <p class="coach-summary">Your lap <b>${fmt(res.lapMs)}</b> vs ${fmt(res.refMs)}: <b>${Coach.fmtLost(total)}</b>.
       ${e.medals ? medalLine(res.lapMs, e.medals) : ""}
       ${otherCar ? `<span class="miss">This lap is in a different car from the reference.</span>` : ""}</p>
@@ -506,7 +531,11 @@ function renderComparison(out, res, e, otherCar) {
     select(n);
   }));
   detail.querySelector(".close").addEventListener("click", close);
-  document.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); });
+  out._keys?.abort(); // one Escape handler per comparison, even after choosing another lap
+  out._keys = new AbortController();
+  document.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); }, { signal: out._keys.signal });
+  if (saveBar) out.prepend(saveBar);
+  out.querySelectorAll(".lap-btn").forEach(b => b.addEventListener("click", () => picker.show(+b.dataset.lap)));
   // Wider screens: hovering swaps the panel's contents, so give it the height of the tallest corner. Otherwise a
   // shorter corner shrinks the page, the browser scrolls, and the button under the pointer moves away.
   if (!phone()) {

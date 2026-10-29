@@ -21,23 +21,57 @@ const Coach = (() => {
     });
   }
 
-  // Same rule as gt7tt/telemetry.py: fastest complete lap, timed by packet number (60 a second).
-  function fastestLap(rows) {
+  // Same rule as gt7tt/telemetry.py: a complete lap is the lap counter going up by one, twice; laps are timed by
+  // packet number (60 a second).
+  function completeLaps(rows) {
     const ups = [];
     for (let i = 1; i < rows.length; i++) {
       if (rows[i].lap === rows[i - 1].lap + 1 && rows[i].lap >= 1 && rows[i].speed_kmh > 30) ups.push(i);
     }
-    let best = null;
+    const out = [];
     for (let k = 0; k + 1 < ups.length; k++) {
       const a = ups[k], b = ups[k + 1];
-      if (rows[b].lap !== rows[a].lap + 1 || !(rows[b].last_lap_ms > 0)) continue;
-      if (!best || rows[b].last_lap_ms < rows[best[1]].last_lap_ms) best = [a, b];
+      if (rows[b].lap === rows[a].lap + 1 && rows[b].last_lap_ms > 0) out.push({ number: rows[a].lap, a, b, lap_ms: rows[b].last_lap_ms });
     }
-    if (!best) return null;
-    const lap = rows.slice(best[0], best[1] + 1), p0 = lap[0].packet_id;
-    const out = { lap_ms: rows[best[1]].last_lap_ms, car_code: lap[0].car_code, t: lap.map(r => (r.packet_id - p0) / 60) };
+    return out;
+  }
+
+  function extractLap(rows, a, b) {
+    const lap = rows.slice(a, b + 1), p0 = lap[0].packet_id;
+    const out = { lap_ms: rows[b].last_lap_ms, car_code: lap[0].car_code, t: lap.map(r => (r.packet_id - p0) / 60) };
     LAP_FIELDS.forEach(k => (out[k] = lap.map(r => (Number.isNaN(r[k]) ? 0 : r[k]))));
     return out;
+  }
+
+  const pathLength = lap => {
+    let d = 0;
+    for (let i = 1; i < lap.x.length; i++) d += Math.hypot(lap.x[i] - lap.x[i - 1], lap.z[i] - lap.z[i - 1]);
+    return d;
+  };
+
+  function fastestLap(rows) {
+    const laps = completeLaps(rows);
+    if (!laps.length) return null;
+    const best = laps.reduce((x, y) => (y.lap_ms < x.lap_ms ? y : x));
+    return extractLap(rows, best.a, best.b);
+  }
+
+  // Every complete lap in a recording, for choosing which one to compare. GT7 doesn't say whether a lap was valid, so
+  // a lap noticeably shorter than the reference (by more than 1%, and at least 30 m) is marked as a likely cut corner:
+  // a clean lap's line is within about 0.5% of the reference's. `pick` is the fastest lap that isn't marked (or the
+  // fastest of all, if they all are).
+  const CUT_SHARE = 0.01, CUT_MIN_M = 30;
+  function lapChoices(rows, ref) {
+    const refLength = pathLength(ref);
+    const laps = completeLaps(rows).map(l => {
+      const lap = extractLap(rows, l.a, l.b), short = refLength - pathLength(lap);
+      return { number: l.number, lap_ms: l.lap_ms, lap, short: Math.round(short),
+        cut: short > Math.max(CUT_MIN_M, CUT_SHARE * refLength) };
+    });
+    const by = list => list.reduce((x, y) => (y.lap_ms < x.lap_ms ? y : x), list[0]);
+    const clean = laps.filter(l => !l.cut);
+    const pick = laps.length ? laps.indexOf(by(clean.length ? clean : laps)) : -1;
+    return { laps, pick, fastest: laps.length ? laps.indexOf(by(laps)) : -1 };
   }
 
   const interp = (xs, ys, x) => { // xs ascending
@@ -613,7 +647,7 @@ const Coach = (() => {
     return NEEDED.every(h => head.includes(h));
   }
 
-  return { parseCsv, fastestLap, analyse, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
+  return { parseCsv, fastestLap, lapChoices, analyse, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;

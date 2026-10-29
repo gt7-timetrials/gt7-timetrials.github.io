@@ -82,6 +82,34 @@ assert.ok(closeUp.includes('class="cl-legend"') && !closeUp.includes("slowest"),
 const selfClose = Coach.cornerDetail(self.corners[6], "WR", self);
 assert.ok(selfClose.includes("cl-same") && !/<circle class="cl-diff[^>]*cx=/.test(selfClose), "the WR against itself: all the same");
 
+// Several laps in one recording: the fastest is compared, unless it's noticeably shorter than the reference (a cut
+// corner). Built from the Barcelona lap: the same lap three more times, one of them cutting ~200 m off (10 s of
+// driving through the turn 5–6 area replaced by a straight line) and faster.
+{
+  const rows = Coach.parseCsv(read("tests/fixtures/telemetry_lap.csv"));
+  const ups = rows.map((r, i) => (i && r.lap === rows[i - 1].lap + 1 ? i : -1)).filter(i => i > 0);
+  const one = rows.slice(ups[0], ups[1]); // lap 1, without the row that ends it
+  const pid = { n: rows[rows.length - 1].packet_id };
+  // copy(n, ms, cut): lap n; its first row carries lap n-1's time (ms), as the game does
+  const copy = (lapNo, ms, cut) => one.filter((_, i) => !cut || i < 2040 || i >= 2640).map((r, i) => ({
+    ...r, lap: lapNo, packet_id: ++pid.n, last_lap_ms: i === 0 ? ms : r.last_lap_ms }));
+  const more = [...rows.slice(0, ups[1]),
+    ...copy(2, 113057, true), ...copy(3, 111500), ...copy(4, 113900), ...copy(5, 114000)];
+  more.forEach((r, i) => { if (i && r.lap === more[i - 1].lap) r.last_lap_ms = more[i - 1].last_lap_ms; });
+  const ch = Coach.lapChoices(more, ref);
+  assert.deepStrictEqual(ch.laps.map(l => [l.number, l.lap_ms, l.cut]),
+    [[1, 113057, false], [2, 111500, true], [3, 113900, false], [4, 114000, false]], JSON.stringify(ch.laps.map(l => [l.number, l.lap_ms, l.short])));
+  assert.strictEqual(ch.fastest, 1); // the cut lap is the fastest...
+  assert.strictEqual(ch.pick, 0);    // ...so the fastest clean lap is compared
+  assert.ok(ch.laps[1].short > 200);
+  // the real recordings: one complete lap each, not marked as cut (a clean S-1 lap is ~22 m shorter than the gold run's)
+  const gold = Coach.fastestLap(Coach.parseCsv(read("data/license/laps/S-1.csv")));
+  for (const [f, r] of [["tests/fixtures/telemetry_lap.csv", ref], ["tests/fixtures/license_s1_attempt.csv", gold]]) {
+    const c = Coach.lapChoices(Coach.parseCsv(read(f)), r);
+    assert.ok(c.laps.length === 1 && !c.laps[0].cut && c.pick === 0, f);
+  }
+}
+
 // only telemetry.py recordings are accepted; anything else gets its own message
 assert.ok(Coach.isRecording(read("tests/fixtures/telemetry_lap.csv")));
 ["", "hello\nworld", "Time,Speed,Throttle\n0,100,50", "\u0089PNG\r\n\u001a\n"].forEach(t => assert.ok(!Coach.isRecording(t), JSON.stringify(t)));
