@@ -446,6 +446,16 @@ function lapPicker(p) {
   return html;
 }
 
+// The 2-3 differences most worth working on first (coach.js startHere), each linking to its corner.
+function startHere(res, e) {
+  const items = Coach.startHere(res, tipWho(e));
+  if (!items.length) return "";
+  return `<div class="start-here"><h4>Start here</h4><ol>${items.map(i => `<li><button type="button" class="sh-corner"
+      data-n="${i.n}">Corner ${i.n}</button> <span class="ease ${i.ease}">${i.ease}</span> ${i.text[0].toUpperCase() + i.text.slice(1)}
+      <span class="muted">(about ${i.cost.toFixed(2)} s)</span></li>`).join("")}</ol>
+    <p class="hint">Ranked by the time each costs, with easier fixes first.</p></div>`;
+}
+
 function renderComparison(out, res, e, otherCar, picker) {
   const total = (res.lapMs - res.refMs) / 1000;
   const worst = res.corners.reduce((a, c) => (c.lost > a.lost ? c : a), res.corners[0]);
@@ -458,6 +468,7 @@ function renderComparison(out, res, e, otherCar, picker) {
     ${Math.abs(res.gameGap - res.recordedGap) > 0.1 ? `<p class="hint">The game's times include
       ${Math.abs(res.gameGap - res.recordedGap).toFixed(2)} s that isn't in the recorded laps (in a license test the timer can
       start before the car reaches the line), so the corners below add up to ${Coach.fmtLost(res.recordedGap)}.</p>` : ""}
+    ${startHere(res, e)}
     <p class="hint tap-hint">${phone() ? "Tap a corner to see where you lose time." : "Hover over or click a corner on the map."}</p>
     <div class="coach-grid">
       <div class="map-box">${Coach.trackMap(res)}
@@ -518,7 +529,7 @@ function renderComparison(out, res, e, otherCar, picker) {
     el.addEventListener("mouseleave", () => { if (!phone()) show(pinned); });
     el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(n); } });
   });
-  out.querySelectorAll(".chip").forEach(el => el.addEventListener("click", () => select(+el.dataset.n)));
+  out.querySelectorAll(".chip, .sh-corner").forEach(el => el.addEventListener("click", () => select(+el.dataset.n)));
   // a click or tap anywhere near the track selects the nearest corner's section
   svg.addEventListener("click", ev => {
     const pt = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(svg.getScreenCTM().inverse());
