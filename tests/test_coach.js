@@ -3,7 +3,7 @@ const assert = require("assert"), fs = require("fs"), path = require("path");
 const Coach = require("../site/coach.js");
 const read = p => fs.readFileSync(path.join(__dirname, "..", p), "utf8");
 
-const ref = Coach.fastestLap(Coach.parseCsv(read("data/reference_laps/telemetry_20261025_214232.csv")));
+const ref = Coach.fastestLap(Coach.parseCsv(read("tests/fixtures/reference_barcelona.csv")));
 const me = Coach.fastestLap(Coach.parseCsv(read("tests/fixtures/telemetry_lap.csv")));
 assert.strictEqual(ref.lap_ms, 110133);
 assert.strictEqual(me.lap_ms, 113057);
@@ -28,8 +28,8 @@ const liftChart = Coach.cornerDetail(r.corners[1], "WR", r); // no braking at co
 assert.ok(!liftChart.includes("Brake %") && liftChart.includes("the apex (no braking here)"));
 
 // The site's reference files store rounded values; the same lap from its CSV must still match itself.
-for (const [csv, json] of [["telemetry_20261025_214232.csv", ref], ["telemetry_20261025_224654.csv", null]]) {
-  const raw = Coach.fastestLap(Coach.parseCsv(read("data/reference_laps/" + csv)));
+for (const [csv, json] of [["reference_barcelona.csv", ref], ["reference_sugo.csv", null]]) {
+  const raw = Coach.fastestLap(Coach.parseCsv(read("tests/fixtures/" + csv)));
   const site = json ? roundLike(json) : roundLike(raw);
   const res = Coach.analyse(site, raw);
   assert.ok(!res.error, res.error);

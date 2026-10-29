@@ -1,46 +1,14 @@
 {
- "generated_at": "2026-10-28T21:38:44.686827+00:00",
- "history_events": 202,
- "snapshot_events": 0,
+ "generated_at": "2026-10-29T10:06:16.912400+00:00",
+ "history_events": 203,
+ "snapshot_events": 1,
  "historical_entrants": {
-  "median": 162455,
-  "p10": 128482,
-  "p90": 196073,
-  "events": 202
+  "median": 162426,
+  "p10": 128502,
+  "p90": 196051,
+  "events": 203
  },
  "events": [
-  {
-   "event_id": 14980,
-   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/14980/",
-   "track": "SUGO International Racing Course",
-   "category": "unknown",
-   "car": "Xiaomi Vision Gran Turismo",
-   "starts": "2026-10-15T18:00:00+11:00",
-   "ends": "2026-10-29T17:59:59+11:00",
-   "days_elapsed": 13.6,
-   "days_left": 0.4,
-   "entrants": 151218,
-   "entrants_projection": null,
-   "wr_ms": 76519,
-   "wr_holder": "AMS__Andrew",
-   "gold_now_ms": 78814,
-   "top100_spread_pct": 1.649,
-   "strong_drivers_posted": [
-    "AT__1826",
-    "MetalGear9493"
-   ],
-   "strong_drivers_total": 25,
-   "regular_event": true,
-   "predicted": {
-    "final_wr_ms": 76482,
-    "gold_ms": 78776,
-    "gold_fast_ms": 78714,
-    "gold_slow_ms": 78814,
-    "final_wr_fast_ms": 76422,
-    "final_wr_slow_ms": 76519,
-    "method": "history: time elapsed + top drivers"
-   }
-  },
   {
    "event_id": 15000,
    "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15000/",
@@ -49,14 +17,14 @@
    "car": "Hyundai ELANTRA N TC '24",
    "starts": "2026-10-22T18:00:00+11:00",
    "ends": "2026-11-05T17:59:59+11:00",
-   "days_elapsed": 6.6,
-   "days_left": 7.4,
-   "entrants": 122382,
+   "days_elapsed": 7.1,
+   "days_left": 6.9,
+   "entrants": 125175,
    "entrants_projection": null,
    "wr_ms": 110098,
    "wr_holder": "tropicalarea",
    "gold_now_ms": 113400,
-   "top100_spread_pct": 0.476,
+   "top100_spread_pct": 0.471,
    "strong_drivers_posted": [
     "MetalGear9493",
     "SFE_Damian"
@@ -64,12 +32,43 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 109938,
-    "gold_ms": 113236,
-    "gold_fast_ms": 113014,
+    "final_wr_ms": 109948,
+    "gold_ms": 113246,
+    "gold_fast_ms": 113045,
     "gold_slow_ms": 113400,
-    "final_wr_fast_ms": 109723,
+    "final_wr_fast_ms": 109753,
     "final_wr_slow_ms": 110098,
+    "method": "history: time elapsed + top drivers"
+   }
+  },
+  {
+   "event_id": 15138,
+   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15138/",
+   "track": "Blue Moon Bay Speedway - Infield A",
+   "category": "original",
+   "car": "Maserati A6GCS/53 Spyder '54",
+   "starts": "2026-10-29T18:00:00+11:00",
+   "ends": "2026-11-12T17:59:59+11:00",
+   "days_elapsed": 0.1,
+   "days_left": 13.9,
+   "entrants": 5445,
+   "entrants_projection": null,
+   "wr_ms": 80672,
+   "wr_holder": "Calster_25",
+   "gold_now_ms": 83092,
+   "top100_spread_pct": 1.915,
+   "strong_drivers_posted": [
+    "MetalGear9493"
+   ],
+   "strong_drivers_total": 25,
+   "regular_event": true,
+   "predicted": {
+    "final_wr_ms": 80384,
+    "gold_ms": 82795,
+    "gold_fast_ms": 82569,
+    "gold_slow_ms": 82999,
+    "final_wr_fast_ms": 80165,
+    "final_wr_slow_ms": 80582,
     "method": "history: time elapsed + top drivers"
    }
   }

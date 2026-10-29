@@ -299,7 +299,7 @@ class AndroidRecorderTest(unittest.TestCase):
 
 
 class TelemetryTest(unittest.TestCase):
-    REF = os.path.join(os.path.dirname(__file__), "..", "data", "reference_laps", "telemetry_20261025_214232.csv")
+    REF = os.path.join(os.path.dirname(__file__), "fixtures", "reference_barcelona.csv")
     LAP = os.path.join(os.path.dirname(__file__), "fixtures", "telemetry_lap.csv")
 
     def test_fastest_lap_timed_by_packets(self):
