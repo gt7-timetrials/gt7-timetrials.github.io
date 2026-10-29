@@ -77,7 +77,14 @@ assert.ok(closeUp.includes('class="corner-lines"'));
 assert.strictEqual((closeUp.match(/class="cl-badge (me|ref)">[\s\S]*?>B<\/text>/g) || []).length, 2);
 assert.ok(/cl-diff brk more"[^>]*r="4.6"/.test(closeUp), "early braking shows as large filled red dots");
 assert.ok(closeUp.includes("Hide WR's line"), "the button hides the reference's line");
-assert.ok(closeUp.includes('class="cl-legend"') && !closeUp.includes("slowest"), "legend; no slowest-point marker");
+const dots = closeUp.slice(closeUp.indexOf('class="corner-lines"'));
+assert.ok(dots.includes('class="cl-legend"') && !dots.includes("slowest"), "legend; no slowest-point marker");
+// the line-width close-up comes first: both lines, thickness following the pedals, both braking points, its own button
+const widthsUp = closeUp.slice(closeUp.indexOf('class="corner-widths"'), closeUp.indexOf('class="corner-lines"'));
+assert.ok(closeUp.indexOf('class="corner-widths"') >= 0 && closeUp.indexOf('class="corner-widths"') < closeUp.indexOf('class="corner-lines"'));
+assert.strictEqual((widthsUp.match(/cw-dot brake/g) || []).length, 2);
+assert.ok(new Set([...widthsUp.matchAll(/class="cw-me"[^>]*stroke-width:([\d.]+)/g)].map(m => m[1])).size > 5, "line thickness follows the pedals");
+assert.ok(widthsUp.includes('class="cw-toggle"') && widthsUp.includes("Hide your line"));
 // the WR lap against itself: every dot is "about the same"
 const selfClose = Coach.cornerDetail(self.corners[6], "WR", self);
 assert.ok(selfClose.includes("cl-same") && !/<circle class="cl-diff[^>]*cx=/.test(selfClose), "the WR against itself: all the same");
