@@ -35,6 +35,10 @@ notes the difference.
   game's lap time to within a hundredth.
 - **Alignment:** every point of the player's lap is matched to the nearest point of the reference lap, so both are
   measured by distance along the reference line, every metre.
+- **Which lap:** every complete lap in the recording is listed, and the fastest is compared by default; the player
+  can tap another. GT7's telemetry doesn't say whether a lap was valid, so a lap noticeably shorter than the reference
+  (by more than 1%, and at least 30 m) is marked as a likely cut corner and skipped when choosing the default, unless
+  every lap is. A clean lap's line is within about 0.5% of the reference's.
 - **Corners:** the reference's slowest points (at least 10 km/h slower than either side). Bends the reference takes
   flat out aren't corners of their own; they're part of the straight after the corner before them.
 - **Sections:** each section is a corner plus the straight after it, since the exit speed decides the straight. It
