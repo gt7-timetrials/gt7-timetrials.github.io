@@ -231,7 +231,7 @@ const shortWho = e => (e.medals ? "Reference" : e.reference.driver ? esc(e.refer
 function coachSection(e, i) {
   const r = e.reference;
   return `<section class="coach">
-      <h3>Compare your lap with the world record</h3>
+      <h3>Compare your lap with the recorded reference lap</h3>
       <p class="hint">${r && APP
         ? `Record your lap on this phone while you drive, to see where you lose time against
            ${esc(refName(r))} ${fmt(r.lap_ms)}, corner by corner.`
