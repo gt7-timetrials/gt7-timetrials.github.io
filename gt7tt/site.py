@@ -21,7 +21,7 @@ def site_data(store, at, rep, finished=None, references=None):
     references = references or {}
 
     current = []
-    for e in rep["events"]:
+    for e in sorted(rep["events"], key=lambda e: events[e["event_id"]].start, reverse=True):  # newest first
         ev = events[e["event_id"]]
         snaps = store.snapshots(ev.id)
         ref = references.get(ev.id)

@@ -11,14 +11,19 @@ On the **Current** page each event has *Compare your lap with the world record*:
 ## Adding a world record lap (site owner)
 
 1. In GT7, open the time trial's leaderboard and download the world record's replay.
-2. Run the recorder (`py telemetry.py <PS5 IP address>`), watch the replay to the end of the lap, then press Ctrl+C.
+2. Run the recorder (`py telemetry.py`), watch the replay to the end of the lap, then press Ctrl+C.
 3. On GitHub, open the `data/reference_laps` folder, click **Add file → Upload files**, drop the CSV in and click
    **Commit changes**. The file name doesn't matter.
 
 The website rebuilds in a minute or two. The build (`gt7tt/telemetry.py`) takes the fastest complete lap in each file
 and gives it to the running event with the same car whose world record is closest to the lap time. The driver's name
 is shown if the lap time matches a time on the saved leaderboard. If a better replay comes along, upload it too: the
-fastest lap wins. Old files can stay; they only match running events.
+fastest lap wins. When an event ends, delete its reference lap: it only ever matches running events, so it's dead
+weight. (The tests use their own copies in `tests/fixtures`.)
+
+A new time trial appears on the site after the next morning's daily update. To show it sooner (for example to
+record against it the evening it starts), run `python -m gt7tt daily` by hand: it fetches the new event and its
+top 100, and the morning run still happens as usual. The Current tab lists the newest event first.
 
 ## Super License tab
 
