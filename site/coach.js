@@ -576,7 +576,63 @@ const Coach = (() => {
     </figure>`;
   }
 
-  // The corner drawn to scale, the same way round as the lap map. The reference's line is thin and plain; yours is a
+  // Close-up 1: the corner drawn to scale with both racing lines, the same way round as the lap map. Line thickness shows
+  // the pedals: brake pressure from the braking point to the slowest point, throttle everywhere else
+  // (thin = none, full thickness = 100%).
+  function cornerWidths(result, c, who) {
+    const { R, M } = result.grid, n = R.x.length;
+    const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
+    let a = Math.max(0, Math.min(...starts) - 15), b = Math.min(n - 1, c.line.exit + 25);
+    if (b - a > 450) a = Math.max(0, b - 450);
+    const xs = [], zs = [];
+    for (let k = a; k <= b; k++) xs.push(R.x[k], M.x[k]), zs.push(R.z[k], M.z[k]);
+    const pad = 8, minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad, minZ = Math.min(...zs) - pad, maxZ = Math.max(...zs) + pad;
+    const W = 360, scale = Math.min(W / (maxX - minX), 340 / (maxZ - minZ));
+    const w = Math.round((maxX - minX) * scale), H = Math.round((maxZ - minZ) * scale) + 22;
+    const X = x => ((x - minX) * scale).toFixed(1), Y = z => ((z - minZ) * scale).toFixed(1);
+    const THIN = 1, FULL = 5.5;
+    const pedal = (L, m, k) => (m.brakeAt !== null && k >= m.brakeAt && k < m.minAt ? L.brk[k] : L.thr[k]);
+    const line = (L, m, cls) => {
+      let out = "";
+      for (let k = a; k < b; k += 2) {
+        const e = Math.min(b, k + 2), width = THIN + ((FULL - THIN) * Math.max(0, Math.min(100, pedal(L, m, k)))) / 100;
+        out += `<path class="${cls}" d="M${X(L.x[k])},${Y(L.z[k])}L${X(L.x[e])},${Y(L.z[e])}" style="stroke-width:${width.toFixed(2)}"/>`;
+      }
+      return out;
+    };
+    const dot = (L, k, cls, r = 4) => (k === null || k < a || k > b ? "" :
+      `<circle class="cw-dot ${cls}" cx="${X(L.x[k])}" cy="${Y(L.z[k])}" r="${r}"/>`);
+    // the slowest-point ring goes last and a little larger, so it still shows round a dot at the same spot
+    const dots = (L, m, who2) => dot(L, m.brakeAt, `brake ${who2}`) + dot(L, m.fullGas, `gas ${who2}`) + dot(L, m.minAt, `slow ${who2}`, 5);
+    const shows = key => [c.ref[key], c.me[key]].some(k => k !== null && k >= a && k <= b);
+    // direction arrow at the start, scale bar in the bottom corner
+    const k2 = Math.min(b, a + 8), ang = (Math.atan2(R.z[k2] - R.z[a], R.x[k2] - R.x[a]) * 180) / Math.PI;
+    const ten = 10 * scale, sy = H - 8;
+    return `<figure class="corner-widths">
+      <button type="button" class="cw-toggle" aria-pressed="true">Hide your line</button>
+      <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale with your line and ${who}'s line">
+        <g>${line(R, c.ref, "cw-ref")}</g><g class="cw-me-line">${line(M, c.me, "cw-me")}</g>
+        ${dots(R, c.ref, "ref")}${dots(M, c.me, "me")}
+        <path class="cw-arrow" d="M-7,-5L5,0L-7,5Z" transform="translate(${X(R.x[a])},${Y(R.z[a])}) rotate(${ang.toFixed(1)})"/>
+        <line class="cw-scale" x1="4" x2="${(4 + ten).toFixed(1)}" y1="${sy}" y2="${sy}"/>
+        <text class="cw-scaletext" x="${(8 + ten).toFixed(1)}" y="${sy + 3}">10 m</text>
+      </svg>
+      <table class="cw-legend">
+        <thead><tr><th></th>${shows("brakeAt") ? "<th>braking starts</th>" : ""}${shows("minAt") ? "<th>slowest point</th>" : ""}
+          ${shows("fullGas") ? "<th>full throttle</th>" : ""}</tr></thead>
+        <tbody>${[["me", "You"], ["ref", who]].map(([k, name]) => `<tr><th><i class="k-line ${k}"></i>${name}</th>
+          ${shows("brakeAt") ? `<td><i class="k-dot brake ${k}"></i></td>` : ""}${shows("minAt") ? `<td><i class="k-dot slow ${k}"></i></td>` : ""}
+          ${shows("fullGas") ? `<td><i class="k-dot gas ${k}"></i></td>` : ""}</tr>`).join("")}</tbody>
+      </table>
+      <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: brake pressure from the braking
+        point to the slowest point, then throttle before braking and after the slowest point (thin = none, full = 100%).
+        It doesn't show throttle used in the braking zone, or braking outside it: the pedal chart below shows all of it.
+        The track edges aren't in the data: where the grey line uses the whole width, it shows roughly where
+        they are.</p>
+    </figure>`;
+  }
+
+  // Close-up 2: the corner drawn to scale, the same way round as the lap map. The reference's line is thin and plain; yours is a
   // dot every 3 m or more (so they don't overlap on long corners) showing how your pedals differ from the reference's at that point: the brake wherever either of you
   // is braking, the throttle everywhere else. Filled = more than the reference, ring = less, size = how much.
   // Letter badges mark the first brake (B), back on the gas (G) and full throttle (F) on both lines.
@@ -653,7 +709,7 @@ const Coach = (() => {
     const row = (label, f) => `<tr><th>${label}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
     return `<div class="corner-head"><b>Corner ${c.n}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span></div>
       <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
-      ${result ? cornerLines(result, c, who) + pedalChart(result, c, who) : ""}
+      ${result ? cornerWidths(result, c, who) + cornerLines(result, c, who) + pedalChart(result, c, who) : ""}
       <table class="corner-table"><thead><tr><th>Distances from the apex</th><th class="num">You</th><th class="num">${who}</th></tr></thead><tbody>
         ${row("Braking point", m => (m.brakeAt === null ? (m.liftAt === null ? "no braking" : "lift only") : metres(m.brakeAt, c.apex)))}
         ${row("Peak brake", m => (m.brakeAt === null ? "—" : pct(m.peakBrake)))}

@@ -76,7 +76,10 @@ notes the difference.
 - **Track use:** both laps carry the cars' real positions, so at each metre the player's distance to the side of the
   reference's line is known. The corner's direction of turn makes that "wider" (towards the outside) or "tighter".
   It is measured at the reference's turn-in, apex and exit (20 m after full throttle), averaged over ±5 m. A tip
-  appears for differences of 1.5 m or more, except in kinks under 15° of turn. The corner close-up draws both lines
+  appears for differences of 1.5 m or more, except in kinks under 15° of turn. There are two corner close-ups, both to scale and the same way round as the lap map. The first draws both
+  lines with their thickness showing the pedals: brake pressure from the braking point to the slowest point, throttle
+  before and after; solid dot = braking starts, hollow = slowest point, light = full throttle; red for the player,
+  grey for the reference; a button hides the player's line. The second close-up draws both lines
   to scale, the same way round as the lap map, from just before the earlier braking point to just after the exit.
   The reference's line is thin and plain. The player's line is dots every 3 m (wider apart on long corners, so they
   stay at least 9 px apart). Each dot compares the pedals with the reference's at the same point:

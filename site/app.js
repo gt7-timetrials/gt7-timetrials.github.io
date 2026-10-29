@@ -485,14 +485,25 @@ function renderComparison(out, res, e, otherCar, picker, save) {
   const svg = out.querySelector(".trackmap");
   const who = shortWho(e);
   let pinned = worst.n;
-  let hideRef = false; // the close-up's button for the reference's line, kept while moving between corners
-  const applyHide = () => body.querySelectorAll(".corner-lines").forEach(f => {
+  let hideRef = false; // the close-ups' buttons, kept while moving between corners: the reference's line in the dots
+  let hideMine = false; // close-up, your line in the line-width close-up
+  const applyHide = () => {
+    body.querySelectorAll(".corner-widths").forEach(f => {
+      f.classList.toggle("hide-mine", hideMine);
+      const b = f.querySelector(".cw-toggle");
+      b.textContent = hideMine ? "Show your line" : "Hide your line";
+      b.setAttribute("aria-pressed", String(!hideMine));
+    });
+    applyHideRef();
+  };
+  const applyHideRef = () => body.querySelectorAll(".corner-lines").forEach(f => {
     f.classList.toggle("hide-ref", hideRef);
     const b = f.querySelector(".cl-toggle");
     b.textContent = `${hideRef ? "Show" : "Hide"} ${who === "Reference" ? "the reference" : who + "'s"} line`;
     b.setAttribute("aria-pressed", String(!hideRef));
   });
   body.addEventListener("click", ev => {
+    if (ev.target.closest(".cw-toggle")) { hideMine = !hideMine; applyHide(); }
     if (!ev.target.closest(".cl-toggle")) return;
     hideRef = !hideRef;
     applyHide();
