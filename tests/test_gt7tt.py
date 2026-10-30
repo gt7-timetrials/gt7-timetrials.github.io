@@ -313,8 +313,8 @@ fs.writeFileSync(process.argv[3], [`${c.loop} ${c.step}`, c.x.join(" "), c.z.joi
             self.assertGreaterEqual(len(main), 7, lap)
             # each brake or lift BEEP plays the delay (0.2 s) before the car reaches the point
             self.assertTrue(all(abs(t - 0.2) < 0.03 for t in main[:-1] if t < 5), (lap, main))
-            # the gas beep 0.5 s before (plus the delay), give or take the car's changing speed
-            self.assertTrue(all(abs(t - 0.7) < 0.1 for t in gas if t < 5), (lap, gas))
+            # the gas beep 0.5 s before (plus the delay), within 0.05 s though the car is braking and turning in
+            self.assertTrue(all(abs(t - 0.7) < 0.05 for t in gas if t < 5), (lap, gas))
 
     def test_audio_cues_calibrate_from_brake_presses(self):
         cues = self.cue_file(os.path.join(self.HERE, "fixtures", "reference_barcelona.csv"))

@@ -42,7 +42,8 @@ tests: keep it simple, and only take on what one person can look after.
      throttle after braking. Super License tests the same, against the gold run. Cues play whatever the car (time
      trials can allow a choice of car).
    - **Sounds:** brake: tick, tick, low BEEP; lift: tick, tick, mid BEEP; gas: one high beep 0.5 s before. Timed from
-     the player's distance to the point, speed and acceleration, updated every packet.
+     the player's distance to the point, speed and acceleration, updated every packet; the gas beep also allows for
+     how fast the acceleration is changing (jerk), since it comes while braking and turning in.
    - **Overlaps:** a brake or lift point inside the previous one's countdown (1 s by default) gets no sound, or one
      short pip if "chicane beep" is on. A gas beep within 0.3 s of a brake or lift sound is skipped.
    - **Paused** when the car is more than about 20 m off the reference line, going backwards, or on another track;

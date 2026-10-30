@@ -78,8 +78,8 @@ final class Cues {
     private double lastX, lastZ;
     private boolean haveLast;
     private int backwards;
-    // speed history for the acceleration, over about 0.3 s
-    private final double[] histT = new double[32], histV = new double[32];
+    // speed history (about 0.5 s) for the acceleration and how fast it's changing
+    private final double[] histT = new double[40], histV = new double[40];
     private int hist;
     // calibration
     private final List<Double> implied = new ArrayList<>(), errors = new ArrayList<>();
@@ -164,13 +164,16 @@ final class Cues {
         backwards = ds < -0.05 ? backwards + 1 : 0;
         if (backwards > 10 || v < 3) return; // reversing, or stopped: no cues
 
-        double a = acceleration(t);
+        double a = acceleration(t, 0, 0.3);
+        // for the gas beep: a quicker acceleration (0.2 s) and how fast it's changing (jerk, over the last 0.15 s)
+        double aNow = acceleration(t, 0, 0.2), jerk = (aNow - acceleration(t, 0.15, 0.2)) / 0.15;
         for (Beep b : beeps) {
             double d = b.s - pos;
             if (loop && d < -length / 2) d += length;
             if (d < -30) b.fired = false; // well past it: ready for the next lap, or a restart
             if (b.fired || d < -3 || d > LOOKAHEAD_M) continue; // just past still counts: packets come every 1/60 s
-            double due = timeTo(d, v, a) - b.lead - delay; // seconds until it should play
+            // the gas beep comes while braking and turning in, when the deceleration changes fast: allow for that too
+            double due = (b.sound == GAS ? timeTo(d, v, aNow, jerk) : timeTo(d, v, a)) - b.lead - delay; // until it plays
             if (due > 0.008) continue; // later (a packet comes every 1/60 s)
             b.fired = true;
             if (due < -0.25) continue; // missed (just found the line again): better silent than late
@@ -192,12 +195,33 @@ final class Cues {
         return (-v + Math.sqrt(disc)) / a;
     }
 
-    private double acceleration(double t) {
+    /** Time to cover d metres from speed v, with acceleration a changing at `jerk` m/s³ (over at most 3 s). */
+    static double timeTo(double d, double v, double a, double jerk) {
+        double lo = 0, hi = 3;
+        if (v < 0.5 || covered(hi, v, a, jerk) < d) return timeTo(d, v, a);
+        for (int i = 0; i < 30; i++) {
+            double m = (lo + hi) / 2;
+            if (covered(m, v, a, jerk) < d) lo = m;
+            else hi = m;
+        }
+        return hi;
+    }
+
+    private static double covered(double t, double v, double a, double jerk) {
+        return v * t + a * t * t / 2 + jerk * t * t * t / 6;
+    }
+
+    /** The acceleration over `window` seconds, ending `ago` seconds before t. */
+    private double acceleration(double t, double ago, double window) {
+        double v1 = Double.NaN, t1 = 0;
         int n = Math.min(hist, histT.length - 1);
-        for (int back = 1; back <= n; back++) {
+        for (int back = 0; back <= n; back++) {
             int i = (hist - back) % histT.length;
-            double dt = t - histT[i];
-            if (dt >= 0.3) return Math.max(-15, Math.min(10, (histV[hist % histV.length] - histV[i]) / dt));
+            if (Double.isNaN(v1)) {
+                if (t - histT[i] >= ago) { v1 = histV[i]; t1 = histT[i]; }
+            } else if (t1 - histT[i] >= window) {
+                return Math.max(-15, Math.min(10, (v1 - histV[i]) / (t1 - histT[i])));
+            }
         }
         return 0;
     }
