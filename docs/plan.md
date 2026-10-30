@@ -6,12 +6,12 @@ tests: keep it simple, and only take on what one person can look after.
 ## Next up
 
 1. **Google Play closed test**, aiming for Sunday 1 November.
-   - [ ] Owner: Play developer account approved, phone verified (waiting on Google).
-   - [ ] Privacy policy page on the website: the app collects nothing.
-   - [ ] Store listing: name, short and full description (the "free hobby helper" wording), screenshots, 512 px icon.
+   - [x] Owner: Play developer account approved.
+   - [x] Privacy policy page on the website (`site/privacy.html`): the app collects nothing.
+   - [x] Store listing: text, icon, feature graphic and screenshots in `docs/play-listing.md` and `docs/play/`.
    - [ ] Play build: an app bundle (.aab) signed with a private upload key kept as a GitHub secret. The current test
          key in `android/app/test.keystore` is public, so it's only for the GitHub test downloads.
-   - [ ] Crib sheet for the Play Console forms: content rating, data safety ("no data collected"), target audience.
+   - [x] Crib sheet for the Play Console forms: in `docs/play-listing.md`.
    - [ ] Closed test with a Google Group, so testers join themselves and no email addresses are collected. Post the
          group link and the test link on GTPlanet and Reddit. Google needs 12+ testers opted in for 14 days in a row
          before the app can go to everyone, so aim for 20 or so.
