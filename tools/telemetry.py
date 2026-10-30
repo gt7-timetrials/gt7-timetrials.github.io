@@ -226,7 +226,8 @@ def find_console(sock, given=None):
         waited = time.time() - started
         if waited > 20 and found:
             print(f"  Found your PlayStation at {', '.join(sorted(found))}, but no data from GT7 yet. Check that GT7 is")
-            print("  running (not just the home screen), and that the phone app isn't recording at the same time.")
+            print("  running (not just the home screen), and that no other telemetry app (the phone app, SimHub, Sim")
+            print("  Racing Telemetry...) is running at the same time: GT7 only sends to one of them.")
             started = time.time()
         elif waited > 20:
             print("  Still no answer. Check that:")
@@ -235,6 +236,7 @@ def find_console(sock, given=None):
             print("     three numbers of their addresses must match: mesh Wi-Fi, extenders and guest networks can")
             print("     put them on different networks")
             print("   - Windows Firewall allowed Python on Private networks (it asks the first time)")
+            print("   - no other telemetry app (the phone app, SimHub, Sim Racing Telemetry...) is running")
             print("  Or give the address yourself: py telemetry.py 192.168.x.x")
             print("  (PS5: Settings > Network > Connection Status > View Connection Status). Ctrl+C to stop.")
             started = time.time()

@@ -17,7 +17,11 @@ phone** instead of the computer recorder's download links.
   `lap`, `silent`, `dropout`, `error`, `stopped`) through `window.GT7AppEvent`.
 - When the player taps **Stop and compare**, the page takes the CSV from `GT7App.csv()` and runs the same
   comparison as for an uploaded file. **Save to Downloads**, on the result line, writes it to Downloads.
-- The screen stays on while recording. Links to other sites open in the browser.
+- The screen stays on while recording, and `RecorderService` (a foreground service, type `connectedDevice`, with a
+  "Recording your laps" notification and a wake lock of at most 4 hours) keeps the app running if the player locks
+  the phone or switches apps: otherwise Android pauses or freezes it and the lap is lost. It runs only while
+  recording. Google Play asks about it under App content → Foreground service permissions. Links to other sites
+  open in the browser.
 
 **Builds:** every push that changes `android/` runs `.github/workflows/android.yml`, which builds the APK and puts it on
 the `android-test` release:

@@ -313,9 +313,10 @@ window.GT7AppEvent = ev => {
     const seen = ev.consoles || [];
     if (seen.length) recording.out.querySelector(".rec-ip-form input").value ||= seen[0];
     say(otherNetwork(ev.phone, ev.network) || (seen.length ? `Found your PlayStation at ${seen.join(", ")}, but no data from GT7
-      yet. Check that GT7 is running (not just the home screen), and that the computer recorder isn't running at the same time.`
+      yet. Check that GT7 is running (not just the home screen), and that no other telemetry app is running at the same time (the computer recorder, SimHub, Sim Racing
+      Telemetry…): GT7 only sends to one of them.`
       : null) || `Still looking. Check that GT7 is running on the PlayStation (not just the home screen),
-      and that the computer recorder isn't running at the same time.${prefix ? ` This phone's address starts ${prefix}: if the
+      and that no other telemetry app is running at the same time (the computer recorder, SimHub, Sim Racing Telemetry…).${prefix ? ` This phone's address starts ${prefix}: if the
       PlayStation's doesn't, they're on different networks. That's common with mesh Wi-Fi or a range extender: connect both to the
       same Wi-Fi name, or set the mesh to access point mode.` : ""} Or type in the PlayStation's address below.`, "miss");
     recording.out.querySelector(".rec-ip").open = true;
