@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.FrameLayout;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
@@ -43,6 +45,7 @@ public class MainActivity extends Activity {
     private Recorder recorder;
     private Thread recorderThread;
     private ValueCallback<Uri[]> fileCallback;
+    private OnBackInvokedCallback back; // Android 13+: Back goes back in the page while there's somewhere to go
 
     @Override
     protected void onCreate(Bundle state) {
@@ -77,6 +80,11 @@ public class MainActivity extends Activity {
                 if ("gt7-timetrials.github.io".equals(url.getHost())) return false;
                 openOutside(url);
                 return true;
+            }
+
+            @Override
+            public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+                updateBack();
             }
         });
         web.setWebChromeClient(new WebChromeClient() {
@@ -125,8 +133,21 @@ public class MainActivity extends Activity {
         web.saveState(out);
     }
 
+    /** Android 13+: catch Back only while the page has history, so otherwise Back leaves the app as usual. */
+    private void updateBack() {
+        if (Build.VERSION.SDK_INT < 33) return;
+        OnBackInvokedDispatcher d = getOnBackInvokedDispatcher();
+        if (web.canGoBack() && back == null) {
+            back = () -> web.goBack();
+            d.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, back);
+        } else if (!web.canGoBack() && back != null) {
+            d.unregisterOnBackInvokedCallback(back);
+            back = null;
+        }
+    }
+
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() { // Android 12 and older
         if (web.canGoBack()) web.goBack();
         else super.onBackPressed();
     }

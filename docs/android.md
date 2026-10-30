@@ -23,7 +23,13 @@ phone** instead of the computer recorder's download links.
 the `android-test` release:
 https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/android-test/gt7-timetrials.apk
 Test builds are signed with `android/app/test.keystore` (password in `app/build.gradle`), so each one installs over
-the last. A Google Play release will need a private upload key instead.
+the last. Builds of other branches are only checked, not published.
+
+**Google Play:** the app targets Android 16 (API 36), as Play requires for new apps since 31 August 2026. Once the
+repository has the secrets `UPLOAD_KEYSTORE_BASE64` (the upload keystore, base64) and `UPLOAD_KEYSTORE_PASSWORD`
+(its password, also used for the key, alias `upload`), each main build also makes `gt7-timetrials-play.aab`
+(`gradle bundlePlay`), signed with that key, and puts it on the same release page, for uploading to the Play
+Console. Google re-signs it for users (Play App Signing); a lost upload key can be reset through the Play Console.
 
 **Tests:** `tests/test_gt7tt.py` (`AndroidRecorderTest`) compiles the recorder with plain `javac`, checks it decodes
 packets like the Python recorder, and records a lap from a fake PlayStation on the same computer.

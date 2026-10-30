@@ -4,7 +4,7 @@ Everything to paste into the Play Console, and how to answer its forms. Images a
 
 ## Store listing (Grow users → Store presence → Main store listing)
 
-**App name** (30 max): `GT7 Time Trials`
+**App name** (30 max): `Time Trials for GT7` (the "for GT7" form, so it reads as a companion app, not an official one)
 
 **Short description** (80 max):
 

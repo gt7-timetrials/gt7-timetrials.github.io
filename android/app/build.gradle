@@ -4,25 +4,33 @@ plugins {
 
 android {
     namespace "io.github.gt7timetrials"
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "io.github.gt7timetrials"
         minSdk 29
-        targetSdk 35
+        targetSdk 36
         // each GitHub Actions build gets a higher number, so a new APK installs over the old one
         versionCode((System.getenv("GITHUB_RUN_NUMBER") ?: "1") as int)
         versionName "0.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0")
     }
 
     signingConfigs {
-        // a key for test builds only, kept in the repository so every build can update the last one.
-        // Google Play builds will need a private upload key instead.
+        // a key for test builds only, kept in the repository so every build can update the last one
         test {
             storeFile file("test.keystore")
             storePassword "gt7-test"
             keyAlias "test"
             keyPassword "gt7-test"
+        }
+        // the private Google Play upload key: GitHub Actions writes it from the repository's secrets
+        if (System.getenv("UPLOAD_KEYSTORE")) {
+            upload {
+                storeFile file(System.getenv("UPLOAD_KEYSTORE"))
+                storePassword System.getenv("UPLOAD_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("UPLOAD_KEY_ALIAS") ?: "upload"
+                keyPassword System.getenv("UPLOAD_KEYSTORE_PASSWORD")
+            }
         }
     }
 
@@ -33,6 +41,11 @@ android {
         release {
             minifyEnabled false
             signingConfig signingConfigs.test
+        }
+        // for Google Play: "gradle bundlePlay" makes the app bundle (.aab), signed with the upload key
+        play {
+            initWith release
+            signingConfig System.getenv("UPLOAD_KEYSTORE") ? signingConfigs.upload : null
         }
     }
 
