@@ -8,7 +8,11 @@
 
 const Coach = (() => {
   const LAP_FIELDS = ["x", "z", "speed_kmh", "throttle_pct", "brake_pct", "steering_rad", "wheel_rl_kmh", "wheel_rr_kmh"];
-  const COLOURS = [[0.2, "good"], [0.4, "warn"], [Infinity, "bad"]]; // time lost (s) -> colour class
+  // a section's colour: time lost as a share of the reference's time through it (within 3%, like gold in a time
+  // trial; within 5%, like silver; more). Under 0.1 s stays green, so a short section can't go red on a small slip.
+  const COLOURS = [[0.03, "good"], [0.05, "warn"], [Infinity, "bad"]];
+  const GREEN_UNDER_S = 0.1;
+  const colour = (lost, share) => (lost < GREEN_UNDER_S ? "good" : COLOURS.find(([lim]) => share < lim)[1]);
 
   function parseCsv(text) {
     const lines = text.split(/\r?\n/).filter(l => l.trim());
@@ -274,6 +278,7 @@ const Coach = (() => {
       const z0 = starts[i], z1 = i === apexes.length - 1 ? n : starts[i + 1];
       // the last section runs to the finish line, timed from the recordings (see recordedGap below)
       const lost = (i === apexes.length - 1 ? recordedGap : delta[z1]) - delta[z0];
+      const refTime = (i === apexes.length - 1 ? refLap.t[refLap.t.length - 1] : R.t[z1]) - R.t[z0];
       let peak = 0;
       for (let k = z0; k < z1; k++) peak = Math.max(peak, Math.abs(R.steer[k]));
       const ref_m = cornerMetrics(R, z0, z1, apex, 0.3 * peak), me_m = cornerMetrics(M, z0, z1, apex, 0.3 * peak);
@@ -285,7 +290,7 @@ const Coach = (() => {
       exit = Math.max(Math.min(apex + 20, z1 - 1), exit);
       ref_m.exitSpeed = R.v[exit]; me_m.exitSpeed = M.v[exit];
       const entry = i === 0 && entries[0] >= 150 ? entries[0] : z0;
-      return { apex, z0, z1, entry, exit, lost, approachLost: delta[entry] - delta[z0], cornerLost: delta[exit] - delta[entry], ref_m, me_m };
+      return { apex, z0, z1, entry, exit, lost, share: lost / refTime, approachLost: delta[entry] - delta[z0], cornerLost: delta[exit] - delta[entry], ref_m, me_m };
     });
     const ratios = corners.filter(c => c.ref_m.maxSteerDeg >= 20).map(c => c.me_m.maxSteerDeg / c.ref_m.maxSteerDeg).sort((a, b) => a - b);
     const steerRatio = ratios.length >= 3 ? ratios[Math.floor(ratios.length / 2)] : null;
@@ -334,7 +339,7 @@ const Coach = (() => {
 
   function result(corners, steerRatio, R, M, delta, who) {
     const lifts = extraLifts(corners, R, M, delta);
-    return { grid: { R, M, delta }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, approachLost, cornerLost, ref_m, me_m }, i) => {
+    return { grid: { R, M, delta }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, share, approachLost, cornerLost, ref_m, me_m }, i) => {
       let t = tips(me_m, ref_m, lost, who, steerRatio);
       const line = lineUse(R, M, z0, z1, apex, ref_m), lt = lineTip(line, who);
       if (lt) t.push(lt);
@@ -348,7 +353,7 @@ const Coach = (() => {
       if (i === 0 && R.v[0] - M.v[0] >= 5) {
         t.unshift(`Start of the lap: you crossed the line at ${r0(M.v[0])} km/h vs ${r0(R.v[0])} km/h, which cost about ${delta[ref_m.top].toFixed(2)} s before the first braking point. That comes from your exit of the last corner on the lap before.`);
       }
-      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, approachLost, cornerLost, colour: COLOURS.find(([lim]) => lost < lim)[1], me: me_m, ref: ref_m, tips: t, lifts: mine, line };
+      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t, lifts: mine, line };
     }) };
   }
 
@@ -506,6 +511,7 @@ const Coach = (() => {
   }
 
   const fmtLost = s => `${s > -0.005 ? "+" : "−"}${Math.abs(s).toFixed(2)} s`; // no "−0.00"
+  const fmtShare = f => `${Math.abs(f * 100).toFixed(1)}% ${f > -0.0005 ? "slower" : "faster"}`;
   const metres = (k, apex) => (k === null ? "—" : k <= apex ? `${apex - k} m before` : `${k - apex} m after`);
   const pct = v => `${Math.round(v)}%`;
   // Brake and throttle (you vs the reference) and the time gap building up, in metres from where the reference
@@ -707,7 +713,8 @@ const Coach = (() => {
 
   function cornerDetail(c, who, result) {
     const row = (label, f) => `<tr><th>${label}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
-    return `<div class="corner-head"><b>Corner ${c.n}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span></div>
+    return `<div class="corner-head"><b>Corner ${c.n}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span>
+      <span class="muted">${fmtShare(c.share)} in this section</span></div>
       <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
       ${result ? cornerWidths(result, c, who) + cornerLines(result, c, who) + pedalChart(result, c, who) : ""}
       <table class="corner-table"><thead><tr><th>Distances from the apex</th><th class="num">You</th><th class="num">${who}</th></tr></thead><tbody>

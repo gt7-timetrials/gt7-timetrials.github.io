@@ -16,6 +16,12 @@ const total = r.corners.reduce((a, c) => a + c.lost, 0);
 assert.ok(Math.abs(total - r.recordedGap) < 1e-9, "corner losses add up to the recorded gap");
 assert.ok(Math.abs(r.gameGap - 2.924) < 1e-9 && Math.abs(r.recordedGap - r.gameGap) < 0.01, "time trial laps: game and recording agree");
 assert.ok(r.corners.every(c => c.tips.length), "every corner gets advice");
+// colours: time lost as a share of the reference's time through the section (3% gold-like, 5% silver-like)
+assert.deepStrictEqual(r.corners.map(c => c.colour), ["warn", "good", "good", "good", "good", "good", "warn", "good", "good"],
+  "a lap 2.7% off the reference is mostly green");
+assert.ok(r.corners.every(c => c.colour === (c.lost < 0.1 ? "good" : c.share < 0.03 ? "good" : c.share < 0.05 ? "warn" : "bad")));
+assert.ok(Math.abs(r.corners[6].share - 0.045) < 0.002, "corner 7: 0.43 s of about 9.6 s");
+assert.ok(Coach.cornerDetail(r.corners[6], "the reference", r).includes("4.5% slower in this section"));
 assert.ok(r.corners[0].tips[0].startsWith("Start of the lap"), "slow start-line speed is called out");
 assert.ok(r.corners[6].tips.some(t => t.startsWith("Brake pressure")), "corner 7: WR holds full brake longer");
 assert.ok(Coach.trackMap(r).startsWith("<svg"));

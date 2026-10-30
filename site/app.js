@@ -466,8 +466,12 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     <p class="hint tap-hint">${phone() ? "Tap a corner to see where you lose time." : "Hover over or click a corner on the map."}</p>
     <div class="coach-grid">
       <div class="map-box">${Coach.trackMap(res)}
-        <div class="legend"><span><i class="k good"></i>under 0.2 s lost</span><span><i class="k warn"></i>0.2–0.4 s</span>
-          <span><i class="k bad"></i>0.4 s or more</span></div>
+        <div class="legend">${e.medals
+          ? `<span><i class="k good"></i>within 3% of the reference</span><span><i class="k warn"></i>3–5% slower</span>
+            <span><i class="k bad"></i>over 5% slower</span>`
+          : `<span><i class="k good"></i>gold pace (within 3%)</span><span><i class="k warn"></i>silver pace (3–5%)</span>
+            <span><i class="k bad"></i>slower than silver</span>`}</div>
+        <p class="hint">The colours compare your time through each section with the reference's.</p>
         <div class="chips">${res.corners.map(c => `<button class="chip ${c.colour}" data-n="${c.n}">${c.n}<small>${Coach.fmtLost(c.lost)}</small></button>`).join("")}</div>
       </div>
       <div class="corner-detail" role="region" aria-label="Corner details">
