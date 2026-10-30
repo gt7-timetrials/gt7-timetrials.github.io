@@ -20,10 +20,10 @@ tests: keep it simple, and only take on what one person can look after.
          (https://www.reddit.com/r/granturismo/s/WTRsxSB3m2) and on GTPlanet
          (https://www.gtplanet.net/forum/threads/free-time-trial-lap-comparison-android-app.440044/), which is also
          where feedback goes, besides Play's private feedback.
-   - [x] Second release (test build 16), sent for review on 31 October: keeps recording when the phone is locked or
+   - [x] Second release (test build 16), approved and published on 31 October: keeps recording when the phone is locked or
          the player switches apps (`RecorderService`, a foreground service of type `connectedDevice`; foreground
          service form filled in with a video). Tested by the owner with the phone locked and the app in the
-         background. The "no data" messages (website and computer recorder) now also mention other telemetry apps
+         background, both from the test APK and from the Play update. The "no data" messages (website and computer recorder) now also mention other telemetry apps
          such as SimHub and Sim Racing Telemetry.
    - [ ] 12+ testers opted in for 14 days in a row (aim for about 20, as some drop out).
    - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
