@@ -83,6 +83,9 @@ final class Telemetry {
     static int lap(ByteBuffer p) { return p.getShort(0x74); }
     static int lastLapMs(ByteBuffer p) { return p.getInt(0x7C); }
     static double speedKmh(ByteBuffer p) { return 3.6 * p.getFloat(0x4C); }
+    static double x(ByteBuffer p) { return p.getFloat(0x04); }
+    static double z(ByteBuffer p) { return p.getFloat(0x0C); }
+    static double brakePct(ByteBuffer p) { return 100.0 * (p.get(0x92) & 0xFF) / 255; }
     static int flags(ByteBuffer p) { return p.getShort(0x8E) & 0xFFFF; }
     static boolean onTrack(ByteBuffer p) { return (flags(p) & 1) != 0; }
     static boolean paused(ByteBuffer p) { return (flags(p) & 2) != 0; }

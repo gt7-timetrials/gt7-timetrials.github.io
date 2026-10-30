@@ -29,9 +29,16 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.OutputStream;
 import java.net.Inet4Address;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * The website in a WebView, plus recording on the phone: the page calls window.GT7App (Bridge below) to record GT7's
@@ -45,11 +52,14 @@ public class MainActivity extends Activity {
     private Recorder recorder;
     private Thread recorderThread;
     private ValueCallback<Uri[]> fileCallback;
+    private CueStore cueStore;
+    private CueSounds sounds;
     private OnBackInvokedCallback back; // Android 13+: Back goes back in the page while there's somewhere to go
 
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
+        cueStore = new CueStore(this);
         web = new WebView(this);
         boolean dark = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         FrameLayout root = new FrameLayout(this);
@@ -156,6 +166,7 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         if (recorder != null) recorder.stop();
         RecorderService.stop(this);
+        releaseSounds();
         web.destroy();
         super.onDestroy();
     }
@@ -168,6 +179,51 @@ public class MainActivity extends Activity {
             if (on) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         });
+    }
+
+    private void toPage(String json) {
+        runOnUiThread(() -> web.evaluateJavascript("window.GT7AppEvent && GT7AppEvent(" + json + ")", null));
+    }
+
+    private synchronized CueSounds sounds() {
+        if (sounds == null) sounds = new CueSounds();
+        return sounds;
+    }
+
+    private synchronized void releaseSounds() {
+        if (sounds != null) sounds.release();
+        sounds = null;
+    }
+
+    /** Audio cues for a recording, from the page's cue points (Coach.cuePoints), or null if they can't be set up. */
+    private Cues cues(String json) {
+        try {
+            JSONObject c = new JSONObject(json), out = cueStore.output();
+            JSONArray xs = c.getJSONArray("x"), zs = c.getJSONArray("z"), ps = c.getJSONArray("cues");
+            double[] x = new double[xs.length()], z = new double[zs.length()];
+            for (int i = 0; i < x.length; i++) { x[i] = xs.getDouble(i); z[i] = zs.getDouble(i); }
+            List<Cues.Point> points = new ArrayList<>();
+            for (int i = 0; i < ps.length(); i++) {
+                JSONObject p = ps.getJSONObject(i);
+                String kind = p.getString("kind");
+                points.add(new Cues.Point(p.getDouble("s"), p.getDouble("t"), kind.equals("brake") ? Cues.KIND_BRAKE
+                        : kind.equals("lift") ? Cues.KIND_LIFT : Cues.KIND_GAS));
+            }
+            Cues.Settings set = cueStore.settings(out);
+            String name = out.getString("name");
+            toPage(cueEvent(name, set.delay, 0, set.calibrated, false));
+            return new Cues(x, z, c.getDouble("step"), c.getBoolean("loop"), points, set, sounds(), (delay, presses, done) -> {
+                cueStore.calibration(out, delay, done);
+                toPage(cueEvent(name, delay, presses, done, true));
+            });
+        } catch (JSONException | RuntimeException e) {
+            return null;
+        }
+    }
+
+    private static String cueEvent(String output, double delay, int presses, boolean calibrated, boolean update) {
+        return String.format(Locale.ROOT, "{\"type\":\"cues\",\"output\":%s,\"delay\":%.3f,\"presses\":%d,\"calibrated\":%b,\"update\":%b}",
+                JSONObject.quote(output), delay, presses, calibrated, update);
     }
 
     /** The phone's Wi-Fi (or Ethernet) network, so the search goes there even if mobile data or a VPN is on. */
@@ -210,6 +266,12 @@ public class MainActivity extends Activity {
          */
         @JavascriptInterface
         public synchronized void start(String ip) {
+            startWithCues(ip, "");
+        }
+
+        /** Like start(ip), with audio cues from the page's cue points (JSON), or none if it's "". */
+        @JavascriptInterface
+        public synchronized void startWithCues(String ip, String cuePoints) {
             stopRecorder(); // the old one must let go of the port first
             Network net = homeNetwork();
             Recorder[] self = new Recorder[1];
@@ -221,6 +283,7 @@ public class MainActivity extends Activity {
                 if (net != null) net.bindSocket(sock);
             });
             recorder = self[0];
+            if (cuePoints != null && !cuePoints.isEmpty()) recorder.cues = cues(cuePoints);
             recording(true);
             recorderThread = new Thread(recorder, "recorder");
             recorderThread.start();
@@ -241,6 +304,35 @@ public class MainActivity extends Activity {
         public synchronized void stop() {
             if (recorder != null) recorder.stop();
             recording(false);
+        }
+
+        /** The Audio cues tab: settings, whether cues are on, and each audio output's delay (JSON). */
+        @JavascriptInterface
+        public String cueState() {
+            return cueStore.state();
+        }
+
+        /** Save a change from the Audio cues tab (see CueStore.save). */
+        @JavascriptInterface
+        public void saveCues(String change) {
+            cueStore.save(change);
+        }
+
+        /** Play a countdown through the current output: tick, tick, BEEP. */
+        @JavascriptInterface
+        public void testSound() {
+            CueSounds s = sounds();
+            new Thread(() -> {
+                try {
+                    s.play(Cues.TICK);
+                    Thread.sleep(500);
+                    s.play(Cues.TICK);
+                    Thread.sleep(500);
+                    s.play(Cues.BRAKE);
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                }
+            }, "test sound").start();
         }
 
         /** Everything recorded since start(), as a telemetry.py CSV. */

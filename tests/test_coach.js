@@ -157,3 +157,17 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
 }
 
 console.log("coach.js tests passed");
+
+// audio cue points (the app): where the reference brakes (dabs too), lifts without braking, and gets back on the gas
+{
+  const c = Coach.cuePoints(ref);
+  const kinds = k => c.cues.filter(q => q.kind === k);
+  assert.ok(c.loop && c.step === 2 && c.x.length === Math.ceil(c.length / 2), "the line every 2 m, a closed loop");
+  assert.deepStrictEqual(kinds("brake").map(q => q.s), [729, 1619, 2026, 2453, 3356, 3645, 3661, 4162]);
+  assert.deepStrictEqual(kinds("lift").map(q => q.s), [2783], "a flick off the throttle just before braking isn't a lift");
+  assert.strictEqual(kinds("gas").length, 7, "one gas point after each braking, the double brake sharing one");
+  assert.ok(c.cues.every((q, i) => i === 0 || q.s >= c.cues[i - 1].s), "in order along the lap");
+  const sugo = Coach.cuePoints(Coach.fastestLap(Coach.parseCsv(read("tests/fixtures/reference_sugo.csv"))));
+  assert.ok(sugo.cues.some(q => q.kind === "lift") && sugo.cues.filter(q => q.kind === "brake").length >= 8);
+}
+console.log("cue points ok");

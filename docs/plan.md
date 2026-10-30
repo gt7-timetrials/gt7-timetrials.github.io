@@ -33,15 +33,32 @@ tests: keep it simple, and only take on what one person can look after.
    Website changes (including reference laps) reach the app straight away. Only changes to the app's own code
    (`android/`) need a new `.aab` uploaded to the Play Console; each build's version number goes up by itself.
 
-2. **Audio cues** (app), as an update to the Play test.
-   - An "Audio cues" button on each event and Super License test; brake cues and/or gas cues.
-   - A countdown before each of the reference's cue points: tick… tick… BEEP, timed from the current speed. Low pitch
-     for brake, high pitch for gas. It records at the same time.
-   - "Later by __ m" setting, since the best drivers' points are hard to match.
-   - Calibration: on a straight, the app beeps about 6 times and the player taps the brake on each BEEP. The average
-     delay (audio, data and the player) is saved per audio output (phone speaker, each Bluetooth device), with a
-     manual adjustment and Recalibrate.
-   - Tested here by playing recordings back as if live, then tuned in the game by the owner.
+2. **Audio cues** (app), as an update to the Play test. Agreed design (1 November 2026):
+   - **Switching on:** an "Audio cues" checkbox next to Record on this phone (remembered). While it's ticked, cues
+     play during recording. Nothing on screen: the player is driving.
+   - **Cue points**, from the reference lap: **brake** wherever the reference starts braking (pedal over 5%, dabs
+     included); **lift** where it comes off the throttle without braking (from 90%+ to below 50%, no brake, for at
+     least 0.1 s; a lift followed straight away by braking is a brake cue only); **gas** where it gets back on the
+     throttle after braking. Super License tests the same, against the gold run. Cues play whatever the car (time
+     trials can allow a choice of car).
+   - **Sounds:** brake: tick, tick, low BEEP; lift: tick, tick, mid BEEP; gas: one high beep 0.5 s before. Timed from
+     the player's distance to the point, speed and acceleration, updated every packet.
+   - **Overlaps:** a brake or lift point inside the previous one's countdown (1 s by default) gets no sound, or one
+     short pip if "chicane beep" is on. A gas beep within 0.3 s of a brake or lift sound is skipped.
+   - **Paused** when the car is more than about 20 m off the reference line, going backwards, or on another track;
+     back on automatically.
+   - **Auto-calibration** per audio output (phone speaker, wired headphones, each Bluetooth device by name): on the
+     first brake cues, compare each BEEP with when the player actually pressed the brake (firm presses over 20%
+     only; presses more than 0.6 s off, or none, are ignored), and set the delay to the average. Calibrated once the
+     last 3 presses are within 0.1 s of the BEEP; then saved. It aims at the brake point with the offset applied. The
+     gas beep uses the same delay. Starting values per type of output (speaker, wired, Bluetooth) come from the
+     owner's own calibrations.
+   - **Audio cues tab** (app only, before How it works): beeps before brake (0–3, default 2), beep timing (0.3–1.0 s,
+     default 0.5), lift beeps (on), gas beep (on), chicane beep (off), brake cue earlier than the reference
+     (0.0–1.0 s, default 0), gas beep adjustment (±0.5 s), one row per audio output with its delay, ± and Reset, and
+     Test sound. Saved on the phone: these settings, the calibrations and the checkbox. Nothing else.
+   - Built in the app's own code (works with the screen locked), tested here by replaying recorded laps as if live,
+     then tuned in the game by the owner.
 
 3. **"Start here" summary** (done) at the top of a comparison: the 2–3 biggest easy wins. Differences are ranked by time lost
    and by how hard they are to fix:

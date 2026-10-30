@@ -251,7 +251,8 @@ class AndroidRecorderTest(unittest.TestCase):
         cls.tmp = tempfile.mkdtemp()
         src = os.path.join(cls.HERE, "..", "android", "app", "src", "main", "java", "io", "github", "gt7timetrials")
         subprocess.run(["javac", "-d", cls.tmp, os.path.join(src, "Telemetry.java"), os.path.join(src, "Recorder.java"),
-                        os.path.join(cls.HERE, "android", "RecorderCheck.java")], check=True, capture_output=True)
+                        os.path.join(src, "Cues.java"), os.path.join(cls.HERE, "android", "RecorderCheck.java"),
+                        os.path.join(cls.HERE, "android", "CueCheck.java")], check=True, capture_output=True)
 
     def java(self, *args):
         return subprocess.run(["java", "-cp", self.tmp, "io.github.gt7timetrials.RecorderCheck", *args],
@@ -287,6 +288,43 @@ class AndroidRecorderTest(unittest.TestCase):
         for how in ("discover", "sweep"):  # it answers the Remote Play discovery broadcast, or only the network sweep
             events = [json.loads(line) for line in self.java("find", how, lap).splitlines()]
             self.assertIn({"type": "connected", "ip": "127.0.0.1"}, events, how)
+
+    def cue_file(self, reference):
+        """The reference's cue points from the website's Coach.cuePoints, in CueCheck's text format."""
+        path = os.path.join(self.tmp, os.path.basename(reference) + ".cues")
+        subprocess.run(["node", "-e", """
+const fs = require("fs"), C = require(process.argv[1]);
+const c = C.cuePoints(C.fastestLap(C.parseCsv(fs.readFileSync(process.argv[2], "utf8"))));
+fs.writeFileSync(process.argv[3], [`${c.loop} ${c.step}`, c.x.join(" "), c.z.join(" "),
+  ...c.cues.map(q => `${q.s} ${q.t} ${q.kind}`)].join("\\n"));""",
+                        os.path.abspath(os.path.join(self.HERE, "..", "site", "coach.js")), reference, path], check=True)
+        return path
+
+    def cue_check(self, *args):
+        return subprocess.run(["java", "-cp", self.tmp, "io.github.gt7timetrials.CueCheck", *args],
+                              check=True, capture_output=True, text=True, timeout=120).stdout.splitlines()
+
+    def test_audio_cues_play_on_time(self):
+        cues = self.cue_file(os.path.join(self.HERE, "fixtures", "reference_barcelona.csv"))
+        for lap in ("reference_barcelona.csv", "telemetry_lap.csv"):  # the reference itself, and a slower lap
+            sounds = [l.split() for l in self.cue_check(cues, os.path.join(self.HERE, "fixtures", lap), "timing", "0.2")]
+            main = [float(s[3]) for s in sounds if s[1] in ("brake", "lift")]
+            gas = [float(s[3]) for s in sounds if s[1] == "gas"]
+            self.assertGreaterEqual(len(main), 7, lap)
+            # each brake or lift BEEP plays the delay (0.2 s) before the car reaches the point
+            self.assertTrue(all(abs(t - 0.2) < 0.03 for t in main[:-1] if t < 5), (lap, main))
+            # the gas beep 0.5 s before (plus the delay), give or take the car's changing speed
+            self.assertTrue(all(abs(t - 0.7) < 0.1 for t in gas if t < 5), (lap, gas))
+
+    def test_audio_cues_calibrate_from_brake_presses(self):
+        cues = self.cue_file(os.path.join(self.HERE, "fixtures", "reference_barcelona.csv"))
+        lap = os.path.join(self.HERE, "fixtures", "reference_barcelona.csv")
+        for start, true in (("0.1", 0.25), ("0.3", 0.12)):  # the player's output is slower, or faster, than assumed
+            updates = [l.split() for l in self.cue_check(cues, lap, "calibrate", start, str(true))]
+            done = [u for u in updates if u[3] == "true"]
+            self.assertTrue(done, updates)
+            self.assertLessEqual(int(done[0][2]), 5, "calibrated within 5 presses")
+            self.assertAlmostEqual(float(done[0][1]), true, delta=0.03)
 
     def test_records_a_lap_from_a_fake_playstation(self):
         out = os.path.join(self.tmp, "phone.csv")

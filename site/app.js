@@ -9,6 +9,9 @@ const fmtTenths = ms => `${Math.floor(ms / 60000)}:${((ms % 60000) / 1000).toFix
 const secs = ms => (ms / 1000).toFixed(3) + " s";
 // the Android app (android/) adds window.GT7App, for recording on the phone
 const APP = window.GT7App;
+// audio cues: app versions from November 2026
+const CUES = !!APP && typeof APP.cueState === "function";
+const cueState = () => { try { return JSON.parse(APP.cueState()); } catch (err) { return {}; } };
 const num = n => n.toLocaleString();
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const medalTime = (wr, factor) => Math.floor(wr * factor); // as in the game: WR + 3% / 5% / 10%
@@ -281,7 +284,8 @@ async function compareLap(e, file, out, save) {
 
 // --- recording on the phone, in the Android app: GT7App records GT7's telemetry like telemetry.py and reports
 // progress through window.GT7AppEvent ---
-const recordButton = (kind, i) => `<button type="button" class="button-link primary record-btn" data-kind="${kind}" data-i="${i}">Record on this phone</button>`;
+const recordButton = (kind, i) => `<button type="button" class="button-link primary record-btn" data-kind="${kind}" data-i="${i}">Record on this phone</button>${CUES
+  ? `<label class="cue-check"><input type="checkbox" class="cue-toggle"${cueState().enabled ? " checked" : ""}> Audio cues</label>` : ""}`;
 let recording = null; // { e, out, laps }
 
 const REC_STATES = {
@@ -324,6 +328,13 @@ window.GT7AppEvent = ev => {
       (${ev.tried} address${ev.tried === 1 ? "" : "es"}) · ${ev.sendErrors} failed sends · ${ev.heard} replies ·
       PlayStations seen: ${(ev.consoles || []).length}`;
   }
+  else if (ev.type === "cues") {
+    const where = `${esc(ev.output)}, ${ev.delay.toFixed(2)} s delay`;
+    recording.out.querySelector(".rec-cues").innerHTML = ev.calibrated
+      ? `Audio cues on (${where}${ev.update ? ": calibrated" : ""}).`
+      : `Audio cues on (${where}). Calibrating: brake on each BEEP${ev.presses
+        ? `; ${ev.presses} brake press${ev.presses === 1 ? "" : "es"} so far` : ""}.`;
+  }
   else if (ev.type === "connected") say(`Connected to your PlayStation at ${ev.ip}. ${REC_STATES.menus}`);
   else if (ev.type === "state") say(REC_STATES[ev.state] || "");
   else if (ev.type === "silent") say(`No data for ${ev.seconds} s. Is GT7 still running? Still trying…`, "miss");
@@ -343,6 +354,7 @@ function startRecording(e, out, ip) {
   out.innerHTML = `<div class="rec-panel">
       <p class="rec-status">Starting…</p>
       <ul class="rec-laps"></ul>
+      <p class="hint rec-cues"></p>
       <p class="hint">Keep the app open while you drive: the screen stays on. The fastest complete lap is compared.</p>
       <div class="coach-actions"><button type="button" class="button-link primary rec-stop">Stop and compare</button>
         <button type="button" class="button-link rec-cancel">Cancel</button></div>
@@ -361,6 +373,20 @@ function startRecording(e, out, ip) {
     const typed = out.querySelector(".rec-ip-form input").value.trim();
     if (/^\d{1,3}(\.\d{1,3}){3}$/.test(typed)) startRecording(e, out, typed);
   });
+  startApp(e, out, ip);
+}
+
+async function startApp(e, out, ip) {
+  if (CUES && cueState().enabled) {
+    try {
+      const ref = await (refCache[refKey(e)] ??= fetch(e.reference.url).then(r => (r.ok ? r.json() : Promise.reject())));
+      if (recording?.out !== out) return; // cancelled while the reference loaded
+      APP.startWithCues(ip || "", JSON.stringify(Coach.cuePoints(ref)));
+      return;
+    } catch (err) {
+      out.querySelector(".rec-cues").textContent = "Audio cues: couldn't load the reference lap, so recording without them.";
+    }
+  }
   try { APP.start(ip || ""); } catch (err) { APP.start(); } // the first app version takes no address
 }
 
@@ -380,6 +406,69 @@ document.addEventListener("click", ev => {
   const e = b.dataset.kind === "license" ? licenseEvent(+b.dataset.i) : DATA.current[+b.dataset.i];
   startRecording(e, b.closest(".coach").querySelector(".coach-result"));
 });
+
+// --- Audio cues (app only) ---
+const CUE_DEFAULTS = { ticks: 2, spacing: 0.5, lift: true, gas: true, chicane: false, brakeEarly: 0, gasAdjust: 0 };
+const range = (from, to, step) => Array.from({ length: Math.round((to - from) / step) + 1 }, (_, i) => +(from + i * step).toFixed(2));
+const cueSettings = () => ({ ...CUE_DEFAULTS, ...(cueState().settings || {}) });
+
+document.addEventListener("change", ev => {
+  if (!ev.target.matches(".cue-toggle")) return;
+  APP.saveCues(JSON.stringify({ enabled: ev.target.checked }));
+  document.querySelectorAll(".cue-toggle").forEach(c => (c.checked = ev.target.checked));
+});
+
+function renderCues() {
+  const panel = document.getElementById("cues-panel");
+  const st = cueState(), set = cueSettings();
+  const select = (key, values, label) => `<select data-set="${key}">${values.map(v =>
+    `<option value="${v}"${v === set[key] ? " selected" : ""}>${label(v)}</option>`).join("")}</select>`;
+  const check = (key, text) => `<label class="cue-opt"><input type="checkbox" data-set="${key}"${set[key] ? " checked" : ""}> ${text}</label>`;
+  const s = v => `${v.toFixed(1)} s`;
+  panel.innerHTML = `
+    <h2>Audio cues</h2>
+    <p>Tick <b>Audio cues</b> next to Record on this phone, and while you record the app plays a countdown to each point where
+      the reference lap brakes or lifts, and a beep just before it gets back on the throttle. It works with the phone
+      locked. Brake: tick, tick, low BEEP. Lift: tick, tick, middle BEEP. Gas: one high beep.</p>
+    <h3>Countdown</h3>
+    <p class="cue-row"><span>Beeps before brake</span>${select("ticks", [0, 1, 2, 3], v => (v ? `${v} before the BEEP` : "just the BEEP"))}</p>
+    <p class="cue-row"><span>Beep timing</span>${select("spacing", range(0.3, 1, 0.1), v => `${s(v)} apart`)}</p>
+    <h3>Which cues</h3>
+    <p class="cue-row">${check("lift", "Lift beeps: where the reference comes off the throttle without braking")}</p>
+    <p class="cue-row">${check("gas", "Gas beep: 0.5 s before the reference gets back on the throttle")}</p>
+    <p class="cue-row">${check("chicane", "Chicane beep: one short pip for a brake or lift that comes too soon after the last one for its own countdown (otherwise it gets no sound)")}</p>
+    <h3>Timing</h3>
+    <p class="cue-row"><span>Brake cue earlier than the reference</span>${select("brakeEarly", range(0, 1, 0.1), v => (v ? `${s(v)} earlier` : "on the reference's point"))}</p>
+    <p class="cue-row"><span>Gas beep</span>${select("gasAdjust", range(-0.5, 0.5, 0.1), v => (v ? `${s(Math.abs(v))} ${v > 0 ? "later" : "earlier"}` : "as is"))}</p>
+    <h3>Delay for each audio output</h3>
+    <p class="hint">Sounds take a moment to reach your ears, especially over Bluetooth, so each one plays early by this much.
+      The app learns it on your first brake cues with each output (brake firmly on each BEEP), then keeps it.
+      Reset to learn it again.</p>
+    <table class="cue-outputs"><tbody>${(st.outputs || []).map(o => `<tr>
+      <th>${esc(o.name)}${o.current ? ` <span class="muted">(now)</span>` : ""}</th>
+      <td class="num"><button type="button" class="nav-btn cue-delay" data-key="${esc(o.key)}" data-step="-0.01" aria-label="Less delay">−</button>
+        <b>${o.delay.toFixed(2)} s</b>
+        <button type="button" class="nav-btn cue-delay" data-key="${esc(o.key)}" data-step="0.01" aria-label="More delay">+</button></td>
+      <td>${o.calibrated ? "calibrated" : `<span class="muted">${Math.abs(o.delay - o.start) < 0.005 ? "starting value" : "calibrating"}</span>`}</td>
+      <td><button type="button" class="nav-btn cue-reset" data-key="${esc(o.key)}">Reset</button></td></tr>`).join("")}</tbody></table>
+    <p><button type="button" class="button-link cue-test">Test sound</button> <span class="hint">plays tick, tick, BEEP through the current output</span></p>`;
+  const save = change => { APP.saveCues(JSON.stringify(change)); renderCues(); };
+  panel.querySelectorAll("[data-set]").forEach(el => el.addEventListener("change", () => {
+    const v = el.type === "checkbox" ? el.checked : +el.value;
+    save({ settings: { ...cueSettings(), [el.dataset.set]: v } });
+  }));
+  panel.querySelectorAll(".cue-delay").forEach(b => b.addEventListener("click", () => {
+    const o = (cueState().outputs || []).find(x => x.key === b.dataset.key);
+    if (o) save({ delay: { key: o.key, delay: +(o.delay + +b.dataset.step).toFixed(3) } });
+  }));
+  panel.querySelectorAll(".cue-reset").forEach(b => b.addEventListener("click", () => save({ reset: b.dataset.key })));
+  panel.querySelector(".cue-test").addEventListener("click", () => APP.testSound());
+}
+if (CUES) {
+  document.querySelector('nav a[data-tab="cues"]').hidden = false;
+  window.addEventListener("hashchange", () => { if (location.hash === "#cues") renderCues(); });
+  if (location.hash === "#cues") renderCues();
+}
 
 // --- Super License tab ---
 const MEDAL_KEYS = [["gold", "Gold"], ["silver", "Silver"], ["bronze", "Bronze"]];
