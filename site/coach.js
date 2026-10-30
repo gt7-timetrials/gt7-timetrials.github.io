@@ -585,6 +585,48 @@ const Coach = (() => {
   // Close-up 1: the corner drawn to scale with both racing lines, the same way round as the lap map. Line thickness shows
   // the pedals: brake pressure from the braking point to the slowest point, throttle everywhere else
   // (thin = none, full thickness = 100%).
+  // Audio cues (the app): where the reference starts braking (dabs too), lifts without braking, and gets back on the
+  // throttle after braking, plus its line every 2 m so the app can tell where the car is. Distances are along the
+  // reference line; t is the reference's time there, which the app uses to keep cues from piling up in chicanes.
+  function cuePoints(refLap) {
+    const ref = { ...refLap, s: [0] };
+    for (let i = 1; i < ref.x.length; i++) ref.s.push(ref.s[i - 1] + Math.hypot(ref.x[i] - ref.x[i - 1], ref.z[i] - ref.z[i - 1]));
+    const n = Math.floor(ref.s[ref.s.length - 1]), R = resample(ref, ref.s, n);
+    const cues = [], add = (k, kind) => cues.push({ s: k, t: +R.t[k].toFixed(3), kind });
+    let releasedAt = -Infinity; // when the reference last came off the brake
+    for (let k = 1; k < n; k++) {
+      if (R.brk[k] > 5 && R.brk[k - 1] <= 5) {
+        if (R.t[k] - releasedAt >= 0.1) {
+          add(k, "brake");
+          const gas = firstFrom(R.thr, k, n, (t, j) => t >= 20 && R.brk[j] <= 5);
+          if (gas !== null) add(gas, "gas");
+        }
+      }
+      if (R.brk[k] <= 5 && R.brk[k - 1] > 5) releasedAt = R.t[k];
+      // a lift: from full throttle to below 50% for at least 0.1 s, with no brake while it's down
+      if (R.thr[k] < 50 && R.thr[k - 1] >= 50 && R.brk[k] <= 5) {
+        let b = k, braked = false;
+        while (b < n && R.thr[b] < 50) { if (R.brk[b] > 5) braked = true; b++; }
+        // coming from steady full throttle (90%+ for at least 0.3 s), not a blip on a downshift or an exit
+        let before = k - 1;
+        while (before > 0 && R.t[k] - R.t[before] < 0.3 && R.thr[before] < 90) before--;
+        let full = before;
+        while (full > 0 && R.thr[full - 1] >= 90) full--;
+        const steady = R.thr[before] >= 90 && R.t[before] - R.t[full] >= 0.3;
+        // a lift with braking straight after (within 0.5 s) is part of the braking: that gets the brake cue only
+        const brakeAfter = firstFrom(R.brk, k, n, v => v > 5);
+        const soonBraked = brakeAfter !== null && R.t[brakeAfter] - R.t[k] < 0.5;
+        if (!braked && !soonBraked && steady && R.t[Math.min(b, n - 1)] - R.t[k] >= 0.1) add(k, "lift");
+      }
+    }
+    cues.sort((a, b) => a.s - b.s);
+    const unique = cues.filter((c, i) => !cues.slice(0, i).some(o => o.kind === c.kind && o.s === c.s)); // two brakes, one gas
+    const x = [], z = [];
+    for (let k = 0; k < n; k += 2) { x.push(+R.x[k].toFixed(1)); z.push(+R.z[k].toFixed(1)); }
+    const loop = Math.hypot(R.x[0] - R.x[n - 1], R.z[0] - R.z[n - 1]) < 30;
+    return { length: n, step: 2, loop, x, z, cues: unique };
+  }
+
   function cornerWidths(result, c, who) {
     const { R, M } = result.grid, n = R.x.length;
     const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
@@ -750,7 +792,7 @@ const Coach = (() => {
     return NEEDED.every(h => head.includes(h));
   }
 
-  return { parseCsv, fastestLap, lapChoices, analyse, startHere, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
+  return { parseCsv, fastestLap, lapChoices, analyse, startHere, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;

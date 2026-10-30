@@ -200,6 +200,15 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .lap-btn.chosen { border-color: var(--text); box-shadow: inset 0 0 0 1px var(--text); }
 .lap-btn.cut { color: var(--muted); }
 .lap-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.cue-check { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer; }
+.cue-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 6px 0; }
+.cue-row > span { min-width: 15em; }
+.cue-row select { padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; }
+.cue-opt { display: flex; gap: 8px; align-items: baseline; cursor: pointer; }
+.cue-outputs { border-collapse: collapse; margin: 8px 0; }
+.cue-outputs th, .cue-outputs td { padding: 6px 10px 6px 0; text-align: left; vertical-align: middle; background: none; }
+.cue-outputs th { font-weight: 600; }
+.cue-outputs td.num { white-space: nowrap; }
 .rec-panel { margin-top: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; }
 .rec-status { margin: 0 0 6px; font-weight: 600; }
 .rec-status.miss { font-weight: 400; }

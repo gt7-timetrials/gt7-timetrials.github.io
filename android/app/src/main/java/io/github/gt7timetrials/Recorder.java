@@ -43,6 +43,8 @@ final class Recorder implements Runnable {
     private final StringBuilder csv = new StringBuilder(Telemetry.HEADER + "\n");
     private int packets = 0, laps = 0;
     private volatile String ip;
+    /** Audio cues, if switched on: fed every packet while the car is moving. */
+    volatile Cues cues;
     // PlayStations that answered the Remote Play discovery broadcast: they get the heartbeat first
     private final Set<String> found = ConcurrentHashMap.newKeySet();
 
@@ -290,6 +292,11 @@ final class Recorder implements Runnable {
             synchronized (this) {
                 csv.append(Telemetry.csvRow(p, (now - t0) / 1000.0)).append('\n');
                 packets++;
+            }
+
+            Cues c = cues;
+            if (c != null && !Telemetry.paused(p) && !Telemetry.loading(p)) {
+                c.update(System.nanoTime() / 1e9, Telemetry.x(p), Telemetry.z(p), Telemetry.speedKmh(p), Telemetry.brakePct(p));
             }
 
             boolean moving = Telemetry.speedKmh(p) > 5;
