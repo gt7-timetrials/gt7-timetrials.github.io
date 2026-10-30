@@ -155,11 +155,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         if (recorder != null) recorder.stop();
+        RecorderService.stop(this);
         web.destroy();
         super.onDestroy();
     }
 
-    private void keepScreenOn(boolean on) {
+    /** While recording: the screen stays on, and the app keeps running if the phone is locked or put aside. */
+    private void recording(boolean on) {
+        if (on) RecorderService.start(this);
+        else RecorderService.stop(this);
         runOnUiThread(() -> {
             if (on) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -211,13 +215,13 @@ public class MainActivity extends Activity {
             Recorder[] self = new Recorder[1];
             self[0] = new Recorder(json -> {
                 Recorder r = self[0];
-                if (json.contains("\"stopped\"") && recorder == r) keepScreenOn(false);
+                if (json.contains("\"stopped\"") && recorder == r) recording(false);
                 runOnUiThread(() -> web.evaluateJavascript("window.GT7AppEvent && GT7AppEvent(" + json + ")", null));
             }, ip, ipv4(net), sock -> {
                 if (net != null) net.bindSocket(sock);
             });
             recorder = self[0];
-            keepScreenOn(true);
+            recording(true);
             recorderThread = new Thread(recorder, "recorder");
             recorderThread.start();
         }
@@ -236,7 +240,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public synchronized void stop() {
             if (recorder != null) recorder.stop();
-            keepScreenOn(false);
+            recording(false);
         }
 
         /** Everything recorded since start(), as a telemetry.py CSV. */
