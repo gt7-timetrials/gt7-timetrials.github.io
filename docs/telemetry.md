@@ -5,7 +5,8 @@ On the **Current** page each event has *Compare your lap with the world record*:
 - **Download recorder (telemetry.py)** and **How to record (readme.txt)**: players record their own lap
   from their PS4/PS5 on their home network (`tools/telemetry.py`, `site/readme.txt`).
 - **Upload your lap**: the browser finds the fastest complete lap in the CSV, compares it with the reference lap
-  and shows a track map coloured by time lost per corner (green under 0.2 s, amber 0.2–0.4 s, red 0.4 s or more),
+  and shows a track map coloured by time lost per section as a share of the reference's time through it (green within 3%, like
+  gold in a time trial; amber 3–5%, like silver; red over 5%; under 0.1 s lost is always green),
   with figures and tips for each corner. All of it runs in the browser (`site/coach.js`); the file isn't uploaded.
 
 ## Adding a world record lap (site owner)
