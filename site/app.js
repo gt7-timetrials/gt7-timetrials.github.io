@@ -746,8 +746,9 @@ fetch("data.json")
       resizeTimer = setTimeout(() => { redrawCharts(); drawRecordChart(); }, 150);
     });
     document.getElementById("n-history").textContent = data.history_events;
-    document.getElementById("footer").textContent =
-      `Last updated ${localTime(data.generated_at)}. Times are shown in your time zone. ${data.history_events} past events.`;
+    document.getElementById("footer").innerHTML =
+      `Last updated ${localTime(data.generated_at)}. Times are shown in your time zone. ${data.history_events} past events.
+      <a href="privacy.html">Privacy</a>`;
   })
   .catch(() => {
     document.getElementById("current-list").innerHTML = `<p class="muted">Could not load data.</p>`;
