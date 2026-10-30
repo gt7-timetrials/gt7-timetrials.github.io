@@ -5,16 +5,28 @@ tests: keep it simple, and only take on what one person can look after.
 
 ## Next up
 
-1. **Google Play closed test**, aiming for Sunday 1 November.
+1. **Google Play closed test**: live since 30 October 2026 ("Time Trials for GT7", `io.github.gt7timetrials`).
    - [x] Owner: Play developer account approved.
    - [x] Privacy policy page on the website (`site/privacy.html`): the app collects nothing.
    - [x] Store listing: text, icon, feature graphic and screenshots in `docs/play-listing.md` and `docs/play/`.
-   - [ ] Play build: an app bundle (.aab) signed with a private upload key kept as a GitHub secret. The current test
-         key in `android/app/test.keystore` is public, so it's only for the GitHub test downloads.
    - [x] Crib sheet for the Play Console forms: in `docs/play-listing.md`.
-   - [ ] Closed test with a Google Group, so testers join themselves and no email addresses are collected. Post the
-         group link and the test link on GTPlanet and Reddit. Google needs 12+ testers opted in for 14 days in a row
-         before the app can go to everyone, so aim for 20 or so.
+   - [x] Play build: targets Android 16 (API 36), as Play requires for new apps. `gt7-timetrials-play.aab` is signed
+         with the private upload key (GitHub secrets `UPLOAD_KEYSTORE_BASE64` and `UPLOAD_KEYSTORE_PASSWORD`) and
+         published next to the test APK on the android-test release. Google re-signs it (Play App Signing).
+   - [x] Closed test with the Google Group `time-trails-gt7-testers`, so testers join themselves and no email
+         addresses are collected. First release approved and published on 30 October; the owner installed it from
+         Play and checked recording, saving, uploading and Back.
+   - [x] How to join on the website (How it works → Android app (test)), and a Reddit post asking for testers
+         (https://www.reddit.com/r/granturismo/s/WTRsxSB3m2), which is also where feedback goes, besides Play's private
+         feedback.
+   - [ ] 12+ testers opted in for 14 days in a row (aim for about 20, as some drop out). Optionally post on GTPlanet
+         too.
+   - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
+         production.
+   - [ ] Apply for production (Dashboard), then release to everyone.
+
+   Website changes (including reference laps) reach the app straight away. Only changes to the app's own code
+   (`android/`) need a new `.aab` uploaded to the Play Console; each build's version number goes up by itself.
 
 2. **Audio cues** (app), as an update to the Play test.
    - An "Audio cues" button on each event and Super License test; brake cues and/or gas cues.
