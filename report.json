@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-29T21:37:59.328422+00:00",
+ "generated_at": "2026-10-30T21:38:11.761190+00:00",
  "history_events": 203,
  "snapshot_events": 1,
  "historical_entrants": {
@@ -17,14 +17,14 @@
    "car": "Hyundai ELANTRA N TC '24",
    "starts": "2026-10-22T18:00:00+11:00",
    "ends": "2026-11-05T17:59:59+11:00",
-   "days_elapsed": 7.6,
-   "days_left": 6.4,
-   "entrants": 131243,
+   "days_elapsed": 8.6,
+   "days_left": 5.4,
+   "entrants": 139151,
    "entrants_projection": null,
-   "wr_ms": 110098,
-   "wr_holder": "tropicalarea",
-   "gold_now_ms": 113400,
-   "top100_spread_pct": 0.468,
+   "wr_ms": 109973,
+   "wr_holder": "SFE_Damian",
+   "gold_now_ms": 113272,
+   "top100_spread_pct": 0.571,
    "strong_drivers_posted": [
     "MetalGear9493",
     "SFE_Damian"
@@ -32,12 +32,12 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 109948,
-    "gold_ms": 113246,
-    "gold_fast_ms": 113045,
-    "gold_slow_ms": 113400,
-    "final_wr_fast_ms": 109753,
-    "final_wr_slow_ms": 110098,
+    "final_wr_ms": 109844,
+    "gold_ms": 113139,
+    "gold_fast_ms": 112971,
+    "gold_slow_ms": 113272,
+    "final_wr_fast_ms": 109681,
+    "final_wr_slow_ms": 109973,
     "method": "history: time elapsed + top drivers"
    }
   },
@@ -49,26 +49,27 @@
    "car": "Maserati A6GCS/53 Spyder '54",
    "starts": "2026-10-29T18:00:00+11:00",
    "ends": "2026-11-12T17:59:59+11:00",
-   "days_elapsed": 0.6,
-   "days_left": 13.4,
-   "entrants": 33119,
+   "days_elapsed": 1.6,
+   "days_left": 12.4,
+   "entrants": 59512,
    "entrants_projection": null,
-   "wr_ms": 80672,
-   "wr_holder": "Calster_25",
-   "gold_now_ms": 83092,
-   "top100_spread_pct": 1.178,
+   "wr_ms": 80639,
+   "wr_holder": "AT__1826",
+   "gold_now_ms": 83058,
+   "top100_spread_pct": 1.074,
    "strong_drivers_posted": [
+    "AT__1826",
     "MetalGear9493"
    ],
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 80384,
-    "gold_ms": 82795,
-    "gold_fast_ms": 82569,
-    "gold_slow_ms": 82999,
-    "final_wr_fast_ms": 80165,
-    "final_wr_slow_ms": 80582,
+    "final_wr_ms": 80445,
+    "gold_ms": 82858,
+    "gold_fast_ms": 82649,
+    "gold_slow_ms": 83058,
+    "final_wr_fast_ms": 80242,
+    "final_wr_slow_ms": 80639,
     "method": "history: time elapsed + top drivers"
    }
   }
