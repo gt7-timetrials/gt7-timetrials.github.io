@@ -25,10 +25,13 @@ tests: keep it simple, and only take on what one person can look after.
          service form filled in with a video). Tested by the owner with the phone locked and the app in the
          background, both from the test APK and from the Play update. The "no data" messages (website and computer recorder) now also mention other telemetry apps
          such as SimHub and Sim Racing Telemetry.
-   - [ ] 12+ testers opted in for 14 days in a row (aim for about 20, as some drop out).
+   - [x] 12 testers opted in on 31 October 2026 (one joined the group but hadn't opted in at first). Countries: all.
+   - [ ] Keep 12+ opted in for 14 days in a row, to about **14 November 2026** (aim for a few more as a buffer). Google
+         tracks this by itself: progress is on the Play Console Dashboard; nothing to trigger.
    - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
          production.
-   - [ ] Apply for production (Dashboard), then release to everyone.
+   - [ ] From about 14 November: Apply for production (Dashboard; a short questionnaire on how testers were found,
+         how they used the app, their feedback and what changed; review up to about a week), then release to everyone.
 
    Website changes (including reference laps) reach the app straight away. Only changes to the app's own code
    (`android/`) need a new `.aab` uploaded to the Play Console; each build's version number goes up by itself.
@@ -60,6 +63,12 @@ tests: keep it simple, and only take on what one person can look after.
      Test sound. Saved on the phone: these settings, the calibrations and the checkbox. Nothing else.
    - Built in the app's own code (works with the screen locked), tested here by replaying recorded laps as if live,
      then tuned in the game by the owner.
+   - [x] Built and merged (test build 19 on the android-test release). Replayed laps: brake and lift BEEPs within
+         0.016 s of the point, gas beeps within 0.03 s (with jerk); calibration settles in about 4 presses.
+   - [ ] Owner: try it in the game, calibrate the phone speaker and Galaxy Buds; their delays become the starting
+         values for speaker and Bluetooth. Tune sounds and timing from how it feels.
+   - [ ] Release it to the Play test (upload the `.aab`) during the 14 days, and post about it with the next time
+         trial (week of 2 November) for momentum.
 
 3. **"Start here" summary** (done) at the top of a comparison: the 2–3 biggest easy wins. Differences are ranked by time lost
    and by how hard they are to fix:
