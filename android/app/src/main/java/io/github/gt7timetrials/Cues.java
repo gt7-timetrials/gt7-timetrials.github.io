@@ -7,20 +7,16 @@ import java.util.List;
  * Audio cues while recording: a countdown to each point where the reference lap brakes or lifts, and a beep just
  * before it gets back on the throttle. Fed every telemetry packet; works out where the car is on the reference line,
  * predicts when it will reach each point from its distance, speed and acceleration, and plays each sound early by
- * the audio delay. It also learns that delay from when the player actually presses the brake (auto-calibration).
- * Plain Java (sound and saving go through interfaces), so it can be tested off the phone by replaying recordings.
+ * the audio delay (measured by Calibrator). Plain Java (sound goes through an interface), so it can be tested off the
+ * phone by replaying recordings.
  */
-final class Cues {
-    static final int TICK = 0, BRAKE = 1, LIFT = 2, GAS = 3, PIP = 4;
+final class Cues implements Feed {
+    // brake: low ticks and a low BEEP; lift: high ticks and a middle BEEP; gas: a rising chirp
+    static final int TICK_BRAKE = 0, BRAKE = 1, LIFT = 2, GAS = 3, PIP = 4, TICK_LIFT = 5;
     static final int KIND_BRAKE = 0, KIND_LIFT = 1, KIND_GAS = 2;
 
     interface Sound {
         void play(int sound);
-    }
-
-    /** Calibration progress: the delay so far, how many presses it's based on, and whether it's settled. */
-    interface Calibration {
-        void update(double delay, int presses, boolean done);
     }
 
     static final class Settings {
@@ -30,7 +26,6 @@ final class Cues {
         double brakeEarly = 0;      // the brake BEEP this many seconds before the reference's braking point
         double gasAdjust = 0;       // + = gas beep later
         double delay = 0.1;         // audio and data delay of this output (s): every sound plays this much early
-        boolean calibrated = false; // false: learn the delay from the first brake presses
     }
 
     /** A point on the reference lap: distance along its line (m), the reference's time there (s), and its kind. */
@@ -59,18 +54,15 @@ final class Cues {
     }
 
     static final double OFF_LINE_M = 20;     // further than this from the reference line: no cues
-    static final double CALIBRATE_WINDOW = 0.6, CALIBRATED_WITHIN = 0.1, FIRM_BRAKE = 20, GAS_GAP = 0.3;
-    static final int CALIBRATED_AFTER = 3;   // presses in a row within CALIBRATED_WITHIN
+    static final double GAS_GAP = 0.3;       // a gas beep this close to a brake or lift sound is skipped
     private static final double LOOKAHEAD_M = 800;
 
     private final double[] x, z, s; // the reference line, every few metres, and the distance along it
     private final boolean loop;
     private final double length;
     private final Sound out;
-    private final Calibration calibration;
     private final List<Beep> beeps = new ArrayList<>();
-    private double delay;
-    private boolean calibrated;
+    private final double delay;
 
     // where the car is
     private int at = -1;                // nearest line point, or -1 when lost
@@ -81,22 +73,16 @@ final class Cues {
     // speed history (about 0.5 s) for the acceleration and how fast it's changing
     private final double[] histT = new double[40], histV = new double[40];
     private int hist;
-    // calibration
-    private final List<Double> implied = new ArrayList<>(), errors = new ArrayList<>();
-    private double beepAt = Double.NaN, beepDelay;   // the last brake BEEP still waiting for a press
-    private double lastPress = Double.NEGATIVE_INFINITY, lastBrake;
 
-    Cues(double[] x, double[] z, double step, boolean loop, List<Point> points, Settings set, Sound out, Calibration calibration) {
+    Cues(double[] x, double[] z, double step, boolean loop, List<Point> points, Settings set, Sound out) {
         this.x = x;
         this.z = z;
         this.loop = loop;
         this.out = out;
-        this.calibration = calibration;
         s = new double[x.length];
         for (int i = 0; i < x.length; i++) s[i] = i * step;
         length = (x.length - (loop ? 0 : 1)) * step;
         delay = set.delay;
-        calibrated = set.calibrated;
         plan(points, set);
     }
 
@@ -120,7 +106,7 @@ final class Cues {
             beeps.add(new Beep(p.s, early, p.kind == KIND_BRAKE ? BRAKE : LIFT));
             soundTimes.add(new double[]{when});
             for (int i = 1; i <= set.ticks; i++) {
-                beeps.add(new Beep(p.s, early + i * set.spacing, TICK));
+                beeps.add(new Beep(p.s, early + i * set.spacing, p.kind == KIND_BRAKE ? TICK_BRAKE : TICK_LIFT));
                 soundTimes.add(new double[]{when - i * set.spacing});
             }
         }
@@ -134,26 +120,17 @@ final class Cues {
         }
     }
 
-    double delay() {
-        return delay;
-    }
-
-    boolean calibrated() {
-        return calibrated;
-    }
-
     /** Where the car is along the reference line, or NaN when it isn't on it. */
     double position() {
         return pos;
     }
 
-    /** One telemetry packet: the time it arrived (s), position (m), speed (km/h) and brake (%). */
-    void update(double t, double px, double pz, double speedKmh, double brake) {
+    @Override
+    public void update(double t, double px, double pz, double speedKmh, double brake) {
         double v = speedKmh / 3.6;
         hist++;
         histT[hist % histT.length] = t;
         histV[hist % histV.length] = v;
-        calibrate(t, brake);
 
         double before = pos;
         locate(px, pz);
@@ -178,11 +155,6 @@ final class Cues {
             b.fired = true;
             if (due < -0.25) continue; // missed (just found the line again): better silent than late
             out.play(b.sound);
-            if (b.sound == BRAKE && !calibrated) {
-                beepAt = t;
-                beepDelay = delay;
-                if (lastPress >= t + delay - CALIBRATE_WINDOW) press(lastPress); // pressed already, on the ticks
-            }
         }
     }
 
@@ -285,33 +257,5 @@ final class Cues {
 
     private static double sq(double v) {
         return v * v;
-    }
-
-    // --- calibration: when did the player actually press the brake, compared with the BEEP? ---
-
-    private void calibrate(double t, double brake) {
-        if (brake >= FIRM_BRAKE && lastBrake < FIRM_BRAKE) {
-            lastPress = t;
-            if (!Double.isNaN(beepAt) && !calibrated) press(t);
-        }
-        lastBrake = brake;
-        if (!Double.isNaN(beepAt) && t > beepAt + beepDelay + CALIBRATE_WINDOW) beepAt = Double.NaN; // no press: ignore
-    }
-
-    private void press(double t) {
-        double intended = beepAt + beepDelay; // when the BEEP was meant to be heard
-        double error = t - intended;
-        beepAt = Double.NaN;
-        if (Math.abs(error) > CALIBRATE_WINDOW) return; // missed it, or braking for another reason
-        implied.add(t - (intended - beepDelay)); // the delay that would have made this press bang on
-        errors.add(error);
-        int n = implied.size();
-        double sum = 0;
-        for (int i = Math.max(0, n - 5); i < n; i++) sum += implied.get(i);
-        delay = Math.max(0, Math.min(0.6, sum / Math.min(n, 5)));
-        boolean done = n >= CALIBRATED_AFTER;
-        for (int i = Math.max(0, n - CALIBRATED_AFTER); i < n; i++) if (Math.abs(errors.get(i)) > CALIBRATED_WITHIN) done = false;
-        calibrated = done;
-        if (calibration != null) calibration.update(delay, n, done);
     }
 }

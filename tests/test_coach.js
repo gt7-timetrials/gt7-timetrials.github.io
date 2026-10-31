@@ -164,7 +164,19 @@ console.log("coach.js tests passed");
   const kinds = k => c.cues.filter(q => q.kind === k);
   assert.ok(c.loop && c.step === 2 && c.x.length === Math.ceil(c.length / 2), "the line every 2 m, a closed loop");
   assert.deepStrictEqual(kinds("brake").map(q => q.s), [729, 1619, 2026, 2453, 3356, 3645, 3661, 4162]);
-  assert.deepStrictEqual(kinds("lift").map(q => q.s), [2783], "a flick off the throttle just before braking isn't a lift");
+  // a real lift at 2783 (1 s off, ending with an upshift); a flick off the throttle just before braking at 2437 is
+  // part of the braking
+  assert.deepStrictEqual(kinds("lift").map(q => q.s), [2783], "a flick before braking isn't a lift");
+  // a driver who lifts for every upshift (0.3 s off the throttle, the gear going up): gear changes, not lifts
+  const shifty = { ...ref, throttle_pct: ref.throttle_pct.slice(), gear: ref.gear.slice() };
+  const at = ref.t.findIndex(t => t > 30.2); // on the straight before turn 4, at full throttle
+  for (let i = at; i < at + 18; i++) shifty.throttle_pct[i] = 0;
+  for (let i = at + 6; i < ref.t.length; i++) shifty.gear[i] += 1;
+  const lifts = c2 => c2.cues.filter(q => q.kind === "lift").map(q => q.s);
+  assert.deepStrictEqual(lifts(Coach.cuePoints(shifty)), [2783], "an upshift lift isn't cued");
+  assert.deepStrictEqual(lifts(Coach.cuePoints({ ...shifty, gear: undefined })), [2783], "nor without the gear, from the speed");
+  // ...but the same 0.3 s off the throttle without a gear change is a lift
+  assert.strictEqual(lifts(Coach.cuePoints({ ...shifty, gear: ref.gear })).length, 2);
   assert.strictEqual(kinds("gas").length, 7, "one gas point after each braking, the double brake sharing one");
   assert.ok(c.cues.every((q, i) => i === 0 || q.s >= c.cues[i - 1].s), "in order along the lap");
   const sugo = Coach.cuePoints(Coach.fastestLap(Coach.parseCsv(read("tests/fixtures/reference_sugo.csv"))));

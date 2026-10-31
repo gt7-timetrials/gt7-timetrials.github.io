@@ -251,7 +251,8 @@ class AndroidRecorderTest(unittest.TestCase):
         cls.tmp = tempfile.mkdtemp()
         src = os.path.join(cls.HERE, "..", "android", "app", "src", "main", "java", "io", "github", "gt7timetrials")
         subprocess.run(["javac", "-d", cls.tmp, os.path.join(src, "Telemetry.java"), os.path.join(src, "Recorder.java"),
-                        os.path.join(src, "Cues.java"), os.path.join(cls.HERE, "android", "RecorderCheck.java"),
+                        os.path.join(src, "Cues.java"), os.path.join(src, "Feed.java"), os.path.join(src, "Calibrator.java"),
+                        os.path.join(cls.HERE, "android", "RecorderCheck.java"),
                         os.path.join(cls.HERE, "android", "CueCheck.java")], check=True, capture_output=True)
 
     def java(self, *args):
@@ -316,15 +317,17 @@ fs.writeFileSync(process.argv[3], [`${c.loop} ${c.step}`, c.x.join(" "), c.z.joi
             # the gas beep 0.5 s before (plus the delay), within 0.05 s though the car is braking and turning in
             self.assertTrue(all(abs(t - 0.7) < 0.05 for t in gas if t < 5), (lap, gas))
 
-    def test_audio_cues_calibrate_from_brake_presses(self):
-        cues = self.cue_file(os.path.join(self.HERE, "fixtures", "reference_barcelona.csv"))
-        lap = os.path.join(self.HERE, "fixtures", "reference_barcelona.csv")
-        for start, true in (("0.1", 0.25), ("0.3", 0.12)):  # the player's output is slower, or faster, than assumed
-            updates = [l.split() for l in self.cue_check(cues, lap, "calibrate", start, str(true))]
-            done = [u for u in updates if u[3] == "true"]
-            self.assertTrue(done, updates)
-            self.assertLessEqual(int(done[0][2]), 5, "calibrated within 5 presses")
-            self.assertAlmostEqual(float(done[0][1]), true, delta=0.03)
+    def test_calibration_measures_the_delay(self):
+        for true in (0.25, 0.08):  # Bluetooth-like and speaker-like delays
+            out = self.cue_check("calibrate", str(true), "2", "4")  # round 3 missed, round 5 pressed 0.4 s late
+            rounds = [l.split() for l in out if l.startswith("round")]
+            self.assertEqual([r[3] for r in rounds], ["true", "true", "false", "true", "true", "true"])
+            done = out[-1].split()
+            self.assertEqual(done[0], "done")
+            self.assertAlmostEqual(float(done[1]), true, delta=0.03)  # the late press is left out
+            self.assertEqual((done[2], done[3]), ("4", "true"))
+        out = self.cue_check("calibrate", "0.2", "0", "1")  # two of six pressed badly: missed and way off
+        self.assertTrue(out[-1].endswith("4 true"), out)
 
     def test_records_a_lap_from_a_fake_playstation(self):
         out = os.path.join(self.tmp, "phone.csv")
