@@ -41,22 +41,24 @@ tests: keep it simple, and only take on what one person can look after.
      play during recording. Nothing on screen: the player is driving.
    - **Cue points**, from the reference lap: **brake** wherever the reference starts braking (pedal over 5%, dabs
      included); **lift** where it comes off the throttle without braking (from 90%+ to below 50%, no brake, for at
-     least 0.1 s; a lift followed straight away by braking is a brake cue only); **gas** where it gets back on the
-     throttle after braking. Super License tests the same, against the gold run. Cues play whatever the car (time
+     least 0.1 s; a lift followed straight away by braking is a brake cue only; a short lift while changing up a gear
+     is a gear change, not a lift); **gas** where it gets back on the throttle after braking and stays on (not a blip
+     on a downshift). Super License tests the same, against the gold run. Cues play whatever the car (time
      trials can allow a choice of car).
-   - **Sounds:** brake: tick, tick, low BEEP; lift: tick, tick, mid BEEP; gas: one high beep 0.5 s before. Timed from
+   - **Sounds:** brake: low tocks and a low BEEP; lift: high ticks and a middle BEEP; gas: a rising chirp 0.5 s
+     before; chicane: a short high pip. The tab has a button to hear each one. Timed from
      the player's distance to the point, speed and acceleration, updated every packet; the gas beep also allows for
      how fast the acceleration is changing (jerk), since it comes while braking and turning in.
    - **Overlaps:** a brake or lift point inside the previous one's countdown (1 s by default) gets no sound, or one
      short pip if "chicane beep" is on. A gas beep within 0.3 s of a brake or lift sound is skipped.
    - **Paused** when the car is more than about 20 m off the reference line, going backwards, or on another track;
      back on automatically.
-   - **Auto-calibration** per audio output (phone speaker, wired headphones, each Bluetooth device by name): on the
-     first brake cues, compare each BEEP with when the player actually pressed the brake (firm presses over 20%
-     only; presses more than 0.6 s off, or none, are ignored), and set the delay to the average. Calibrated once the
-     last 3 presses are within 0.1 s of the BEEP; then saved. It aims at the brake point with the offset applied. The
-     gas beep uses the same delay. Starting values per type of output (speaker, wired, Bluetooth) come from the
-     owner's own calibrations.
+   - **Calibration** per audio output (phone speaker, wired headphones, each Bluetooth device by name), as its own
+     run from the Audio cues tab, not while driving (first-time users don't know what's happening, and corners take
+     over): sitting in the car (standing still is fine), six brake countdowns 3 s apart; the player presses the brake
+     on each BEEP. The delay is the average gap between the BEEP and the firm press (over 20%), leaving out presses
+     well off the others; it needs 4 of 6 that agree. Until then each output uses the starting value for its type
+     (speaker, wired, Bluetooth), which will come from the owner's own calibrations.
    - **Audio cues tab** (app only, before How it works): beeps before brake (0–3, default 2), beep timing (0.3–1.0 s,
      default 0.5), lift beeps (on), gas beep (on), chicane beep (off), brake cue earlier than the reference
      (0.0–1.0 s, default 0), gas beep adjustment (±0.5 s), one row per audio output with its delay, ± and Reset, and
@@ -65,7 +67,10 @@ tests: keep it simple, and only take on what one person can look after.
      then tuned in the game by the owner.
    - [x] Built and merged (test build 19 on the android-test release). Replayed laps: brake and lift BEEPs within
          0.016 s of the point, gas beeps within 0.03 s (with jerk); calibration settles in about 4 presses.
-   - [ ] Owner: try it in the game, calibrate the phone speaker and Galaxy Buds; their delays become the starting
+   - [x] Owner's first drive (Blue Moon Bay): unexpected beeps were the WR's upshift lifts and a downshift blip,
+         now filtered out; lift sounds now differ from brake sounds; calibration moved to its own run; test buttons
+         for each sound.
+   - [ ] Owner: try the changes, calibrate the phone speaker and Galaxy Buds; their delays become the starting
          values for speaker and Bluetooth. Tune sounds and timing from how it feels.
    - [ ] Release it to the Play test (upload the `.aab`) during the 14 days, and post about it with the next time
          trial (week of 2 November) for momentum.

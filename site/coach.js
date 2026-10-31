@@ -7,7 +7,7 @@
 // 4. For each corner compare braking, trail braking, minimum speed, throttle and steering.
 
 const Coach = (() => {
-  const LAP_FIELDS = ["x", "z", "speed_kmh", "throttle_pct", "brake_pct", "steering_rad", "wheel_rl_kmh", "wheel_rr_kmh"];
+  const LAP_FIELDS = ["x", "z", "speed_kmh", "throttle_pct", "brake_pct", "steering_rad", "wheel_rl_kmh", "wheel_rr_kmh", "gear"];
   // a section's colour: time lost as a share of the reference's time through it (within 3%, like gold in a time
   // trial; within 5%, like silver; more). Under 0.1 s stays green, so a short section can't go red on a small slip.
   const COLOURS = [[0.03, "good"], [0.05, "warn"], [Infinity, "bad"]];
@@ -121,7 +121,7 @@ const Coach = (() => {
     const xs = keep.map(i => s[i]), col = k => keep.map(i => lap[k][i]);
     const cols = { t: col("t"), v: col("speed_kmh"), thr: col("throttle_pct"), brk: col("brake_pct"),
       steer: col("steering_rad"), spin: keep.map(i => (lap.wheel_rl_kmh[i] + lap.wheel_rr_kmh[i]) / 2 - lap.speed_kmh[i]),
-      x: col("x"), z: col("z") };
+      x: col("x"), z: col("z"), ...(lap.gear ? { gear: col("gear") } : {}) };
     const g = {};
     for (const k in cols) g[k] = Array.from({ length: n }, (_, m) => interp(xs, cols[k], m));
     g.thr = g.thr.map((v, m) => (g.brk[m] > 10 ? 0 : v));
@@ -598,7 +598,12 @@ const Coach = (() => {
       if (R.brk[k] > 5 && R.brk[k - 1] <= 5) {
         if (R.t[k] - releasedAt >= 0.1) {
           add(k, "brake");
-          const gas = firstFrom(R.thr, k, n, (t, j) => t >= 20 && R.brk[j] <= 5);
+          // back on the gas: throttle at 20%+ that stays on (0.3 s, or until full), not a blip on a downshift
+          const gas = firstFrom(R.thr, k, n, (t, j) => {
+            if (t < 20 || R.brk[j] > 5) return false;
+            for (let m = j; m < n && R.t[m] - R.t[j] < 0.3; m++) { if (R.thr[m] >= 90) return true; if (R.thr[m] < 20) return false; }
+            return true;
+          });
           if (gas !== null) add(gas, "gas");
         }
       }
@@ -616,7 +621,14 @@ const Coach = (() => {
         // a lift with braking straight after (within 0.5 s) is part of the braking: that gets the brake cue only
         const brakeAfter = firstFrom(R.brk, k, n, v => v > 5);
         const soonBraked = brakeAfter !== null && R.t[brakeAfter] - R.t[k] < 0.5;
-        if (!braked && !soonBraked && steady && R.t[Math.min(b, n - 1)] - R.t[k] >= 0.1) add(k, "lift");
+        // a gear change, not a lift: drivers who shift by hand come off the throttle for a moment on each upshift.
+        // Short (back on within 0.65 s), and the gear goes up during it, or (references recorded before the gear was
+        // kept) hardly any speed is lost. A real lift can end with an upshift too, but lasts longer.
+        const end = Math.min(b + 10, n - 1);
+        const short = R.t[Math.min(b, n - 1)] - R.t[k] < 0.65;
+        const shift = short && (R.gear ? R.gear[end] > R.gear[Math.max(0, k - 10)] + 0.5
+          : R.v[k] - Math.min(...R.v.slice(k, end + 1)) < 2);
+        if (!braked && !soonBraked && !shift && steady && R.t[Math.min(b, n - 1)] - R.t[k] >= 0.1) add(k, "lift");
       }
     }
     cues.sort((a, b) => a.s - b.s);

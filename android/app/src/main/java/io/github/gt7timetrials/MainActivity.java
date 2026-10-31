@@ -210,20 +210,33 @@ public class MainActivity extends Activity {
                         : kind.equals("lift") ? Cues.KIND_LIFT : Cues.KIND_GAS));
             }
             Cues.Settings set = cueStore.settings(out);
-            String name = out.getString("name");
-            toPage(cueEvent(name, set.delay, 0, set.calibrated, false));
-            return new Cues(x, z, c.getDouble("step"), c.getBoolean("loop"), points, set, sounds(), (delay, presses, done) -> {
-                cueStore.calibration(out, delay, done);
-                toPage(cueEvent(name, delay, presses, done, true));
-            });
+            toPage(String.format(Locale.ROOT, "{\"type\":\"cues\",\"output\":%s,\"delay\":%.3f,\"calibrated\":%b}",
+                    JSONObject.quote(out.getString("name")), set.delay, cueStore.calibrated(out)));
+            return new Cues(x, z, c.getDouble("step"), c.getBoolean("loop"), points, set, sounds());
         } catch (JSONException | RuntimeException e) {
             return null;
         }
     }
 
-    private static String cueEvent(String output, double delay, int presses, boolean calibrated, boolean update) {
-        return String.format(Locale.ROOT, "{\"type\":\"cues\",\"output\":%s,\"delay\":%.3f,\"presses\":%d,\"calibrated\":%b,\"update\":%b}",
-                JSONObject.quote(output), delay, presses, calibrated, update);
+    /** A calibration run for the current audio output: progress and the result go to the page as "calibrate" events. */
+    private Calibrator calibrator(Recorder[] rec) {
+        JSONObject out = cueStore.output();
+        String name = JSONObject.quote(out.optString("name"));
+        return new Calibrator(sounds(), new Calibrator.Listener() {
+            @Override
+            public void round(int round, int of, boolean pressed) {
+                toPage(String.format(Locale.ROOT, "{\"type\":\"calibrate\",\"output\":%s,\"round\":%d,\"of\":%d,\"pressed\":%b}",
+                        name, round, of, pressed));
+            }
+
+            @Override
+            public void done(double delay, int presses, boolean ok) {
+                if (ok) cueStore.calibration(out, delay, true);
+                toPage(String.format(Locale.ROOT, "{\"type\":\"calibrate\",\"output\":%s,\"done\":true,\"ok\":%b,\"delay\":%.3f,\"presses\":%d}",
+                        name, ok, delay, presses));
+                rec[0].stop();
+            }
+        });
     }
 
     /** The phone's Wi-Fi (or Ethernet) network, so the search goes there even if mobile data or a VPN is on. */
@@ -272,6 +285,23 @@ public class MainActivity extends Activity {
         /** Like start(ip), with audio cues from the page's cue points (JSON), or none if it's "". */
         @JavascriptInterface
         public synchronized void startWithCues(String ip, String cuePoints) {
+            Recorder r = startRecorder(ip);
+            if (cuePoints != null && !cuePoints.isEmpty()) r.feed = cues(cuePoints);
+        }
+
+        /**
+         * Calibrate the current audio output: connect to the PlayStation (at the address given, or search if it's "")
+         * and play brake countdowns for the player to press the brake on. Stops by itself at the end.
+         */
+        @JavascriptInterface
+        public synchronized void calibrate(String ip) {
+            Recorder[] rec = new Recorder[1];
+            Calibrator cal = calibrator(rec);
+            rec[0] = startRecorder(ip);
+            rec[0].feed = cal;
+        }
+
+        private Recorder startRecorder(String ip) {
             stopRecorder(); // the old one must let go of the port first
             Network net = homeNetwork();
             Recorder[] self = new Recorder[1];
@@ -283,10 +313,10 @@ public class MainActivity extends Activity {
                 if (net != null) net.bindSocket(sock);
             });
             recorder = self[0];
-            if (cuePoints != null && !cuePoints.isEmpty()) recorder.cues = cues(cuePoints);
             recording(true);
             recorderThread = new Thread(recorder, "recorder");
             recorderThread.start();
+            return recorder;
         }
 
         private void stopRecorder() {
@@ -318,17 +348,25 @@ public class MainActivity extends Activity {
             cueStore.save(change);
         }
 
-        /** Play a countdown through the current output: tick, tick, BEEP. */
+        /** Play a brake countdown through the current output: tick, tick, BEEP. */
         @JavascriptInterface
         public void testSound() {
+            testSound("brake");
+        }
+
+        /** Play a cue through the current output: "brake" or "lift" (a countdown), "gas" or "pip". */
+        @JavascriptInterface
+        public void testSound(String kind) {
             CueSounds s = sounds();
+            int[] sounds = kind.equals("lift") ? new int[]{Cues.TICK_LIFT, Cues.TICK_LIFT, Cues.LIFT}
+                    : kind.equals("gas") ? new int[]{Cues.GAS} : kind.equals("pip") ? new int[]{Cues.PIP}
+                    : new int[]{Cues.TICK_BRAKE, Cues.TICK_BRAKE, Cues.BRAKE};
             new Thread(() -> {
                 try {
-                    s.play(Cues.TICK);
-                    Thread.sleep(500);
-                    s.play(Cues.TICK);
-                    Thread.sleep(500);
-                    s.play(Cues.BRAKE);
+                    for (int i = 0; i < sounds.length; i++) {
+                        if (i > 0) Thread.sleep(500);
+                        s.play(sounds[i]);
+                    }
                 } catch (InterruptedException ignored) {
                     Thread.currentThread().interrupt();
                 }

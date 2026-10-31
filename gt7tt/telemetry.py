@@ -11,7 +11,7 @@ import json
 import os
 
 FIELDS = {"x": 2, "z": 2, "speed_kmh": 1, "throttle_pct": 0, "brake_pct": 0, "steering_rad": 3,
-          "wheel_rl_kmh": 1, "wheel_rr_kmh": 1}
+          "wheel_rl_kmh": 1, "wheel_rr_kmh": 1, "gear": 0}
 
 
 def load_json(path):

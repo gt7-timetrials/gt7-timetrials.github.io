@@ -19,9 +19,11 @@ phone** instead of the computer recorder's download links.
   ticked, the page sends the reference's cue points (`Coach.cuePoints`: its line every 2 m, and where it brakes,
   lifts and gets back on the gas) with `GT7App.startWithCues(ip, json)`. Every packet, `Cues` finds the car on that
   line, predicts when it reaches each point from distance, speed and acceleration, and plays the countdown early by
-  the output's delay, which it learns from the player's first firm brake presses. Settings and delays are saved in
-  SharedPreferences (`cueState()`, `saveCues()`, `testSound()` for the Audio cues tab). `tests/android/CueCheck.java`
-  replays recordings through it as if live.
+  the output's delay. `Calibrator.java` measures that delay (`GT7App.calibrate(ip)` from the Audio cues tab): six brake
+  countdowns, 3 s apart, while the player sits in the car (standing still is fine) and presses the brake on each
+  BEEP; the typical gap between the BEEP and the press, from the telemetry, is the delay. Settings and delays are saved
+  in SharedPreferences (`cueState()`, `saveCues()`, `testSound(kind)` for the Audio cues tab). `tests/android/CueCheck.java`
+  replays recordings through the cues as if live, and simulates a calibration.
 - When the player taps **Stop and compare**, the page takes the CSV from `GT7App.csv()` and runs the same
   comparison as for an uploaded file. **Save to Downloads**, on the result line, writes it to Downloads.
 - The screen stays on while recording, and `RecorderService` (a foreground service, type `connectedDevice`, with a

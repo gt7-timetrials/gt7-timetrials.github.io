@@ -132,11 +132,20 @@ final class CueStore {
         set.brakeEarly = Math.max(0, Math.min(1.0, s.optDouble("brakeEarly", set.brakeEarly)));
         set.gasAdjust = Math.max(-0.5, Math.min(0.5, s.optDouble("gasAdjust", set.gasAdjust)));
         set.delay = o.optDouble("delay", start(output.getString("type")));
-        set.calibrated = o.optBoolean("calibrated", false);
         return set;
     }
 
-    /** Calibration progress for an output, saved as it goes, so the next drive carries on from here. */
+    /** Whether the output has been calibrated (otherwise it uses the starting value for its type). */
+    synchronized boolean calibrated(JSONObject output) {
+        try {
+            JSONObject o = json("outputs").optJSONObject(output.getString("key"));
+            return o != null && o.optBoolean("calibrated", false);
+        } catch (JSONException e) {
+            return false;
+        }
+    }
+
+    /** A calibration result for an output. */
     synchronized void calibration(JSONObject output, double delay, boolean done) {
         try {
             JSONObject outputs = json("outputs");

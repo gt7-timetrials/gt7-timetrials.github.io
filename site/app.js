@@ -305,6 +305,7 @@ function otherNetwork(phone, ps) {
     Wi-Fi name, or set the mesh to access point mode (also called bridge mode), then try again.`;
 }
 window.GT7AppEvent = ev => {
+  if (calibrating) { calibrationEvent(ev); return; }
   if (!recording) return;
   const status = recording.out.querySelector(".rec-status"), laps = recording.out.querySelector(".rec-laps");
   const say = (text, cls = "") => { status.textContent = text; status.className = "rec-status " + cls; };
@@ -329,11 +330,8 @@ window.GT7AppEvent = ev => {
       PlayStations seen: ${(ev.consoles || []).length}`;
   }
   else if (ev.type === "cues") {
-    const where = `${esc(ev.output)}, ${ev.delay.toFixed(2)} s delay`;
-    recording.out.querySelector(".rec-cues").innerHTML = ev.calibrated
-      ? `Audio cues on (${where}${ev.update ? ": calibrated" : ""}).`
-      : `Audio cues on (${where}). Calibrating: brake on each BEEP${ev.presses
-        ? `; ${ev.presses} brake press${ev.presses === 1 ? "" : "es"} so far` : ""}.`;
+    recording.out.querySelector(".rec-cues").innerHTML = `Audio cues on (${esc(ev.output)}, ${ev.delay.toFixed(2)} s delay${
+      ev.calibrated ? "" : `, the starting value: calibrate on the <a href="#cues">Audio cues</a> tab for the best timing`}).`;
   }
   else if (ev.type === "connected") say(`Connected to your PlayStation at ${ev.ip}. ${REC_STATES.menus}`);
   else if (ev.type === "state") say(REC_STATES[ev.state] || "");
@@ -429,7 +427,13 @@ function renderCues() {
     <h2>Audio cues</h2>
     <p>Tick <b>Audio cues</b> next to Record on this phone, and while you record the app plays a countdown to each point where
       the reference lap brakes or lifts, and a beep just before it gets back on the throttle. It works with the phone
-      locked. Brake: tick, tick, low BEEP. Lift: tick, tick, middle BEEP. Gas: one high beep.</p>
+      locked.</p>
+    <p class="cue-row cue-tests">
+      <button type="button" class="button-link cue-test" data-kind="brake">Brake: tock, tock, BEEP</button>
+      <button type="button" class="button-link cue-test" data-kind="lift">Lift: tick, tick, BEEP</button>
+      <button type="button" class="button-link cue-test" data-kind="gas">Gas: chirp</button>
+      <button type="button" class="button-link cue-test" data-kind="pip">Chicane: pip</button></p>
+    <p class="hint">Tap to hear each one through the current output. Brake is low, lift is higher, gas rises.</p>
     <h3>Countdown</h3>
     <p class="cue-row"><span>Beeps before brake</span>${select("ticks", [0, 1, 2, 3], v => (v ? `${v} before the BEEP` : "just the BEEP"))}</p>
     <p class="cue-row"><span>Beep timing</span>${select("spacing", range(0.3, 1, 0.1), v => `${s(v)} apart`)}</p>
@@ -440,18 +444,24 @@ function renderCues() {
     <h3>Timing</h3>
     <p class="cue-row"><span>Brake cue earlier than the reference</span>${select("brakeEarly", range(0, 1, 0.1), v => (v ? `${s(v)} earlier` : "on the reference's point"))}</p>
     <p class="cue-row"><span>Gas beep</span>${select("gasAdjust", range(-0.5, 0.5, 0.1), v => (v ? `${s(Math.abs(v))} ${v > 0 ? "later" : "earlier"}` : "as is"))}</p>
-    <h3>Delay for each audio output</h3>
-    <p class="hint">Sounds take a moment to reach your ears, especially over Bluetooth, so each one plays early by this much.
-      The app learns it on your first brake cues with each output (brake firmly on each BEEP), then keeps it.
-      Reset to learn it again.</p>
+    <h3>Sound delay</h3>
+    <p class="hint">Sounds take a moment to reach your ears, especially over Bluetooth, so every cue plays early by this
+      much. Each output starts with a typical value; calibrate it once for the best timing.</p>
+    <div class="cue-cal">
+      <p><b>Calibrate ${esc(st.current?.name || "this output")}</b>: in GT7, sit in the car on track (standing still is
+        fine, for example at the start of a time trial). Tap Calibrate, then press the brake firmly on each BEEP:
+        6 countdowns, 3 seconds apart, about 20 seconds.</p>
+      <p class="cue-row"><button type="button" class="button-link primary cue-calibrate">Calibrate</button>
+        <button type="button" class="button-link cue-cal-stop" hidden>Stop</button></p>
+      <p class="cue-cal-status" aria-live="polite"></p>
+    </div>
     <table class="cue-outputs"><tbody>${(st.outputs || []).map(o => `<tr>
       <th>${esc(o.name)}${o.current ? ` <span class="muted">(now)</span>` : ""}</th>
       <td class="num"><button type="button" class="nav-btn cue-delay" data-key="${esc(o.key)}" data-step="-0.01" aria-label="Less delay">−</button>
         <b>${o.delay.toFixed(2)} s</b>
         <button type="button" class="nav-btn cue-delay" data-key="${esc(o.key)}" data-step="0.01" aria-label="More delay">+</button></td>
-      <td>${o.calibrated ? "calibrated" : `<span class="muted">${Math.abs(o.delay - o.start) < 0.005 ? "starting value" : "calibrating"}</span>`}</td>
-      <td><button type="button" class="nav-btn cue-reset" data-key="${esc(o.key)}">Reset</button></td></tr>`).join("")}</tbody></table>
-    <p><button type="button" class="button-link cue-test">Test sound</button> <span class="hint">plays tick, tick, BEEP through the current output</span></p>`;
+      <td>${o.calibrated ? "calibrated" : `<span class="muted">${Math.abs(o.delay - o.start) < 0.005 ? "starting value" : "set by hand"}</span>`}</td>
+      <td><button type="button" class="nav-btn cue-reset" data-key="${esc(o.key)}" aria-label="Back to the starting value">Reset</button></td></tr>`).join("")}</tbody></table>`;
   const save = change => { APP.saveCues(JSON.stringify(change)); renderCues(); };
   panel.querySelectorAll("[data-set]").forEach(el => el.addEventListener("change", () => {
     const v = el.type === "checkbox" ? el.checked : +el.value;
@@ -462,7 +472,46 @@ function renderCues() {
     if (o) save({ delay: { key: o.key, delay: +(o.delay + +b.dataset.step).toFixed(3) } });
   }));
   panel.querySelectorAll(".cue-reset").forEach(b => b.addEventListener("click", () => save({ reset: b.dataset.key })));
-  panel.querySelector(".cue-test").addEventListener("click", () => APP.testSound());
+  panel.querySelectorAll(".cue-test").forEach(b => b.addEventListener("click", () => {
+    try { APP.testSound(b.dataset.kind); } catch (err) { APP.testSound(); }
+  }));
+  panel.querySelector(".cue-calibrate").addEventListener("click", startCalibration);
+  panel.querySelector(".cue-cal-stop").addEventListener("click", () => { APP.stop(); endCalibration("Stopped."); });
+  if (!APP.calibrate) panel.querySelector(".cue-cal").hidden = true; // an app version without it
+}
+
+// calibration: the app plays 6 brake countdowns and times the player's brake presses on the BEEPs
+let calibrating = null;
+function calibrationStatus(text, cls = "") {
+  const el = document.querySelector(".cue-cal-status");
+  if (el) { el.textContent = text; el.className = "cue-cal-status " + cls; }
+}
+function startCalibration() {
+  if (recording) finishRecording(false);
+  calibrating = { rounds: [] };
+  document.querySelector(".cue-calibrate").hidden = true;
+  document.querySelector(".cue-cal-stop").hidden = false;
+  calibrationStatus("Looking for your PlayStation. Make sure GT7 is running…");
+  APP.calibrate("");
+}
+function endCalibration(text, cls) {
+  calibrating = null;
+  renderCues();
+  calibrationStatus(text, cls);
+}
+function calibrationEvent(ev) {
+  const c = calibrating;
+  if (ev.type === "slow") calibrationStatus(`Still looking for your PlayStation. Check that GT7 is running (on track, not just
+    the menus) and that the phone is on the same Wi-Fi. If Record on this phone can't find it either, see the tips there.`, "miss");
+  else if (ev.type === "connected") calibrationStatus("Connected. First countdown in a moment: press the brake firmly on each BEEP.");
+  else if (ev.type === "calibrate" && !ev.done) {
+    c.rounds.push(ev.pressed);
+    calibrationStatus(`Countdown ${ev.round} of ${ev.of}: ${c.rounds.map(p => (p ? "✓" : "–")).join(" ")}`);
+  } else if (ev.type === "calibrate") {
+    endCalibration(ev.ok ? `Calibrated: ${ev.output} plays cues ${ev.delay.toFixed(2)} s early (from ${ev.presses} presses).`
+      : `Not enough steady presses (${ev.presses} of 6 agreed). Try again, pressing firmly right on each BEEP.`, ev.ok ? "" : "miss");
+  } else if (ev.type === "error") endCalibration(ev.message, "miss");
+  else if (ev.type === "stopped" && calibrating) endCalibration("Stopped before the end. Try again.", "miss");
 }
 if (CUES) {
   document.querySelector('nav a[data-tab="cues"]').hidden = false;

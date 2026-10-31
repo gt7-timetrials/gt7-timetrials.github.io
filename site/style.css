@@ -204,6 +204,10 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .cue-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 6px 0; }
 .cue-row > span { min-width: 15em; }
 .cue-row select { padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; }
+.cue-cal { padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; margin: 10px 0; }
+.cue-cal p { margin: 6px 0; }
+.cue-cal-status:empty { display: none; }
+.cue-tests .button-link { font-size: 0.85rem; }
 .cue-opt { display: flex; gap: 8px; align-items: baseline; cursor: pointer; }
 .cue-outputs { border-collapse: collapse; margin: 8px 0; }
 .cue-outputs th, .cue-outputs td { padding: 6px 10px 6px 0; text-align: left; vertical-align: middle; background: none; }
