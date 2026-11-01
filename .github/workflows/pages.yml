@@ -1,7 +1,7 @@
 name: Publish website
 
-# The daily data is fetched by a scheduled Claude Code session (Sony's API blocks
-# GitHub's servers), which pushes to main; every push to main republishes the site.
+# Builds the website from main, plus the beta website at /beta/ from the beta branch (with main's data), and
+# publishes both. A push to beta starts this from main (see beta.yml), so only main ever deploys.
 on:
   push:
     branches: [main]
@@ -29,6 +29,24 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - run: python -m gt7tt site --out _site
+      - name: Check out the beta branch, if there is one
+        id: beta
+        run: |
+          if git ls-remote --exit-code --heads origin beta >/dev/null; then
+            git fetch --depth 1 origin beta
+            git worktree add beta-src FETCH_HEAD
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build the beta website at /beta/
+        if: steps.beta.outputs.found == 'true'
+        working-directory: beta-src
+        env:
+          GT7_DATA: ${{ github.workspace }}/data
+        run: |
+          python -m gt7tt site --out ../_site/beta
+          # keep it out of search engines, and make it obvious it's the beta
+          sed -i 's|<head>|<head>\n<meta name="robots" content="noindex">|; s|<body>|<body>\n<div class="beta-bar">Beta: work in progress, for testing. <a href="../">Go to the main site</a></div>|' ../_site/beta/index.html
+          printf '.beta-bar { background: #fff3cd; color: #5c4400; padding: 6px 16px; font-size: 0.9rem; }\n.beta-bar a { color: inherit; }\n' >> ../_site/beta/style.css
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
