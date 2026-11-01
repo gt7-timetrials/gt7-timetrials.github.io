@@ -326,8 +326,9 @@ fs.writeFileSync(process.argv[3], [`${c.loop} ${c.step}`, c.x.join(" "), c.z.joi
             self.assertEqual(done[0], "done")
             self.assertAlmostEqual(float(done[1]), true, delta=0.03)  # the late press is left out
             self.assertEqual((done[2], done[3]), ("4", "true"))
+            self.assertLess(float(done[4]), 0.03, "steady presses: a small spread")
         out = self.cue_check("calibrate", "0.2", "0", "1")  # two of six pressed badly: missed and way off
-        self.assertTrue(out[-1].endswith("4 true"), out)
+        self.assertIn(" 4 true ", out[-1])
 
     def test_records_a_lap_from_a_fake_playstation(self):
         out = os.path.join(self.tmp, "phone.csv")

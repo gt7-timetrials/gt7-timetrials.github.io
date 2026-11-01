@@ -115,6 +115,20 @@ assert.ok(selfClose.includes("cl-same") && !/<circle class="cl-diff[^>]*cx=/.tes
   assert.strictEqual(ch.fastest, 1); // the cut lap is the fastest...
   assert.strictEqual(ch.pick, 0);    // ...so the fastest clean lap is compared
   assert.ok(ch.laps[1].short > 200);
+  // across the clean laps: one of them 0.4 s slower from turn 7 on (a mistake there), so turn 7 varies most, and the
+  // ideal lap uses each section's best
+  const laps = ch.laps.map(l => ({ ...l, lap: { ...l.lap, t: l.lap.t.slice() } }));
+  const slow = laps[3].lap, at = slow.t.findIndex(t => t > 79);
+  for (let i = at; i < slow.t.length; i++) slow.t[i] += 0.4 * Math.min(1, (i - at) / 60);
+  slow.lap_ms += 400;
+  const across = Coach.acrossLaps(ref, laps, "the WR");
+  assert.strictEqual(across.laps, 3, "the cut lap is left out");
+  assert.strictEqual(across.varies[0].n, 7, JSON.stringify(across.varies));
+  assert.ok(across.varies[0].sd > 0.1 && across.varies.every(v => [6, 7].includes(v.n)), "only where the slow lap lost time");
+  assert.ok(across.gain.length >= 1 && across.gain[0].avg >= across.gain[across.gain.length - 1].avg);
+  assert.ok(Math.abs(across.idealMs - 113057) <= 15, `ideal ${across.idealMs}: the unchanged laps' sections`);
+  assert.strictEqual(across.bestMs, 113057);
+  assert.strictEqual(Coach.acrossLaps(ref, laps.slice(0, 3), "the WR"), null, "needs 3 clean laps");
   // the real recordings: one complete lap each, not marked as cut (a clean S-1 lap is ~22 m shorter than the gold run's)
   const gold = Coach.fastestLap(Coach.parseCsv(read("data/license/laps/S-1.csv")));
   for (const [f, r] of [["tests/fixtures/telemetry_lap.csv", ref], ["tests/fixtures/license_s1_attempt.csv", gold]]) {

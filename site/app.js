@@ -269,11 +269,13 @@ async function compareLap(e, file, out, save) {
         and stop after crossing it again.</p>`;
       return;
     }
+    out._corner = null; // a new recording: start from its worst corner
+    const across = Coach.acrossLaps(ref, choices.laps, tipWho(e)); // with 3+ clean laps
     // the fastest lap that doesn't look like a cut corner, unless the player picks another one
     const show = i => {
       const lap = choices.laps[i].lap, res = Coach.analyse(ref, lap, tipWho(e));
       if (res.error) { out.innerHTML = `<p class="miss">${res.error}</p>`; return; }
-      renderComparison(out, res, e, lap.car_code !== ref.car_code, { ...choices, chosen: i, show }, save);
+      renderComparison(out, res, e, lap.car_code !== ref.car_code, { ...choices, chosen: i, show, across }, save);
     };
     show(choices.pick);
   } catch (err) {
@@ -428,6 +430,9 @@ function renderCues() {
     <p>Tick <b>Audio cues</b> next to Record on this phone, and while you record the app plays a countdown to each point where
       the reference lap brakes or lifts, and a beep just before it gets back on the throttle. It works with the phone
       locked.</p>
+    <p>They're for <b>learning the braking points</b>: drive a few laps with them, then switch them off once the points
+      feel natural. Braking on the same spot as a top driver is only part of it; the cue tells you where they brake,
+      not how they take the corner. If their point is too late for you for now, move the cue a little earlier below.</p>
     <p class="cue-row cue-tests">
       <button type="button" class="button-link cue-test" data-kind="brake">Brake: tock, tock, BEEP</button>
       <button type="button" class="button-link cue-test" data-kind="lift">Lift: tick, tick, BEEP</button>
@@ -442,7 +447,7 @@ function renderCues() {
     <p class="cue-row">${check("gas", "Gas beep: 0.5 s before the reference gets back on the throttle")}</p>
     <p class="cue-row">${check("chicane", "Chicane beep: one short pip for a brake or lift that comes too soon after the last one for its own countdown (otherwise it gets no sound)")}</p>
     <h3>Timing</h3>
-    <p class="cue-row"><span>Brake cue earlier than the reference</span>${select("brakeEarly", range(0, 1, 0.1), v => (v ? `${s(v)} earlier` : "on the reference's point"))}</p>
+    <p class="cue-row"><span>Brake cue earlier than the reference</span>${select("brakeEarly", range(0, 0.2, 0.05), v => (v ? `${v.toFixed(2)} s earlier` : "on the reference's point"))}</p>
     <p class="cue-row"><span>Gas beep</span>${select("gasAdjust", range(-0.5, 0.5, 0.1), v => (v ? `${s(Math.abs(v))} ${v > 0 ? "later" : "earlier"}` : "as is"))}</p>
     <h3>Sound delay</h3>
     <p class="hint">Sounds take a moment to reach your ears, especially over Bluetooth, so every cue plays early by this
@@ -460,7 +465,9 @@ function renderCues() {
       <td class="num"><button type="button" class="nav-btn cue-delay" data-key="${esc(o.key)}" data-step="-0.01" aria-label="Less delay">−</button>
         <b>${o.delay.toFixed(2)} s</b>
         <button type="button" class="nav-btn cue-delay" data-key="${esc(o.key)}" data-step="0.01" aria-label="More delay">+</button></td>
-      <td>${o.calibrated ? "calibrated" : `<span class="muted">${Math.abs(o.delay - o.start) < 0.005 ? "starting value" : "set by hand"}</span>`}</td>
+      <td>${o.calibrated ? `calibrated${o.spread != null ? ` <span class="muted">(±${o.spread.toFixed(2)} s)</span>` : ""}${o.spread > SPREAD_OK
+        ? `<br><span class="miss">Too uneven for reliable cues: the phone speaker or wired headphones work better.</span>` : ""}`
+        : `<span class="muted">${Math.abs(o.delay - o.start) < 0.005 ? "starting value" : "set by hand"}</span>`}</td>
       <td><button type="button" class="nav-btn cue-reset" data-key="${esc(o.key)}" aria-label="Back to the starting value">Reset</button></td></tr>`).join("")}</tbody></table>`;
   const save = change => { APP.saveCues(JSON.stringify(change)); renderCues(); };
   panel.querySelectorAll("[data-set]").forEach(el => el.addEventListener("change", () => {
@@ -482,6 +489,7 @@ function renderCues() {
 
 // calibration: the app plays 6 brake countdowns and times the player's brake presses on the BEEPs
 let calibrating = null;
+const SPREAD_OK = 0.05; // presses varying more than this (standard deviation, s): cues on this output won't be reliable
 function calibrationStatus(text, cls = "") {
   const el = document.querySelector(".cue-cal-status");
   if (el) { el.textContent = text; el.className = "cue-cal-status " + cls; }
@@ -508,7 +516,8 @@ function calibrationEvent(ev) {
     c.rounds.push(ev.pressed);
     calibrationStatus(`Countdown ${ev.round} of ${ev.of}: ${c.rounds.map(p => (p ? "✓" : "–")).join(" ")}`);
   } else if (ev.type === "calibrate") {
-    endCalibration(ev.ok ? `Calibrated: ${ev.output} plays cues ${ev.delay.toFixed(2)} s early (from ${ev.presses} presses).`
+    endCalibration(ev.ok ? `Calibrated: ${ev.output} plays cues ${ev.delay.toFixed(2)} s early (from ${ev.presses} presses, which
+      varied by ±${(ev.spread ?? 0).toFixed(2)} s${ev.spread > SPREAD_OK ? ": too uneven for reliable cues; the phone speaker or wired headphones work better" : ""}).`
       : `Not enough steady presses (${ev.presses} of 6 agreed). Try again, pressing firmly right on each BEEP.`, ev.ok ? "" : "miss");
   } else if (ev.type === "error") endCalibration(ev.message, "miss");
   else if (ev.type === "stopped" && calibrating) endCalibration("Stopped before the end. Try again.", "miss");
@@ -588,6 +597,18 @@ function startHere(res, e) {
     <p class="hint">Ranked by the time each costs, with easier fixes first.</p></div>`;
 }
 
+// With 3 or more clean laps: where the time goes on average, where it varies most, and the best sections added up.
+function acrossLaps(a) {
+  if (!a) return "";
+  const corner = n => `<button type="button" class="sh-corner" data-n="${n}">Corner ${n}</button>`;
+  const list = (items, text) => `<ul>${items.map(x => `<li>${corner(x.n)} ${text(x)}</li>`).join("")}</ul>`;
+  return `<div class="start-here across"><h4>Across your ${a.laps} laps</h4>
+    ${a.gain.length ? `<p class="across-head">Most time to gain</p>${list(a.gain, x => `you lose ${x.avg.toFixed(2)} s on average`)}` : ""}
+    ${a.varies.length ? `<p class="across-head">Least consistent</p>${list(a.varies, x => `your time here varies by ±${x.sd.toFixed(2)} s`)}` : ""}
+    <p class="hint">Your best time in each section adds up to <b>${fmt(a.idealMs)}</b>${a.idealMs < a.bestMs
+      ? `, ${secs(a.bestMs - a.idealMs)} faster than your best lap (${fmt(a.bestMs)})` : ""}. Laps that look cut are left out.</p></div>`;
+}
+
 function renderComparison(out, res, e, otherCar, picker, save) {
   const total = (res.lapMs - res.refMs) / 1000;
   const worst = res.corners.reduce((a, c) => (c.lost > a.lost ? c : a), res.corners[0]);
@@ -602,6 +623,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
       ${Math.abs(res.gameGap - res.recordedGap).toFixed(2)} s that isn't in the recorded laps (in a license test the timer can
       start before the car reaches the line), so the corners below add up to ${Coach.fmtLost(res.recordedGap)}.</p>` : ""}
     ${startHere(res, e)}
+    ${acrossLaps(picker?.across)}
     <p class="hint tap-hint">${phone() ? "Tap a corner to see where you lose time." : "Hover over or click a corner on the map."}</p>
     <div class="coach-grid">
       <div class="map-box">${Coach.trackMap(res)}
@@ -618,7 +640,10 @@ function renderComparison(out, res, e, otherCar, picker, save) {
           <button class="nav-btn" data-step="-1" aria-label="Previous corner">‹ Prev</button>
           <button class="nav-btn" data-step="1" aria-label="Next corner">Next ›</button>
           <button class="nav-btn close" aria-label="Close">✕</button>
-        </div>
+        </div>${picker && picker.laps.length > 1 ? `
+        <div class="sheet-laps"><button class="nav-btn" data-lapstep="-1" aria-label="Previous lap">‹</button>
+          <span>Lap ${picker.laps[picker.chosen].number} · ${fmt(picker.laps[picker.chosen].lap_ms)}${picker.laps[picker.chosen].cut ? " · ⚠ short" : ""}</span>
+          <button class="nav-btn" data-lapstep="1" aria-label="Next lap">›</button></div>` : ""}
         <div class="detail-body"></div>
       </div>
     </div>
@@ -627,7 +652,9 @@ function renderComparison(out, res, e, otherCar, picker, save) {
   const detail = out.querySelector(".corner-detail"), body = detail.querySelector(".detail-body");
   const svg = out.querySelector(".trackmap");
   const who = shortWho(e);
-  let pinned = worst.n;
+  // the corner being looked at stays selected when another lap is chosen, so laps can be compared corner by corner
+  const kept = out._corner && res.corners.some(c => c.n === out._corner.n) ? out._corner : null;
+  let pinned = kept ? kept.n : worst.n;
   let hideRef = false; // the close-ups' buttons, kept while moving between corners: the reference's line in the dots
   let hideMine = false; // close-up, your line in the line-width close-up
   const applyHide = () => {
@@ -657,20 +684,26 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     out.querySelectorAll("[data-n]").forEach(el => el.classList.toggle("selected", +el.dataset.n === n));
     svg.classList.add("has-selection");
   };
-  const select = n => {
+  const select = (n, scroll = true) => {
     pinned = n;
+    out._corner = { n, open: phone() };
     show(n);
     if (phone()) {
       detail.classList.add("open");
       document.body.classList.add("sheet-open");
       body.scrollTop = 0;
+      if (!scroll) return;
       // scroll so the selected corner sits in the middle of the space above the sheet
       const mark = svg.querySelector(`.label[data-n="${n}"]`).getBoundingClientRect();
       const visible = innerHeight - detail.getBoundingClientRect().height;
       window.scrollBy({ top: mark.top + mark.height / 2 - visible / 2, behavior: "smooth" });
     }
   };
-  const close = () => { detail.classList.remove("open"); document.body.classList.remove("sheet-open"); };
+  const close = () => {
+    detail.classList.remove("open");
+    document.body.classList.remove("sheet-open");
+    if (out._corner) out._corner.open = false;
+  };
   out.querySelectorAll(".zone, .label, .chip").forEach(el => {
     const n = +el.dataset.n;
     el.addEventListener("mouseenter", () => { if (!phone()) show(n); });
@@ -700,6 +733,11 @@ function renderComparison(out, res, e, otherCar, picker, save) {
       : `<span class="miss">Couldn't save the file.</span>`;
   });
   out.querySelectorAll(".lap-btn").forEach(b => b.addEventListener("click", () => picker.show(+b.dataset.lap)));
+  // in the corner's panel: step through the laps on the same corner
+  detail.querySelectorAll("[data-lapstep]").forEach(b => b.addEventListener("click", () => {
+    out._corner = { n: pinned, open: phone() };
+    picker.show((picker.chosen + +b.dataset.lapstep + picker.laps.length) % picker.laps.length);
+  }));
   // Wider screens: hovering swaps the panel's contents, so give it the height of the tallest corner. Otherwise a
   // shorter corner shrinks the page, the browser scrolls, and the button under the pointer moves away.
   if (!phone()) {
@@ -707,7 +745,8 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     for (const c of res.corners) { show(c.n); tallest = Math.max(tallest, detail.offsetHeight); }
     detail.style.minHeight = `${tallest}px`;
   }
-  show(pinned);
+  if (kept?.open && phone()) select(pinned, false); // the corner's sheet was open: keep it open, where it was
+  else show(pinned);
 }
 
 // Only the charts depend on the width; leave the rest (and anything being typed) alone.

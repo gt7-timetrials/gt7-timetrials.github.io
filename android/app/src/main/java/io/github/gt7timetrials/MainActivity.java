@@ -175,6 +175,7 @@ public class MainActivity extends Activity {
     private void recording(boolean on) {
         if (on) RecorderService.start(this);
         else RecorderService.stop(this);
+        if (!on) synchronized (this) { if (sounds != null) sounds.keepAwake(false); }
         runOnUiThread(() -> {
             if (on) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -230,10 +231,10 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            public void done(double delay, int presses, boolean ok) {
-                if (ok) cueStore.calibration(out, delay, true);
-                toPage(String.format(Locale.ROOT, "{\"type\":\"calibrate\",\"output\":%s,\"done\":true,\"ok\":%b,\"delay\":%.3f,\"presses\":%d}",
-                        name, ok, delay, presses));
+            public void done(double delay, int presses, double spread, boolean ok) {
+                if (ok) cueStore.calibration(out, delay, spread);
+                toPage(String.format(Locale.ROOT, "{\"type\":\"calibrate\",\"output\":%s,\"done\":true,\"ok\":%b,\"delay\":%.3f,\"presses\":%d,\"spread\":%.3f}",
+                        name, ok, delay, presses, spread));
                 rec[0].stop();
             }
         });
@@ -286,7 +287,10 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public synchronized void startWithCues(String ip, String cuePoints) {
             Recorder r = startRecorder(ip);
-            if (cuePoints != null && !cuePoints.isEmpty()) r.feed = cues(cuePoints);
+            if (cuePoints != null && !cuePoints.isEmpty()) {
+                r.feed = cues(cuePoints);
+                if (r.feed != null) sounds().keepAwake(true);
+            }
         }
 
         /**
@@ -299,6 +303,7 @@ public class MainActivity extends Activity {
             Calibrator cal = calibrator(rec);
             rec[0] = startRecorder(ip);
             rec[0].feed = cal;
+            sounds().keepAwake(true);
         }
 
         private Recorder startRecorder(String ip) {

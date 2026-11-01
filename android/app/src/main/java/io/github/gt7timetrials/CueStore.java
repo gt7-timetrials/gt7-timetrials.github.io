@@ -112,7 +112,7 @@ final class CueStore {
             }
             if (c.has("reset")) {
                 JSONObject o = outputs.optJSONObject(c.getString("reset"));
-                if (o != null) o.put("delay", start(o.optString("type", "speaker"))).put("calibrated", false);
+                if (o != null) { o.put("delay", start(o.optString("type", "speaker"))).put("calibrated", false); o.remove("spread"); }
             }
             e.putString("outputs", outputs.toString()).apply();
         } catch (JSONException ignored) {
@@ -129,7 +129,7 @@ final class CueStore {
         set.lift = s.optBoolean("lift", set.lift);
         set.gas = s.optBoolean("gas", set.gas);
         set.chicane = s.optBoolean("chicane", set.chicane);
-        set.brakeEarly = Math.max(0, Math.min(1.0, s.optDouble("brakeEarly", set.brakeEarly)));
+        set.brakeEarly = Math.max(0, Math.min(0.2, s.optDouble("brakeEarly", set.brakeEarly)));
         set.gasAdjust = Math.max(-0.5, Math.min(0.5, s.optDouble("gasAdjust", set.gasAdjust)));
         set.delay = o.optDouble("delay", start(output.getString("type")));
         return set;
@@ -145,14 +145,14 @@ final class CueStore {
         }
     }
 
-    /** A calibration result for an output. */
-    synchronized void calibration(JSONObject output, double delay, boolean done) {
+    /** A calibration result for an output: its delay, and how much the presses varied (standard deviation, s). */
+    synchronized void calibration(JSONObject output, double delay, double spread) {
         try {
             JSONObject outputs = json("outputs");
             String key = output.getString("key");
             JSONObject o = outputs.optJSONObject(key);
             if (o == null) o = new JSONObject().put("name", output.getString("name")).put("type", output.getString("type"));
-            o.put("delay", delay).put("calibrated", done);
+            o.put("delay", delay).put("calibrated", true).put("spread", spread);
             outputs.put(key, o);
             prefs.edit().putString("outputs", outputs.toString()).apply();
         } catch (JSONException ignored) {

@@ -70,8 +70,13 @@ tests: keep it simple, and only take on what one person can look after.
    - [x] Owner's first drive (Blue Moon Bay): unexpected beeps were the WR's upshift lifts and a downshift blip,
          now filtered out; lift sounds now differ from brake sounds; calibration moved to its own run; test buttons
          for each sound.
-   - [ ] Owner: try the changes, calibrate the phone speaker and Galaxy Buds; their delays become the starting
-         values for speaker and Bluetooth. Tune sounds and timing from how it feels.
+   - [x] Owner's second drive: calibration works on the phone speaker; Bluetooth sounded distorted and uneven. The
+         cues are best for learning braking points, not for driving a whole lap (distracting); braking where the WR
+         does is only part of a corner, so the earlier-cue setting matters.
+   - [x] On beta: brake cue earlier by 0–0.20 s in 0.05 s steps; quieter, softer tones and silence playing in the
+         background (keeps Bluetooth awake); calibration shows how much the presses varied, and warns when an output
+         is too uneven; the tab says the cues are for learning braking points.
+   - [ ] Owner: try them on the beta app; the phone speaker's calibrated delay becomes its starting value.
    - [ ] Release it to the Play test (upload the `.aab`) during the 14 days, and post about it with the next time
          trial (week of 2 November) for momentum.
 
@@ -81,11 +86,15 @@ tests: keep it simple, and only take on what one person can look after.
    - medium: minimum speed, line;
    - hard: trail braking, fine brake release.
 
-4. **Skill progression pattern.** Compare laps at several levels (WR, top 100, gold, silver) across events, to find
+4. **Across your laps** (on beta): with 3 or more clean laps in a recording, the sections with the most time to gain on
+   average and the least consistent ones, and the "ideal lap" from each section's best time. The selected corner stays
+   selected when you switch laps, and the corner's panel has ‹ › to step through the laps.
+
+5. **Skill progression pattern.** Compare laps at several levels (WR, top 100, gold, silver) across events, to find
    which differences shrink first as drivers improve. Use that to order the tips ("at your level, drivers usually
    gain most from…"). Needs laps at several levels on several tracks, so it builds up over months.
 
-5. **Next-level reference laps.** Compare against a gold-pace lap rather than the WR. Possibly not needed once 3 and 4
+6. **Next-level reference laps.** Compare against a gold-pace lap rather than the WR. Possibly not needed once 3 and 4
    are done. Depends on how far down the leaderboard GT7 lets you download replays.
 
 ## Later, maybe

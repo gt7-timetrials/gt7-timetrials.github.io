@@ -14,7 +14,7 @@ import java.util.Locale;
  *       prints "sound <name> <time> <seconds before the car reached the point>" for every sound
  *   CueCheck calibrate <true delay> [missed round] [wild round]
  *       a player sitting in the car who presses the brake <true delay> after each BEEP plays (give or take 0.03 s),
- *       except that they miss one round and press well off in another; prints "round ..." and "done <delay> <presses> <ok>"
+ *       except that they miss one round and press well off in another; prints "round ..." and "done <delay> <presses> <ok> <spread>"
  *
  * cues.txt (from Coach.cuePoints): "loop step", then the x values, then the z values, then "s t kind" per point.
  */
@@ -99,8 +99,8 @@ public class CueCheck {
                 System.out.println("round " + round + " " + of + " " + pressed);
             }
 
-            public void done(double delay, int presses, boolean ok) {
-                System.out.println(String.format(Locale.ROOT, "done %.3f %d %b", delay, presses, ok));
+            public void done(double delay, int presses, double spread, boolean ok) {
+                System.out.println(String.format(Locale.ROOT, "done %.3f %d %b %.3f", delay, presses, ok, spread));
                 over[0] = true;
             }
         });
