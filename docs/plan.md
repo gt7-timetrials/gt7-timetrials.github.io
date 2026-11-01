@@ -82,11 +82,8 @@ tests: keep it simple, and only take on what one person can look after.
    - [ ] Release it to the Play test (upload the `.aab`) during the 14 days, and post about it with the next time
          trial (week of 2 November) for momentum.
 
-3. **"Start here" summary** (done) at the top of a comparison: the 2–3 biggest easy wins. Differences are ranked by time lost
-   and by how hard they are to fix:
-   - easy: coasting or lifting, braking far too early, late on the gas;
-   - medium: minimum speed, line;
-   - hard: trail braking, fine brake release.
+3. **"Start here" summary**: built, then dropped (on beta) in favour of "Across your laps": two summaries were too much,
+   and the map with its corner times already shows where a single lap loses time.
 
 4. **Across your laps** (on beta): with 3 or more clean laps in a recording, the sections with the most time to gain on
    average and the least consistent ones, and the "ideal lap" from each section's best time. The selected corner stays

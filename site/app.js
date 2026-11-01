@@ -587,22 +587,12 @@ function lapPicker(p) {
   return html;
 }
 
-// The 2-3 differences most worth working on first (coach.js startHere), each linking to its corner.
-function startHere(res, e) {
-  const items = Coach.startHere(res, tipWho(e));
-  if (!items.length) return "";
-  return `<div class="start-here"><h4>Start here</h4><ol>${items.map(i => `<li><button type="button" class="sh-corner"
-      data-n="${i.n}">Corner ${i.n}</button> <span class="ease ${i.ease}">${i.ease}</span> ${i.text[0].toUpperCase() + i.text.slice(1)}
-      <span class="muted">(about ${i.cost.toFixed(2)} s)</span></li>`).join("")}</ol>
-    <p class="hint">Ranked by the time each costs, with easier fixes first.</p></div>`;
-}
-
 // With 3 or more clean laps: where the time goes on average, where it varies most, and the best sections added up.
 function acrossLaps(a) {
   if (!a) return "";
   const corner = n => `<button type="button" class="sh-corner" data-n="${n}">Corner ${n}</button>`;
   const list = (items, text) => `<ul>${items.map(x => `<li>${corner(x.n)} ${text(x)}</li>`).join("")}</ul>`;
-  return `<div class="start-here across"><h4>Across your ${a.laps} laps</h4>
+  return `<div class="across"><h4>Across your ${a.laps} laps</h4>
     ${a.gain.length ? `<p class="across-head">Most time to gain</p>${list(a.gain, x => `you lose ${x.avg.toFixed(2)} s on average`)}` : ""}
     ${a.varies.length ? `<p class="across-head">Least consistent</p>${list(a.varies, x => `your time here varies by ±${x.sd.toFixed(2)} s`)}` : ""}
     <p class="hint">Your best time in each section adds up to <b>${fmt(a.idealMs)}</b>${a.idealMs < a.bestMs
@@ -622,7 +612,6 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     ${Math.abs(res.gameGap - res.recordedGap) > 0.1 ? `<p class="hint">The game's times include
       ${Math.abs(res.gameGap - res.recordedGap).toFixed(2)} s that isn't in the recorded laps (in a license test the timer can
       start before the car reaches the line), so the corners below add up to ${Coach.fmtLost(res.recordedGap)}.</p>` : ""}
-    ${startHere(res, e)}
     ${acrossLaps(picker?.across)}
     <p class="hint tap-hint">${phone() ? "Tap a corner to see where you lose time." : "Hover over or click a corner on the map."}</p>
     <div class="coach-grid">
