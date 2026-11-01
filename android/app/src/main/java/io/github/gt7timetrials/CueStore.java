@@ -16,8 +16,10 @@ import java.util.Iterator;
  * ticked, and the calibrated delay for each audio output (phone speaker, wired headphones, each Bluetooth device).
  */
 final class CueStore {
-    // starting delays (s) for an output that hasn't been calibrated yet, per type of output
-    static final double START_SPEAKER = 0.10, START_WIRED = 0.08, START_BLUETOOTH = 0.25;
+    // starting delays (s) for an output that hasn't been calibrated yet, per type of output: the owner's calibrations
+    static final double START_SPEAKER = 0, START_WIRED = 0, START_BLUETOOTH = 0.33;
+    // the first beta's starting values: an output still on one of these moves to the new one
+    private static final double[] OLD_STARTS = {0.10, 0.08, 0.25};
 
     private final Context context;
     private final SharedPreferences prefs;
@@ -80,12 +82,21 @@ final class CueStore {
                 prefs.edit().putString("outputs", outputs.toString()).apply();
             }
             JSONArray rows = new JSONArray();
+            boolean moved = false;
             for (Iterator<String> it = outputs.keys(); it.hasNext(); ) {
                 String k = it.next();
                 JSONObject o = outputs.getJSONObject(k);
+                double d = o.optDouble("delay", 0);
+                for (double old : OLD_STARTS) {
+                    if (!o.optBoolean("calibrated", false) && Math.abs(d - old) < 1e-6) {
+                        o.put("delay", start(o.optString("type", "speaker")));
+                        moved = true;
+                    }
+                }
                 rows.put(new JSONObject(o.toString()).put("key", k).put("current", k.equals(key))
                         .put("start", start(o.optString("type", "speaker"))));
             }
+            if (moved) prefs.edit().putString("outputs", outputs.toString()).apply();
             current = outputs.getJSONObject(key);
             return new JSONObject().put("settings", json("settings")).put("enabled", prefs.getBoolean("enabled", false))
                     .put("outputs", rows).put("current", new JSONObject(current.toString()).put("key", key)).toString();

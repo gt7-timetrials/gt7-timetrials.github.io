@@ -58,7 +58,7 @@ tests: keep it simple, and only take on what one person can look after.
      over): sitting in the car (standing still is fine), six brake countdowns 3 s apart; the player presses the brake
      on each BEEP. The delay is the average gap between the BEEP and the firm press (over 20%), leaving out presses
      well off the others; it needs 4 of 6 that agree. Until then each output uses the starting value for its type
-     (speaker, wired, Bluetooth), which will come from the owner's own calibrations.
+     (speaker and wired 0 s, Bluetooth 0.33 s, from the owner's own calibrations).
    - **Audio cues tab** (app only, before How it works): beeps before brake (0–3, default 2), beep timing (0.3–1.0 s,
      default 0.5), lift beeps (on), gas beep (on), chicane beep (off), brake cue earlier than the reference
      (0.0–1.0 s, default 0), gas beep adjustment (±0.5 s), one row per audio output with its delay, ± and Reset, and
@@ -76,7 +76,9 @@ tests: keep it simple, and only take on what one person can look after.
    - [x] On beta: brake cue earlier by 0–0.20 s in 0.05 s steps; quieter, softer tones and silence playing in the
          background (keeps Bluetooth awake); calibration shows how much the presses varied, and warns when an output
          is too uneven; the tab says the cues are for learning braking points.
-   - [ ] Owner: try them on the beta app; the phone speaker's calibrated delay becomes its starting value.
+   - [x] Owner: works really well on the beta app. Starting delays from the owner's calibrations: phone speaker 0 s,
+         wired headphones 0 s, Bluetooth 0.33 s.
+   - [ ] Owner: try the cues on the Super License tests, then merge beta into main.
    - [ ] Release it to the Play test (upload the `.aab`) during the 14 days, and post about it with the next time
          trial (week of 2 November) for momentum.
 
