@@ -1,5 +1,7 @@
 """Run with: python -m unittest discover tests"""
+import csv
 import json
+import sys
 import os
 import random
 import tempfile
@@ -252,6 +254,7 @@ class AndroidRecorderTest(unittest.TestCase):
         src = os.path.join(cls.HERE, "..", "android", "app", "src", "main", "java", "io", "github", "gt7timetrials")
         subprocess.run(["javac", "-d", cls.tmp, os.path.join(src, "Telemetry.java"), os.path.join(src, "Recorder.java"),
                         os.path.join(src, "Cues.java"), os.path.join(src, "Feed.java"), os.path.join(src, "Calibrator.java"),
+                        os.path.join(src, "CueDefaults.java"),
                         os.path.join(cls.HERE, "android", "RecorderCheck.java"),
                         os.path.join(cls.HERE, "android", "CueCheck.java")], check=True, capture_output=True)
 
@@ -317,6 +320,50 @@ fs.writeFileSync(process.argv[3], [`${c.loop} ${c.step}`, c.x.join(" "), c.z.joi
             # the gas beep 0.5 s before (plus the delay), within 0.05 s though the car is braking and turning in
             self.assertTrue(all(abs(t - 0.7) < 0.05 for t in gas if t < 5), (lap, gas))
 
+    def edge(self, how, *more):
+        cues = self.cue_file(os.path.join(self.HERE, "fixtures", "reference_barcelona.csv"))
+        out = self.cue_check(cues, os.path.join(self.HERE, "fixtures", "reference_barcelona.csv"), "edge", how, *more)
+        window = next((tuple(map(float, l.split()[1:])) for l in out if l.startswith("window")), None)
+        played = [(l.split()[1], float(l.split()[2])) for l in out if l.startswith("played")]
+        return window, played
+
+    def test_audio_cues_in_unusual_driving(self):
+        _, normal = self.edge("none")
+        main = lambda played: [n for n, _ in played if n in ("brake", "lift", "gas")]
+        self.assertGreaterEqual(len(main(normal)), 15)
+        # 40 m off the line for 10 s (an excursion, or a different track): silent, then back to normal
+        (a, b), played = self.edge("offline")
+        self.assertFalse([p for p in played if a <= p[1] < b + 0.5], "no cues while off the line")
+        self.assertEqual(main(played), [n for n, t in normal if not (a <= t < b + 0.5) and n in ("brake", "lift", "gas")])
+        # 3 s of reversing: silent while going backwards, nothing played twice when driving on over the same stretch
+        (a, b), played = self.edge("reverse")
+        self.assertFalse([p for p in played if a < p[1] <= b], "no cues while reversing")
+        self.assertEqual(main(played), main(normal))
+        # a restart: back on the start line, and every cue plays again on the new lap
+        (a, _), played = self.edge("restart")
+        again = [n for n, t in played if t > a and n in ("brake", "lift", "gas")]
+        self.assertGreaterEqual(len(again), len([n for n, t in normal if 7.7 < t and n in ("brake", "lift", "gas")]) - 1)
+        # no packets for 30 s (paused, or Wi-Fi dropped): no burst of stale cues when they come back
+        (a, b), played = self.edge("pause")
+        self.assertFalse([p for p in played if a <= p[1] < b], "nothing while there were no packets")
+        self.assertEqual(main(played), main(normal))
+        self.assertFalse([p for p in played if b <= p[1] < b + 1], "no catching up all at once")
+        # a point-to-point track (no lap back to the start): the same cues
+        _, played = self.edge("none", "p2p")
+        self.assertEqual(main(played), main(normal))
+
+    def test_starting_delays(self):
+        out = dict((tuple(l.split()[:-1]), l.split()[-1]) for l in self.cue_check("defaults"))
+        self.assertEqual(out[("start", "speaker")], "0.00")
+        self.assertEqual(out[("start", "wired")], "0.00")
+        self.assertEqual(out[("start", "bluetooth")], "0.33")
+        # an uncalibrated output still on the first beta's starting value moves; calibrated or set by hand stays
+        self.assertEqual(out[("now", "speaker", "0.10", "false")], "0.00")
+        self.assertEqual(out[("now", "bluetooth", "0.25", "false")], "0.33")
+        self.assertEqual(out[("now", "wired", "0.08", "false")], "0.00")
+        self.assertEqual(out[("now", "bluetooth", "0.25", "true")], "0.25")
+        self.assertEqual(out[("now", "speaker", "0.17", "false")], "0.17")
+
     def test_calibration_measures_the_delay(self):
         for true in (0.25, 0.08):  # Bluetooth-like and speaker-like delays
             out = self.cue_check("calibrate", str(true), "2", "4")  # round 3 missed, round 5 pressed 0.4 s late
@@ -338,6 +385,85 @@ fs.writeFileSync(process.argv[3], [`${c.loop} ${c.step}`, c.x.join(" "), c.z.joi
         lap = telemetry.fastest_lap(telemetry.read_csv(out))
         self.assertEqual(lap["lap_ms"], 113057)
         self.assertGreater(len(lap["t"]), 6000)
+
+
+def node_has_playwright():
+    if not shutil.which("node"):
+        return False
+    r = subprocess.run(["node", "-e", "require('playwright')"], capture_output=True, env=node_env())
+    return r.returncode == 0
+
+
+def node_env():
+    env = dict(os.environ)
+    try:  # a global install (as on the build machine) as well as a local one
+        root = subprocess.run(["npm", "root", "-g"], capture_output=True, text=True).stdout.strip()
+        env["NODE_PATH"] = os.pathsep.join(p for p in (env.get("NODE_PATH"), root) if p)
+    except OSError:
+        pass
+    return env
+
+
+@unittest.skipUnless(node_has_playwright(), "Playwright not installed")
+class UiTest(unittest.TestCase):
+    """The website's screens in a browser: as a visitor, in the Play app without audio cues, and in the current app."""
+    HERE = os.path.dirname(__file__)
+
+    def test_screens(self):
+        import http.server
+        import threading
+        tmp = tempfile.mkdtemp()
+        site = os.path.join(tmp, "site")
+        subprocess.run([sys.executable, "-m", "gt7tt", "site", "--out", site], check=True, capture_output=True,
+                       cwd=os.path.join(self.HERE, ".."))
+        handler = lambda *a, **k: http.server.SimpleHTTPRequestHandler(*a, directory=site, **k)
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        handler_log = http.server.SimpleHTTPRequestHandler.log_message
+        http.server.SimpleHTTPRequestHandler.log_message = lambda *a: None
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        try:
+            s1 = os.path.join(self.HERE, "fixtures", "license_s1_attempt.csv")
+            multi = os.path.join(tmp, "s1_four_laps.csv")
+            four_laps(s1, multi)
+            r = subprocess.run(["node", os.path.join(self.HERE, "test_ui.js"), f"http://127.0.0.1:{server.server_port}/",
+                                s1, multi], capture_output=True, text=True, timeout=300, env=node_env())
+            self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        finally:
+            server.shutdown()
+            server.server_close()
+            http.server.SimpleHTTPRequestHandler.log_message = handler_log
+
+
+def four_laps(src, dst):
+    """The S-1 attempt driven four times in a row; the third time 0.33 s slower over a stretch of the run."""
+    with open(src, newline="") as f:
+        rows = list(csv.DictReader(f))
+    fields = list(rows[0].keys())
+    first = next(i for i, r in enumerate(rows) if r["lap"] == "1")
+    after = next(i for i, r in enumerate(rows) if r["lap"] == "2")
+    lap = rows[first:after]
+    p0, n = int(lap[0]["packet_id"]), len(lap)
+    out, offset, last_ms = [dict(r) for r in rows[:first]], 0, -1
+    for k in range(4):
+        extra = 20 if k == 2 else 0  # a third of a second lost over 60 packets, half way round
+        for i, r in enumerate(lap):
+            r = dict(r)
+            slow = min(extra, max(0, (i - n // 2) // 3)) if extra else 0
+            r["packet_id"] = str(int(r["packet_id"]) + offset + slow)
+            r["lap"], r["last_lap_ms"] = str(1 + k), str(last_ms)
+            r["time_s"] = f"{(int(r['packet_id']) - p0) / 60:.3f}"
+            out.append(r)
+        last_ms = round((n + extra) * 1000 / 60)
+        offset += n + extra
+    for r in rows[after:]:
+        r = dict(r)
+        r["packet_id"] = str(int(r["packet_id"]) - int(rows[after]["packet_id"]) + p0 + offset)
+        r["lap"], r["last_lap_ms"] = "5", str(last_ms)
+        out.append(r)
+    with open(dst, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        w.writerows(out)
 
 
 class TelemetryTest(unittest.TestCase):

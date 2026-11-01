@@ -108,6 +108,7 @@ tests: keep it simple, and only take on what one person can look after.
 
 ## Regular jobs
 
+- **Tests** run on GitHub on every push to `main` and `beta` (the Tests workflow); a red one means don't merge.
 - **Changes:** built on the `beta` branch first and tried on the beta app and https://gt7-timetrials.github.io/beta/
   (see `docs/android.md`); merged into `main` only when the owner says so. Play releases are the owner's call.
 

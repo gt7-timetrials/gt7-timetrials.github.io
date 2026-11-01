@@ -45,7 +45,12 @@ repository has the secrets `UPLOAD_KEYSTORE_BASE64` (the upload keystore, base64
 Console. Google re-signs it for users (Play App Signing); a lost upload key can be reset through the Play Console.
 
 **Tests:** `tests/test_gt7tt.py` (`AndroidRecorderTest`) compiles the recorder with plain `javac`, checks it decodes
-packets like the Python recorder, and records a lap from a fake PlayStation on the same computer.
+packets like the Python recorder, and records a lap from a fake PlayStation on the same computer. It also replays
+recordings through the audio cues (on time, and with unusual driving: off the line, reversing, a restart, a pause, a
+point-to-point track), simulates calibrations and checks the starting delays. `UiTest` runs `tests/test_ui.js`: the
+website's screens in a phone-sized browser as a visitor, in the Play app without audio cues (a stand-in for its
+`GT7App`, so the website keeps working for testers until they update) and in the current app. GitHub runs all the tests
+on every push to `main` and `beta` (`.github/workflows/tests.yml`).
 
 **Beta:** new work goes to the `beta` branch first, so the owner can try it before testers get it.
 - The **beta website** is built from `beta` (with main's data) at https://gt7-timetrials.github.io/beta/, hidden from
