@@ -13,6 +13,11 @@ android {
         // each GitHub Actions build gets a higher number, so a new APK installs over the old one
         versionCode((System.getenv("GITHUB_RUN_NUMBER") ?: "1") as int)
         versionName "0.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0")
+        buildConfigField "String", "SITE", '"https://gt7-timetrials.github.io/"'
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     signingConfigs {
@@ -40,6 +45,15 @@ android {
         }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.test
+        }
+        // the beta app ("gradle assembleBeta"): installs next to the Play app, under its own name and app ID, and shows
+        // the beta website (built from the beta branch), for trying changes before testers get them
+        beta {
+            initWith release
+            applicationIdSuffix ".beta"
+            versionNameSuffix "-beta"
+            buildConfigField "String", "SITE", '"https://gt7-timetrials.github.io/beta/"'
             signingConfig signingConfigs.test
         }
         // for Google Play: "gradle bundlePlay" makes the app bundle (.aab), signed with the upload key

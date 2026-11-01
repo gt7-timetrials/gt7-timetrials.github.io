@@ -1,7 +1,8 @@
 name: Build Android app
 
 # Builds the app in android/ whenever it changes, and puts the APK on the "android-test" release page, so it
-# can be downloaded straight to a phone (builds of other branches are only checked, not published):
+# can be downloaded straight to a phone (builds of other branches are only checked, not published; the beta
+# branch builds the beta app onto the "android-beta" release):
 # https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/android-test/gt7-timetrials.apk
 on:
   push:
@@ -28,10 +29,24 @@ jobs:
         with:
           gradle-version: "8.14.3"
       - name: Build the APK
+        if: github.ref != 'refs/heads/beta'
         run: gradle --no-daemon -p android assembleRelease
+      # the beta branch: the beta app, which shows the beta website, on its own release page
+      - name: Build and publish the beta app
+        if: github.ref == 'refs/heads/beta'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gradle --no-daemon -p android assembleBeta
+          cp android/app/build/outputs/apk/beta/app-beta.apk gt7-timetrials-beta.apk
+          gh release delete android-beta --yes --cleanup-tag || true
+          gh release create android-beta gt7-timetrials-beta.apk --prerelease --target "$GITHUB_SHA" \
+            --title "Beta app (build ${GITHUB_RUN_NUMBER})" \
+            --notes "Beta build from the beta branch (${GITHUB_SHA::7}): \"Time Trials beta\", with an orange icon. It installs next to the Google Play app and shows the beta website (https://gt7-timetrials.github.io/beta/). On your Android phone, download gt7-timetrials-beta.apk and open it to install."
       # the Google Play app bundle, signed with the private upload key from the repository's secrets
       # (UPLOAD_KEYSTORE_BASE64 and UPLOAD_KEYSTORE_PASSWORD); skipped until they're set
       - name: Build the Google Play bundle
+        if: github.ref == 'refs/heads/main'
         env:
           KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
           UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}

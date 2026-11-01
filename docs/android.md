@@ -46,3 +46,14 @@ Console. Google re-signs it for users (Play App Signing); a lost upload key can 
 
 **Tests:** `tests/test_gt7tt.py` (`AndroidRecorderTest`) compiles the recorder with plain `javac`, checks it decodes
 packets like the Python recorder, and records a lap from a fake PlayStation on the same computer.
+
+**Beta:** new work goes to the `beta` branch first, so the owner can try it before testers get it.
+- The **beta website** is built from `beta` (with main's data) at https://gt7-timetrials.github.io/beta/, hidden from
+  search engines and marked "Beta" at the top. A push to `beta` republishes the site (`beta.yml` starts
+  `pages.yml` from main, because only main may deploy).
+- The **beta app** ("Time Trials beta", orange icon, app ID `io.github.gt7timetrials.beta`, `gradle assembleBeta`)
+  installs next to the Play app and shows the beta website. Pushes to `beta` that change `android/` put it on the
+  `android-beta` release:
+  https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/android-beta/gt7-timetrials-beta.apk
+- When the owner is happy, `beta` is merged into `main`: the main website changes for everyone, and app changes are
+  ready as the Play `.aab` on the android-test release, uploaded to Play when the owner chooses.

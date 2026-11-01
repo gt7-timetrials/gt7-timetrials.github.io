@@ -45,7 +45,7 @@ import java.util.Locale;
  * telemetry over Wi-Fi, and gets progress back through window.GT7AppEvent. Links to other sites open in the browser.
  */
 public class MainActivity extends Activity {
-    static final String SITE = "https://gt7-timetrials.github.io/";
+    static final String SITE = BuildConfig.SITE; // the website, or the beta website in the beta app
     private static final int PICK_FILE = 1;
 
     private WebView web;

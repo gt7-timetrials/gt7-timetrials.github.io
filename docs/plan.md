@@ -100,6 +100,9 @@ tests: keep it simple, and only take on what one person can look after.
 
 ## Regular jobs
 
+- **Changes:** built on the `beta` branch first and tried on the beta app and https://gt7-timetrials.github.io/beta/
+  (see `docs/android.md`); merged into `main` only when the owner says so. Play releases are the owner's call.
+
 - **New time trial:** the owner sends a CSV of the WR replay. Add it to `data/reference_laps` (it matches the event by
   car and lap time). The event appears after the next morning's daily update; to show it the same evening, run
   `python -m gt7tt daily` by hand.
