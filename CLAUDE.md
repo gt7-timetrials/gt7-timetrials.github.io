@@ -16,7 +16,7 @@ app, builds and keys are in `docs/android.md`.
 - **The Google Play app must keep working with the website.** Testers' installed app loads the live site, and app
   updates reach them only after the owner uploads the `.aab` and Google approves it. New app features are detected in
   `site/app.js` (for example `CUES`); the browser test in `tests/test_ui.js` checks this against the app on main (read
-from its code, so it is the app testers have, if main's last `.aab` was uploaded) and the first Play release. If a change can't
-  work with the Play app, say so before merging.
+  from its code, so it is the app testers have, if main's last `.aab` was uploaded) and the first Play release. If a
+  change can't work with the Play app, say so before merging.
 - **Main's daily snapshot job commits data** (`data/`); the beta website uses main's data.
 - Never put model names or IDs in commits, pull requests or files.
