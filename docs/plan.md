@@ -31,7 +31,10 @@ tests: keep it simple, and only take on what one person can look after.
    - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
          production. So far: a Reddit tester (2 November) found it detailed but hard to get into, thought each lap
          needed a restart, and asked for translation and GT7-style telemetry graphs: answered by item 3 (guide, How
-         to use tab, many-laps wording, translation note); graphs are planned.
+         to use tab, many-laps wording, translation note); graphs are planned. The same tester, later: drove four sessions at
+         Barcelona checking the corner descriptions against GT7's own telemetry and found them accurate (braking
+         and full-throttle distances, track width at the apex); set 1:51.539. Asked to compare their best and worst
+         laps together with the WR's (now each lap is compared with the WR, and ‹ › steps through laps on a corner).
    - [ ] From about 14 November: Apply for production (Dashboard; a short questionnaire on how testers were found,
          how they used the app, their feedback and what changed; review up to about a week), then release to everyone.
 
@@ -107,6 +110,8 @@ tests: keep it simple, and only take on what one person can look after.
          links the computer recorder on the website.
    - [x] Owner: happy with the guide and the rest on the beta app.
    - Later: graphs of speed, throttle and brake along the lap, like GT7's own (the tester asked for them).
+   - Later, maybe: show two of your laps against the reference at once, for example your best and worst (the same
+     tester asked for it).
 
 4. **"Start here" summary**: built, then dropped in favour of "Across your laps": two summaries were too much,
    and the map with its corner times already shows where a single lap loses time.
