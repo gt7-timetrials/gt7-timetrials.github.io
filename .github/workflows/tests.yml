@@ -2,7 +2,8 @@ name: Tests
 
 # Runs every test on each push to main or beta: the Python side (data, predictions, site build, the computer
 # recorder), the lap comparison and audio cue points (node), the app's recorder and audio cues (plain Java), and the
-# website's screens in a phone-sized browser, as a visitor, in the Play app without audio cues, and in the current app.
+# website's screens in a phone-sized browser: as a visitor, in the earlier apps (the app on main, built from its
+# bridge methods, and the first Play release), which must keep working with this website, and in this branch's app.
 on:
   push:
     branches: [main, beta]
@@ -17,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # the screen tests compare this website with the app on main
+      - name: Fetch main
+        run: git fetch --depth=1 origin main:refs/remotes/origin/main
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

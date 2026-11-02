@@ -404,9 +404,61 @@ def node_env():
     return env
 
 
+BRIDGE = "android/app/src/main/java/io/github/gt7timetrials/MainActivity.java"
+# The app the first Google Play releases had (up to release 16, 31 October 2026): recording only, no audio cues.
+FIRST_PLAY_APP = {"version": [0], "start": [0, 1], "stop": [0], "csv": [0], "save": [2]}
+
+
+def bridge_methods(java):
+    """What the website can ask the app to do: the @JavascriptInterface methods, name -> numbers of arguments."""
+    import re
+    out = {}
+    for name, params in re.findall(r"@JavascriptInterface\s+public\s+(?:synchronized\s+)?\w+\s+(\w+)\(([^)]*)\)", java):
+        out.setdefault(name, []).append(len([p for p in params.split(",") if p.strip()]))
+    return out
+
+
+def main_app_methods(root):
+    """The app on main: what testers have once its .aab is on Google Play. Compared with beta's website before a
+    merge. GT7_MAIN_REF picks another commit instead (for example the one a Play release was built from). Falls back
+    to this checkout's app (with a note) where main can't be read, e.g. outside git."""
+    ref = os.environ.get("GT7_MAIN_REF", "origin/main")
+    try:
+        java = subprocess.run(["git", "show", f"{ref}:{BRIDGE}"], cwd=root, capture_output=True, text=True,
+                              check=True).stdout
+        return bridge_methods(java), ref
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        with open(os.path.join(root, BRIDGE)) as f:
+            return bridge_methods(f.read()), "this checkout (main not found)"
+
+
+class BridgeTest(unittest.TestCase):
+    """Reading the app's bridge methods, for the screen tests' stand-in apps."""
+
+    def test_bridge_methods(self):
+        java = """
+            @JavascriptInterface
+            public String version() {
+            @JavascriptInterface
+            public synchronized void start(String ip) {
+            @JavascriptInterface
+            public void start() {
+            @JavascriptInterface
+            public String save(String csv, String name) {
+            public void notForThePage(String x) {"""
+        self.assertEqual(bridge_methods(java), {"version": [0], "start": [1, 0], "save": [2]})
+        root = os.path.join(os.path.dirname(__file__), "..")
+        with open(os.path.join(root, BRIDGE)) as f:
+            now = bridge_methods(f.read())
+        for name in FIRST_PLAY_APP:  # the app never drops what the first release could do
+            self.assertIn(name, now)
+
+
 @unittest.skipUnless(node_has_playwright(), "Playwright not installed")
 class UiTest(unittest.TestCase):
-    """The website's screens in a browser: as a visitor, in the Play app without audio cues, and in the current app."""
+    """The website's screens in a browser: as a visitor; in the app on main (what testers have, or will once its .aab
+    is on Google Play) and in the first Play release, both built from their bridge methods; and in this checkout's
+    app, with audio cues."""
     HERE = os.path.dirname(__file__)
 
     def test_screens(self):
@@ -425,8 +477,13 @@ class UiTest(unittest.TestCase):
             s1 = os.path.join(self.HERE, "fixtures", "license_s1_attempt.csv")
             multi = os.path.join(tmp, "s1_four_laps.csv")
             four_laps(s1, multi)
+            root = os.path.join(self.HERE, "..")
+            main, where = main_app_methods(root)
+            with open(os.path.join(root, BRIDGE)) as f:
+                current = bridge_methods(f.read())
+            apps = json.dumps({"main": main, "mainFrom": where, "first": FIRST_PLAY_APP, "current": current})
             r = subprocess.run(["node", os.path.join(self.HERE, "test_ui.js"), f"http://127.0.0.1:{server.server_port}/",
-                                s1, multi], capture_output=True, text=True, timeout=300, env=node_env())
+                                s1, multi, apps], capture_output=True, text=True, timeout=300, env=node_env())
             self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         finally:
             server.shutdown()

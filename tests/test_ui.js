@@ -1,15 +1,35 @@
-// The website's screens in a phone-sized browser (Playwright), as a visitor, in the Google Play app as testers have
-// it (no audio cues), and in the current app (audio cues). The apps are stand-ins for window.GT7App that record what
-// the page asks of them. Run by tests/test_gt7tt.py (UiTest), which builds the site and serves it:
-//   node tests/test_ui.js <site url> <S-1 recording.csv> <4-lap S-1 recording.csv>
+// The website's screens in a phone-sized browser (Playwright): as a visitor; in the earlier apps (the app on main,
+// which testers have once its .aab is on Google Play, and the first Play release), which must keep working with this
+// website; and in this checkout's app, with audio cues. The apps are stand-ins for window.GT7App that record what
+// the page asks of them. Run by tests/test_gt7tt.py (UiTest), which builds the site and serves it, and reads each
+// app's bridge methods (name -> numbers of arguments) from its Java code:
+//   node tests/test_ui.js <site url> <S-1 recording.csv> <4-lap S-1 recording.csv> <apps.json>
+//   apps.json: { main, mainFrom, first, current }
 const { chromium, devices } = require("playwright");
 const assert = require("assert");
 const fs = require("fs");
 
-const [url, s1File, multiFile] = process.argv.slice(2);
+const [url, s1File, multiFile, appsJson] = process.argv.slice(2);
 const s1 = fs.readFileSync(s1File, "utf8");
+const APPS = JSON.parse(appsJson);
 
-// window.GT7App as the Play app had it before audio cues, and as the current app has it
+// window.GT7App with exactly an earlier app's bridge methods, each recording its call; cueState answers like the app
+// (audio cues off), so an earlier app that has audio cues gets the checkbox and tab, unticked
+function earlierApp({ methods, csv }) {
+  window.__calls = [];
+  const app = {};
+  const state = JSON.stringify({ settings: {}, enabled: false, outputs: [], current: { key: "speaker", name: "Phone speaker", delay: 0 } });
+  const answers = { version: () => "test", csv: () => csv, save: (c, name) => name, cueState: () => state };
+  for (const name of Object.keys(methods)) {
+    app[name] = (...a) => {
+      window.__calls.push([name, ...a.filter(x => typeof x !== "string" || x.length < 200)]);
+      return answers[name] ? answers[name](...a) : undefined;
+    };
+  }
+  window.GT7App = app;
+}
+
+// window.GT7App as this checkout's app has it, with audio cues
 function standIn({ withCues, csv }) {
   window.__calls = [];
   const call = (...a) => window.__calls.push(a);
@@ -34,7 +54,8 @@ function standIn({ withCues, csv }) {
   const errors = [];
   const page = async (app) => {
     const ctx = await browser.newContext({ ...devices["iPhone 13"] });
-    if (app) await ctx.addInitScript(standIn, { withCues: app === "cues", csv: s1 });
+    if (app === "cues") await ctx.addInitScript(standIn, { withCues: true, csv: s1 });
+    else if (app) await ctx.addInitScript(earlierApp, { methods: APPS[app], csv: s1 });
     const p = await ctx.newPage();
     p.on("pageerror", e => errors.push(`${app || "website"}: ${e.message}`));
     await p.goto(url + "#license");
@@ -75,16 +96,19 @@ function standIn({ withCues, csv }) {
     await p.context().close();
   }
 
-  // 2. the Google Play app testers have (no audio cues): records and compares as before, no cue controls
-  {
-    const p = await page("old");
-    assert.ok(await coach(p).locator(".record-btn").count(), "old app: Record on this phone");
-    assert.strictEqual(await p.locator(".cue-toggle").count(), 0, "old app: no audio cues checkbox");
-    assert.ok(await p.locator('nav a[data-tab="cues"]').isHidden(), "old app: no Audio cues tab");
-    assert.ok(await p.locator(".license-intro .web-only").isHidden(), "app: no recorder link");
-    assert.ok(await p.locator(".license-intro .app-only").isVisible(), "app: Record on this phone");
+  // 2. the earlier apps: the app on main (what testers have, or will once its .aab is on Google Play) and the first
+  // Play release. Each records and compares with this website, and gets audio cue controls only if it has them.
+  console.log(`app on main read from ${APPS.mainFrom}`);
+  for (const [app, label] of [["main", "app on main"], ["first", "first Play release"]]) {
+    const has = name => name in APPS[app];
+    const p = await page(app);
+    assert.ok(await coach(p).locator(".record-btn").count(), `${label}: Record on this phone`);
+    assert.strictEqual(await p.locator(".cue-toggle").count() > 0, has("cueState"), `${label}: audio cues checkbox only if it has them`);
+    assert.strictEqual(await p.locator('nav a[data-tab="cues"]').isVisible(), has("cueState"), `${label}: Audio cues tab only if it has them`);
+    assert.ok(await p.locator(".license-intro .web-only").isHidden(), `${label}: no recorder link`);
+    assert.ok(await p.locator(".license-intro .app-only").isVisible(), `${label}: Record on this phone`);
     await coach(p).locator(".record-btn").click();
-    assert.deepStrictEqual((await calls(p)).at(-1), ["start", ""], "old app: recording started the old way");
+    assert.deepStrictEqual((await calls(p)).at(-1), ["start", ""], `${label}: recording started (audio cues off)`);
     await event(p, { type: "connected", ip: "192.168.0.23" });
     await event(p, { type: "state", state: "driving" });
     await event(p, { type: "lap", lap: 1, ms: 78521, time: "1:18.521", replay: false, dropout: false });
@@ -93,11 +117,30 @@ function standIn({ withCues, csv }) {
     await coach(p).locator(".coach-summary").waitFor();
     assert.match(await coach(p).locator(".coach-summary").innerText(), /Your lap 1:18\.521/);
     await coach(p).locator(".save-btn").click();
-    assert.strictEqual((await calls(p)).at(-1)[0], "save", "old app: Save to Downloads");
+    assert.strictEqual((await calls(p)).at(-1)[0], "save", `${label}: Save to Downloads`);
+    if (has("cueState")) { // its Audio cues tab opens without asking for anything it doesn't have
+      await p.goto(url + "#cues");
+      await p.locator(".cue-test").first().waitFor();
+    }
+    const asked = new Set((await calls(p)).map(c => c[0]));
+    for (const name of asked) assert.ok(has(name), `${label}: the website asked it for ${name}`);
     await p.context().close();
   }
 
-  // 3. the current app: the checkbox, recording with cues, the status line, the Audio cues tab and calibration
+  // 3. this checkout's app: the stand-in only has methods the app really has
+  {
+    const stand = await (async () => {
+      const ctx = await browser.newContext();
+      await ctx.addInitScript(standIn, { withCues: true, csv: "" });
+      const p = await ctx.newPage();
+      await p.goto("about:blank");
+      const keys = await p.evaluate(() => Object.keys(window.GT7App));
+      await ctx.close();
+      return keys;
+    })();
+    for (const name of stand) assert.ok(name in APPS.current, `stand-in method ${name} is in the app's bridge`);
+  }
+  // the checkbox, recording with cues, the status line, the Audio cues tab and calibration
   {
     const p = await page("cues");
     const box = coach(p).locator(".cue-toggle");
