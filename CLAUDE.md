@@ -1,0 +1,21 @@
+# Working on this project
+
+GT7 time trial tracker: the website (`site/`, built by `gt7tt/` into GitHub Pages) and the Android app (`android/`,
+"Time Trials for GT7" on Google Play, a WebView of the website plus recording). The plan is in `docs/plan.md`; the
+app, builds and keys are in `docs/android.md`.
+
+## How changes are made
+
+- **Work on the `beta` branch, never directly on `main`.** Pushing to beta publishes the beta website
+  (https://gt7-timetrials.github.io/beta/) and the beta app (the `android-beta` release), so the owner can try changes
+  without affecting testers. Before starting, bring beta up to date with main (`git merge origin/main`).
+- **Merge beta into main only when the owner says "merge"**, through a pull request, and only with the Tests workflow
+  green on beta. Afterwards, bring beta up to date with main again.
+- **Run the tests before pushing:** `python -m unittest tests.test_gt7tt` (includes the Java and browser tests) and
+  `node tests/test_coach.js`. GitHub runs them on every push; red means don't merge.
+- **The Google Play app must keep working with the website.** Testers' installed app loads the live site, and app
+  updates reach them only after the owner uploads the `.aab` and Google approves it. New app features are detected in
+  `site/app.js` (for example `CUES`); the "old app" browser test in `tests/test_ui.js` checks this. If a change can't
+  work with the Play app, say so before merging.
+- **Main's daily snapshot job commits data** (`data/`); the beta website uses main's data.
+- Never put model names or IDs in commits, pull requests or files.
