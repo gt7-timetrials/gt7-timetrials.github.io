@@ -16,8 +16,6 @@ import java.util.Iterator;
  * ticked, and the calibrated delay for each audio output (phone speaker, wired headphones, each Bluetooth device).
  */
 final class CueStore {
-    // starting delays (s) for an output that hasn't been calibrated yet, per type of output
-    static final double START_SPEAKER = 0.10, START_WIRED = 0.08, START_BLUETOOTH = 0.25;
 
     private final Context context;
     private final SharedPreferences prefs;
@@ -58,7 +56,7 @@ final class CueStore {
     }
 
     private static double start(String type) {
-        return type.equals("bluetooth") ? START_BLUETOOTH : type.equals("wired") ? START_WIRED : START_SPEAKER;
+        return CueDefaults.start(type);
     }
 
     private JSONObject json(String name) {
@@ -80,12 +78,20 @@ final class CueStore {
                 prefs.edit().putString("outputs", outputs.toString()).apply();
             }
             JSONArray rows = new JSONArray();
+            boolean moved = false;
             for (Iterator<String> it = outputs.keys(); it.hasNext(); ) {
                 String k = it.next();
                 JSONObject o = outputs.getJSONObject(k);
+                double d = o.optDouble("delay", 0);
+                double now = CueDefaults.current(o.optString("type", "speaker"), d, o.optBoolean("calibrated", false));
+                if (now != d) {
+                    o.put("delay", now);
+                    moved = true;
+                }
                 rows.put(new JSONObject(o.toString()).put("key", k).put("current", k.equals(key))
                         .put("start", start(o.optString("type", "speaker"))));
             }
+            if (moved) prefs.edit().putString("outputs", outputs.toString()).apply();
             current = outputs.getJSONObject(key);
             return new JSONObject().put("settings", json("settings")).put("enabled", prefs.getBoolean("enabled", false))
                     .put("outputs", rows).put("current", new JSONObject(current.toString()).put("key", key)).toString();
@@ -112,7 +118,7 @@ final class CueStore {
             }
             if (c.has("reset")) {
                 JSONObject o = outputs.optJSONObject(c.getString("reset"));
-                if (o != null) o.put("delay", start(o.optString("type", "speaker"))).put("calibrated", false);
+                if (o != null) { o.put("delay", start(o.optString("type", "speaker"))).put("calibrated", false); o.remove("spread"); }
             }
             e.putString("outputs", outputs.toString()).apply();
         } catch (JSONException ignored) {
@@ -129,8 +135,8 @@ final class CueStore {
         set.lift = s.optBoolean("lift", set.lift);
         set.gas = s.optBoolean("gas", set.gas);
         set.chicane = s.optBoolean("chicane", set.chicane);
-        set.brakeEarly = Math.max(0, Math.min(1.0, s.optDouble("brakeEarly", set.brakeEarly)));
-        set.gasAdjust = Math.max(-0.5, Math.min(0.5, s.optDouble("gasAdjust", set.gasAdjust)));
+        set.brakeEarly = Math.max(0, Math.min(0.2, s.optDouble("brakeEarly", set.brakeEarly)));
+        set.gasAdjust = Math.max(-0.2, Math.min(0.2, s.optDouble("gasAdjust", set.gasAdjust)));
         set.delay = o.optDouble("delay", start(output.getString("type")));
         return set;
     }
@@ -145,14 +151,14 @@ final class CueStore {
         }
     }
 
-    /** A calibration result for an output. */
-    synchronized void calibration(JSONObject output, double delay, boolean done) {
+    /** A calibration result for an output: its delay, and how much the presses varied (standard deviation, s). */
+    synchronized void calibration(JSONObject output, double delay, double spread) {
         try {
             JSONObject outputs = json("outputs");
             String key = output.getString("key");
             JSONObject o = outputs.optJSONObject(key);
             if (o == null) o = new JSONObject().put("name", output.getString("name")).put("type", output.getString("type"));
-            o.put("delay", delay).put("calibrated", done);
+            o.put("delay", delay).put("calibrated", true).put("spread", spread);
             outputs.put(key, o);
             prefs.edit().putString("outputs", outputs.toString()).apply();
         } catch (JSONException ignored) {

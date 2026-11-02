@@ -1,0 +1,36 @@
+name: Tests
+
+# Runs every test on each push to main or beta: the Python side (data, predictions, site build, the computer
+# recorder), the lap comparison and audio cue points (node), the app's recorder and audio cues (plain Java), and the
+# website's screens in a phone-sized browser, as a visitor, in the Play app without audio cues, and in the current app.
+on:
+  push:
+    branches: [main, beta]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - run: pip install -r requirements.txt
+      - name: Install Playwright and Chromium, for the screen tests
+        run: |
+          npm install --no-save playwright@1.63.0
+          npx playwright install --with-deps chromium
+      - name: Run the tests
+        run: python -m unittest tests.test_gt7tt -v

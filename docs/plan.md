@@ -16,7 +16,7 @@ tests: keep it simple, and only take on what one person can look after.
    - [x] Closed test with the Google Group `time-trails-gt7-testers`, so testers join themselves and no email
          addresses are collected. First release approved and published on 30 October; the owner installed it from
          Play and checked recording, saving, uploading and Back.
-   - [x] How to join on the website (How it works → Android app (test)), and a Reddit post asking for testers
+   - [x] How to join on the website (About this app → Android app (test); the tab was called How it works), and a Reddit post asking for testers
          (https://www.reddit.com/r/granturismo/s/WTRsxSB3m2) and on GTPlanet
          (https://www.gtplanet.net/forum/threads/free-time-trial-lap-comparison-android-app.440044/), which is also
          where feedback goes, besides Play's private feedback.
@@ -58,10 +58,10 @@ tests: keep it simple, and only take on what one person can look after.
      over): sitting in the car (standing still is fine), six brake countdowns 3 s apart; the player presses the brake
      on each BEEP. The delay is the average gap between the BEEP and the firm press (over 20%), leaving out presses
      well off the others; it needs 4 of 6 that agree. Until then each output uses the starting value for its type
-     (speaker, wired, Bluetooth), which will come from the owner's own calibrations.
-   - **Audio cues tab** (app only, before How it works): beeps before brake (0–3, default 2), beep timing (0.3–1.0 s,
+     (speaker and wired 0 s, Bluetooth 0.33 s, from the owner's own calibrations).
+   - **Audio cues tab** (app only, before How to use): beeps before brake (0–3, default 2), beep timing (0.3–1.0 s,
      default 0.5), lift beeps (on), gas beep (on), chicane beep (off), brake cue earlier than the reference
-     (0.0–1.0 s, default 0), gas beep adjustment (±0.5 s), one row per audio output with its delay, ± and Reset, and
+     (0.0–1.0 s, default 0), gas beep adjustment (±0.20 s in 0.05 s steps), one row per audio output with its delay, ± and Reset, and
      Test sound. Saved on the phone: these settings, the calibrations and the checkbox. Nothing else.
    - Built in the app's own code (works with the screen locked), tested here by replaying recorded laps as if live,
      then tuned in the game by the owner.
@@ -70,22 +70,48 @@ tests: keep it simple, and only take on what one person can look after.
    - [x] Owner's first drive (Blue Moon Bay): unexpected beeps were the WR's upshift lifts and a downshift blip,
          now filtered out; lift sounds now differ from brake sounds; calibration moved to its own run; test buttons
          for each sound.
-   - [ ] Owner: try the changes, calibrate the phone speaker and Galaxy Buds; their delays become the starting
-         values for speaker and Bluetooth. Tune sounds and timing from how it feels.
+   - [x] Owner's second drive: calibration works on the phone speaker; Bluetooth sounded distorted and uneven. The
+         cues are best for learning braking points, not for driving a whole lap (distracting); braking where the WR
+         does is only part of a corner, so the earlier-cue setting matters.
+   - [x] On beta: brake cue earlier by 0–0.20 s in 0.05 s steps; quieter, softer tones and silence playing in the
+         background (keeps Bluetooth awake); calibration shows how much the presses varied, and warns when an output
+         is too uneven; the tab says the cues are for learning braking points.
+   - [x] Owner: works really well on the beta app. Starting delays from the owner's calibrations: phone speaker 0 s,
+         wired headphones 0 s, Bluetooth 0.33 s.
+   - [x] Owner: S-4 and S-6 on the phone speaker and Bluetooth: recording and cues work well; the cues really help
+         find the braking points in an unfamiliar car.
+   - [ ] Merge beta into main (after the clarity changes below are checked on beta).
    - [ ] Release it to the Play test (upload the `.aab`) during the 14 days, and post about it with the next time
          trial (week of 2 November) for momentum.
 
-3. **"Start here" summary** (done) at the top of a comparison: the 2–3 biggest easy wins. Differences are ranked by time lost
-   and by how hard they are to fix:
-   - easy: coasting or lifting, braking far too early, late on the gas;
-   - medium: minimum speed, line;
-   - hard: trail braking, fine brake release.
+3. **Clarity** (on beta), from a Reddit tester ("very advanced… people might get lost", "you always have to reset the
+   lap") and the owner's review:
+   - [x] "How to read this" guide above the first comparisons, until Got it; the same steps on a new **How to use**
+         tab (what's here, recording one or many laps with the app or a computer, reading the comparison, audio cues).
+   - [x] Recording wording: drive as many laps as you like, no restart needed (the tester thought each lap needed a
+         restart).
+   - [x] "How it works" renamed **About this app**, without the lap comparison part; a line on translating the page
+         (the app can't translate; open the website in Chrome for now; in-app translation is for later).
+   - [x] Removed Check my time and the past events' entrants range; course difficulty rated Easy / Medium / Hard /
+         V.hard against all past events (25th, 70th and 90th percentiles of the top-100 spread).
+   - [x] Audio cues tab: Hear the sounds, Cue settings and Sound delay sections; less explanation.
+   - [x] Dark mode: the corner close-up's "dark = you" legend shows the colours instead. The Super License tab only
+         links the computer recorder on the website.
+   - [ ] Owner: feedback on the guide and the rest on beta.
+   - Later: graphs of speed, throttle and brake along the lap, like GT7's own (the tester asked for them).
 
-4. **Skill progression pattern.** Compare laps at several levels (WR, top 100, gold, silver) across events, to find
+4. **"Start here" summary**: built, then dropped (on beta) in favour of "Across your laps": two summaries were too much,
+   and the map with its corner times already shows where a single lap loses time.
+
+5. **Across your laps** (on beta): with 3 or more clean laps in a recording, the sections with the most time to gain on
+   average and the least consistent ones, and the "ideal lap" from each section's best time. The selected corner stays
+   selected when you switch laps, and the corner's panel has ‹ › to step through the laps.
+
+6. **Skill progression pattern.** Compare laps at several levels (WR, top 100, gold, silver) across events, to find
    which differences shrink first as drivers improve. Use that to order the tips ("at your level, drivers usually
    gain most from…"). Needs laps at several levels on several tracks, so it builds up over months.
 
-5. **Next-level reference laps.** Compare against a gold-pace lap rather than the WR. Possibly not needed once 3 and 4
+7. **Next-level reference laps.** Compare against a gold-pace lap rather than the WR. Possibly not needed once 4 and 5
    are done. Depends on how far down the leaderboard GT7 lets you download replays.
 
 ## Later, maybe
@@ -100,6 +126,7 @@ tests: keep it simple, and only take on what one person can look after.
 
 ## Regular jobs
 
+- **Tests** run on GitHub on every push to `main` and `beta` (the Tests workflow); a red one means don't merge.
 - **Changes:** built on the `beta` branch first and tried on the beta app and https://gt7-timetrials.github.io/beta/
   (see `docs/android.md`); merged into `main` only when the owner says so. Play releases are the owner's call.
 

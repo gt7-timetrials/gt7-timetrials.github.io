@@ -16,8 +16,11 @@ final class Calibrator implements Feed {
         /** After each countdown: which one (1-based), how many, and whether a press was found for it. */
         void round(int round, int of, boolean pressed);
 
-        /** At the end: the delay, how many presses it's based on, and whether they agreed well enough to use. */
-        void done(double delay, int presses, boolean ok);
+        /**
+         * At the end: the delay, how many presses it's based on, how much they varied (standard deviation, s), and
+         * whether they agreed well enough to use.
+         */
+        void done(double delay, int presses, double spread, boolean ok);
     }
 
     static final int ROUNDS = 6, NEEDED = 4;
@@ -72,18 +75,19 @@ final class Calibrator implements Feed {
         List<Double> gaps = new ArrayList<>();
         for (int r = 0; r < ROUNDS; r++) if (!Double.isNaN(pressAt[r])) gaps.add(pressAt[r] - beepAt[r]);
         if (gaps.isEmpty()) {
-            listener.done(0, 0, false);
+            listener.done(0, 0, 0, false);
             return;
         }
         List<Double> sorted = new ArrayList<>(gaps);
         Collections.sort(sorted);
         double median = sorted.get(sorted.size() / 2);
-        double sum = 0;
-        int n = 0;
-        for (double g : gaps) {
-            if (Math.abs(g - median) <= AGREE) { sum += g; n++; } // ignore a press that's well off the others
-        }
-        double delay = Math.max(0, Math.min(0.6, sum / n));
-        listener.done(delay, n, n >= NEEDED);
+        List<Double> kept = new ArrayList<>();
+        for (double g : gaps) if (Math.abs(g - median) <= AGREE) kept.add(g); // ignore a press well off the others
+        double sum = 0, sq = 0;
+        for (double g : kept) sum += g;
+        double avg = sum / kept.size();
+        for (double g : kept) sq += (g - avg) * (g - avg);
+        double spread = Math.sqrt(sq / kept.size());
+        listener.done(Math.max(0, Math.min(0.6, avg)), kept.size(), spread, kept.size() >= NEEDED);
     }
 }

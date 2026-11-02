@@ -357,46 +357,6 @@ const Coach = (() => {
     }) };
   }
 
-  // "Start here": the 2-3 differences most worth working on first. Each candidate gets the time it costs (from the
-  // time gap over its stretch of track) and a rough difficulty; easy fixes count in full, harder ones less, so a
-  // newer driver sees "stop coasting" before "trail brake deeper". Only one "through the corner" item per corner.
-  const EASE = { easy: 1, medium: 0.6, harder: 0.35 };
-  function startHere(res, who) {
-    const { delta } = res.grid, n = delta.length, at = k => delta[Math.max(0, Math.min(n - 1, k))];
-    const items = [];
-    for (const c of res.corners) {
-      const me = c.me, ref = c.ref, add = (ease, cost, text) => cost >= 0.05 && items.push({ n: c.n, ease, cost, text });
-      for (const z of c.lifts) {
-        add("easy", z.cost, z.kind === "brake" ? `you brake for ${z.length} m where ${who} stays on the throttle`
-          : `you lift off for ${z.length} m where ${who} stays on the throttle`);
-      }
-      let counted = 0;
-      if (me.brakeAt !== null && ref.brakeAt !== null && ref.brakeAt - me.brakeAt >= 10) {
-        const cost = at(ref.brakeAt) - at(me.brakeAt);
-        counted += Math.max(0, cost);
-        add("easy", cost, `you brake ${ref.brakeAt - me.brakeAt} m earlier than ${who}`);
-      }
-      if (me.fullGas !== null && ref.fullGas !== null && me.fullGas - ref.fullGas >= 15) {
-        const cost = at(me.fullGas) - at(ref.fullGas);
-        counted += Math.max(0, cost);
-        add("easy", cost, `you reach full throttle ${me.fullGas - ref.fullGas} m later than ${who}`);
-      }
-      // what's left of the time lost through the corner itself
-      const rest = c.cornerLost - counted;
-      if (me.minSpeed <= ref.minSpeed - 5) add("medium", rest, `carry more speed: your slowest is ${r0(me.minSpeed)} km/h, ${who}'s ${r0(ref.minSpeed)} km/h`);
-      else if (c.tips.some(t => t.startsWith("Trail braking") || t.startsWith("Brake pressure"))) add("harder", rest, "brake harder at first, then ease off into the turn (trail braking)");
-      else if (c.tips.some(t => t.startsWith("Track use"))) add("medium", rest, "use more of the track (see the line in the close-up)");
-      // a slow exit costs time all the way down the straight after the corner
-      const straight = c.lost - c.cornerLost - c.approachLost
-        - c.lifts.filter(z => z.from >= c.exit).reduce((a, z) => a + z.cost, 0); // lifts there are listed on their own
-      if (c.to - c.exit >= 150 && me.exitSpeed <= ref.exitSpeed - 3) {
-        add("medium", straight, `a faster exit: you leave the corner ${r0(ref.exitSpeed - me.exitSpeed)} km/h slower, and lose it down the straight`);
-      }
-    }
-    items.forEach(i => (i.score = i.cost * EASE[i.ease]));
-    return items.sort((a, b) => b.score - a.score).slice(0, 3);
-  }
-
   // Lifts and braking the reference doesn't do: anywhere outside the reference's own braking-to-full-throttle
   // part of each corner, you're on the brake, or below 90% throttle and 20 points under the reference, for 10 m
   // or more. Stretches that run straight into or out of that part are early braking or a late exit, which the
@@ -585,6 +545,27 @@ const Coach = (() => {
   // Close-up 1: the corner drawn to scale with both racing lines, the same way round as the lap map. Line thickness shows
   // the pedals: brake pressure from the braking point to the slowest point, throttle everywhere else
   // (thin = none, full thickness = 100%).
+  // Across a recording's clean laps (3 or more): where the time goes on average, where it varies most from lap to
+  // lap, and the "ideal lap" from each section's best time. Sections are the reference's, so they line up.
+  function acrossLaps(refLap, laps, who) {
+    const runs = laps.filter(l => !l.cut).map(l => analyse(refLap, l.lap, who)).filter(r => !r.error);
+    if (runs.length < 3 || runs.some(r => r.corners.length !== runs[0].corners.length)) return null;
+    const sections = runs[0].corners.map((c, i) => {
+      const lost = runs.map(r => r.corners[i].lost), avg = mean(lost);
+      const sd = Math.sqrt(mean(lost.map(v => (v - avg) ** 2)));
+      return { n: c.n, avg, sd, best: Math.min(...lost) };
+    });
+    const top = (key, min) => sections.filter(x => x[key] >= min).sort((a, b) => b[key] - a[key]).slice(0, 3);
+    const refMs = runs[0].refMs;
+    return {
+      laps: runs.length,
+      gain: top("avg", 0.05),
+      varies: top("sd", 0.05),
+      idealMs: Math.round(refMs + 1000 * sections.reduce((a, x) => a + x.best, 0)),
+      bestMs: Math.min(...runs.map(r => r.lapMs)),
+    };
+  }
+
   // Audio cues (the app): where the reference starts braking (dabs too), lifts without braking, and gets back on the
   // throttle after braking, plus its line every 2 m so the app can tell where the car is. Distances are along the
   // reference line; t is the reference's time there, which the app uses to keep cues from piling up in chicanes.
@@ -756,7 +737,7 @@ const Coach = (() => {
         <span><b class="cl-key-badge me">B</b><b class="cl-key-badge ref">B</b>first brake</span>
         <span><b class="cl-key-badge me">G</b><b class="cl-key-badge ref">G</b>back on the gas</span>
         <span><b class="cl-key-badge me">F</b><b class="cl-key-badge ref">F</b>full throttle</span>
-        <span>dark = you, grey = ${who}</span>
+        <span><b class="cl-key-badge me"></b>you, <b class="cl-key-badge ref"></b>${who}</span>
       </div>
       <p class="hint">Drawn to scale, the same way round as the lap map. Your line is a dot every ${step} m comparing your pedals
         with ${who}'s at the same point: the brake wherever either of you is braking, the throttle everywhere else. Bigger
@@ -804,7 +785,7 @@ const Coach = (() => {
     return NEEDED.every(h => head.includes(h));
   }
 
-  return { parseCsv, fastestLap, lapChoices, analyse, startHere, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
+  return { parseCsv, fastestLap, lapChoices, analyse, acrossLaps, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;

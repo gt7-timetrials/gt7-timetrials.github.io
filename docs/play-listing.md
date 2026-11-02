@@ -17,7 +17,7 @@ Everything to paste into the Play Console, and how to answer its forms. Images a
 > Record your lap on your phone while you drive, then compare it with the top lap of the current time trial,
 > corner by corner:
 >
-> • Start here: the two or three biggest, easiest gains in your lap.
+> • Across your laps: where you lose most time on average, and where you're least consistent.
 > • A track map coloured by how much time you lose in each section.
 > • For each corner: where you brake, your slowest speed, when you get back on the throttle, and how fast you leave
 >   the corner, compared with the reference lap.
@@ -44,7 +44,7 @@ Everything to paste into the Play Console, and how to answer its forms. Images a
 - App icon: `docs/play/icon-512.png` (512 × 512).
 - Feature graphic: `docs/play/feature-1024x500.png`.
 - Phone screenshots, in this order: `docs/play/phone-1.png` to `phone-7.png` (1080 × 2160).
-  1. Current time trials and gold predictions; 2. recording; 3. result and Start here; 4. track map;
+  1. Current time trials and gold predictions; 2. recording; 3. result; 4. track map;
   5. corner tips; 6. racing line close-up; 7. brake and throttle chart.
 - Tablet screenshots: not needed for a phone app (leave empty).
 

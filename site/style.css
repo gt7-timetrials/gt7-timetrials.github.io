@@ -39,6 +39,7 @@
   }
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   margin: 0;
   background: var(--bg);
@@ -99,24 +100,15 @@ footer { padding: 0 16px 30px; font-size: 0.85rem; }
 /* event card additions */
 .event-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
 .official { white-space: nowrap; font-size: 0.85rem; padding-top: 4px; }
-.top-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-bottom: 12px; }
 @media (max-width: 640px) {
-  .top-grid { grid-template-columns: minmax(0, 1fr); }
   .event-head { flex-direction: column; gap: 2px; }
   .official { padding-top: 0; }
 }
-.headline { border: 2px solid var(--gold); border-radius: 10px; padding: 12px 14px; background: var(--gold-band); }
+.headline { border: 2px solid var(--gold); border-radius: 10px; padding: 12px 14px; background: var(--gold-band); margin-bottom: 12px; }
 .headline .label { font-size: 0.8rem; color: var(--muted); }
 .headline .big { font-size: 2rem; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; line-height: 1.2; }
-.checker { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; height: 100%; }
-.checker label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 6px; }
-.checker .row { display: flex; gap: 8px; }
-.checker input { flex: 1; min-width: 0; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
-  background: var(--bg); color: var(--text); font: inherit; font-variant-numeric: tabular-nums; }
-.checker button, .more { padding: 8px 14px; border-radius: 8px; border: 0; background: var(--accent); color: #fff;
+.more { padding: 8px 14px; border-radius: 8px; border: 0; background: var(--accent); color: #fff;
   font: inherit; font-weight: 600; cursor: pointer; }
-.checker .result { margin-top: 8px; font-size: 0.9rem; }
-.checker .result div + div { margin-top: 2px; }
 table.targets { width: auto; min-width: min(100%, 520px); margin: 4px 0 2px; }
 table.targets th, table.targets td { padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); }
 table.targets td.strong { font-weight: 650; }
@@ -184,16 +176,12 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .save-btn { padding: 3px 10px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent);
   font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .save-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
-.start-here { margin: 4px 0 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
-.start-here h4 { margin: 0 0 4px; font-size: 0.95rem; }
-.start-here ol { margin: 0 0 4px; padding-left: 20px; display: grid; gap: 6px; }
-.start-here .hint { margin: 0; }
+.across { margin: 4px 0 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.across h4 { margin: 0 0 4px; font-size: 0.95rem; }
+.across .hint { margin: 0; }
 .sh-corner { padding: 1px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--text);
   font: inherit; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
 .sh-corner.selected { border-color: var(--text); }
-.ease { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 1px 6px;
-  border-radius: 999px; color: #fff; }
-.ease.easy { background: var(--good); } .ease.medium { background: var(--warn); } .ease.harder { background: var(--bad); }
 .lap-pick { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 0 0; }
 .lap-btn { padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text);
   font: inherit; font-size: 0.85rem; cursor: pointer; }
@@ -204,6 +192,11 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .cue-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 6px 0; }
 .cue-row > span { min-width: 15em; }
 .cue-row select { padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; }
+.sheet-laps { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin: 0 0 6px; font-size: 0.9rem; }
+@media (max-width: 760px) { .sheet-laps { justify-content: space-between; } }
+.across ul { margin: 2px 0 8px; padding-left: 20px; }
+.across ul li { margin: 3px 0; }
+.across-head { margin: 8px 0 2px; font-weight: 600; font-size: 0.9rem; }
 .cue-cal { padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; margin: 10px 0; }
 .cue-cal p { margin: 6px 0; }
 .cue-cal-status:empty { display: none; }
@@ -253,7 +246,7 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .chip.selected { outline: 2px solid var(--text); outline-offset: 1px; }
 .corner-detail { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
 .corner-head { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; font-size: 1.05rem; }
-.pill { color: #fff; border-radius: 999px; padding: 1px 9px; font-size: 0.85rem; font-weight: 700; }
+.pill { color: #fff; border-radius: 999px; padding: 1px 9px; font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
 .pill.good { background: var(--good); } .pill.warn { background: var(--warn); } .pill.bad { background: var(--bad); }
 table.corner-table { font-size: 0.88rem; }
 table.corner-table th, table.corner-table td { padding: 5px 6px; min-width: 0; }
@@ -385,3 +378,13 @@ table.cw-legend tbody th { text-align: left; color: var(--text); white-space: no
 .license-medals b, .medal-result b.medal { font-weight: 600; }
 .license-test .coach { margin-top: 10px; padding-top: 10px; }
 .medal-result { margin-left: 4px; }
+.guide { margin: 10px 0; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 10px; background: var(--gold-band); }
+.guide h4 { margin: 0 0 4px; font-size: 0.95rem; }
+.guide ol { margin: 4px 0 10px; padding-left: 20px; }
+.guide li { margin: 4px 0; font-size: 0.9rem; }
+#cues-panel h3 { margin: 1.4em 0 0.2em; }
+#cues-panel h4 { margin: 1em 0 0.2em; font-size: 0.9rem; color: var(--muted); }
+#cues-panel h3 + .hint { margin-top: 0; }
+.prose h3 { font-size: 1rem; margin: 1.2em 0 0.3em; }
+.prose li { margin: 4px 0; }
+.prose a { overflow-wrap: anywhere; }
