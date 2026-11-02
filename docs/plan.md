@@ -26,6 +26,7 @@ tests: keep it simple, and only take on what one person can look after.
          background, both from the test APK and from the Play update. The "no data" messages (website and computer recorder) now also mention other telemetry apps
          such as SimHub and Sim Racing Telemetry.
    - [x] 12 testers opted in on 31 October 2026 (one joined the group but hadn't opted in at first). Countries: all.
+   - [x] 18 testers opted in by 3 November 2026: a buffer of 6 over the 12 needed.
    - [ ] Keep 12+ opted in for 14 days in a row, to about **14 November 2026** (aim for a few more as a buffer). Google
          tracks this by itself: progress is on the Play Console Dashboard; nothing to trigger.
    - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
