@@ -286,8 +286,12 @@ window.GT7AppEvent = ev => {
       PlayStations seen: ${(ev.consoles || []).length}`;
   }
   else if (ev.type === "cues") {
+    const set = recording.cueSet || {};
+    const offsets = [set.brakeEarly ? `brake cue ${set.brakeEarly.toFixed(2)} s early` : "brake cue on the reference's point",
+      set.gas && set.gasAdjust ? `gas beep ${Math.abs(set.gasAdjust).toFixed(2)} s ${set.gasAdjust > 0 ? "later" : "earlier"}` : ""];
     recording.out.querySelector(".rec-cues").innerHTML = `Audio cues on (${esc(ev.output)}, ${ev.delay.toFixed(2)} s delay${
-      ev.calibrated ? "" : `, the starting value: calibrate on the <a href="#cues">Audio cues</a> tab for the best timing`}).`;
+      ev.calibrated ? "" : `, the starting value: calibrate on the <a href="#cues">Audio cues</a> tab for the best timing`};
+      ${offsets.filter(Boolean).join(", ")}).`;
   }
   else if (ev.type === "connected") say(`Connected to your PlayStation at ${ev.ip}. ${REC_STATES.menus}`);
   else if (ev.type === "state") say(REC_STATES[ev.state] || "");
@@ -335,6 +339,7 @@ async function startApp(e, out, ip) {
     try {
       const ref = await (refCache[refKey(e)] ??= fetch(e.reference.url).then(r => (r.ok ? r.json() : Promise.reject())));
       if (recording?.out !== out) return; // cancelled while the reference loaded
+      recording.cueSet = cueSettings(); // what the app reads now: changes on the tab apply from the next recording
       APP.startWithCues(ip || "", JSON.stringify(Coach.cuePoints(ref)));
       return;
     } catch (err) {
@@ -397,7 +402,8 @@ function renderCues() {
       <button type="button" class="button-link cue-test" data-kind="gas">Gas: chirp</button>
       <button type="button" class="button-link cue-test" data-kind="pip">Chicane: pip</button></p>
     <h3>Cue settings</h3>
-    <p class="hint">The countdown before each brake or lift, which cues play, and when they play.</p>
+    <p class="hint">The countdown before each brake or lift, which cues play, and when they play. Changes apply from
+      the next recording.</p>
     <h4>Countdown</h4>
     <p class="cue-row"><span>Beeps before brake</span>${select("ticks", [0, 1, 2, 3], v => (v ? `${v} before the BEEP` : "just the BEEP"))}</p>
     <p class="cue-row"><span>Beep timing</span>${select("spacing", range(0.3, 1, 0.1), v => `${s(v)} apart`)}</p>

@@ -40,7 +40,8 @@ function standIn({ withCues, csv }) {
       delay: 0, calibrated: false, current: true, start: 0 }], current: { key: "speaker", name: "Phone speaker", delay: 0 } };
     Object.assign(app, {
       cueState: () => JSON.stringify(state),
-      saveCues: json => { call("saveCues", json); const c = JSON.parse(json); if ("enabled" in c) state.enabled = c.enabled; },
+      saveCues: json => { call("saveCues", json); const c = JSON.parse(json); if ("enabled" in c) state.enabled = c.enabled;
+        if (c.settings) state.settings = c.settings; },
       testSound: kind => call("testSound", kind),
       startWithCues: (ip, cues) => call("startWithCues", ip, cues),
       calibrate: ip => call("calibrate", ip),
@@ -152,7 +153,7 @@ function standIn({ withCues, csv }) {
     const cues = JSON.parse(start[2]);
     assert.ok(cues.x.length > 100 && cues.cues.some(q => q.kind === "brake"), "the reference's cue points sent to the app");
     await event(p, { type: "cues", output: "Phone speaker", delay: 0, calibrated: false });
-    assert.match(await coach(p).locator(".rec-cues").innerText(), /Audio cues on \(Phone speaker/);
+    assert.match(await coach(p).locator(".rec-cues").innerText(), /Audio cues on \(Phone speaker.*brake cue on the reference's point\)/s);
     await coach(p).locator(".rec-cancel").click();
 
     await p.goto(url + "#cues");
@@ -162,6 +163,8 @@ function standIn({ withCues, csv }) {
     assert.deepStrictEqual((await calls(p)).filter(c => c[0] === "testSound").map(c => c[1]), ["brake", "lift", "gas", "pip"]);
     const offsets = await p.locator('select[data-set="brakeEarly"] option').evaluateAll(o => o.map(x => x.value));
     assert.deepStrictEqual(offsets, ["0", "0.05", "0.1", "0.15", "0.2"]);
+    await p.selectOption('select[data-set="brakeEarly"]', "0.15");
+    assert.strictEqual(JSON.parse((await calls(p)).at(-1)[1]).settings.brakeEarly, 0.15, "the offset is saved in the app");
     const gas = await p.locator('select[data-set="gasAdjust"] option').evaluateAll(o => o.map(x => x.value));
     assert.deepStrictEqual(gas, ["-0.2", "-0.15", "-0.1", "-0.05", "0", "0.05", "0.1", "0.15", "0.2"]);
     await p.locator(".cue-calibrate").click();
@@ -171,6 +174,13 @@ function standIn({ withCues, csv }) {
     assert.match(await p.locator(".cue-cal-status").innerText(), /Countdown 6 of 6: ✓ ✓ – ✓ ✓ ✓/);
     await event(p, { type: "calibrate", output: "Phone speaker", done: true, ok: true, delay: 0.02, presses: 5, spread: 0.02 });
     assert.match(await p.locator(".cue-cal-status").innerText(), /Calibrated: Phone speaker plays cues 0\.02 s early/);
+    // the next recording shows the offset it plays with
+    await p.goto(url + "#license");
+    await coach(p).locator(".record-btn").click();
+    await p.waitForFunction(() => window.__calls.filter(c => c[0] === "startWithCues").length === 2);
+    await event(p, { type: "cues", output: "Phone speaker", delay: 0, calibrated: true });
+    assert.match(await coach(p).locator(".rec-cues").innerText(), /brake cue 0\.15 s early/);
+    await coach(p).locator(".rec-cancel").click();
     await p.context().close();
   }
 
