@@ -84,9 +84,10 @@ tests: keep it simple, and only take on what one person can look after.
          find the braking points in an unfamiliar car.
    - [x] Owner: gas beep adjustment ±0.20 s in 0.05 s steps (±0.5 s was far too much).
    - [x] Merged beta into main on 2 November 2026 (#46); `gt7-timetrials-play.aab` is test build 31.
-   - [ ] Owner: check the Play app (release 16) still works with the new website, upload build 31 to the Alpha track
-         (Manage track → Create new release), and once approved: update on the phone, check the Audio cues
-         checkbox, tab, a test sound and a short recording with cues.
+   - [x] Owner: the Play app (release 16) works with the new website; build 31 uploaded to the Alpha track and sent
+         for review (2 November).
+   - [ ] Once approved: update on the phone, check the Audio cues checkbox, tab, a test sound and a short recording
+         with cues.
    - [ ] Owner: email the testers' group about the update (draft written 2 November, with the Reddit link for
          feedback), and update the Play listing text ("Start here" → "Across your laps", from `docs/play-listing.md`).
    - [ ] Post about it with the next time trial for momentum.
