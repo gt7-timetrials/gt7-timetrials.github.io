@@ -8,21 +8,26 @@ Everything to paste into the Play Console, and how to answer its forms. Images a
 
 **Short description** (80 max):
 
-> Record GT7 laps on your phone and see where you lose time, corner by corner.
+> Record GT7 laps on your phone, see where you lose time, learn braking points.
 
 **Full description** (4000 max):
 
 > A free hobby helper for Gran Turismo 7 time trials and Super License tests.
 >
-> Record your lap on your phone while you drive, then compare it with the top lap of the current time trial,
-> corner by corner:
+> Record your laps on your phone while you drive, as many as you like, then compare them with the top lap of the
+> current time trial, corner by corner:
 >
-> • Across your laps: where you lose most time on average, and where you're least consistent.
+> • Audio cues: a countdown to each point where the reference lap brakes or lifts, and a beep before it gets back on
+>   the throttle, to learn the braking points. Works with the phone locked, through the speaker or headphones, and
+>   can be calibrated for your Bluetooth device.
+> • Across your laps: where you lose most time on average, where you're least consistent, and your ideal lap from
+>   your best sections.
 > • A track map coloured by how much time you lose in each section.
 > • For each corner: where you brake, your slowest speed, when you get back on the throttle, and how fast you leave
 >   the corner, compared with the reference lap.
 > • Close-ups of both racing lines, and a brake and throttle chart.
 > • Pick any lap you recorded. Laps that look like a cut are flagged.
+> • A short guide on your first comparison, and a How to use page.
 >
 > The app also shows the predicted gold, silver and bronze times for the current time trials, past events and their
 > top 100, and the Super License tests with a gold-medal run to compare with.
@@ -32,7 +37,7 @@ Everything to paste into the Play Console, and how to answer its forms. Images a
 > type its address in.
 >
 > Private by design: no account, no ads, no tracking. Your recording stays on your phone and is gone when you close
-> the app, unless you save it to Downloads.
+> the app, unless you save it to Downloads. Audio cue settings are kept on the phone only.
 >
 > Reference laps are recorded from top replays each week. Thanks to the drivers whose laps make this possible, and to
 > the people who decoded GT7's telemetry.

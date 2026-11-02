@@ -91,8 +91,9 @@ tests: keep it simple, and only take on what one person can look after.
          for review (2 November).
    - [x] Build 31 approved and published (2 November); the owner updated from Play, and the Audio cues option and
          recording work.
-   - [x] Owner: emailed the testers' group about the update (with the Reddit link for feedback), and updated the
-         Play listing text ("Across your laps").
+   - [x] Owner: emailed the testers' group about the update (with the Reddit link for feedback).
+   - [ ] Owner: update the Play listing text from `docs/play-listing.md` (short and full description: audio cues,
+         many laps, Across your laps, the guide).
    - [ ] Post about it with the next time trial for momentum.
 
 3. **Clarity** (merged 2 November 2026), from a Reddit tester ("very advanced… people might get lost", "you always have to reset the
