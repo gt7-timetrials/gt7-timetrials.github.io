@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-01T21:38:41.571098+00:00",
+ "generated_at": "2026-11-02T21:24:30.339643+00:00",
  "history_events": 203,
  "snapshot_events": 1,
  "historical_entrants": {
@@ -17,14 +17,14 @@
    "car": "Hyundai ELANTRA N TC '24",
    "starts": "2026-10-22T18:00:00+11:00",
    "ends": "2026-11-05T17:59:59+11:00",
-   "days_elapsed": 10.6,
-   "days_left": 3.4,
-   "entrants": 157086,
+   "days_elapsed": 11.6,
+   "days_left": 2.4,
+   "entrants": 163545,
    "entrants_projection": null,
    "wr_ms": 109973,
    "wr_holder": "SFE_Damian",
    "gold_now_ms": 113272,
-   "top100_spread_pct": 0.55,
+   "top100_spread_pct": 0.543,
    "strong_drivers_posted": [
     "MetalGear9493",
     "SFE_Damian"
@@ -32,12 +32,46 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 109872,
-    "gold_ms": 113168,
-    "gold_fast_ms": 112995,
+    "final_wr_ms": 109892,
+    "gold_ms": 113188,
+    "gold_fast_ms": 113089,
     "gold_slow_ms": 113272,
-    "final_wr_fast_ms": 109704,
+    "final_wr_fast_ms": 109796,
     "final_wr_slow_ms": 109973,
+    "method": "history: time elapsed + top drivers"
+   }
+  },
+  {
+   "event_id": 15001,
+   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15001/",
+   "track": "Nürburgring GP",
+   "category": "circuit",
+   "car": "Porsche 911 GT3 R (992) '22",
+   "starts": "2026-11-02T23:00:00+11:00",
+   "ends": "2026-11-16T22:59:59+11:00",
+   "days_elapsed": 0.4,
+   "days_left": 13.6,
+   "entrants": 21233,
+   "entrants_projection": null,
+   "wr_ms": 117167,
+   "wr_holder": "Turismo__22",
+   "gold_now_ms": 120682,
+   "top100_spread_pct": 1.523,
+   "strong_drivers_posted": [
+    "NRG_Simon74",
+    "SFE_Damian",
+    "VSR_Symin",
+    "VitaIity_Kylian"
+   ],
+   "strong_drivers_total": 25,
+   "regular_event": false,
+   "predicted": {
+    "final_wr_ms": 117039,
+    "gold_ms": 120550,
+    "gold_fast_ms": 120220,
+    "gold_slow_ms": 120682,
+    "final_wr_fast_ms": 116719,
+    "final_wr_slow_ms": 117167,
     "method": "history: time elapsed + top drivers"
    }
   },
@@ -49,14 +83,14 @@
    "car": "Maserati A6GCS/53 Spyder '54",
    "starts": "2026-10-29T18:00:00+11:00",
    "ends": "2026-11-12T17:59:59+11:00",
-   "days_elapsed": 3.6,
-   "days_left": 10.4,
-   "entrants": 96615,
+   "days_elapsed": 4.6,
+   "days_left": 9.4,
+   "entrants": 106567,
    "entrants_projection": null,
    "wr_ms": 80623,
    "wr_holder": "MetalGear9493",
    "gold_now_ms": 83041,
-   "top100_spread_pct": 0.958,
+   "top100_spread_pct": 0.945,
    "strong_drivers_posted": [
     "AT__1826",
     "MetalGear9493"
@@ -64,11 +98,11 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 80452,
-    "gold_ms": 82865,
-    "gold_fast_ms": 82655,
+    "final_wr_ms": 80469,
+    "gold_ms": 82883,
+    "gold_fast_ms": 82690,
     "gold_slow_ms": 83041,
-    "final_wr_fast_ms": 80248,
+    "final_wr_fast_ms": 80282,
     "final_wr_slow_ms": 80623,
     "method": "history: time elapsed + top drivers"
    }
