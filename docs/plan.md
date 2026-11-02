@@ -29,7 +29,12 @@ tests: keep it simple, and only take on what one person can look after.
    - [ ] Keep 12+ opted in for 14 days in a row, to about **14 November 2026** (aim for a few more as a buffer). Google
          tracks this by itself: progress is on the Play Console Dashboard; nothing to trigger.
    - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
-         production.
+         production. So far: a Reddit tester (2 November) found it detailed but hard to get into, thought each lap
+         needed a restart, and asked for translation and GT7-style telemetry graphs: answered by item 3 (guide, How
+         to use tab, many-laps wording, translation note); graphs are planned. The same tester, later: drove four sessions at
+         Barcelona checking the corner descriptions against GT7's own telemetry and found them accurate (braking
+         and full-throttle distances, track width at the apex); set 1:51.539. Asked to compare their best and worst
+         laps together with the WR's (now each lap is compared with the WR, and ‹ › steps through laps on a corner).
    - [ ] From about 14 November: Apply for production (Dashboard; a short questionnaire on how testers were found,
          how they used the app, their feedback and what changed; review up to about a week), then release to everyone.
 
@@ -80,11 +85,17 @@ tests: keep it simple, and only take on what one person can look after.
          wired headphones 0 s, Bluetooth 0.33 s.
    - [x] Owner: S-4 and S-6 on the phone speaker and Bluetooth: recording and cues work well; the cues really help
          find the braking points in an unfamiliar car.
-   - [ ] Merge beta into main (after the clarity changes below are checked on beta).
-   - [ ] Release it to the Play test (upload the `.aab`) during the 14 days, and post about it with the next time
-         trial (week of 2 November) for momentum.
+   - [x] Owner: gas beep adjustment ±0.20 s in 0.05 s steps (±0.5 s was far too much).
+   - [x] Merged beta into main on 2 November 2026 (#46); `gt7-timetrials-play.aab` is test build 31.
+   - [x] Owner: the Play app (release 16) works with the new website; build 31 uploaded to the Alpha track and sent
+         for review (2 November).
+   - [ ] Once approved: update on the phone, check the Audio cues checkbox, tab, a test sound and a short recording
+         with cues.
+   - [ ] Owner: email the testers' group about the update (draft written 2 November, with the Reddit link for
+         feedback), and update the Play listing text ("Start here" → "Across your laps", from `docs/play-listing.md`).
+   - [ ] Post about it with the next time trial for momentum.
 
-3. **Clarity** (on beta), from a Reddit tester ("very advanced… people might get lost", "you always have to reset the
+3. **Clarity** (merged 2 November 2026), from a Reddit tester ("very advanced… people might get lost", "you always have to reset the
    lap") and the owner's review:
    - [x] "How to read this" guide above the first comparisons, until Got it; the same steps on a new **How to use**
          tab (what's here, recording one or many laps with the app or a computer, reading the comparison, audio cues).
@@ -97,13 +108,15 @@ tests: keep it simple, and only take on what one person can look after.
    - [x] Audio cues tab: Hear the sounds, Cue settings and Sound delay sections; less explanation.
    - [x] Dark mode: the corner close-up's "dark = you" legend shows the colours instead. The Super License tab only
          links the computer recorder on the website.
-   - [ ] Owner: feedback on the guide and the rest on beta.
+   - [x] Owner: happy with the guide and the rest on the beta app.
    - Later: graphs of speed, throttle and brake along the lap, like GT7's own (the tester asked for them).
+   - Later, maybe: show two of your laps against the reference at once, for example your best and worst (the same
+     tester asked for it).
 
-4. **"Start here" summary**: built, then dropped (on beta) in favour of "Across your laps": two summaries were too much,
+4. **"Start here" summary**: built, then dropped in favour of "Across your laps": two summaries were too much,
    and the map with its corner times already shows where a single lap loses time.
 
-5. **Across your laps** (on beta): with 3 or more clean laps in a recording, the sections with the most time to gain on
+5. **Across your laps** (merged 2 November 2026): with 3 or more clean laps in a recording, the sections with the most time to gain on
    average and the least consistent ones, and the "ideal lap" from each section's best time. The selected corner stays
    selected when you switch laps, and the corner's panel has ‹ › to step through the laps.
 
@@ -129,6 +142,10 @@ tests: keep it simple, and only take on what one person can look after.
 - **Tests** run on GitHub on every push to `main` and `beta` (the Tests workflow); a red one means don't merge.
 - **Changes:** built on the `beta` branch first and tried on the beta app and https://gt7-timetrials.github.io/beta/
   (see `docs/android.md`); merged into `main` only when the owner says so. Play releases are the owner's call.
+  `CLAUDE.md` (added 2 November) tells every Claude Code session to work this way.
+- **Signing keys:** the test and beta APKs use a private test key from the secrets `TEST_KEYSTORE_BASE64` and
+  `TEST_KEYSTORE_PASSWORD` (2 November 2026; the old key in the repository is no longer used), the Play bundle the
+  upload key. The owner keeps copies of both.
 
 - **New time trial:** the owner sends a CSV of the WR replay. Add it to `data/reference_laps` (it matches the event by
   car and lap time). The event appears after the next morning's daily update; to show it the same evening, run

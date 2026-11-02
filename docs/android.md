@@ -52,8 +52,13 @@ Console. Google re-signs it for users (Play App Signing); a lost upload key can 
 packets like the Python recorder, and records a lap from a fake PlayStation on the same computer. It also replays
 recordings through the audio cues (on time, and with unusual driving: off the line, reversing, a restart, a pause, a
 point-to-point track), simulates calibrations and checks the starting delays. `UiTest` runs `tests/test_ui.js`: the
-website's screens in a phone-sized browser as a visitor, in the Play app without audio cues (a stand-in for its
-`GT7App`, so the website keeps working for testers until they update) and in the current app. GitHub runs all the tests
+website's screens in a phone-sized browser as a visitor, in the earlier apps and in the current app. The earlier apps
+are stand-ins for `GT7App` with exactly the bridge methods (`@JavascriptInterface`) of **the app on main** (read with
+`git show origin/main:…`, so before a merge it's the app testers have, provided main's last `.aab` was uploaded to
+Play) and of **the first Play release** (up to release 16: recording only). Each must record, compare and save with
+the new website, show audio cue controls only if it has them, and never be asked for anything it doesn't have.
+`GT7_MAIN_REF=<commit>` checks against another commit's app instead (for example the one a Play release was built
+from). GitHub runs all the tests
 on every push to `main` and `beta` (`.github/workflows/tests.yml`).
 
 **Beta:** new work goes to the `beta` branch first, so the owner can try it before testers get it.
