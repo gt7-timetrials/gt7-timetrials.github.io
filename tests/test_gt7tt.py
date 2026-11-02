@@ -479,6 +479,8 @@ class UiTest(unittest.TestCase):
             four_laps(s1, multi)
             root = os.path.join(self.HERE, "..")
             main, where = main_app_methods(root)
+            if os.environ.get("GITHUB_ACTIONS"):  # on GitHub, main must be there: otherwise this checks nothing
+                self.assertNotIn("not found", where, "the Tests workflow should fetch main")
             with open(os.path.join(root, BRIDGE)) as f:
                 current = bridge_methods(f.read())
             apps = json.dumps({"main": main, "mainFrom": where, "first": FIRST_PLAY_APP, "current": current})
