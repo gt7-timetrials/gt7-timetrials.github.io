@@ -319,6 +319,12 @@ fs.writeFileSync(process.argv[3], [`${c.loop} ${c.step}`, c.x.join(" "), c.z.joi
             self.assertTrue(all(abs(t - 0.2) < 0.03 for t in main[:-1] if t < 5), (lap, main))
             # the gas beep 0.5 s before (plus the delay), within 0.05 s though the car is braking and turning in
             self.assertTrue(all(abs(t - 0.7) < 0.05 for t in gas if t < 5), (lap, gas))
+            # with the brake cue set 0.15 s earlier: brake BEEPs 0.35 s before, lift BEEPs and gas beeps unchanged
+            early = [l.split() for l in self.cue_check(cues, os.path.join(self.HERE, "fixtures", lap), "timing", "0.2", "0.15")]
+            brake = [float(s[3]) for s in early if s[1] == "brake"]
+            self.assertTrue(brake and all(abs(t - 0.35) < 0.03 for t in brake[:-1] if t < 5), (lap, brake))
+            lift = [float(s[3]) for s in early if s[1] == "lift"]
+            self.assertTrue(all(abs(t - 0.2) < 0.03 for t in lift if t < 5), (lap, lift))
 
     def edge(self, how, *more):
         cues = self.cue_file(os.path.join(self.HERE, "fixtures", "reference_barcelona.csv"))
