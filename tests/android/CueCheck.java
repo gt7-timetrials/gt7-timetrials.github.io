@@ -10,7 +10,7 @@ import java.util.Locale;
 /**
  * Replays a recording through the audio cue engine as if it were live, or runs a calibration, for tests/test_gt7tt.py.
  *
- *   CueCheck <cues.txt> <recording.csv> timing <delay>
+ *   CueCheck <cues.txt> <recording.csv> timing <delay> [brake early]
  *       prints "sound <name> <time> <seconds before the car reached the point>" for every sound
  *   CueCheck <cues.txt> <recording.csv> edge <how> [p2p]
  *       the recording replayed with something unusual happening, with a delay of 0: prints "played <name> <time>"
@@ -69,6 +69,7 @@ public class CueCheck {
         }
         Cues.Settings set = new Cues.Settings();
         set.delay = Double.parseDouble(args[3]);
+        if (args.length > 4) set.brakeEarly = Double.parseDouble(args[4]);
 
         List<double[]> played = new ArrayList<>(); // time, sound, position, cue position
         double[] now = {0};
