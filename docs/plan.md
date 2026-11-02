@@ -89,10 +89,11 @@ tests: keep it simple, and only take on what one person can look after.
    - [x] Merged beta into main on 2 November 2026 (#46); `gt7-timetrials-play.aab` is test build 31.
    - [x] Owner: the Play app (release 16) works with the new website; build 31 uploaded to the Alpha track and sent
          for review (2 November).
-   - [ ] Once approved: update on the phone, check the Audio cues checkbox, tab, a test sound and a short recording
-         with cues.
-   - [ ] Owner: email the testers' group about the update (draft written 2 November, with the Reddit link for
-         feedback), and update the Play listing text ("Start here" → "Across your laps", from `docs/play-listing.md`).
+   - [x] Build 31 approved and published (2 November); the owner updated from Play, and the Audio cues option and
+         recording work.
+   - [x] Owner: emailed the testers' group about the update (with the Reddit link for feedback).
+   - [ ] Owner: update the Play listing text from `docs/play-listing.md` (short and full description: audio cues,
+         many laps, Across your laps, the guide).
    - [ ] Post about it with the next time trial for momentum.
 
 3. **Clarity** (merged 2 November 2026), from a Reddit tester ("very advanced… people might get lost", "you always have to reset the
@@ -112,6 +113,9 @@ tests: keep it simple, and only take on what one person can look after.
    - Later: graphs of speed, throttle and brake along the lap, like GT7's own (the tester asked for them).
    - Later, maybe: show two of your laps against the reference at once, for example your best and worst (the same
      tester asked for it).
+   - Later: with several laps recorded, show your **best composite lap** (your best section from each of the laps, put
+     together) as a lap of its own, to compare with the reference corner by corner like any other lap. Today
+     Across your laps only gives its time ("your best time in each section adds up to…").
 
 4. **"Start here" summary**: built, then dropped in favour of "Across your laps": two summaries were too much,
    and the map with its corner times already shows where a single lap loses time.
