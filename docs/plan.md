@@ -113,6 +113,9 @@ tests: keep it simple, and only take on what one person can look after.
    - Later: graphs of speed, throttle and brake along the lap, like GT7's own (the tester asked for them).
    - Later, maybe: show two of your laps against the reference at once, for example your best and worst (the same
      tester asked for it).
+   - Later: with several laps recorded, show your **best composite lap** (your best section from each of the laps, put
+     together) as a lap of its own, to compare with the reference corner by corner like any other lap. Today
+     Across your laps only gives its time ("your best time in each section adds up to…").
 
 4. **"Start here" summary**: built, then dropped in favour of "Across your laps": two summaries were too much,
    and the map with its corner times already shows where a single lap loses time.
