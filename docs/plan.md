@@ -111,11 +111,7 @@ tests: keep it simple, and only take on what one person can look after.
          links the computer recorder on the website.
    - [x] Owner: happy with the guide and the rest on the beta app.
    - Later: graphs of speed, throttle and brake along the lap, like GT7's own (the tester asked for them).
-   - Later, maybe: show two of your laps against the reference at once, for example your best and worst (the same
-     tester asked for it).
-   - Later: with several laps recorded, show your **best composite lap** (your best section from each of the laps, put
-     together) as a lap of its own, to compare with the reference corner by corner like any other lap. Today
-     Across your laps only gives its time ("your best time in each section adds up to…").
+   - Comparing several laps, the best composite lap and the tester's best-against-worst idea: see 9.
 
 4. **"Start here" summary**: built, then dropped in favour of "Across your laps": two summaries were too much,
    and the map with its corner times already shows where a single lap loses time.
@@ -124,14 +120,48 @@ tests: keep it simple, and only take on what one person can look after.
    average and the least consistent ones, and the "ideal lap" from each section's best time. The selected corner stays
    selected when you switch laps, and the corner's panel has ‹ › to step through the laps.
 
-6. **Skill progression pattern.** Compare laps at several levels (WR, top 100, gold, silver) across events, to find
-   which differences shrink first as drivers improve. Use that to order the tips ("at your level, drivers usually
-   gain most from…"). Needs laps at several levels on several tracks, so it builds up over months.
+6. **Skill progression pattern, and feedback for the driver's level.** Compare laps at several levels (WR, top 100,
+   gold, silver) across events, to find which differences shrink first as drivers improve. Use that to order the tips
+   ("at your level, drivers usually gain most from…"). Needs laps at several levels on several tracks, so it builds
+   up over months.
+   - The tips are already partly tailored (they come from where this lap loses time), but how useful each idea is
+     for a given level isn't: for example, a driver braking 30 m early gains more from braking points than from the
+     line, and a driver within 1% of the WR the other way round. Review which tips help at which level, and lead
+     with those.
 
 7. **Next-level reference laps.** Compare against a gold-pace lap rather than the WR. Possibly not needed once 4 and 5
    are done. Depends on how far down the leaderboard GT7 lets you download replays.
 
+8. **Line feedback** (going wide, missing the apex, not using the track at the exit). The close-ups already draw both
+   lines; the tips say little about the line itself.
+   - Thresholds: how far from the reference line counts as a real difference, given the telemetry's accuracy (the
+     position is the car's centre, and the track edges aren't in the data), and the line's effect on time, so only
+     differences that cost time are mentioned.
+   - Why the line differs: understeer (running wide on entry or mid-corner with the steering wound on, speed too high
+     for the grip) or oversteer (the rear stepping out on exit, corrections, throttle lifted), which make the
+     reference's line hard to follow. Advice on the cause rather than the line: for example brake earlier or turn in
+     slower for understeer, smoother throttle on exit for oversteer. Needs steering and yaw (or speed against
+     steering) from the telemetry, compared with the reference's at the same point.
+
+9. **Comparing several laps, and your own best lap as a reference.**
+   - Show two or more laps against the reference at once, for example your best and worst (asked for by a tester).
+   - With several laps recorded, your **best composite lap** (your best section from each lap, put together) as a
+     lap of its own, to compare corner by corner. Today Across your laps only gives its time.
+   - Set **your own best lap** (or composite) as the reference, kept on the phone, to compare later laps with.
+   - **Audio cues between your best and the WR:** cue points moved part of the way from your own braking points
+     towards the WR's (for example 25%, then 50%), so the cues stretch you a step at a time rather than asking for the
+     WR's points straight away.
+
 ## Later, maybe
+
+- **Circuit Experiences**, like the Super License tab: medal times and a gold reference run for the full lap only (not
+  each segment), recorded by the owner, so it grows track by track.
+- **Try it with a sample lap**: a ready-made comparison for new users and Play's reviewers, before they set up
+  recording.
+- **Progress between sessions**: with recordings kept on the phone, what changed since last time ("gained 0.3 s in
+  corner 3").
+- **A shareable result card**: one image (track, lap against the reference, the corners to work on) for Reddit or
+  Discord.
 
 - Audio cues: spoken feedback after each corner ("braked 12 m early, gas 5 m late"), and track position compared with
   the reference.
