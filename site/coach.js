@@ -737,7 +737,7 @@ const Coach = (() => {
         <span><b class="cl-key-badge me">B</b><b class="cl-key-badge ref">B</b>first brake</span>
         <span><b class="cl-key-badge me">G</b><b class="cl-key-badge ref">G</b>back on the gas</span>
         <span><b class="cl-key-badge me">F</b><b class="cl-key-badge ref">F</b>full throttle</span>
-        <span>dark = you, grey = ${who}</span>
+        <span><b class="cl-key-badge me"></b>you, <b class="cl-key-badge ref"></b>${who}</span>
       </div>
       <p class="hint">Drawn to scale, the same way round as the lap map. Your line is a dot every ${step} m comparing your pedals
         with ${who}'s at the same point: the brake wherever either of you is braking, the throttle everywhere else. Bigger

@@ -25,16 +25,6 @@ function countdown(iso) {
   return d ? `${d}d ${h}h left` : `${h}h ${Math.floor((ms % 3600000) / 60000)}m left`;
 }
 
-// "1:53.4", "1.53.450", "113.4", "1:53:450" -> milliseconds
-function parseLap(text) {
-  const t = text.trim().replace(/,/g, ".");
-  let m = t.match(/^(\d+)[:.](\d{1,2})[.:](\d{1,3})$/);
-  if (m) return (+m[1] * 60 + +m[2]) * 1000 + +m[3].padEnd(3, "0");
-  m = t.match(/^(\d+)(?:\.(\d{1,3}))?$/);
-  if (m) return +m[1] * 1000 + +(m[2] || "0").padEnd(3, "0");
-  return null;
-}
-
 // #current, #past, #drivers, #about, or #past/<event id> for one finished event
 const TITLE = document.title;
 let shownEvent = null;
@@ -69,43 +59,13 @@ function targets(e) {
       record falls. "Safe target" beats the fast end of the predicted range, which 9 out of 10 past events stayed within.</p>`;
 }
 
-function checker(e, i) {
-  return `<form class="checker" data-i="${i}" autocomplete="off">
-      <label for="lap-${i}">Check my time</label>
-      <div class="row"><input id="lap-${i}" inputmode="decimal" placeholder="e.g. 1:53.250">
-        <button type="submit">Check</button></div>
-      <div class="result" aria-live="polite"></div>
-    </form>`;
-}
-
-function medalFor(lap, wr) {
-  for (const [name, f] of MEDALS) if (lap <= medalTime(wr, f)) return name;
-  return null;
-}
-
-function checkResult(e, lap) {
-  const p = e.predicted;
-  const now = medalFor(lap, e.wr_ms);
-  const lines = [`<b>Today:</b> ${now ? `${now}` : "no medal yet"}` +
-    (now !== "Gold" ? ` — ${nextGap(lap, e.wr_ms, now)}` : "")];
-  if (p) {
-    const atEnd = medalFor(lap, p.final_wr_ms), worst = medalFor(lap, p.final_wr_fast_ms);
-    let verdict = `<b>At the finish (predicted):</b> ${atEnd || "no medal"}`;
-    if (atEnd && worst === atEnd) verdict += ", and you should keep it.";
-    else if (atEnd) verdict += `, but it could slip to ${worst ? worst.toLowerCase() : "no medal"} if the record drops a lot.`;
-    lines.push(verdict);
-    const target = worst === "Gold" ? null : MEDALS.find(([n]) => n === nextUp(worst));
-    if (target) {
-      const need = lap - medalTime(p.final_wr_fast_ms, target[1]);
-      lines.push(`To be safe for ${target[0].toLowerCase()}, find <b>${secs(need)}</b> (aim for ${fmt(medalTime(p.final_wr_fast_ms, target[1]))}).`);
-    }
-  }
-  return lines.map(l => `<div>${l}</div>`).join("");
-}
-const nextUp = medal => ({ null: "Bronze", Bronze: "Silver", Silver: "Gold", Gold: "Gold" })[medal];
-function nextGap(lap, wr, medal) {
-  const [name, f] = MEDALS.find(([n]) => n === nextUp(medal));
-  return `${secs(lap - medalTime(wr, f))} off ${name.toLowerCase()}`;
+// Course difficulty: how far 100th place is behind the world record, rated against all past events: easy below the
+// 25th percentile, medium below the 70th, hard below the 90th, very hard above.
+let SPREADS = [];
+function difficulty(spread) {
+  if (!SPREADS.length) return `${spread.toFixed(2)}%`;
+  const at = q => SPREADS[Math.min(SPREADS.length - 1, Math.floor(q * SPREADS.length))];
+  return spread < at(0.25) ? "Easy" : spread < at(0.7) ? "Medium" : spread < at(0.9) ? "Hard" : "V.hard";
 }
 
 function chart(e) {
@@ -181,9 +141,8 @@ function renderCurrent() {
   el.innerHTML = DATA.current.map((e, i) => {
     const total = e.days_elapsed + e.days_left;
     const p = e.predicted;
-    const pr = e.entrants_projection, h = DATA.historical_entrants;
-    const entrantsNote = pr ? `projected final ${num(pr.projected)}`
-      : h ? `past events finished with ${num(h.p10)}–${num(h.p90)}` : "";
+    const pr = e.entrants_projection;
+    const entrantsNote = pr ? `projected final ${num(pr.projected)}` : "";
     const headline = p
       ? `<div class="headline"><div class="label">Gold target at the finish</div>
           <div class="big">${fmt(p.gold_ms)}</div>
@@ -198,12 +157,12 @@ function renderCurrent() {
       </div>
       <div class="meta">${countdown(e.ends)} · ends ${localTime(e.ends)} · day ${e.days_elapsed.toFixed(1)} of ${Math.round(total)}</div>
       <div class="progress"><div style="width:${Math.min(100, (100 * e.days_elapsed) / total)}%"></div></div>
-      <div class="top-grid">${headline}<div>${checker(e, i)}</div></div>
+      ${headline}
       ${targets(e)}
       <div class="stats">
         ${stat("World record", fmt(e.wr_ms), esc(e.wr_holder))}
         ${stat("Entrants so far", num(e.entrants), entrantsNote)}
-        ${stat("Course difficulty", e.top100_spread_pct.toFixed(2) + "%", "100th place behind the record")}
+        ${stat("Course difficulty", difficulty(e.top100_spread_pct), `100th place ${e.top100_spread_pct.toFixed(2)}% behind the record`)}
         ${stat("Top-rated drivers who've set a time", `${e.strong_drivers_posted.length} of ${e.strong_drivers_total}`,
                "fewer means more time likely to come off")}
       </div>
@@ -214,13 +173,6 @@ function renderCurrent() {
   el.querySelectorAll("input.lap-file").forEach(inp => inp.addEventListener("change", () => {
     if (inp.files[0]) compareLap(DATA.current[+inp.dataset.i], inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
     inp.value = ""; // allow choosing the same file again
-  }));
-  el.querySelectorAll("form.checker").forEach(f => f.addEventListener("submit", ev => {
-    ev.preventDefault();
-    const e = DATA.current[+f.dataset.i];
-    const lap = parseLap(f.querySelector("input").value);
-    f.querySelector(".result").innerHTML = lap
-      ? checkResult(e, lap) : `<div class="muted">Enter a lap time like 1:53.250</div>`;
   }));
 }
 
@@ -234,13 +186,15 @@ const shortWho = e => (e.medals ? "Reference" : e.reference.driver ? esc(e.refer
 function coachSection(e, i) {
   const r = e.reference;
   return `<section class="coach">
-      <h3>Compare your lap with the recorded reference lap</h3>
+      <h3>Compare your laps with the reference lap</h3>
       <p class="hint">${r && APP
-        ? `Record your lap on this phone while you drive, to see where you lose time against
-           ${esc(refName(r))} ${fmt(r.lap_ms)}, corner by corner.`
+        ? `Tap Record on this phone and drive as many laps as you like: there's no need to restart between them. Then tap
+           Stop and compare to see where you lose time against ${esc(refName(r))} ${fmt(r.lap_ms)}, corner by corner.
+           Your fastest lap is shown first, and you can switch to any other.`
         : r
-        ? `Record your lap with the free recorder, then upload the file to see where you lose time against
-           ${esc(refName(r))} ${fmt(r.lap_ms)}, corner by corner. Your file stays on your device.`
+        ? `Record your laps with the free recorder (as many as you like, no need to restart between them), then upload
+           the file to see where you lose time against ${esc(refName(r))} ${fmt(r.lap_ms)}, corner by corner. Your
+           fastest lap is shown first, and you can switch to any other. Your file stays on your device.`
         : "No reference lap for this event yet. You can already record your laps with the recorder."}</p>
       <div class="coach-actions">
         ${APP ? (r ? recordButton("event", i) : "") : `<a class="button-link" href="telemetry.py" download>Download recorder (telemetry.py)</a>
@@ -293,7 +247,7 @@ let recording = null; // { e, out, laps }
 const REC_STATES = {
   paused: "Paused.",
   menus: "Connected. Waiting for the car to move: start driving, or play a replay.",
-  driving: "Recording: you're driving. Cross the start line, drive a full lap, then tap Stop and compare.",
+  driving: "Recording: you're driving. Every complete lap is saved: keep going for as many as you like, then tap Stop and compare.",
   replay: "Recording a replay.",
 };
 // A typed-in PlayStation address on another network than the phone's (mesh Wi-Fi, extenders, guest networks): the
@@ -355,7 +309,7 @@ function startRecording(e, out, ip) {
       <p class="rec-status">Starting…</p>
       <ul class="rec-laps"></ul>
       <p class="hint rec-cues"></p>
-      <p class="hint">Keep the app open while you drive: the screen stays on. The fastest complete lap is compared.</p>
+      <p class="hint">Recording carries on with the phone locked. Your fastest complete lap is compared first.</p>
       <div class="coach-actions"><button type="button" class="button-link primary rec-stop">Stop and compare</button>
         <button type="button" class="button-link rec-cancel">Cancel</button></div>
       <details class="rec-ip"><summary>Not finding your PlayStation? Type in its address</summary>
@@ -427,31 +381,33 @@ function renderCues() {
   const s = v => `${v.toFixed(1)} s`;
   panel.innerHTML = `
     <h2>Audio cues</h2>
-    <p>Tick <b>Audio cues</b> next to Record on this phone, and while you record the app plays a countdown to each point where
-      the reference lap brakes or lifts, and a beep just before it gets back on the throttle. It works with the phone
-      locked.</p>
-    <p>They're for <b>learning the braking points</b>: drive a few laps with them, then switch them off once the points
-      feel natural. Braking on the same spot as a top driver is only part of it; the cue tells you where they brake,
-      not how they take the corner. If their point is too late for you for now, move the cue a little earlier below.</p>
+    <p>Tick <b>Audio cues</b> next to Record on this phone, and while you record the app plays a countdown to each point
+      where the reference lap brakes or lifts, and a beep just before it gets back on the throttle. It works with the
+      phone locked.</p>
+    <h3>Hear the sounds</h3>
+    <p class="hint">Listen here so you know what they sound like in the game. They play through what the phone is using
+      now: ${esc(st.current?.name || "this output")}.</p>
     <p class="cue-row cue-tests">
       <button type="button" class="button-link cue-test" data-kind="brake">Brake: tock, tock, BEEP</button>
       <button type="button" class="button-link cue-test" data-kind="lift">Lift: tick, tick, BEEP</button>
       <button type="button" class="button-link cue-test" data-kind="gas">Gas: chirp</button>
       <button type="button" class="button-link cue-test" data-kind="pip">Chicane: pip</button></p>
-    <p class="hint">Tap to hear each one through the current output. Brake is low, lift is higher, gas rises.</p>
-    <h3>Countdown</h3>
+    <h3>Cue settings</h3>
+    <p class="hint">The countdown before each brake or lift, which cues play, and when they play.</p>
+    <h4>Countdown</h4>
     <p class="cue-row"><span>Beeps before brake</span>${select("ticks", [0, 1, 2, 3], v => (v ? `${v} before the BEEP` : "just the BEEP"))}</p>
     <p class="cue-row"><span>Beep timing</span>${select("spacing", range(0.3, 1, 0.1), v => `${s(v)} apart`)}</p>
-    <h3>Which cues</h3>
+    <h4>Which cues</h4>
     <p class="cue-row">${check("lift", "Lift beeps: where the reference comes off the throttle without braking")}</p>
     <p class="cue-row">${check("gas", "Gas beep: 0.5 s before the reference gets back on the throttle")}</p>
     <p class="cue-row">${check("chicane", "Chicane beep: one short pip for a brake or lift that comes too soon after the last one for its own countdown (otherwise it gets no sound)")}</p>
-    <h3>Timing</h3>
+    <h4>Timing</h4>
     <p class="cue-row"><span>Brake cue earlier than the reference</span>${select("brakeEarly", range(0, 0.2, 0.05), v => (v ? `${v.toFixed(2)} s earlier` : "on the reference's point"))}</p>
     <p class="cue-row"><span>Gas beep</span>${select("gasAdjust", range(-0.5, 0.5, 0.1), v => (v ? `${s(Math.abs(v))} ${v > 0 ? "later" : "earlier"}` : "as is"))}</p>
     <h3>Sound delay</h3>
-    <p class="hint">Sounds take a moment to reach your ears, especially over Bluetooth, so every cue plays early by this
-      much. Each output starts with a typical value; calibrate it once for the best timing.</p>
+    <p class="hint">Sound takes a moment to reach your ears, especially over Bluetooth, so every cue plays early by this
+      much. The starting values were tested on the developer's phone and headphones and might not match yours: if the
+      cues seem early or late, calibrate.</p>
     <div class="cue-cal">
       <p><b>Calibrate ${esc(st.current?.name || "this output")}</b>: in GT7, sit in the car on track (standing still is
         fine, for example at the start of a time trial). Tap Calibrate, then press the brake firmly on each BEEP:
@@ -522,6 +478,29 @@ function calibrationEvent(ev) {
   } else if (ev.type === "error") endCalibration(ev.message, "miss");
   else if (ev.type === "stopped" && calibrating) endCalibration("Stopped before the end. Try again.", "miss");
 }
+// How to read a comparison: shown above the first ones, until "Got it". The same steps are on the How to use tab.
+const GUIDE_SEEN = "guide-seen";
+const GUIDE_STEPS = `<ol>
+    <li><b>The top line</b> is your lap against the reference, and the total time between them.</li>
+    <li><b>The map</b> colours each section by how much slower you are there than the reference: green is close, yellow
+      and red are where the time goes. Start with the red ones.</li>
+    <li><b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line and pedals
+      drawn against the reference's.</li>
+    <li><b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see
+      the same corner on each. With 3 or more laps, <b>Across your laps</b> shows where you lose most on average and
+      where you're least consistent.</li>
+  </ol>`;
+function guide() {
+  try { if (localStorage.getItem(GUIDE_SEEN)) return ""; } catch (err) { /* no storage: show it */ }
+  return `<div class="guide"><h4>How to read this</h4>${GUIDE_STEPS}
+    <button type="button" class="button-link guide-ok">Got it</button></div>`;
+}
+
+// the website or the app: the License intro and About page say different things
+document.querySelectorAll(APP ? ".web-only" : ".app-only").forEach(el => (el.hidden = true));
+document.querySelectorAll(APP ? ".app-only" : ".web-only").forEach(el => (el.hidden = false));
+document.getElementById("howto-guide").innerHTML = GUIDE_STEPS;
+
 if (CUES) {
   document.querySelector('nav a[data-tab="cues"]').hidden = false;
   window.addEventListener("hashchange", () => { if (location.hash === "#cues") renderCues(); });
@@ -612,6 +591,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     ${Math.abs(res.gameGap - res.recordedGap) > 0.1 ? `<p class="hint">The game's times include
       ${Math.abs(res.gameGap - res.recordedGap).toFixed(2)} s that isn't in the recorded laps (in a license test the timer can
       start before the car reaches the line), so the corners below add up to ${Coach.fmtLost(res.recordedGap)}.</p>` : ""}
+    ${guide()}
     ${acrossLaps(picker?.across)}
     <p class="hint tap-hint">${phone() ? "Tap a corner to see where you lose time." : "Hover over or click a corner on the map."}</p>
     <div class="coach-grid">
@@ -715,6 +695,10 @@ function renderComparison(out, res, e, otherCar, picker, save) {
   out._keys?.abort(); // one Escape handler per comparison, even after choosing another lap
   out._keys = new AbortController();
   document.addEventListener("keydown", ev => { if (ev.key === "Escape") close(); }, { signal: out._keys.signal });
+  out.querySelector(".guide-ok")?.addEventListener("click", () => {
+    try { localStorage.setItem(GUIDE_SEEN, "1"); } catch (err) { /* shown again next time */ }
+    document.querySelectorAll(".guide").forEach(g => g.remove());
+  });
   out.querySelector(".save-btn")?.addEventListener("click", () => {
     const saved = APP.save(save.csv, save.name); // remembered, so choosing another lap still shows it's saved
     if (saved) save.saved = saved;
@@ -775,7 +759,7 @@ function renderPast() {
         <td class="num" data-label="Entrants">${num(p.entrants)}</td>
         <td class="num" data-label="Record">${fmt(p.wr_ms)}<div class="sub-car">${esc(p.wr_holder)}</div></td>
         <td class="num" data-label="Gold">${fmt(p.gold_ms)}</td>
-        <td class="num" data-label="Difficulty">${p.top100_spread_pct.toFixed(2)}%</td></tr>`).join("");
+        <td class="num" data-label="Difficulty">${difficulty(p.top100_spread_pct)}<div class="sub-car">${p.top100_spread_pct.toFixed(2)}%</div></td></tr>`).join("");
     more.hidden = rows.length <= shown;
     more.textContent = `Show more (${rows.length - shown} left)`;
   };
@@ -846,7 +830,7 @@ function renderEvent(d) {
       <div class="stats">
         ${stat("World record", fmt(d.wr_ms), esc(d.wr_holder))}
         ${stat("Entrants", num(d.entrants), DATA ? `median for past events ${num(DATA.median_entrants)}` : "")}
-        ${stat("Course difficulty", d.top100_spread_pct.toFixed(2) + "%", "100th place behind the record")}
+        ${stat("Course difficulty", difficulty(d.top100_spread_pct), `100th place ${d.top100_spread_pct.toFixed(2)}% behind the record`)}
         ${stat("100th place", fmt(d.p100_ms), "+" + secs(d.p100_ms - d.wr_ms))}
       </div>
       <h3>How the world record fell</h3>
@@ -902,6 +886,7 @@ fetch("data.json")
   .then(r => r.json())
   .then(data => {
     DATA = data;
+    SPREADS = data.past.map(p => p.top100_spread_pct).sort((a, b) => a - b);
     renderCurrent();
     renderScorecard();
     renderPast();

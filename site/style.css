@@ -39,6 +39,7 @@
   }
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   margin: 0;
   background: var(--bg);
@@ -99,24 +100,15 @@ footer { padding: 0 16px 30px; font-size: 0.85rem; }
 /* event card additions */
 .event-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
 .official { white-space: nowrap; font-size: 0.85rem; padding-top: 4px; }
-.top-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-bottom: 12px; }
 @media (max-width: 640px) {
-  .top-grid { grid-template-columns: minmax(0, 1fr); }
   .event-head { flex-direction: column; gap: 2px; }
   .official { padding-top: 0; }
 }
-.headline { border: 2px solid var(--gold); border-radius: 10px; padding: 12px 14px; background: var(--gold-band); }
+.headline { border: 2px solid var(--gold); border-radius: 10px; padding: 12px 14px; background: var(--gold-band); margin-bottom: 12px; }
 .headline .label { font-size: 0.8rem; color: var(--muted); }
 .headline .big { font-size: 2rem; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; line-height: 1.2; }
-.checker { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; height: 100%; }
-.checker label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 6px; }
-.checker .row { display: flex; gap: 8px; }
-.checker input { flex: 1; min-width: 0; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
-  background: var(--bg); color: var(--text); font: inherit; font-variant-numeric: tabular-nums; }
-.checker button, .more { padding: 8px 14px; border-radius: 8px; border: 0; background: var(--accent); color: #fff;
+.more { padding: 8px 14px; border-radius: 8px; border: 0; background: var(--accent); color: #fff;
   font: inherit; font-weight: 600; cursor: pointer; }
-.checker .result { margin-top: 8px; font-size: 0.9rem; }
-.checker .result div + div { margin-top: 2px; }
 table.targets { width: auto; min-width: min(100%, 520px); margin: 4px 0 2px; }
 table.targets th, table.targets td { padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); }
 table.targets td.strong { font-weight: 650; }
@@ -386,3 +378,13 @@ table.cw-legend tbody th { text-align: left; color: var(--text); white-space: no
 .license-medals b, .medal-result b.medal { font-weight: 600; }
 .license-test .coach { margin-top: 10px; padding-top: 10px; }
 .medal-result { margin-left: 4px; }
+.guide { margin: 10px 0; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 10px; background: var(--gold-band); }
+.guide h4 { margin: 0 0 4px; font-size: 0.95rem; }
+.guide ol { margin: 4px 0 10px; padding-left: 20px; }
+.guide li { margin: 4px 0; font-size: 0.9rem; }
+#cues-panel h3 { margin: 1.4em 0 0.2em; }
+#cues-panel h4 { margin: 1em 0 0.2em; font-size: 0.9rem; color: var(--muted); }
+#cues-panel h3 + .hint { margin-top: 0; }
+.prose h3 { font-size: 1rem; margin: 1.2em 0 0.3em; }
+.prose li { margin: 4px 0; }
+.prose a { overflow-wrap: anywhere; }

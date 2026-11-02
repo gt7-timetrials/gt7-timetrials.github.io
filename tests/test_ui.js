@@ -55,6 +55,23 @@ function standIn({ withCues, csv }) {
     await coach(p).locator(".coach-summary").waitFor();
     assert.match(await coach(p).locator(".coach-summary").innerText(), /Your lap 1:18\.521/);
     assert.strictEqual(await coach(p).locator(".across").count(), 0, "one lap: no across-your-laps box");
+    // the first comparison explains itself until "Got it"; the next one doesn't
+    assert.match(await coach(p).locator(".guide").innerText(), /How to read this/);
+    await coach(p).locator(".guide-ok").click();
+    assert.strictEqual(await p.locator(".guide").count(), 0, "Got it hides the guide");
+    await p.locator('input.license-file[data-i="0"]').setInputFiles(s1File);
+    await coach(p).locator(".coach-summary").waitFor();
+    assert.strictEqual(await p.locator(".guide").count(), 0, "and it stays hidden");
+    // the website's own wording: the recorder link, no app notes
+    assert.ok(await p.locator(".license-intro .web-only").isVisible(), "website: the recorder link");
+    assert.ok(await p.locator(".license-intro .app-only").isHidden(), "website: no app wording");
+    await p.goto(url + "#howto");
+    assert.match(await p.locator("#howto-guide").innerText(), /The map/, "How to use: how to read the comparison");
+    await p.goto(url + "#current");
+    await p.locator("#current-list .stat").first().waitFor();
+    assert.strictEqual(await p.locator("form.checker").count(), 0, "no Check my time");
+    const rating = await p.locator('#current-list .stat:has(.label:text("Course difficulty")) .value').allInnerTexts();
+    assert.ok(rating.length && rating.every(r => ["Easy", "Medium", "Hard", "V.hard"].includes(r)), `difficulty ratings: ${rating}`);
     await p.context().close();
   }
 
@@ -64,6 +81,8 @@ function standIn({ withCues, csv }) {
     assert.ok(await coach(p).locator(".record-btn").count(), "old app: Record on this phone");
     assert.strictEqual(await p.locator(".cue-toggle").count(), 0, "old app: no audio cues checkbox");
     assert.ok(await p.locator('nav a[data-tab="cues"]').isHidden(), "old app: no Audio cues tab");
+    assert.ok(await p.locator(".license-intro .web-only").isHidden(), "app: no recorder link");
+    assert.ok(await p.locator(".license-intro .app-only").isVisible(), "app: Record on this phone");
     await coach(p).locator(".record-btn").click();
     assert.deepStrictEqual((await calls(p)).at(-1), ["start", ""], "old app: recording started the old way");
     await event(p, { type: "connected", ip: "192.168.0.23" });

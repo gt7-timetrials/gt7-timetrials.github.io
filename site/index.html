@@ -20,7 +20,8 @@
       <a href="#license" data-tab="license">Super License</a>
       <a href="#drivers" data-tab="drivers">Top drivers</a>
       <a href="#cues" data-tab="cues" hidden>Audio cues</a>
-      <a href="#about" data-tab="about">How it works</a>
+      <a href="#howto" data-tab="howto">How to use</a>
+      <a href="#about" data-tab="about">About this app</a>
     </nav>
   </div>
 </header>
@@ -51,9 +52,11 @@
   </section>
 
   <section id="tab-license" class="tab" hidden>
-    <p class="muted license-intro">Compare your Super License test runs with a gold-medal run, corner by corner. Record your run
-      with the free recorder (<a href="telemetry.py" download>telemetry.py</a>, <a href="readme.txt" target="_blank"
-      rel="noopener">how to record</a>), then upload the file under the test. Your file stays on your device.</p>
+    <p class="muted license-intro">Compare your Super License test runs with a gold-medal run, corner by corner.
+      <span class="web-only">Record your run with the free recorder (<a href="telemetry.py" download>telemetry.py</a>,
+      <a href="readme.txt" target="_blank" rel="noopener">how to record</a>), then upload the file under the test. Your
+      file stays on your device.</span><span class="app-only" hidden>Tap Record on this phone under a test, or upload a
+      recording.</span></p>
     <div id="license-list"><p class="muted">Loading…</p></div>
   </section>
 
@@ -72,6 +75,54 @@
   </section>
 
   <section id="tab-cues" class="tab prose" hidden><div id="cues-panel"></div></section>
+
+  <section id="tab-howto" class="tab prose" hidden>
+    <h2>What's here</h2>
+    <ul>
+      <li><b>Current</b>: this week's time trials, with where the gold, silver and bronze times are likely to end up,
+        and a reference lap (from the world record replay) to compare your laps with.</li>
+      <li><b>Past events</b>: how earlier time trials finished, and how close the predictions were.</li>
+      <li><b>Super License</b>: a gold-medal run for each test, to compare your runs with.</li>
+      <li><b>Top drivers</b>: the most consistently fast time trial drivers.</li>
+      <li><b>Audio cues</b> (Android app): beeps that count you down to the reference's braking points while you drive.</li>
+    </ul>
+    <h2>Record your laps</h2>
+    <p>GT7 sends live data (telemetry) to your home network while you drive. The app, or the recorder on a computer,
+      saves it, and this site compares it with the reference lap. The phone or computer must be on the same Wi-Fi or
+      network as the PlayStation, and only one telemetry app can listen at a time: close SimHub or similar apps first.</p>
+    <h3>With the Android app</h3>
+    <ol>
+      <li>Start GT7 and go to the time trial or license test.</li>
+      <li>In the app, tap <b>Record on this phone</b> under that event or test. The app finds your PlayStation by
+        itself; if it can't, it shows what to check and lets you type in the PlayStation's address.</li>
+      <li>Drive. Every complete lap is saved, so drive as many as you like: there's no need to restart between them.
+        Recording carries on with the phone locked.</li>
+      <li>Tap <b>Stop and compare</b>. Your fastest lap is shown first; tap any other lap to compare it instead.
+        <b>Save to Downloads</b> keeps the file.</li>
+    </ol>
+    <h3>With a computer</h3>
+    <ol>
+      <li>Download the free recorder, <a href="telemetry.py" download>telemetry.py</a>, and follow
+        <a href="readme.txt" target="_blank" rel="noopener">how to record</a> (it needs Python).</li>
+      <li>Start it, then drive as many laps as you like. Stop it when you're done: it saves a .csv file.</li>
+      <li>Upload the file under the event or test. It's read in your browser and isn't uploaded anywhere.</li>
+    </ol>
+    <p>The time trial reference is the world record lap, recorded from its replay about once a week, so the current
+      record can be faster. A Super License reference is a gold-medal run.</p>
+    <h2>Read the comparison</h2>
+    <div id="howto-guide"></div>
+    <h2>Audio cues (Android app)</h2>
+    <p>While you record, the app can play a countdown to each point where the reference lap brakes or lifts, and a beep
+      just before it gets back on the throttle: brake on the BEEP. They follow the reference's line, and go quiet when
+      you're well off it, reversing or stopped.</p>
+    <ol>
+      <li>On the <b>Audio cues</b> tab, listen to the sounds so you know them in the game.</li>
+      <li>Tick <b>Audio cues</b> next to Record on this phone, and record as usual.</li>
+      <li>If the cues seem early or late, calibrate your phone speaker, headphones or Bluetooth device on the Audio cues
+        tab: about 20 seconds, sitting in the car.</li>
+    </ol>
+    <p>The phone speaker and wired headphones give the steadiest timing. Bluetooth adds a delay that can vary.</p>
+  </section>
 
   <section id="tab-about" class="tab prose" hidden>
     <h2>About this project</h2>
@@ -101,8 +152,9 @@
       <li><b>Entrants</b> is everyone who has set a time so far, PS4 and PS5 combined.</li>
       <li><b>Safe target</b> beats the fast end of the predicted range. In 9 out of 10 past events the final gold time
         was slower than that.</li>
-      <li><b>Course difficulty</b> is how far 100th place is behind the world record. The bigger it is, the harder the
-        course is to master.</li>
+      <li><b>Course difficulty</b> is how far 100th place is behind the world record: the bigger the gap, the harder
+        the course is to master. It's rated against all past events: <b>Easy</b> is the closest quarter, <b>Medium</b>
+        up to 70% of them, <b>Hard</b> up to 90%, and <b>V.hard</b> (very hard) the widest 10%.</li>
       <li><b>Gold time on the day</b> in the chart is rebuilt from when each current top-100 time was set.</li>
     </ul>
     <h2>How the prediction works</h2>
@@ -112,12 +164,10 @@
       build up, it also uses the top-100 spread.</p>
     <p>Typical error in the final gold time, tested on past events: 0.16% after day 1, 0.12% after day 3 and
       0.08% after day 7. On a 1:50 lap, that's about 0.18 s, 0.13 s and 0.09 s.</p>
-    <h2>Lap comparison</h2>
-    <p>Each current event lets you compare your own lap with a recorded reference lap. Record your lap with the free recorder
-      (it reads the telemetry GT7 sends to your home network), upload the file, and the site shows where you lose time
-      on a track map, with braking, throttle and steering figures for each corner. The reference lap is recorded from
-      the world record replay and updated about once a week, so the current world record can be faster. The
-      comparison runs in your browser and your file isn't uploaded anywhere.</p>
+    <h2>Other languages</h2>
+    <p>This site is in English. <span class="web-only">Most browsers can translate it: in Chrome, tap ⋮ and then
+      Translate.</span><span class="app-only" hidden>The app can't translate yet; that's on the list for later. Until then, open
+      gt7-timetrials.github.io in Chrome on your phone or computer and translate it there.</span></p>
     <h2>Source</h2>
     <p>Data comes from the public leaderboards on gran-turismo.com. This is an unofficial fan project, not affiliated
       with Sony Interactive Entertainment or Polyphony Digital. Code and data:
