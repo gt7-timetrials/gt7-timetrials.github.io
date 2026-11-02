@@ -152,6 +152,18 @@ tests: keep it simple, and only take on what one person can look after.
      towards the WR's (for example 25%, then 50%), so the cues stretch you a step at a time rather than asking for the
      WR's points straight away.
 
+10. **Valid laps.** Extend the cut-corner check (today: a lap more than 1% and 30 m shorter than the reference is marked
+    as a likely cut) to collisions with walls or other cars, and to running off the track, so such laps are flagged
+    and left out of Across your laps and the best composite lap.
+    - Ground truth first: as far as the community's decoding of GT7's telemetry goes, there's no flag for an invalid
+      lap, a penalty or a collision (the flags are things like on track, paused, in gear, rev limiter, ASM and TCS
+      active). Check with a recording where the owner deliberately cuts a corner, touches a wall and runs wide,
+      looking at every field, including the newer packet formats (sway, heave and surge; wheel speeds), and whether
+      the game's own lap time or lap counter behaves differently on an invalidated lap.
+    - Without a flag, detect it: a sudden change in speed or direction that braking and steering don't explain (a
+      collision); wheel speeds or suspension travel unlike the reference's at the same point (grass, gravel, kerbs);
+      the car well off the reference's line where the reference uses the full width.
+
 ## Later, maybe
 
 - **Circuit Experiences**, like the Super License tab: medal times and a gold reference run for the full lap only (not
