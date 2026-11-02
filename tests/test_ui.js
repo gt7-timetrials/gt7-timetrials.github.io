@@ -119,6 +119,8 @@ function standIn({ withCues, csv }) {
     assert.deepStrictEqual((await calls(p)).filter(c => c[0] === "testSound").map(c => c[1]), ["brake", "lift", "gas", "pip"]);
     const offsets = await p.locator('select[data-set="brakeEarly"] option').evaluateAll(o => o.map(x => x.value));
     assert.deepStrictEqual(offsets, ["0", "0.05", "0.1", "0.15", "0.2"]);
+    const gas = await p.locator('select[data-set="gasAdjust"] option').evaluateAll(o => o.map(x => x.value));
+    assert.deepStrictEqual(gas, ["-0.2", "-0.15", "-0.1", "-0.05", "0", "0.05", "0.1", "0.15", "0.2"]);
     await p.locator(".cue-calibrate").click();
     assert.deepStrictEqual((await calls(p)).at(-1), ["calibrate", ""]);
     await event(p, { type: "connected", ip: "192.168.0.23" });

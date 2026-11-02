@@ -136,7 +136,7 @@ final class CueStore {
         set.gas = s.optBoolean("gas", set.gas);
         set.chicane = s.optBoolean("chicane", set.chicane);
         set.brakeEarly = Math.max(0, Math.min(0.2, s.optDouble("brakeEarly", set.brakeEarly)));
-        set.gasAdjust = Math.max(-0.5, Math.min(0.5, s.optDouble("gasAdjust", set.gasAdjust)));
+        set.gasAdjust = Math.max(-0.2, Math.min(0.2, s.optDouble("gasAdjust", set.gasAdjust)));
         set.delay = o.optDouble("delay", start(output.getString("type")));
         return set;
     }

@@ -364,7 +364,11 @@ document.addEventListener("click", ev => {
 // --- Audio cues (app only) ---
 const CUE_DEFAULTS = { ticks: 2, spacing: 0.5, lift: true, gas: true, chicane: false, brakeEarly: 0, gasAdjust: 0 };
 const range = (from, to, step) => Array.from({ length: Math.round((to - from) / step) + 1 }, (_, i) => +(from + i * step).toFixed(2));
-const cueSettings = () => ({ ...CUE_DEFAULTS, ...(cueState().settings || {}) });
+const cueSettings = () => {
+  const set = { ...CUE_DEFAULTS, ...(cueState().settings || {}) };
+  set.gasAdjust = Math.max(-0.2, Math.min(0.2, set.gasAdjust)); // the first versions went to ±0.5 s
+  return set;
+};
 
 document.addEventListener("change", ev => {
   if (!ev.target.matches(".cue-toggle")) return;
@@ -403,7 +407,7 @@ function renderCues() {
     <p class="cue-row">${check("chicane", "Chicane beep: one short pip for a brake or lift that comes too soon after the last one for its own countdown (otherwise it gets no sound)")}</p>
     <h4>Timing</h4>
     <p class="cue-row"><span>Brake cue earlier than the reference</span>${select("brakeEarly", range(0, 0.2, 0.05), v => (v ? `${v.toFixed(2)} s earlier` : "on the reference's point"))}</p>
-    <p class="cue-row"><span>Gas beep</span>${select("gasAdjust", range(-0.5, 0.5, 0.1), v => (v ? `${s(Math.abs(v))} ${v > 0 ? "later" : "earlier"}` : "as is"))}</p>
+    <p class="cue-row"><span>Gas beep</span>${select("gasAdjust", range(-0.2, 0.2, 0.05), v => (v ? `${Math.abs(v).toFixed(2)} s ${v > 0 ? "later" : "earlier"}` : "as is"))}</p>
     <h3>Sound delay</h3>
     <p class="hint">Sound takes a moment to reach your ears, especially over Bluetooth, so every cue plays early by this
       much. The starting values were tested on the developer's phone and headphones and might not match yours: if the
