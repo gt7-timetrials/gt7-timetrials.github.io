@@ -21,12 +21,16 @@ android {
     }
 
     signingConfigs {
-        // a key for test builds only, kept in the repository so every build can update the last one
-        test {
-            storeFile file("test.keystore")
-            storePassword "gt7-test"
-            keyAlias "test"
-            keyPassword "gt7-test"
+        // the key for the APKs on the release pages (the test and beta apps), so each build installs over the last:
+        // private, GitHub Actions writes it from the repository's secrets. Without it (a build on a computer), they're
+        // signed with the computer's own debug key.
+        if (System.getenv("TEST_KEYSTORE")) {
+            test {
+                storeFile file(System.getenv("TEST_KEYSTORE"))
+                storePassword System.getenv("TEST_KEYSTORE_PASSWORD")
+                keyAlias "test"
+                keyPassword System.getenv("TEST_KEYSTORE_PASSWORD")
+            }
         }
         // the private Google Play upload key: GitHub Actions writes it from the repository's secrets
         if (System.getenv("UPLOAD_KEYSTORE")) {
@@ -40,12 +44,9 @@ android {
     }
 
     buildTypes {
-        debug {
-            signingConfig signingConfigs.test
-        }
         release {
             minifyEnabled false
-            signingConfig signingConfigs.test
+            signingConfig System.getenv("TEST_KEYSTORE") ? signingConfigs.test : signingConfigs.debug
         }
         // the beta app ("gradle assembleBeta"): installs next to the Play app, under its own name and app ID, and shows
         // the beta website (built from the beta branch), for trying changes before testers get them
@@ -54,7 +55,7 @@ android {
             applicationIdSuffix ".beta"
             versionNameSuffix "-beta"
             buildConfigField "String", "SITE", '"https://gt7-timetrials.github.io/beta/"'
-            signingConfig signingConfigs.test
+            signingConfig System.getenv("TEST_KEYSTORE") ? signingConfigs.test : signingConfigs.debug
         }
         // for Google Play: "gradle bundlePlay" makes the app bundle (.aab), signed with the upload key
         play {

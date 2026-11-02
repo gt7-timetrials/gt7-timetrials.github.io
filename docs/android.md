@@ -35,8 +35,12 @@ phone** instead of the computer recorder's download links.
 **Builds:** every push that changes `android/` runs `.github/workflows/android.yml`, which builds the APK and puts it on
 the `android-test` release:
 https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/android-test/gt7-timetrials.apk
-Test builds are signed with `android/app/test.keystore` (password in `app/build.gradle`), so each one installs over
-the last. Builds of other branches are only checked, not published.
+The test and beta APKs are signed with a private test key from the repository's secrets, `TEST_KEYSTORE_BASE64` (the
+keystore, base64) and `TEST_KEYSTORE_PASSWORD` (its password, also used for the key, alias `test`), so each one
+installs over the last and nobody else can make an APK that installs over them. (Until November 2026 the test key was
+in the repository; APKs signed with it don't update to the current ones: uninstall and install once.) A build on a
+computer without the key signs with that computer's debug key. Builds of other branches are only checked, not
+published.
 
 **Google Play:** the app targets Android 16 (API 36), as Play requires for new apps since 31 August 2026. Once the
 repository has the secrets `UPLOAD_KEYSTORE_BASE64` (the upload keystore, base64) and `UPLOAD_KEYSTORE_PASSWORD`
