@@ -67,7 +67,7 @@ tests: keep it simple, and only take on what one person can look after.
      (speaker and wired 0 s, Bluetooth 0.33 s, from the owner's own calibrations).
    - **Audio cues tab** (app only, before How to use): beeps before brake (0–3, default 2), beep timing (0.3–1.0 s,
      default 0.5), lift beeps (on), gas beep (on), chicane beep (off), brake cue earlier than the reference
-     (0.0–1.0 s, default 0), gas beep adjustment (±0.20 s in 0.05 s steps), one row per audio output with its delay, ± and Reset, and
+     (0–0.20 s in 0.05 s steps, default 0), gas beep adjustment (±0.20 s in 0.05 s steps), one row per audio output with its delay, ± and Reset, and
      Test sound. Saved on the phone: these settings, the calibrations and the checkbox. Nothing else.
    - Built in the app's own code (works with the screen locked), tested here by replaying recorded laps as if live,
      then tuned in the game by the owner.
