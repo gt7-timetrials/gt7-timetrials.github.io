@@ -229,7 +229,8 @@ async function compareLap(e, file, out, save) {
     const show = i => {
       const lap = choices.laps[i].lap, res = Coach.analyse(ref, lap, tipWho(e));
       if (res.error) { out.innerHTML = `<p class="miss">${res.error}</p>`; return; }
-      renderComparison(out, res, e, lap.car_code !== ref.car_code, { ...choices, chosen: i, show, across }, save);
+      // a time trial with free car choice: another car than the reference's is normal, so no warning
+      renderComparison(out, res, e, !e.free_choice && lap.car_code !== ref.car_code, { ...choices, chosen: i, show, across }, save);
     };
     show(choices.pick);
   } catch (err) {

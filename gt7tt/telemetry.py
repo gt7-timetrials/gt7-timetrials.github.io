@@ -61,10 +61,11 @@ def reference_laps(folder):
 
 
 def match_references(laps, current):
-    """{event_id: lap} for running events. current: [(event_id, car_code, wr_ms, entries)]."""
+    """{event_id: lap} for running events. current: [(event_id, cars, wr_ms, entries)], cars being the car codes a
+    reference may be in (the record's car, or for free car choice any car in the top 100)."""
     out = {}
     for lap in laps:
-        cands = [c for c in current if c[1] == lap["car_code"]]
+        cands = [c for c in current if lap["car_code"] in c[1]]
         if not cands:
             continue
         eid, _, wr, entries = min(cands, key=lambda c: abs(lap["lap_ms"] - c[2]))

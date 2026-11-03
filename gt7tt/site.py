@@ -19,13 +19,14 @@ def site_data(store, at, rep, finished=None, references=None):
     events = store.events()
     finished = finished if finished is not None else finished_events(store, events, at)
     references = references or {}
+    free = store.free_choice()
 
     current = []
     for e in sorted(rep["events"], key=lambda e: events[e["event_id"]].start, reverse=True):  # newest first
         ev = events[e["event_id"]]
         snaps = store.snapshots(ev.id)
         ref = references.get(ev.id)
-        current.append({**e, "history": store.predictions(ev.id),
+        current.append({**e, "free_choice": ev.id in free, "history": store.predictions(ev.id),
                         "wr_steps": wr_steps(ev, snaps[-1]["list"] if snaps else []),
                         "reference": ref and {"lap_ms": ref["lap_ms"], "driver": ref["driver"],
                                               "url": f"reference/{ev.id}.json"}})
@@ -168,12 +169,16 @@ def license_tests(store, out_dir):
 
 def current_references(store, rep):
     """Reference laps (data/reference_laps/*.csv) matched to the running events."""
-    current = []
+    current, free = [], store.free_choice()
     for e in rep["events"]:
         snaps = store.snapshots(e["event_id"])
         if snaps and snaps[-1]["list"]:
             entries = snaps[-1]["list"]
-            current.append((e["event_id"], entries[0]["ranking_stats"]["car_code"], e["wr_ms"], entries))
+            # free car choice: the reference can be in any car from the top 100, so it stays matched when the
+            # record moves to another car; otherwise it must be the record's car
+            cars = ({x["ranking_stats"]["car_code"] for x in entries} if e["event_id"] in free
+                    else {entries[0]["ranking_stats"]["car_code"]})
+            current.append((e["event_id"], cars, e["wr_ms"], entries))
     laps = telemetry.reference_laps(os.path.join(store.root, "reference_laps"))
     return telemetry.match_references(laps, current)
 

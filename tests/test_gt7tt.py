@@ -154,6 +154,25 @@ class SiteTest(unittest.TestCase):
             fin = model.finished_events(store, store.events(), at)
             self.assertEqual(len(os.listdir(os.path.join(out, "events"))), len(fin))
 
+    def test_free_car_choice(self):
+        """A flagged time trial: the reference stays matched while its car is in the top 100, and the page knows."""
+        with tempfile.TemporaryDirectory() as d:
+            store = synthetic_store(d)
+            ev = store.events()[20]
+            at = ev.start + timedelta(days=5)
+            board = json.loads(json.dumps(store.board(20)))
+            board["list"][5]["ranking_stats"]["car_code"] = 3590  # the reference's car, but not the record's
+            store.save_snapshot(20, board, at)
+            os.makedirs(os.path.join(d, "reference_laps"))
+            shutil.copy(TelemetryTest.REF, os.path.join(d, "reference_laps", "ref.csv"))
+            rep = report.build(store, at, {20: board})
+            self.assertEqual(site.current_references(store, rep), {}, "fixed car: the record's car only")
+            self.assertFalse(site.site_data(store, at, rep)["current"][0]["free_choice"])
+            with open(os.path.join(d, "free_choice.json"), "w") as f:
+                json.dump({"events": [20]}, f)
+            self.assertEqual(list(site.current_references(store, rep)), [20], "free choice: any car in the top 100")
+            self.assertTrue(site.site_data(store, at, rep)["current"][0]["free_choice"])
+
     def test_names_prefer_official_list(self):
         store = Store()  # real data/ref
         self.assertEqual(store.course(1340)[0], "SUGO International Racing Course")
@@ -546,10 +565,13 @@ class TelemetryTest(unittest.TestCase):
     def test_reference_matched_to_event_by_car_and_closest_record(self):
         lap = telemetry.fastest_lap(telemetry.read_csv(self.REF))
         entries = [{"score": 110133, "user": {"np_online_id": "Fast_One"}}]
-        current = [(1, 3590, 140000, []), (2, 3590, 110200, entries), (3, 999, 110133, entries)]
+        current = [(1, {3590}, 140000, []), (2, {3590}, 110200, entries), (3, {999}, 110133, entries)]
         refs = telemetry.match_references([lap], current)
         self.assertEqual(list(refs), [2])
         self.assertEqual(refs[2]["driver"], "Fast_One")
+        # free car choice: the record has moved to another car, but the reference's car is still in the top 100
+        self.assertEqual(list(telemetry.match_references([lap], [(4, {999, 3590}, 110100, entries)])), [4])
+        self.assertEqual(telemetry.match_references([lap], [(4, {999}, 110100, entries)]), {})
 
     @unittest.skipUnless(shutil.which("node"), "node not installed")
     def test_browser_lap_comparison(self):

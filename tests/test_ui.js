@@ -209,6 +209,31 @@ function standIn({ withCues, csv }) {
     await p.context().close();
   }
 
+  // 5. a time trial: a lap in another car than the reference's gets a warning, unless the owner has flagged the event
+  // as free car choice. The first current event is given S-1's gold run as its reference, in another car.
+  for (const free of [false, true]) {
+    const ctx = await browser.newContext({ ...devices["iPhone 13"] });
+    await ctx.route("**/data.json", async route => {
+      const data = await (await route.fetch()).json();
+      Object.assign(data.current[0], { free_choice: free,
+        reference: { lap_ms: 71809, driver: "Someone", url: "test-reference.json" } });
+      await route.fulfill({ json: data });
+    });
+    await ctx.route("**/test-reference.json", async route => {
+      const ref = await (await ctx.request.get(url + "license/S-1.json")).json();
+      await route.fulfill({ json: { ...ref, car_code: ref.car_code + 1 } });
+    });
+    const p = await ctx.newPage();
+    p.on("pageerror", e => errors.push(`time trial: ${e.message}`));
+    await p.goto(url + "#current");
+    const c = p.locator("#current-list .coach").first();
+    await c.locator("input.lap-file").setInputFiles(s1File);
+    await c.locator(".coach-summary").waitFor();
+    assert.strictEqual(/different car/.test(await c.locator(".coach-summary").innerText()), !free,
+      free ? "free car choice: no different-car warning" : "fixed car: the different-car warning");
+    await ctx.close();
+  }
+
   await browser.close();
   assert.deepStrictEqual(errors, [], "no script errors");
   console.log("ui tests passed");
