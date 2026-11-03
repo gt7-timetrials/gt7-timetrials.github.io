@@ -212,6 +212,13 @@ tests: keep it simple, and only take on what one person can look after.
   recording.
 - **Progress between sessions**: with recordings kept on the phone, what changed since last time ("gained 0.3 s in
   corner 3").
+- **Automating the weekly recordings** (a separate project, later): today the owner downloads each new time trial's WR
+  replay and each daily race's best-time replay, plays it with the recorder running, and sends the CSV. Automating
+  it means driving GT7 from a computer through PlayStation Remote Play (for example with an open-source Remote Play
+  client), navigating the menus to download and play each replay while recording, and checking the result. Fragile
+  (menus change with game updates) and needs an always-on computer and PlayStation; check Sony's terms first.
+  Smaller steps that could come sooner: the daily job reminding the owner when a new time trial has no reference
+  lap yet, and removing ended events' reference laps and last week's daily races by itself.
 - **A shareable result card**: one image (track, lap against the reference, the corners to work on) for Reddit or
   Discord.
 
