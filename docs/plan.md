@@ -181,6 +181,10 @@ tests: keep it simple, and only take on what one person can look after.
     - Without a flag, detect it: a sudden change in speed or direction that braking and steering don't explain (a
       collision); wheel speeds or suspension travel unlike the reference's at the same point (grass, gravel, kerbs);
       the car well off the reference's line where the reference uses the full width.
+    - Daily races add their own: the first lap from the grid (a standing start), pit laps (a required tyre change or
+      refuel: the pit lane, a stop at zero speed), and laps in traffic. Flag the first two, and leave all three out of
+      Across your laps and the best composite lap; traffic is harder (lifting or braking where the reference doesn't,
+      with no other explanation) and may only be worth a hint.
 
 ## Later, maybe
 
