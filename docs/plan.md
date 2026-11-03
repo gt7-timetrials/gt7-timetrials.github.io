@@ -12,8 +12,10 @@ tests: keep it simple, and only take on what one person can look after.
    - [x] The tab, `data/daily/races.json` and `data/daily/laps/<id>.csv`, tests (on beta).
    - [ ] The owner sends this week's three races and their laps; then each week's (straight to main, like reference
          laps).
-   - [ ] **A new name**: "Time Trials for GT7" no longer covers it. The app name (Play listing, and the app's own name,
-         which needs a new `.aab`), the website title and the About page.
+   - [x] The Current tab renamed **Time trials**, next to Daily races (the link stays `#current`).
+   - [ ] **A new name** with the next app update: "Time Trials for GT7" no longer covers it (suggested: "Lap Coach
+         for GT7"; the owner to choose). The app's own name (`app_name`, needs a new `.aab`), the Play listing, the
+         website title and the About page, all together. Superficial, so it waits for an update with other changes.
 
 1. **Google Play closed test**: live since 30 October 2026 ("Time Trials for GT7", `io.github.gt7timetrials`).
    - [x] Owner: Play developer account approved.
