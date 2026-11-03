@@ -181,8 +181,9 @@ function renderCurrent() {
 // gold-medal run (key = test id, with medal times).
 const refName = r => (r.driver ? `${r.driver}'s` : "the world record");
 const refKey = e => e.reference.key ?? e.event_id;
-const tipWho = e => (e.medals ? "the reference lap" : e.reference.driver || "the WR"); // used in the tips
-const shortWho = e => (e.medals ? "Reference" : e.reference.driver ? esc(e.reference.driver) : "WR"); // labels
+// a daily race's reference is a fast lap, maybe with its driver's name; a time trial's is the WR lap
+const tipWho = e => (e.medals ? "the reference lap" : e.reference.driver || (e.daily ? "the reference lap" : "the WR")); // in the tips
+const shortWho = e => (e.medals ? "Reference" : e.reference.driver ? esc(e.reference.driver) : e.daily ? "Reference" : "WR"); // labels
 function coachSection(e, i) {
   const r = e.reference;
   return `<section class="coach">
@@ -363,7 +364,8 @@ async function finishRecording(compare) {
 document.addEventListener("click", ev => {
   const b = ev.target.closest(".record-btn");
   if (!b) return;
-  const e = b.dataset.kind === "license" ? licenseEvent(+b.dataset.i) : DATA.current[+b.dataset.i];
+  const e = b.dataset.kind === "license" ? licenseEvent(+b.dataset.i)
+    : b.dataset.kind === "daily" ? dailyEvent(+b.dataset.i) : DATA.current[+b.dataset.i];
   startRecording(e, b.closest(".coach").querySelector(".coach-result"));
 });
 
@@ -555,6 +557,34 @@ function renderLicense() {
   }));
 }
 
+// --- Daily races tab: a fast lap for each of the week's daily races (data/daily/races.json), to compare with ---
+let DAILY;
+const dailyEvent = i => {
+  const r = DAILY.races[i];
+  return { reference: r.reference, daily: true, free_choice: !!r.free_choice };
+};
+function renderDaily() {
+  const el = document.getElementById("daily-list");
+  if (!DAILY.races.length) {
+    el.innerHTML = `<p class="muted">This week's daily races are coming soon.</p>`;
+    return;
+  }
+  el.innerHTML = DAILY.races.map((r, i) => `<article class="event license-test">
+      <div class="license-head"><span class="license-id">${esc(r.id)}</span>
+        <div><h2>${esc(r.track)}</h2><div class="meta">${esc(r.car)}${r.free_choice ? " · your choice of car" : ""}</div></div></div>
+      ${r.reference ? `<section class="coach">
+        <p class="hint">Reference: ${r.reference.driver ? `${esc(r.reference.driver)}'s` : "a"} lap of ${fmt(r.reference.lap_ms)}${
+          r.reference.car && r.free_choice ? ` in the ${esc(r.reference.car)}` : ""}.</p>
+        <div class="coach-actions">${APP ? recordButton("daily", i) : ""}<label class="button-link${APP ? "" : " primary"}">Upload your lap (.csv)<input type="file"
+          accept=".csv,text/csv" class="daily-file" data-i="${i}" hidden></label></div>
+        <div class="coach-result" aria-live="polite"></div></section>` : `<p class="muted">Reference lap coming soon.</p>`}
+    </article>`).join("");
+  el.querySelectorAll("input.daily-file").forEach(inp => inp.addEventListener("change", () => {
+    if (inp.files[0]) compareLap(dailyEvent(+inp.dataset.i), inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
+    inp.value = "";
+  }));
+}
+
 // Phones: corner details slide up from the bottom when a corner is tapped. Wider screens: beside the map.
 const phone = () => matchMedia("(max-width: 760px)").matches;
 
@@ -607,7 +637,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     <p class="hint tap-hint">${phone() ? "Tap a corner to see where you lose time." : "Hover over or click a corner on the map."}</p>
     <div class="coach-grid">
       <div class="map-box">${Coach.trackMap(res)}
-        <div class="legend">${e.medals
+        <div class="legend">${e.medals || e.daily
           ? `<span><i class="k good"></i>within 3% of the reference</span><span><i class="k warn"></i>3–5% slower</span>
             <span><i class="k bad"></i>over 5% slower</span>`
           : `<span><i class="k good"></i>gold pace (within 3%)</span><span><i class="k warn"></i>silver pace (3–5%)</span>
@@ -902,6 +932,8 @@ fetch("data.json")
     renderScorecard();
     renderPast();
     renderDrivers();
+    fetch("daily.json").then(r => r.json()).then(d => { DAILY = d; renderDaily(); })
+      .catch(() => { document.getElementById("daily-list").innerHTML = `<p class="muted">Could not load the daily races.</p>`; });
     fetch("license.json").then(r => r.json()).then(d => { LICENSE = d; renderLicense(); })
       .catch(() => { document.getElementById("license-list").innerHTML = `<p class="muted">Could not load the tests.</p>`; });
     if (shownEvent) renderEvent(shownEvent); // opened by a direct link before data.json arrived

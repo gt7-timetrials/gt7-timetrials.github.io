@@ -16,6 +16,7 @@
       Updated every morning, Melbourne time.</p>
     <nav>
       <a href="#current" data-tab="current">Current</a>
+      <a href="#daily" data-tab="daily">Daily races</a>
       <a href="#past" data-tab="past">Past events</a>
       <a href="#license" data-tab="license">Super License</a>
       <a href="#drivers" data-tab="drivers">Top drivers</a>
@@ -29,6 +30,15 @@
 <main class="wrap">
   <section id="tab-current" class="tab">
     <div id="current-list"><p class="muted">Loading…</p></div>
+  </section>
+
+  <section id="tab-daily" class="tab" hidden>
+    <p class="muted license-intro">Compare your laps in this week's daily races with a fast lap, corner by corner.
+      <span class="web-only">Record your laps with the free recorder (<a href="telemetry.py" download>telemetry.py</a>,
+      <a href="readme.txt" target="_blank" rel="noopener">how to record</a>), then upload the file under the race. Your
+      file stays on your device.</span><span class="app-only" hidden>Tap Record on this phone under a race, or upload a
+      recording.</span></p>
+    <div id="daily-list"><p class="muted">Loading…</p></div>
   </section>
 
   <section id="tab-past" class="tab" hidden>
@@ -81,6 +91,7 @@
     <ul>
       <li><b>Current</b>: this week's time trials, with where the gold, silver and bronze times are likely to end up,
         and a reference lap (from the world record replay) to compare your laps with.</li>
+      <li><b>Daily races</b>: a fast lap for each of this week's daily races, to compare your laps with.</li>
       <li><b>Past events</b>: how earlier time trials finished, and how close the predictions were.</li>
       <li><b>Super License</b>: a gold-medal run for each test, to compare your runs with.</li>
       <li><b>Top drivers</b>: the most consistently fast time trial drivers.</li>

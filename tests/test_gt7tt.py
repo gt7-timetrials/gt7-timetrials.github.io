@@ -173,6 +173,26 @@ class SiteTest(unittest.TestCase):
             self.assertEqual(list(site.current_references(store, rep)), [20], "free choice: any car")
             self.assertTrue(site.site_data(store, at, rep)["current"][0]["free_choice"])
 
+    def test_daily_races(self):
+        """The Daily races tab: the week's races, each with its reference lap if there is one."""
+        with tempfile.TemporaryDirectory() as d:
+            store = Store(d)
+            os.makedirs(os.path.join(d, "daily", "laps"))
+            with open(os.path.join(d, "daily", "races.json"), "w") as f:
+                json.dump({"races": [{"id": "A", "track": "Suzuka", "car": "Gr.3", "free_choice": True, "driver": "Fast_One"},
+                                     {"id": "B", "track": "Monza", "car": "Mazda Roadster"}]}, f)
+            shutil.copy(TelemetryTest.REF, os.path.join(d, "daily", "laps", "A.csv"))
+            out = os.path.join(d, "_site")
+            daily = site.daily_races(store, out)
+            a, b = daily["races"]
+            self.assertEqual(a["reference"]["lap_ms"], 110133)
+            self.assertEqual(a["reference"]["driver"], "Fast_One")
+            self.assertIn("car", a["reference"], "free choice: the reference's car is named")
+            self.assertTrue(a["free_choice"])
+            self.assertTrue(os.path.exists(os.path.join(out, "daily", "A.json")))
+            self.assertIsNone(b["reference"], "no lap yet")
+            self.assertEqual(site.daily_races(Store(os.path.join(d, "none")), out), {"races": []})
+
     def test_names_prefer_official_list(self):
         store = Store()  # real data/ref
         self.assertEqual(store.course(1340)[0], "SUGO International Racing Course")
