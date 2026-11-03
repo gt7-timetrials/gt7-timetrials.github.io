@@ -220,6 +220,7 @@ function standIn({ withCues, csv }) {
     p.on("pageerror", e => errors.push(`daily races: ${e.message}`));
     await p.goto(url + "#daily");
     const c = p.locator("#daily-list .coach").first();
+    await c.waitFor(); // the races load after the page
     assert.match(await p.locator("#daily-list").innerText(), /your choice of car[\s\S]*Fast_One's lap of 1:11\.809 in the Some car[\s\S]*Reference lap coming soon/);
     await c.locator("input.daily-file").setInputFiles(s1File);
     await c.locator(".coach-summary").waitFor();
