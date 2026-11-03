@@ -43,6 +43,10 @@ tests: keep it simple, and only take on what one person can look after.
          tracks this by itself: progress is on the Play Console Dashboard; nothing to trigger.
    - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
          production. So far, all on the Reddit thread:
+         - **likasumboooowdy (about 26 October, the first Reddit post, before the Play test):** asked whether it could
+           be used for license tests ("would have helped a ton on the super licenses… I've got some tricky ones
+           left"). The owner added the Super License tab with a gold-medal run for S-1 to S-9 within the week (S-10
+           once unlocked); the tester: "Wow thank you!!"
          - **Worried_Bug_538, first post (2 November), after the Barcelona (Elantra) time trial:**
            - What they liked: it separates what you do from what the other driver does well, and the many sectors
              give detail; reading the parameters and section times showed where they lose time; "a really good app",
