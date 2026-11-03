@@ -42,17 +42,30 @@ tests: keep it simple, and only take on what one person can look after.
    - [ ] Keep 12+ opted in for 14 days in a row, to about **14 November 2026** (aim for a few more as a buffer). Google
          tracks this by itself: progress is on the Play Console Dashboard; nothing to trigger.
    - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
-         production. So far: a Reddit tester (2 November) found it detailed but hard to get into, thought each lap
-         needed a restart, and asked for translation and GT7-style telemetry graphs: answered by item 3 (guide, How
-         to use tab, many-laps wording, translation note); graphs are planned. The same tester, later: drove four sessions at
-         Barcelona checking the corner descriptions against GT7's own telemetry and found them accurate (braking
-         and full-throttle distances, track width at the apex); set 1:51.539. Asked to compare their best and worst
-         laps together with the WR's (now each lap is compared with the WR, and ‹ › steps through laps on a corner). A
-         second Reddit tester (HomeworkBoth9844, 3 November) asked whether daily races could be added; the owner
-         first thought reference laps were hard to get for races, and the tester pointed out that each daily race
-         quickly gets a world's best time whose replay can be downloaded, like a time trial's. The owner agreed, and
-         the Daily races tab went live the same day with all three races (A one car, B and C free choice of Gr.3 and
-         Gr.4, using the new free car choice flag); the tester said they'd try the app soon.
+         production. So far, all on the Reddit thread:
+         - **Worried_Bug_538, first post (2 November), after the Barcelona (Elantra) time trial:**
+           - What they liked: it separates what you do from what the other driver does well, and the many sectors
+             give detail; reading the parameters and section times showed where they lose time; "a really good app",
+             "loved the idea".
+           - What they found hard: "very advanced… people might get lost", could be more intuitive.
+           - Thought each lap needed a restart ("reset the lap for it to count again").
+           - Asked for automatic translation, and graphs like GT7's own telemetry.
+           - What changed (owner replied, then merged 2 November): a "How to read this" guide and a How to use tab;
+             the recording wording says to drive as many laps as you like with no restart; a translation note on
+             About (in-app translation is planned); graphs are planned.
+         - **Worried_Bug_538, second post:** drove four sessions at Barcelona checking the corner descriptions against
+           GT7's own telemetry, and found them accurate ("slowed down 11 m before and accelerated 7 m after to the max",
+           the track width at the apex); set 1:51.539. "Absolutely loved the experience." So the detail stays: the
+           guide makes it easier to get into instead of cutting it.
+           - Asked to compare their best and worst laps together with the WR's: each lap is compared with the WR
+             today, with ‹ › to step through laps on a corner; showing several laps at once is planned (item 9).
+           - Assumed the app wouldn't update during the test, then asked how to update: the owner told them about the
+             new version and linked the Play page with its Update button.
+         - **HomeworkBoth9844 (3 November):** "looks really great", and asked whether daily races could be added. The
+           owner first thought reference laps were hard to get for races; the tester pointed out that each daily race
+           quickly gets a world's best time whose replay can be downloaded, like a time trial's. The owner agreed, and
+           the Daily races tab went live the same day with all three races (A one car, B and C free choice of Gr.3 and
+           Gr.4, using the new free car choice flag); the tester said they'd try the app soon.
    - [ ] Before production: lead the Play listing and posts with what sets the app apart. Since November 2025 GT7 has
          its own Data Logger (compare laps with other people's, as graphs), and Coach Dave Delta (paid, needs a PC)
          and others offer analysis; this app's case is: no setup or PC, a reference lap ready for every time trial
