@@ -174,10 +174,8 @@ def current_references(store, rep):
         snaps = store.snapshots(e["event_id"])
         if snaps and snaps[-1]["list"]:
             entries = snaps[-1]["list"]
-            # free car choice: the reference can be in any car from the top 100, so it stays matched when the
-            # record moves to another car; otherwise it must be the record's car
-            cars = ({x["ranking_stats"]["car_code"] for x in entries} if e["event_id"] in free
-                    else {entries[0]["ranking_stats"]["car_code"]})
+            # free car choice (flagged by the owner): the reference can be in any car; otherwise the record's car
+            cars = None if e["event_id"] in free else {entries[0]["ranking_stats"]["car_code"]}
             current.append((e["event_id"], cars, e["wr_ms"], entries))
     laps = telemetry.reference_laps(os.path.join(store.root, "reference_laps"))
     return telemetry.match_references(laps, current)

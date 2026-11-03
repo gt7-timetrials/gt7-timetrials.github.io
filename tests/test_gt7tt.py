@@ -155,13 +155,13 @@ class SiteTest(unittest.TestCase):
             self.assertEqual(len(os.listdir(os.path.join(out, "events"))), len(fin))
 
     def test_free_car_choice(self):
-        """A flagged time trial: the reference stays matched while its car is in the top 100, and the page knows."""
+        """A flagged time trial: the reference is matched whatever its car, and the page knows."""
         with tempfile.TemporaryDirectory() as d:
             store = synthetic_store(d)
             ev = store.events()[20]
             at = ev.start + timedelta(days=5)
             board = json.loads(json.dumps(store.board(20)))
-            board["list"][5]["ranking_stats"]["car_code"] = 3590  # the reference's car, but not the record's
+            # the reference's car (3590) isn't the record's, nor anywhere in the top 100
             store.save_snapshot(20, board, at)
             os.makedirs(os.path.join(d, "reference_laps"))
             shutil.copy(TelemetryTest.REF, os.path.join(d, "reference_laps", "ref.csv"))
@@ -170,7 +170,7 @@ class SiteTest(unittest.TestCase):
             self.assertFalse(site.site_data(store, at, rep)["current"][0]["free_choice"])
             with open(os.path.join(d, "free_choice.json"), "w") as f:
                 json.dump({"events": [20]}, f)
-            self.assertEqual(list(site.current_references(store, rep)), [20], "free choice: any car in the top 100")
+            self.assertEqual(list(site.current_references(store, rep)), [20], "free choice: any car")
             self.assertTrue(site.site_data(store, at, rep)["current"][0]["free_choice"])
 
     def test_names_prefer_official_list(self):
@@ -569,8 +569,9 @@ class TelemetryTest(unittest.TestCase):
         refs = telemetry.match_references([lap], current)
         self.assertEqual(list(refs), [2])
         self.assertEqual(refs[2]["driver"], "Fast_One")
-        # free car choice: the record has moved to another car, but the reference's car is still in the top 100
-        self.assertEqual(list(telemetry.match_references([lap], [(4, {999, 3590}, 110100, entries)])), [4])
+        # free car choice (None): any car, but an event in the lap's own car comes first
+        self.assertEqual(list(telemetry.match_references([lap], [(4, None, 110100, entries)])), [4])
+        self.assertEqual(list(telemetry.match_references([lap], [(4, None, 110133, entries), (5, {3590}, 115000, [])])), [5])
         self.assertEqual(telemetry.match_references([lap], [(4, {999}, 110100, entries)]), {})
 
     @unittest.skipUnless(shutil.which("node"), "node not installed")

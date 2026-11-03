@@ -204,7 +204,8 @@ tests: keep it simple, and only take on what one person can look after.
   `python -m gt7tt daily` by hand.
 - **Free car choice:** when the owner says a time trial lets players choose their car, add its event id (in
   `report.json`) to `data/free_choice.json`. Its comparison then doesn't warn about a different car, and its reference
-  lap stays matched while its car is anywhere in the top 100 (otherwise it must be the record's car). Data only, so
+  lap is matched to it whatever its car (otherwise it must be the record's car), so a reference in an unusual car, or
+  a record that moves to another car, doesn't lose it. Data only, so
   straight to main like a reference lap.
 - **Better WR during an event:** the owner sends the new replay CSV. Replace the event's old reference lap with it.
 - **Event ends:** automatic. It leaves Current at the next site build, and the next morning's update adds it to Past
