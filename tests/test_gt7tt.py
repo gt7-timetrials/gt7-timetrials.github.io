@@ -154,6 +154,45 @@ class SiteTest(unittest.TestCase):
             fin = model.finished_events(store, store.events(), at)
             self.assertEqual(len(os.listdir(os.path.join(out, "events"))), len(fin))
 
+    def test_free_car_choice(self):
+        """A flagged time trial: the reference is matched whatever its car, and the page knows."""
+        with tempfile.TemporaryDirectory() as d:
+            store = synthetic_store(d)
+            ev = store.events()[20]
+            at = ev.start + timedelta(days=5)
+            board = json.loads(json.dumps(store.board(20)))
+            # the reference's car (3590) isn't the record's, nor anywhere in the top 100
+            store.save_snapshot(20, board, at)
+            os.makedirs(os.path.join(d, "reference_laps"))
+            shutil.copy(TelemetryTest.REF, os.path.join(d, "reference_laps", "ref.csv"))
+            rep = report.build(store, at, {20: board})
+            self.assertEqual(site.current_references(store, rep), {}, "fixed car: the record's car only")
+            self.assertFalse(site.site_data(store, at, rep)["current"][0]["free_choice"])
+            with open(os.path.join(d, "free_choice.json"), "w") as f:
+                json.dump({"events": [20]}, f)
+            self.assertEqual(list(site.current_references(store, rep)), [20], "free choice: any car")
+            self.assertTrue(site.site_data(store, at, rep)["current"][0]["free_choice"])
+
+    def test_daily_races(self):
+        """The Daily races tab: the week's races, each with its reference lap if there is one."""
+        with tempfile.TemporaryDirectory() as d:
+            store = Store(d)
+            os.makedirs(os.path.join(d, "daily", "laps"))
+            with open(os.path.join(d, "daily", "races.json"), "w") as f:
+                json.dump({"races": [{"id": "A", "track": "Suzuka", "car": "Gr.3", "free_choice": True, "driver": "Fast_One"},
+                                     {"id": "B", "track": "Monza", "car": "Mazda Roadster"}]}, f)
+            shutil.copy(TelemetryTest.REF, os.path.join(d, "daily", "laps", "A.csv"))
+            out = os.path.join(d, "_site")
+            daily = site.daily_races(store, out)
+            a, b = daily["races"]
+            self.assertEqual(a["reference"]["lap_ms"], 110133)
+            self.assertEqual(a["reference"]["driver"], "Fast_One")
+            self.assertIn("car", a["reference"], "free choice: the reference's car is named")
+            self.assertTrue(a["free_choice"])
+            self.assertTrue(os.path.exists(os.path.join(out, "daily", "A.json")))
+            self.assertIsNone(b["reference"], "no lap yet")
+            self.assertEqual(site.daily_races(Store(os.path.join(d, "none")), out), {"races": []})
+
     def test_names_prefer_official_list(self):
         store = Store()  # real data/ref
         self.assertEqual(store.course(1340)[0], "SUGO International Racing Course")
@@ -546,10 +585,14 @@ class TelemetryTest(unittest.TestCase):
     def test_reference_matched_to_event_by_car_and_closest_record(self):
         lap = telemetry.fastest_lap(telemetry.read_csv(self.REF))
         entries = [{"score": 110133, "user": {"np_online_id": "Fast_One"}}]
-        current = [(1, 3590, 140000, []), (2, 3590, 110200, entries), (3, 999, 110133, entries)]
+        current = [(1, {3590}, 140000, []), (2, {3590}, 110200, entries), (3, {999}, 110133, entries)]
         refs = telemetry.match_references([lap], current)
         self.assertEqual(list(refs), [2])
         self.assertEqual(refs[2]["driver"], "Fast_One")
+        # free car choice (None): any car, but an event in the lap's own car comes first
+        self.assertEqual(list(telemetry.match_references([lap], [(4, None, 110100, entries)])), [4])
+        self.assertEqual(list(telemetry.match_references([lap], [(4, None, 110133, entries), (5, {3590}, 115000, [])])), [5])
+        self.assertEqual(telemetry.match_references([lap], [(4, {999}, 110100, entries)]), {})
 
     @unittest.skipUnless(shutil.which("node"), "node not installed")
     def test_browser_lap_comparison(self):

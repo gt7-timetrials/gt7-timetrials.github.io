@@ -85,8 +85,8 @@ function standIn({ withCues, csv }) {
     await coach(p).locator(".coach-summary").waitFor();
     assert.strictEqual(await p.locator(".guide").count(), 0, "and it stays hidden");
     // the website's own wording: the recorder link, no app notes
-    assert.ok(await p.locator(".license-intro .web-only").isVisible(), "website: the recorder link");
-    assert.ok(await p.locator(".license-intro .app-only").isHidden(), "website: no app wording");
+    assert.ok(await p.locator("#tab-license .license-intro .web-only").isVisible(), "website: the recorder link");
+    assert.ok(await p.locator("#tab-license .license-intro .app-only").isHidden(), "website: no app wording");
     await p.goto(url + "#howto");
     assert.match(await p.locator("#howto-guide").innerText(), /The map/, "How to use: how to read the comparison");
     await p.goto(url + "#current");
@@ -106,8 +106,8 @@ function standIn({ withCues, csv }) {
     assert.ok(await coach(p).locator(".record-btn").count(), `${label}: Record on this phone`);
     assert.strictEqual(await p.locator(".cue-toggle").count() > 0, has("cueState"), `${label}: audio cues checkbox only if it has them`);
     assert.strictEqual(await p.locator('nav a[data-tab="cues"]').isVisible(), has("cueState"), `${label}: Audio cues tab only if it has them`);
-    assert.ok(await p.locator(".license-intro .web-only").isHidden(), `${label}: no recorder link`);
-    assert.ok(await p.locator(".license-intro .app-only").isVisible(), `${label}: Record on this phone`);
+    assert.ok(await p.locator("#tab-license .license-intro .web-only").isHidden(), `${label}: no recorder link`);
+    assert.ok(await p.locator("#tab-license .license-intro .app-only").isVisible(), `${label}: Record on this phone`);
     await coach(p).locator(".record-btn").click();
     assert.deepStrictEqual((await calls(p)).at(-1), ["start", ""], `${label}: recording started (audio cues off)`);
     await event(p, { type: "connected", ip: "192.168.0.23" });
@@ -207,6 +207,51 @@ function standIn({ withCues, csv }) {
     await c.locator(".coach-summary").waitFor();
     assert.strictEqual(await c.locator(".chip.selected").getAttribute("data-n"), n, "choosing a lap at the top too");
     await p.context().close();
+  }
+
+  // the Daily races tab: a race with a free car choice and a reference lap in another car: compared with no warning
+  {
+    const ctx = await browser.newContext({ ...devices["iPhone 13"] });
+    await ctx.route("**/daily.json", route => route.fulfill({ json: { races: [
+      { id: "A", track: "High Speed Ring", car: "Gr.3", free_choice: true,
+        reference: { lap_ms: 71809, url: "license/S-1.json", key: "daily-A", driver: "Fast_One", car: "Some car" } },
+      { id: "B", track: "Monza", car: "Mazda Roadster", reference: null }] } }));
+    const p = await ctx.newPage();
+    p.on("pageerror", e => errors.push(`daily races: ${e.message}`));
+    await p.goto(url + "#daily");
+    const c = p.locator("#daily-list .coach").first();
+    await c.waitFor(); // the races load after the page
+    assert.match(await p.locator("#daily-list").innerText(), /your choice of car[\s\S]*Fast_One's lap of 1:11\.809 in the Some car[\s\S]*Reference lap coming soon/);
+    await c.locator("input.daily-file").setInputFiles(s1File);
+    await c.locator(".coach-summary").waitFor();
+    assert.match(await c.locator(".coach-summary").innerText(), /Your lap 1:18\.521/);
+    assert.match(await c.locator(".map-box .legend").innerText(), /within 3% of the reference/, "no medal wording for a daily race");
+    await ctx.close();
+  }
+
+  // 5. a time trial: a lap in another car than the reference's gets a warning, unless the owner has flagged the event
+  // as free car choice. The first current event is given S-1's gold run as its reference, in another car.
+  for (const free of [false, true]) {
+    const ctx = await browser.newContext({ ...devices["iPhone 13"] });
+    await ctx.route("**/data.json", async route => {
+      const data = await (await route.fetch()).json();
+      Object.assign(data.current[0], { free_choice: free,
+        reference: { lap_ms: 71809, driver: "Someone", url: "test-reference.json" } });
+      await route.fulfill({ json: data });
+    });
+    await ctx.route("**/test-reference.json", async route => {
+      const ref = await (await ctx.request.get(url + "license/S-1.json")).json();
+      await route.fulfill({ json: { ...ref, car_code: ref.car_code + 1 } });
+    });
+    const p = await ctx.newPage();
+    p.on("pageerror", e => errors.push(`time trial: ${e.message}`));
+    await p.goto(url + "#current");
+    const c = p.locator("#current-list .coach").first();
+    await c.locator("input.lap-file").setInputFiles(s1File);
+    await c.locator(".coach-summary").waitFor();
+    assert.strictEqual(/different car/.test(await c.locator(".coach-summary").innerText()), !free,
+      free ? "free car choice: no different-car warning" : "fixed car: the different-car warning");
+    await ctx.close();
   }
 
   await browser.close();

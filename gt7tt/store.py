@@ -90,6 +90,11 @@ class Store:
     def __init__(self, root=DATA):
         self.root = root
 
+    def free_choice(self):
+        """Time trials where players choose their car (from the cars GT7 allows), as the owner flags them in
+        data/free_choice.json: their reference lap may be in another car than yours, and that's fine."""
+        return set(load_json(os.path.join(self.root, "free_choice.json"), {}).get("events", []))
+
     # events
     def events(self):
         raw = load_json(os.path.join(self.root, "events.json"), {})

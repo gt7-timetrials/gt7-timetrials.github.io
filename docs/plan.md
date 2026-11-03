@@ -5,6 +5,18 @@ tests: keep it simple, and only take on what one person can look after.
 
 ## Next up
 
+0. **Daily races** (started 3 November 2026): a Daily races tab after Current, like the Super License tab: the
+   week's races (A, B, C) with track, car (or the rule, such as Gr.3) and a fast reference lap for each, recorded by
+   the owner from a replay, to record or upload against. Free car choice races are flagged, so a different car gets no
+   warning (the first real use of the flag). The owner expects time trials and daily races to be the most used parts.
+   - [x] The tab, `data/daily/races.json` and `data/daily/laps/<id>.csv`, tests (on beta).
+   - [ ] The owner sends this week's three races and their laps; then each week's (straight to main, like reference
+         laps).
+   - [x] The Current tab renamed **Time trials**, next to Daily races (the link stays `#current`).
+   - [ ] **A new name** with the next app update: "Time Trials for GT7" no longer covers it (suggested: "Lap Coach
+         for GT7"; the owner to choose). The app's own name (`app_name`, needs a new `.aab`), the Play listing, the
+         website title and the About page, all together. Superficial, so it waits for an update with other changes.
+
 1. **Google Play closed test**: live since 30 October 2026 ("Time Trials for GT7", `io.github.gt7timetrials`).
    - [x] Owner: Play developer account approved.
    - [x] Privacy policy page on the website (`site/privacy.html`): the app collects nothing.
@@ -202,6 +214,13 @@ tests: keep it simple, and only take on what one person can look after.
 - **New time trial:** the owner sends a CSV of the WR replay. Add it to `data/reference_laps` (it matches the event by
   car and lap time). The event appears after the next morning's daily update; to show it the same evening, run
   `python -m gt7tt daily` by hand.
+- **Free car choice:** when the owner says a time trial lets players choose their car, add its event id (in
+  `report.json`) to `data/free_choice.json`. Its comparison then doesn't warn about a different car, and its reference
+  lap is matched to it whatever its car (otherwise it must be the record's car), so a reference in an unusual car, or
+  a record that moves to another car, doesn't lose it. Data only, so
+  straight to main like a reference lap.
+- **Daily races:** each week the owner sends the three races (track, car or rule, free choice or not, whose lap) and
+  a reference lap for each. Replace `data/daily/races.json` and `data/daily/laps/`. Data only, so straight to main.
 - **Better WR during an event:** the owner sends the new replay CSV. Replace the event's old reference lap with it.
 - **Event ends:** automatic. It leaves Current at the next site build, and the next morning's update adds it to Past
   events with its final top 100. Delete its reference lap from `data/reference_laps`.
