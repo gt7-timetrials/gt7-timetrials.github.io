@@ -1,0 +1,6 @@
+{
+  "note": "This week's daily races, from the owner. id: A, B or C. car: as GT7 shows it (one car, or the rule such as 'Gr.3'). free_choice: true when players choose their car (no different-car warning). driver: whose lap the reference is (optional). The reference lap goes in data/daily/laps/<id>.csv.",
+  "races": [
+    {"id": "A", "track": "Dragon Trail - Gardens", "car": "Chevrolet Corvette Stingray Convertible (C3) '69", "driver": "holl01"}
+  ]
+}
