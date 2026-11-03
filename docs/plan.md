@@ -36,6 +36,11 @@ tests: keep it simple, and only take on what one person can look after.
          Barcelona checking the corner descriptions against GT7's own telemetry and found them accurate (braking
          and full-throttle distances, track width at the apex); set 1:51.539. Asked to compare their best and worst
          laps together with the WR's (now each lap is compared with the WR, and ‹ › steps through laps on a corner).
+   - [ ] Before production: lead the Play listing and posts with what sets the app apart. Since November 2025 GT7 has
+         its own Data Logger (compare laps with other people's, as graphs), and Coach Dave Delta (paid, needs a PC)
+         and others offer analysis; this app's case is: no setup or PC, a reference lap ready for every time trial
+         and Super License test, advice in plain words, audio cues that teach the braking points, free and private.
+         Update `docs/play-listing.md` (short and full description) and the production questionnaire's answers.
    - [ ] From about 14 November: Apply for production (Dashboard; a short questionnaire on how testers were found,
          how they used the app, their feedback and what changed; review up to about a week), then release to everyone.
 
