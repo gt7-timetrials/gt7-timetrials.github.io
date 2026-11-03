@@ -36,6 +36,11 @@ tests: keep it simple, and only take on what one person can look after.
          Barcelona checking the corner descriptions against GT7's own telemetry and found them accurate (braking
          and full-throttle distances, track width at the apex); set 1:51.539. Asked to compare their best and worst
          laps together with the WR's (now each lap is compared with the WR, and ‹ › steps through laps on a corner).
+   - [ ] Before production: lead the Play listing and posts with what sets the app apart. Since November 2025 GT7 has
+         its own Data Logger (compare laps with other people's, as graphs), and Coach Dave Delta (paid, needs a PC)
+         and others offer analysis; this app's case is: no setup or PC, a reference lap ready for every time trial
+         and Super License test, advice in plain words, audio cues that teach the braking points, free and private.
+         Update `docs/play-listing.md` (short and full description) and the production questionnaire's answers.
    - [ ] From about 14 November: Apply for production (Dashboard; a short questionnaire on how testers were found,
          how they used the app, their feedback and what changed; review up to about a week), then release to everyone.
 
@@ -67,7 +72,7 @@ tests: keep it simple, and only take on what one person can look after.
      (speaker and wired 0 s, Bluetooth 0.33 s, from the owner's own calibrations).
    - **Audio cues tab** (app only, before How to use): beeps before brake (0–3, default 2), beep timing (0.3–1.0 s,
      default 0.5), lift beeps (on), gas beep (on), chicane beep (off), brake cue earlier than the reference
-     (0.0–1.0 s, default 0), gas beep adjustment (±0.20 s in 0.05 s steps), one row per audio output with its delay, ± and Reset, and
+     (0–0.20 s in 0.05 s steps, default 0), gas beep adjustment (±0.20 s in 0.05 s steps), one row per audio output with its delay, ± and Reset, and
      Test sound. Saved on the phone: these settings, the calibrations and the checkbox. Nothing else.
    - Built in the app's own code (works with the screen locked), tested here by replaying recorded laps as if live,
      then tuned in the game by the owner.
