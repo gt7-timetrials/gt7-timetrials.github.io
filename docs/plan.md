@@ -70,18 +70,18 @@ tests: keep it simple, and only take on what one person can look after.
            quickly gets a world's best time whose replay can be downloaded, like a time trial's. The owner agreed, and
            the Daily races tab went live the same day with all three races (A one car, B and C free choice of Gr.3 and
            Gr.4, using the new free car choice flag); the tester said they'd try the app soon.
-   - [ ] Before production: lead the Play listing and posts with what the app is for. **Easy and convenient, for
-         everyday drivers** who want gold in a time trial, to do better in daily races or to finish their licenses,
-         not for hard-core sim racers who already read telemetry. The others: GT7's own Data Logger (since November
+   - [ ] Before production: lead the Play listing and posts with what the app does: **easy and convenient**,
+         for time trials, daily races and licenses. Keep it neutral about who it's for (no "for beginners" or "for
+         experts"): people can decide for themselves. The others: GT7's own Data Logger (since November
          2025: laps compared as graphs), Coach Dave Delta (paid, needs a PC), GT Coach (voice coaching with a braking
          countdown, needs a PC or Mac), Backmarker (braking drills with audio cues), Pit Crew Hub, Traces,
-         GoTelemetry and dashboards: mostly graphs and setup, for keen racers. Audio braking cues aren't unique, so
+         GoTelemetry and dashboards: mostly graphs, and most need a PC or more setup. Audio braking cues aren't unique, so
          don't claim they are. This app's case: just your phone, no setup; a reference lap ready every week for the
          time trials, daily races and license tests; tips in plain words; braking cues calibrated to your speaker or
          headphones; free and private. A line to start from: "The easy way to get faster at GT7 time trials, daily
          races and licenses. Just your phone: a reference lap ready every week, tips in plain words, and audio cues
-         for the braking points." It's also the test for new features: what helps a less practised driver comes
-         first; expert features (detailed graphs) stay optional. Update `docs/play-listing.md` (short and full
+         for the braking points." For new features: keep the main view simple; more detailed features (graphs,
+         comparing several laps) are welcome as long as they don't crowd it. Update `docs/play-listing.md` (short and full
          description) and the production questionnaire's answers.
    - [ ] From about 14 November: Apply for production (Dashboard; a short questionnaire on how testers were found,
          how they used the app, their feedback and what changed; review up to about a week), then release to everyone.
