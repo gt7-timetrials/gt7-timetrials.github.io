@@ -13,8 +13,8 @@ tests: keep it simple, and only take on what one person can look after.
    - [ ] The owner sends this week's three races and their laps; then each week's (straight to main, like reference
          laps).
    - [x] The Current tab renamed **Time trials**, next to Daily races (the link stays `#current`).
-   - [ ] **A new name** with the next app update: "Time Trials for GT7" no longer covers it (suggested: "Lap Coach
-         for GT7"; the owner to choose). The app's own name (`app_name`, needs a new `.aab`), the Play listing, the
+   - [ ] **A new name** with the next app update: "Time Trials for GT7" no longer covers it (the owner chose
+         **"Lap Companion for GT7"** on 4 November: "coach" claims too much for a simpler offering). The app's own name (`app_name`, needs a new `.aab`), the Play listing, the
          website title and the About page, all together. Superficial, so it waits for an update with other changes.
 
 1. **Google Play closed test**: live since 30 October 2026 ("Time Trials for GT7", `io.github.gt7timetrials`).
@@ -70,11 +70,19 @@ tests: keep it simple, and only take on what one person can look after.
            quickly gets a world's best time whose replay can be downloaded, like a time trial's. The owner agreed, and
            the Daily races tab went live the same day with all three races (A one car, B and C free choice of Gr.3 and
            Gr.4, using the new free car choice flag); the tester said they'd try the app soon.
-   - [ ] Before production: lead the Play listing and posts with what sets the app apart. Since November 2025 GT7 has
-         its own Data Logger (compare laps with other people's, as graphs), and Coach Dave Delta (paid, needs a PC)
-         and others offer analysis; this app's case is: no setup or PC, a reference lap ready for every time trial
-         and Super License test, advice in plain words, audio cues that teach the braking points, free and private.
-         Update `docs/play-listing.md` (short and full description) and the production questionnaire's answers.
+   - [ ] Before production: lead the Play listing and posts with what the app is for. **Easy and convenient, for
+         everyday drivers** who want gold in a time trial, to do better in daily races or to finish their licenses,
+         not for hard-core sim racers who already read telemetry. The others: GT7's own Data Logger (since November
+         2025: laps compared as graphs), Coach Dave Delta (paid, needs a PC), GT Coach (voice coaching with a braking
+         countdown, needs a PC or Mac), Backmarker (braking drills with audio cues), Pit Crew Hub, Traces,
+         GoTelemetry and dashboards: mostly graphs and setup, for keen racers. Audio braking cues aren't unique, so
+         don't claim they are. This app's case: just your phone, no setup; a reference lap ready every week for the
+         time trials, daily races and license tests; tips in plain words; braking cues calibrated to your speaker or
+         headphones; free and private. A line to start from: "The easy way to get faster at GT7 time trials, daily
+         races and licenses. Just your phone: a reference lap ready every week, tips in plain words, and audio cues
+         for the braking points." It's also the test for new features: what helps a less practised driver comes
+         first; expert features (detailed graphs) stay optional. Update `docs/play-listing.md` (short and full
+         description) and the production questionnaire's answers.
    - [ ] From about 14 November: Apply for production (Dashboard; a short questionnaire on how testers were found,
          how they used the app, their feedback and what changed; review up to about a week), then release to everyone.
 
