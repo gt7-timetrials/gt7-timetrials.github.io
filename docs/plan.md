@@ -178,7 +178,9 @@ Super License tests: keep it simple, and only take on what one person can look a
    - [x] Graphs, part one (5 November, #73): a speed chart under each corner's brake and throttle charts, yours
          and the reference's, on the same distance axis.
    - [ ] More graphs like GT7's own telemetry (the tester asked for them): the owner is looking at what GT7 shows to
-         decide what else is worth adding (for example gear, steering, the whole lap rather than a corner).
+         decide what else is worth adding. Owner, 5 November: wait for feedback; no whole-lap view (a lap trace means
+         watching it through and is easily forgotten), the corner-by-corner view stays the way in: an overall picture
+         you can click through and take in. Candidates if asked for: gear or revs under the speed chart, steering.
    - Comparing several laps, the best composite lap and the tester's best-against-worst idea: see 9.
 
 4. **"Start here" summary**: built, then dropped in favour of "Across your laps": two summaries were too much,
