@@ -487,15 +487,21 @@ const Coach = (() => {
     x0 = Math.max(0, x0); x1 = Math.min(n - 1, x1, x0 + 700);
     let braking = false;
     for (let k = x0; k <= x1 && !braking; k++) braking = R.brk[k] > 5 || M.brk[k] > 5;
-    const W = 360, L = 30, Rt = 8, H1 = 62, gap = 18, H3 = 54, top = 12;
+    const W = 360, L = 30, Rt = 8, H1 = 62, gap = 18, H2 = 70, H3 = 54, top = 12;
     const kinds = braking ? [["Brake %", "brk", "brake"], ["Throttle %", "thr", "throttle"]] : [["Throttle %", "thr", "throttle"]];
-    const gTop = top + kinds.length * (H1 + gap), axisY = gTop + H3 + 4, H = axisY + 34;
+    const sTop = top + kinds.length * (H1 + gap); // speed, below the pedals
+    const gTop = sTop + H2 + gap, axisY = gTop + H3 + 4, H = axisY + 34;
     const x = k => L + ((k - x0) / (x1 - x0)) * (W - L - Rt);
     const g = [];
     for (let k = x0; k <= x1; k++) g.push(delta[k] - delta[x0]);
     const gLo = Math.min(0, ...g), gHi = Math.max(0.05, ...g), gPad = 0.12 * (gHi - gLo);
     const yP = (t0, v) => t0 + H1 - (Math.max(0, Math.min(100, v)) / 100) * H1;
     const yG = v => gTop + H3 - ((v - gLo + gPad) / (gHi - gLo + 2 * gPad)) * H3;
+    // speed: both laps on one scale, rounded out to 10 km/h
+    let vLo = Infinity, vHi = -Infinity;
+    for (let k = x0; k <= x1; k++) { vLo = Math.min(vLo, R.v[k], M.v[k]); vHi = Math.max(vHi, R.v[k], M.v[k]); }
+    vLo = Math.floor(vLo / 10) * 10; vHi = Math.max(vLo + 20, Math.ceil(vHi / 10) * 10);
+    const yS = v => sTop + H2 - ((v - vLo) / (vHi - vLo)) * H2;
     const line = (arr, y) => { let d = ""; for (let k = x0; k <= x1; k++) d += (d ? "L" : "M") + x(k).toFixed(1) + "," + y(arr[k]).toFixed(1); return d; };
     const secs = v => `${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(2)} s`;
     const strips = kinds.map(([label, key, cls], i) => {
@@ -508,6 +514,13 @@ const Coach = (() => {
         <path class="pc-ref" d="${line(R[key], v => yP(t0, v))}"/>
         <path class="pc-me ${cls}" d="${line(M[key], v => yP(t0, v))}"/>`;
     }).join("");
+    const speed = `<text class="pc-title" x="${L}" y="${sTop - 4}">Speed km/h</text>
+        <line class="pc-grid" x1="${L}" x2="${W - Rt}" y1="${yS(vHi)}" y2="${yS(vHi)}"/>
+        <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yS(vLo)}" y2="${yS(vLo)}"/>
+        <text class="pc-tick" x="${L - 4}" y="${yS(vHi) + 3}" text-anchor="end">${vHi}</text>
+        <text class="pc-tick" x="${L - 4}" y="${yS(vLo) + 3}" text-anchor="end">${vLo}</text>
+        <path class="pc-ref" d="${line(R.v, yS)}"/>
+        <path class="pc-me speed" d="${line(M.v, yS)}"/>`;
     let gd = "";
     g.forEach((v, i) => (gd += (i ? "L" : "M") + x(x0 + i).toFixed(1) + "," + yG(v).toFixed(1)));
     const ticks = [];
@@ -527,8 +540,8 @@ const Coach = (() => {
     const gTicks = [[0, "0"], [gHi, gHi.toFixed(2)]];
     if (yG(gLo) - yG(0) > 10) gTicks.push([gLo, gLo.toFixed(2).replace("-", "−")]); // only when clear of the 0
     return `<figure class="pedal-chart">
-      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${braking ? "Brake, throttle" : "Throttle"} and time gap through corner ${c.n}, you against ${who}">
-        ${bands}${strips}
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${braking ? "Brake, throttle" : "Throttle"}, speed and time gap through corner ${c.n}, you against ${who}">
+        ${bands}${strips}${speed}
         <text class="pc-title" x="${L}" y="${gTop - 4}">Time gap: <tspan class="pc-gapval">${secs(g[g.length - 1])}</tspan> over this stretch</text>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yG(0)}" y2="${yG(0)}"/>
         ${gTicks.map(([v, t]) => `<text class="pc-tick" x="${L - 4}" y="${yG(v) + 3}" text-anchor="end">${t}</text>`).join("")}

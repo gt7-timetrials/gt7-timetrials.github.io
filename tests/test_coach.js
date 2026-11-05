@@ -30,6 +30,11 @@ assert.strictEqual(r.lifts.length, 1);
 assert.ok(r.corners[1].tips.some(t => /^Lift: you average 3\d% throttle for 6\d m/.test(t)), r.corners[1].tips.join(" | "));
 const chart = Coach.cornerDetail(r.corners[6], "WR", r);
 ["Brake %", "Throttle %", "Time gap:", "WR brakes"].forEach(t => assert.ok(chart.includes(t), "chart shows " + t));
+// speed under the pedals, both laps on one scale, then the time gap
+assert.ok(chart.indexOf("Throttle %") < chart.indexOf("Speed km/h") && chart.indexOf("Speed km/h") < chart.indexOf("Time gap:"));
+assert.ok(chart.includes('class="pc-me speed"') && /Speed km\/h[\s\S]*class="pc-ref"/.test(chart), "your speed and the reference's");
+const [, vHi, vLo] = chart.match(/text-anchor="end">(\d+)<\/text>\s*<text[^>]*text-anchor="end">(\d+)<\/text>\s*<path class="pc-ref"[^>]*\/>\s*<path class="pc-me speed"/).map(Number);
+assert.ok(vHi > vLo && vHi % 10 === 0 && vLo % 10 === 0, `speed scale ${vLo}-${vHi}`);
 const liftChart = Coach.cornerDetail(r.corners[1], "WR", r); // no braking at corner 2: no brake strip, apex as 0
 assert.ok(!liftChart.includes("Brake %") && liftChart.includes("the apex (no braking here)"));
 
