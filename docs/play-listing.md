@@ -4,7 +4,8 @@ Everything to paste into the Play Console, and how to answer its forms. Images a
 
 ## Store listing (Grow users → Store presence → Main store listing)
 
-**App name** (30 max): `Lap Companion for GT7` (renamed from "Time Trials for GT7" in November 2026; the "for GT7" form, so it reads as a companion app, not an official one)
+**App name** (30 max): `Lap Companion for GT7` (renamed from "Time Trials for GT7" in November 2026; under the icon
+on the phone it's the shorter "Laps for GT7"; the "for GT7" form, so it reads as a companion app, not an official one)
 
 **Short description** (80 max):
 
