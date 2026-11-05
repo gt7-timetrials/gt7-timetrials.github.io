@@ -1,17 +1,20 @@
 # Plan
 
-What's next for the site and the Android app, in order. A free hobby project for GT7 time trials and Super License
-tests: keep it simple, and only take on what one person can look after.
+What's next for the site and the Android app, in order. A free hobby project for GT7 time trials, daily races and
+Super License tests: keep it simple, and only take on what one person can look after.
 
 ## Next up
 
-0. **Daily races** (started 3 November 2026): a Daily races tab after Current, like the Super License tab: the
+0. **Daily races** (live since 3 November 2026): a Daily races tab after Time trials, like the Super License tab: the
    week's races (A, B, C) with track, car (or the rule, such as Gr.3) and a fast reference lap for each, recorded by
    the owner from a replay, to record or upload against. Free car choice races are flagged, so a different car gets no
    warning (the first real use of the flag). The owner expects time trials and daily races to be the most used parts.
-   - [x] The tab, `data/daily/races.json` and `data/daily/laps/<id>.csv`, tests (on beta).
-   - [ ] The owner sends this week's three races and their laps; then each week's (straight to main, like reference
-         laps).
+   - [x] The tab, `data/daily/races.json` and `data/daily/laps/<id>.csv`, tests; merged 3 November (#58).
+   - [x] This week's races: A Dragon Trail - Gardens (one car, holl01), B Grand Valley - Highway 1 (Gr.3, Miumiu),
+         C Watkins Glen - Long Course (Gr.4, RTR_STOKIEBEN777). Race B checked with the owner's lap in another Gr.3
+         car: no warning.
+   - [ ] Each week: the owner sends the new races and laps (straight to main, like reference laps).
+   - [x] The Past events tab renamed **Past trials** (#60).
    - [x] The Current tab renamed **Time trials**, next to Daily races (the link stays `#current`).
    - [ ] **A new name** with the next app update: "Time Trials for GT7" no longer covers it (the owner chose
          **"Lap Companion for GT7"** on 4 November: "coach" claims too much for a simpler offering). The app's own name (`app_name`, needs a new `.aab`), the Play listing, the
@@ -38,7 +41,8 @@ tests: keep it simple, and only take on what one person can look after.
          background, both from the test APK and from the Play update. The "no data" messages (website and computer recorder) now also mention other telemetry apps
          such as SimHub and Sim Racing Telemetry.
    - [x] 12 testers opted in on 31 October 2026 (one joined the group but hadn't opted in at first). Countries: all.
-   - [x] 18 testers opted in by 3 November 2026: a buffer of 6 over the 12 needed.
+   - [x] 18 testers opted in by 3 November 2026, 22 later that day, 24 by 4 November, while the Reddit post's new
+         views had slowed to a trickle (its upvote ratio rose from about 50% to 62%).
    - [ ] Keep 12+ opted in for 14 days in a row, to about **14 November 2026** (aim for a few more as a buffer). Google
          tracks this by itself: progress is on the Play Console Dashboard; nothing to trigger.
    - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
@@ -142,7 +146,10 @@ tests: keep it simple, and only take on what one person can look after.
    - [x] Owner: emailed the testers' group about the update (with the Reddit link for feedback).
    - [x] Owner: updated the Play listing text from `docs/play-listing.md` (short and full description: audio cues,
          many laps, Across your laps, the guide), 2 November.
-   - [ ] Post about it with the next time trial for momentum.
+   - [ ] Post about it with the next time trial for momentum: an update post on r/granturismo on Friday after the
+         new time trial (its rule 9: self-promotion at most once every 96 hours; repetitive or low-quality posts, and
+         images that look AI-made, may be removed, so use real phone screenshots). Link the first post, thank testers
+         for what they changed (license tests, daily races), say what's new, and give the join steps.
 
 3. **Clarity** (merged 2 November 2026), from a Reddit tester ("very advanced… people might get lost", "you always have to reset the
    lap") and the owner's review:
