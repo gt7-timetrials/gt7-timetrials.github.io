@@ -69,7 +69,8 @@ Super License tests: keep it simple, and only take on what one person can look a
            - Asked for automatic translation, and graphs like GT7's own telemetry.
            - What changed (owner replied, then merged 2 November): a "How to read this" guide and a How to use tab;
              the recording wording says to drive as many laps as you like with no restart; a translation note on
-             About (in-app translation is planned); graphs are planned.
+             About (in-app translation is planned); graphs: a speed chart (yours and the reference's) was added to
+             each corner's brake and throttle charts on 5 November (#73), more to follow.
          - **Worried_Bug_538, second post:** drove four sessions at Barcelona checking the corner descriptions against
            GT7's own telemetry, and found them accurate ("slowed down 11 m before and accelerated 7 m after to the max",
            the track width at the apex); set 1:51.539. "Absolutely loved the experience." So the detail stays: the
@@ -174,7 +175,10 @@ Super License tests: keep it simple, and only take on what one person can look a
    - [x] Dark mode: the corner close-up's "dark = you" legend shows the colours instead. The Super License tab only
          links the computer recorder on the website.
    - [x] Owner: happy with the guide and the rest on the beta app.
-   - Later: graphs of speed, throttle and brake along the lap, like GT7's own (the tester asked for them).
+   - [x] Graphs, part one (5 November, #73): a speed chart under each corner's brake and throttle charts, yours
+         and the reference's, on the same distance axis.
+   - [ ] More graphs like GT7's own telemetry (the tester asked for them): the owner is looking at what GT7 shows to
+         decide what else is worth adding (for example gear, steering, the whole lap rather than a corner).
    - Comparing several laps, the best composite lap and the tester's best-against-worst idea: see 9.
 
 4. **"Start here" summary**: built, then dropped in favour of "Across your laps": two summaries were too much,
