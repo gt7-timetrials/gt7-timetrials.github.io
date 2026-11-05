@@ -152,7 +152,7 @@ function renderCurrent() {
     return `<article class="event">
       <div class="event-head">
         <div><h2>${esc(e.track)}${e.regular_event ? "" : '<span class="tag">special event</span>'}</h2>
-          <div class="meta">${esc(e.car)}</div></div>
+          <div class="meta">${e.free_choice ? `Your choice of car · record in the ${esc(e.car)}` : esc(e.car)}</div></div>
         <a class="official" href="${e.leaderboard_url}" target="_blank" rel="noopener">Official leaderboard ↗</a>
       </div>
       <div class="meta">${countdown(e.ends)} · ends ${localTime(e.ends)} · day ${e.days_elapsed.toFixed(1)} of ${Math.round(total)}</div>

@@ -251,6 +251,8 @@ function standIn({ withCues, csv }) {
     await c.locator(".coach-summary").waitFor();
     assert.strictEqual(/different car/.test(await c.locator(".coach-summary").innerText()), !free,
       free ? "free car choice: no different-car warning" : "fixed car: the different-car warning");
+    assert.strictEqual(/Your choice of car · record in the/.test(await p.locator("#current-list .event-head").first().innerText()), free,
+      "free car choice: the card says so");
     await ctx.close();
   }
 
