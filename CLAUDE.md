@@ -20,7 +20,7 @@ app, builds and keys are in `docs/android.md`.
   change can't work with the Play app, say so before merging.
 - **Main's daily snapshot job commits data** (`data/`); the beta website uses main's data.
 - **Exception: new reference laps go straight to main**, like the daily data: adding the owner's recording to
-  `data/reference_laps/` (and removing an ended event's), flagging a free car choice event in
+  `data/reference_laps/` (with its driver in `data/reference_laps/drivers.json`; and removing an ended event's), flagging a free car choice event in
   `data/free_choice.json`, the week's daily races (`data/daily/races.json` and their laps in `data/daily/laps/`), and
   running `python -m gt7tt daily` by hand so a new event
   shows the same day. The beta website can't show them anyway. Only data: any code change still goes through beta.

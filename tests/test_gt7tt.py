@@ -593,6 +593,8 @@ class TelemetryTest(unittest.TestCase):
         self.assertEqual(list(telemetry.match_references([lap], [(4, None, 110100, entries)])), [4])
         self.assertEqual(list(telemetry.match_references([lap], [(4, None, 110133, entries), (5, {3590}, 115000, [])])), [5])
         self.assertEqual(telemetry.match_references([lap], [(4, {999}, 110100, entries)]), {})
+        # the driver has since beaten it, so the time isn't on the board: the name noted when the lap was added
+        self.assertEqual(telemetry.match_references([{**lap, "driver": "Noted"}], [(2, {3590}, 110000, [])])[2]["driver"], "Noted")
 
     @unittest.skipUnless(shutil.which("node"), "node not installed")
     def test_browser_lap_comparison(self):

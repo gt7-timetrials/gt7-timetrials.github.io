@@ -1,4 +1,4 @@
-GT7 Time Trial Tracker - recording your lap
+Lap Companion for GT7 - recording your lap
 ===========================================
 
 telemetry.py records Gran Turismo 7's telemetry (speed, throttle, brake, steering and

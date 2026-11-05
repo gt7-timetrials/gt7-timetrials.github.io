@@ -177,13 +177,13 @@ function renderCurrent() {
 }
 
 // --- lap comparison (coach.js does the analysis, in the browser) ---
-// A reference is a time trial's world record lap (key = event id, maybe a driver's name) or a license test's
+// A reference is a time trial's top lap (key = event id, with its driver's name; the record may have moved on since) or a license test's
 // gold-medal run (key = test id, with medal times).
-const refName = r => (r.driver ? `${r.driver}'s` : "the world record");
+const refName = r => (r.driver ? `${r.driver}'s` : "the reference lap's");
 const refKey = e => e.reference.key ?? e.event_id;
-// a daily race's reference is a fast lap, maybe with its driver's name; a time trial's is the WR lap
-const tipWho = e => (e.medals ? "the reference lap" : e.reference.driver || (e.daily ? "the reference lap" : "the WR")); // in the tips
-const shortWho = e => (e.medals ? "Reference" : e.reference.driver ? esc(e.reference.driver) : e.daily ? "Reference" : "WR"); // labels
+// a time trial's or daily race's reference is a top lap, named by its driver; without a name, "the reference lap"
+const tipWho = e => (e.medals ? "the reference lap" : e.reference.driver || "the reference lap"); // in the tips
+const shortWho = e => (e.medals ? "Reference" : e.reference.driver ? esc(e.reference.driver) : "Reference"); // labels
 function coachSection(e, i) {
   const r = e.reference;
   return `<section class="coach">

@@ -197,7 +197,11 @@ def current_references(store, rep):
             # free car choice (flagged by the owner): the reference can be in any car; otherwise the record's car
             cars = None if e["event_id"] in free else {entries[0]["ranking_stats"]["car_code"]}
             current.append((e["event_id"], cars, e["wr_ms"], entries))
-    laps = telemetry.reference_laps(os.path.join(store.root, "reference_laps"))
+    folder = os.path.join(store.root, "reference_laps")
+    # whose lap each recording is, noted when it's added: the driver may later beat it and leave the top 100's
+    # record of that time behind, so it can't always be looked up on the board
+    drivers = telemetry.load_json(os.path.join(folder, "drivers.json")) or {}
+    laps = [{**lap, "driver": drivers.get(lap["source"])} for lap in telemetry.reference_laps(folder)]
     return telemetry.match_references(laps, current)
 
 

@@ -16,7 +16,11 @@ Super License tests: keep it simple, and only take on what one person can look a
    - [ ] Each week: the owner sends the new races and laps (straight to main, like reference laps).
    - [x] The Past events tab renamed **Past trials** (#60).
    - [x] The Current tab renamed **Time trials**, next to Daily races (the link stays `#current`).
-   - [ ] **A new name** with the next app update: "Time Trials for GT7" no longer covers it (the owner chose
+   - [x] The website renamed **Lap Companion for GT7** with a new description (5 November), and time trial
+         references named by their driver rather than "the world record".
+   - [ ] **The new name in the app** with the next app update: under the icon it's **"Laps for GT7"** (the owner, 5
+         November: the full name is too long for a phone's home screen; the beta app is "Laps beta"), while the Play
+         listing and the website use the full name: "Time Trials for GT7" no longer covers it (the owner chose
          **"Lap Companion for GT7"** on 4 November: "coach" claims too much for a simpler offering). The app's own name (`app_name`, needs a new `.aab`), the Play listing, the
          website title and the About page, all together. Superficial, so it waits for an update with other changes.
 
@@ -260,7 +264,8 @@ Super License tests: keep it simple, and only take on what one person can look a
   upload key. The owner keeps copies of both.
 
 - **New time trial:** the owner sends a CSV of the WR replay. Add it to `data/reference_laps` (it matches the event by
-  car and lap time). The event appears after the next morning's daily update; to show it the same evening, run
+  car and lap time), and note whose lap it is in `data/reference_laps/drivers.json`, so it keeps its driver's name
+  after they beat it. The event appears after the next morning's daily update; to show it the same evening, run
   `python -m gt7tt daily` by hand.
 - **Free car choice:** when the owner says a time trial lets players choose their car, add its event id (in
   `report.json`) to `data/free_choice.json`. Its comparison then doesn't warn about a different car, and its reference
