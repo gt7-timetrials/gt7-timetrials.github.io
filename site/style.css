@@ -287,6 +287,7 @@ table.corner-table thead th:first-child { font-weight: 500; }
 .pc-me.brake { stroke: var(--bad); }
 .pc-me.throttle { stroke: var(--gas); }
 .pc-me.gap { stroke: var(--text); }
+.pc-me.speed { stroke: var(--you); }
 .pc-axis { stroke: var(--line); }
 .pc-grid { stroke: var(--line); stroke-dasharray: 2 3; }
 .pc-tickline { stroke: var(--muted); }
