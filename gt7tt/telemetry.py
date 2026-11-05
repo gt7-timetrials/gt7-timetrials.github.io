@@ -72,6 +72,6 @@ def match_references(laps, current):
             continue
         eid, _, wr, entries = min(cands, key=lambda c: abs(lap["lap_ms"] - c[2]))
         if eid not in out or lap["lap_ms"] < out[eid]["lap_ms"]:
-            driver = next((x["user"]["np_online_id"] for x in entries if x["score"] == lap["lap_ms"]), None)
+            driver = next((x["user"]["np_online_id"] for x in entries if x["score"] == lap["lap_ms"]), lap.get("driver"))
             out[eid] = {**lap, "driver": driver}
     return out
