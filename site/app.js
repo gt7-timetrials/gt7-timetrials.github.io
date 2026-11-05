@@ -62,6 +62,9 @@ function targets(e) {
 // Course difficulty: how far 100th place is behind the world record, rated against all past events: easy below the
 // 25th percentile, medium below the 70th, hard below the 90th, very hard above.
 let SPREADS = [];
+// In the first days the top 100 is still filling with slower first attempts, so it's wider than it will end up (Blue
+// Moon Bay: 1.18% on day 0.6, Hard; 1.07% on day 1.6 and about 0.92% after, Medium). Rated from day 2.
+const RATE_FROM_DAY = 2;
 function difficulty(spread) {
   if (!SPREADS.length) return `${spread.toFixed(2)}%`;
   const at = q => SPREADS[Math.min(SPREADS.length - 1, Math.floor(q * SPREADS.length))];
@@ -162,7 +165,9 @@ function renderCurrent() {
       <div class="stats">
         ${stat("World record", fmt(e.wr_ms), esc(e.wr_holder))}
         ${stat("Entrants so far", num(e.entrants), entrantsNote)}
-        ${stat("Course difficulty", difficulty(e.top100_spread_pct), `100th place ${e.top100_spread_pct.toFixed(2)}% behind the record`)}
+        ${e.days_elapsed < RATE_FROM_DAY
+          ? stat("Course difficulty", "TBD", `rated from day ${RATE_FROM_DAY}, once the top 100 settles · 100th place ${e.top100_spread_pct.toFixed(2)}% behind now`)
+          : stat("Course difficulty", difficulty(e.top100_spread_pct), `100th place ${e.top100_spread_pct.toFixed(2)}% behind the record`)}
         ${stat("Top-rated drivers who've set a time", `${e.strong_drivers_posted.length} of ${e.strong_drivers_total}`,
                "fewer means more time likely to come off")}
       </div>

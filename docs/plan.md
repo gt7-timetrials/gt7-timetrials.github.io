@@ -18,7 +18,12 @@ Super License tests: keep it simple, and only take on what one person can look a
    - [x] The Current tab renamed **Time trials**, next to Daily races (the link stays `#current`).
    - [x] The website renamed **Lap Companion for GT7** with a new description (5 November), and time trial
          references named by their driver rather than "the world record".
-   - [ ] **The new name in the app** with the next app update: under the icon it's **"Laps for GT7"** (the owner, 5
+   - [x] The first free car choice time trial: Fuji International Speedway (Gr.3, from 5 November; Calster_25's
+         1:39.935). Its card says "Your choice of car · record in the <car>" (#71).
+   - [x] Every reference lap's driver noted in `data/reference_laps/drivers.json`, so the name stays after the record
+         falls (the Nürburgring's Turismo__22 lap had lost its name).
+   - [ ] **The new name in the app** (the only app change since build 31; the `.aab` on the android-test release
+         has it) with the next app update or at the production launch: under the icon it's **"Laps for GT7"** (the owner, 5
          November: the full name is too long for a phone's home screen; the beta app is "Laps beta"), while the Play
          listing and the website use the full name: "Time Trials for GT7" no longer covers it (the owner chose
          **"Lap Companion for GT7"** on 4 November: "coach" claims too much for a simpler offering). The app's own name (`app_name`, needs a new `.aab`), the Play listing, the

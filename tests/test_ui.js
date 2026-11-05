@@ -93,7 +93,9 @@ function standIn({ withCues, csv }) {
     await p.locator("#current-list .stat").first().waitFor();
     assert.strictEqual(await p.locator("form.checker").count(), 0, "no Check my time");
     const rating = await p.locator('#current-list .stat:has(.label:text("Course difficulty")) .value').allInnerTexts();
-    assert.ok(rating.length && rating.every(r => ["Easy", "Medium", "Hard", "V.hard"].includes(r)), `difficulty ratings: ${rating}`);
+    const days = await p.evaluate(() => fetch("data.json").then(r => r.json()).then(d => d.current.map(e => e.days_elapsed)));
+    assert.ok(rating.length && rating.every((r, i) => (days[i] < 2 ? r === "TBD" : ["Easy", "Medium", "Hard", "V.hard"].includes(r))),
+      `difficulty ratings: ${rating}, TBD before day 2 (days ${days})`);
     await p.context().close();
   }
 
