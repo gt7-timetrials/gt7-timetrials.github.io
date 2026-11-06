@@ -209,6 +209,7 @@ function coachSection(e, i) {
       <div class="coach-actions">
         ${APP ? (r ? recordButton("event", i) : "") : `<a class="button-link" href="${RECORDER}gt7-recorder-windows.exe">Recorder for Windows</a>
         <a class="button-link" href="${RECORDER}gt7-recorder-mac.zip">Recorder for Mac</a>
+        <a class="button-link" href="telemetry.py" download>Python script (telemetry.py)</a>
         <a class="button-link" href="readme.txt" target="_blank" rel="noopener">How to record</a>`}
         ${r ? `<label class="button-link${APP ? "" : " primary"}">Upload your lap (.csv)<input type="file" accept=".csv,text/csv" class="lap-file" data-i="${i}" hidden></label>` : ""}
       </div>
