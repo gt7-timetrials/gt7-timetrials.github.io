@@ -44,7 +44,7 @@ for (const [csv, json] of [["reference_barcelona.csv", ref], ["reference_sugo.cs
   const site = json ? roundLike(json) : roundLike(raw);
   const res = Coach.analyse(site, raw);
   assert.ok(!res.error, res.error);
-  res.corners.forEach(c => assert.deepStrictEqual(c.tips, ["Close to the reference here."], `${csv} corner ${c.n}: ${c.tips}`));
+  res.corners.forEach(c => assert.deepStrictEqual(c.tips, ["Close to the WR here."], `${csv} corner ${c.n}: ${c.tips}`));
 }
 function roundLike(lap) { // as gt7tt/telemetry.py writes it
   const digits = { x: 2, z: 2, speed_kmh: 1, throttle_pct: 0, brake_pct: 0, steering_rad: 3, wheel_rl_kmh: 1, wheel_rr_kmh: 1 };
@@ -194,3 +194,18 @@ console.log("coach.js tests passed");
   assert.ok(sugo.cues.some(q => q.kind === "lift") && sugo.cues.filter(q => q.kind === "brake").length >= 8);
 }
 console.log("cue points ok");
+
+// Faster than the reference in a section (here the roles swapped: the reference lap against the slower lap): no
+// advice, just how much faster; and an exit never "costs time" in a section that gains time.
+{
+  const swapped = Coach.analyse(me, ref, "Someone");
+  const faster = swapped.corners.filter(c => Math.round(c.lost * 100) <= -5);
+  assert.ok(faster.length >= 3, "the swapped lap is faster in several sections");
+  for (const c of faster) assert.deepStrictEqual(c.tips, [`You're ${(-c.lost).toFixed(2)} s faster than Someone here.`]);
+  // within 0.05 s either way (as shown): close to the reference, no advice
+  for (const r of [swapped, Coach.analyse(ref, me, "Someone")]) {
+    for (const c of r.corners.filter(c => Math.abs(Math.round(c.lost * 100)) < 5)) assert.deepStrictEqual(c.tips, ["Close to Someone here."]);
+  }
+  for (const c of swapped.corners.filter(c => c.lost <= 0)) assert.ok(!c.tips.some(x => /costs time/.test(x)), c.tips.join(" | "));
+  console.log("faster sections ok");
+}

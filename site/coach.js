@@ -250,8 +250,8 @@ const Coach = (() => {
       out.push(`Steering: here you use ${Math.round(100 * (me.maxSteerDeg / ref.maxSteerDeg / steerRatio - 1))}% more steering lock than you do elsewhere on the lap, compared with ${who}. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle.`);
     }
     if (me.spin >= 8 && me.spin >= ref.spin + 5) out.push(`Wheelspin: your rear wheels turn up to ${r0(me.spin)} km/h faster than the car on exit. That's too much throttle too early.`);
-    if (me.exitSpeed <= ref.exitSpeed - 4) out.push(`Exit: you leave the corner at ${r0(me.exitSpeed)} km/h vs ${r0(ref.exitSpeed)} km/h, and that costs time all the way down the straight after it.`);
-    if (!out.length) out.push(lost < 0.1 ? "Close to the reference here." : "No single big difference: small losses through the whole section.");
+    if (me.exitSpeed <= ref.exitSpeed - 4 && lost > 0) out.push(`Exit: you leave the corner at ${r0(me.exitSpeed)} km/h vs ${r0(ref.exitSpeed)} km/h, and that costs time all the way down the straight after it.`);
+    if (!out.length) out.push(lost < 0.1 ? `Close to ${who} here.` : "No single big difference: small losses through the whole section.");
     return out;
   }
   const cap = s => s[0].toUpperCase() + s.slice(1);
@@ -337,6 +337,7 @@ const Coach = (() => {
     return `Track use: ${parts.join("; ")}.${advice.length ? ` Use more of the track: ${advice.join(", and ")}.` : ""}`;
   }
 
+  const FASTER = 0.05; // s: a section this much quicker than the reference, or closer than this to it, gets no advice
   function result(corners, steerRatio, R, M, delta, who) {
     const lifts = extraLifts(corners, R, M, delta);
     return { grid: { R, M, delta }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, share, approachLost, cornerLost, ref_m, me_m }, i) => {
@@ -349,8 +350,13 @@ const Coach = (() => {
       const after = straightTip(entry - z0, approachLost, cornerLost, z1 - exit, lost - cornerLost - approachLost, me_m, ref_m,
         mine.some(z => z.from >= exit), i === corners.length - 1);
       if (after) { t = t.filter(x => !x.startsWith("Exit:")); t.unshift(after); }
-      if (t.length > 1) t = t.filter(x => !x.startsWith("No single big difference") && !x.startsWith("Close to the reference"));
-      if (i === 0 && R.v[0] - M.v[0] >= 5) {
+      if (t.length > 1) t = t.filter(x => !x.startsWith("No single big difference") && !x.startsWith("Close to "));
+      // faster than the reference here (as shown, so a "−0.05 s" chip counts), or within 0.05 s of it: no advice; at
+      // that level the charts show the differences
+      const shown = Math.round(lost * 100); // hundredths, as the chip shows it
+      if (shown <= -FASTER * 100) t = [`You're ${(-lost).toFixed(2)} s faster than ${who} here.`];
+      else if (Math.abs(shown) < FASTER * 100) t = [`Close to ${who} here.`];
+      else if (i === 0 && R.v[0] - M.v[0] >= 5) {
         t.unshift(`Start of the lap: you crossed the line at ${r0(M.v[0])} km/h vs ${r0(R.v[0])} km/h, which cost about ${delta[ref_m.top].toFixed(2)} s before the first braking point. That comes from your exit of the last corner on the lap before.`);
       }
       return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t, lifts: mine, line };
@@ -399,7 +405,7 @@ const Coach = (() => {
     if (length < 150) { inCorner += onStraight; onStraight = 0; }
     if ((!before || Math.abs(onApproach) < 0.1) && (length < 150 || Math.abs(onStraight) < 0.1)) return null;
     const why = [];
-    if (me.exitSpeed <= ref.exitSpeed - 2) why.push(`you leave the corner ${r0(ref.exitSpeed - me.exitSpeed)} km/h slower (${r0(me.exitSpeed)} vs ${r0(ref.exitSpeed)} km/h), and that carries all the way down the straight`);
+    if (me.exitSpeed <= ref.exitSpeed - 2 && onStraight > 0) why.push(`you leave the corner ${r0(ref.exitSpeed - me.exitSpeed)} km/h slower (${r0(me.exitSpeed)} vs ${r0(ref.exitSpeed)} km/h), and that carries all the way down the straight`);
     if (lifted) why.push(`you lift on the straight (below)`);
     const parts = [];
     if (before) parts.push(`${fmtLost(onApproach)} on the ${before} m from the start line to the braking zone`);
