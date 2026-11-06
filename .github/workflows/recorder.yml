@@ -1,0 +1,67 @@
+name: Build the recorder
+
+# Builds tools/telemetry.py into ready-made programs, so players on a computer don't need to install Python:
+# a Windows .exe and a Mac program (Apple silicon), with PyInstaller. Main's go on the "recorder" release, which
+# the website links to; beta's on "recorder-beta", for trying a change first.
+#   https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-windows.exe
+#   https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-mac.zip
+on:
+  push:
+    branches: [main, beta]
+    paths:
+      - "tools/telemetry.py"
+      - ".github/workflows/recorder.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: recorder-${{ github.ref }}
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            file: gt7-recorder-windows.exe
+          - os: macos-latest
+            file: gt7-recorder-mac.zip
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyinstaller==6.16.0
+      - name: Build
+        shell: bash
+        run: |
+          pyinstaller --onefile --console --name gt7-recorder tools/telemetry.py
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cp dist/gt7-recorder.exe "${{ matrix.file }}"
+          else
+            cd dist && zip -q "../${{ matrix.file }}" gt7-recorder && cd ..
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.file }}
+          path: ${{ matrix.file }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - name: Publish on the release page
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag=$([ "$GITHUB_REF_NAME" = "main" ] && echo recorder || echo recorder-beta)
+          gh release delete "$tag" --yes --cleanup-tag || true
+          gh release create "$tag" gt7-recorder-windows.exe gt7-recorder-mac.zip --prerelease --target "$GITHUB_SHA" \
+            --title "Recorder for Windows and Mac ($GITHUB_REF_NAME, ${GITHUB_SHA::7})" \
+            --notes "The GT7 telemetry recorder as a ready-made program: no Python needed. Windows: download gt7-recorder-windows.exe and double-click it. Mac (Apple silicon): download gt7-recorder-mac.zip, unzip, then right-click gt7-recorder and choose Open. How to record: https://gt7-timetrials.github.io/readme.txt"
