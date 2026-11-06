@@ -199,7 +199,7 @@ console.log("cue points ok");
 // advice, just how much faster; and an exit never "costs time" in a section that gains time.
 {
   const swapped = Coach.analyse(me, ref, "Someone");
-  const faster = swapped.corners.filter(c => c.lost <= -0.05);
+  const faster = swapped.corners.filter(c => Math.round(c.lost * 100) <= -5);
   assert.ok(faster.length >= 3, "the swapped lap is faster in several sections");
   for (const c of faster) assert.deepStrictEqual(c.tips, [`You're ${(-c.lost).toFixed(2)} s faster than Someone here.`]);
   for (const c of swapped.corners.filter(c => c.lost <= 0)) assert.ok(!c.tips.some(x => /costs time/.test(x)), c.tips.join(" | "));

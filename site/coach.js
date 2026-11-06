@@ -351,8 +351,9 @@ const Coach = (() => {
         mine.some(z => z.from >= exit), i === corners.length - 1);
       if (after) { t = t.filter(x => !x.startsWith("Exit:")); t.unshift(after); }
       if (t.length > 1) t = t.filter(x => !x.startsWith("No single big difference") && !x.startsWith("Close to the reference"));
-      // faster than the reference here: no advice (at that level, the charts show the differences)
-      if (lost <= -FASTER) t = [`You're ${(-lost).toFixed(2)} s faster than ${who} here.`];
+      // faster than the reference here (as shown, so a "−0.05 s" chip counts): no advice; at that level the charts
+      // show the differences
+      if (Math.round(lost * 100) <= -FASTER * 100) t = [`You're ${(-lost).toFixed(2)} s faster than ${who} here.`];
       else if (i === 0 && R.v[0] - M.v[0] >= 5) {
         t.unshift(`Start of the lap: you crossed the line at ${r0(M.v[0])} km/h vs ${r0(R.v[0])} km/h, which cost about ${delta[ref_m.top].toFixed(2)} s before the first braking point. That comes from your exit of the last corner on the lap before.`);
       }
