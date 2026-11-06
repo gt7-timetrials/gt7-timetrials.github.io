@@ -202,6 +202,10 @@ console.log("cue points ok");
   const faster = swapped.corners.filter(c => Math.round(c.lost * 100) <= -5);
   assert.ok(faster.length >= 3, "the swapped lap is faster in several sections");
   for (const c of faster) assert.deepStrictEqual(c.tips, [`You're ${(-c.lost).toFixed(2)} s faster than Someone here.`]);
+  // within 0.05 s either way (as shown): close to the reference, no advice
+  for (const r of [swapped, Coach.analyse(ref, me, "Someone")]) {
+    for (const c of r.corners.filter(c => Math.abs(Math.round(c.lost * 100)) < 5)) assert.deepStrictEqual(c.tips, ["Close to Someone here."]);
+  }
   for (const c of swapped.corners.filter(c => c.lost <= 0)) assert.ok(!c.tips.some(x => /costs time/.test(x)), c.tips.join(" | "));
   console.log("faster sections ok");
 }
