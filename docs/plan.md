@@ -157,7 +157,8 @@ Super License tests: keep it simple, and only take on what one person can look a
    - [x] Owner: updated the Play listing text from `docs/play-listing.md` (short and full description: audio cues,
          many laps, Across your laps, the guide), 2 November.
    - [x] Update post on r/granturismo, 6 November 2026, with the Fuji time trial: daily races, audio cues, the speed
-         chart, thanks to testers for what they changed, the join steps (link: to add).
+         chart, thanks to testers for what they changed, the join steps
+         (https://www.reddit.com/r/granturismo/comments/1xp6vfu/update_free_phone_app_to_compare_your_laps_with/).
    - **Posting from here:** the next post is the production launch; after that about one a month, so it never feels
          like spam (r/granturismo's rule 9: self-promotion at most once every 96 hours).
 
