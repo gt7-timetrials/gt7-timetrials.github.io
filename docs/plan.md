@@ -191,14 +191,8 @@ Super License tests: keep it simple, and only take on what one person can look a
    average and the least consistent ones, and the "ideal lap" from each section's best time. The selected corner stays
    selected when you switch laps, and the corner's panel has ‹ › to step through the laps.
 
-6. **Skill progression pattern, and feedback for the driver's level.** Compare laps at several levels (WR, top 100,
-   gold, silver) across events, to find which differences shrink first as drivers improve. Use that to order the tips
-   ("at your level, drivers usually gain most from…"). Needs laps at several levels on several tracks, so it builds
-   up over months.
-   - The tips are already partly tailored (they come from where this lap loses time), but how useful each idea is
-     for a given level isn't: for example, a driver braking 30 m early gains more from braking points than from the
-     line, and a driver within 1% of the WR the other way round. Review which tips help at which level, and lead
-     with those.
+6. **Skills that matter most for you** (replaces the earlier "skill progression pattern" idea of sorting laps at several
+   levels into easy, medium and hard skills): moved to **Later, maybe**, as a significant build to specify first.
 
 7. **Next-level reference laps.** Compare against a gold-pace lap rather than the WR. Possibly not needed once 4 and 5
    are done. Depends on how far down the leaderboard GT7 lets you download replays.
@@ -247,6 +241,24 @@ Super License tests: keep it simple, and only take on what one person can look a
 
 ## Later, maybe
 
+- **Skills that matter most for you** (owner, 6 November; a significant build, to specify properly before starting).
+  Which skills, out of the things the comparison measures, would gain a driver the most time, ranked from most to
+  least important, and whether they're improving over time.
+  - **First, a model from the owner's own laps:** the owner records many laps across tracks and cars; fit a
+    statistical model of the time lost in each corner against the corner's and car's characteristics (corner type,
+    speed, braking zone length, car class and so on) and the differences from the reference lap (braking point,
+    peak brake, minimum speed, back on the throttle, line, consistency between laps). Its output: which differences
+    explain the most lost time, as themes (for example "braking too early into slow corners", "late on the
+    throttle out of fast ones").
+  - **Then, per driver over time:** as people drive and record, their own laps update their themes, so they see
+    where to focus overall (not just in this lap) and whether each theme is shrinking.
+  - **To work out:** what to collect and how to analyse it (how many laps, which measures, how to keep the model
+    simple and honest about its uncertainty); and how each person's history is kept on their own device only, with
+    nothing uploaded. Both the app and the website can keep data in the phone's or browser's own storage (the
+    website through the browser's local storage, kept per browser and lost if the browser's data is cleared; the app
+    more dependably in its own files), so this needn't be app-only; deciding which, and how much, is part of the
+    specification.
+  - Overlaps with "Progress between sessions" below, which it would replace or build on.
 - **Circuit Experiences**, like the Super License tab: medal times and a gold reference run for the full lap only (not
   each segment), recorded by the owner, so it grows track by track.
 - **Try it with a sample lap**: a ready-made comparison for new users and Play's reviewers, before they set up
