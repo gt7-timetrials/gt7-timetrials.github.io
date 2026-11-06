@@ -156,10 +156,10 @@ Super License tests: keep it simple, and only take on what one person can look a
    - [x] Owner: emailed the testers' group about the update (with the Reddit link for feedback).
    - [x] Owner: updated the Play listing text from `docs/play-listing.md` (short and full description: audio cues,
          many laps, Across your laps, the guide), 2 November.
-   - [ ] Post about it with the next time trial for momentum: an update post on r/granturismo on Friday after the
-         new time trial (its rule 9: self-promotion at most once every 96 hours; repetitive or low-quality posts, and
-         images that look AI-made, may be removed, so use real phone screenshots). Link the first post, thank testers
-         for what they changed (license tests, daily races), say what's new, and give the join steps.
+   - [x] Update post on r/granturismo, 6 November 2026, with the Fuji time trial: daily races, audio cues, the speed
+         chart, thanks to testers for what they changed, the join steps (link: to add).
+   - **Posting from here:** the next post is the production launch; after that about one a month, so it never feels
+         like spam (r/granturismo's rule 9: self-promotion at most once every 96 hours).
 
 3. **Clarity** (merged 2 November 2026), from a Reddit tester ("very advanced… people might get lost", "you always have to reset the
    lap") and the owner's review:
