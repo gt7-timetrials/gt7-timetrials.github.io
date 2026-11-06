@@ -21,6 +21,7 @@ anything on the console.
 """
 import csv
 import os
+import signal
 import socket
 import struct
 import sys
@@ -105,7 +106,11 @@ def parse(p, t0):
     }
 
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+# The ready-made recorder (built with PyInstaller for Windows and Mac) saves next to itself, not in the temporary
+# folder it unpacks into; the script saves next to the script. RUN is how to start it again with an address.
+FROZEN = getattr(sys, "frozen", False)
+HERE = os.path.dirname(os.path.abspath(sys.executable if FROZEN else __file__))
+RUN = os.path.basename(sys.executable) if FROZEN else "py telemetry.py"
 
 
 def fmt_lap(ms):
@@ -186,7 +191,7 @@ def find_console(sock, given=None):
     targets = [given] if given else candidates(own_ip)
     if not targets:
         sys.exit("Couldn't work out this computer's network address. Run it with your PlayStation's address,\n"
-                 "e.g.  py telemetry.py 192.168.1.23  (PS5: Settings > Network > Connection Status).")
+                 f"e.g.  {RUN} 192.168.1.23  (PS5: Settings > Network > Connection Status).")
     where = given or f"your network ({targets[0].rsplit('.', 1)[0]}.x)"
     print(f"Looking for your PlayStation on {where}. Make sure GT7 is running...")
     started = time.time()
@@ -235,9 +240,10 @@ def find_console(sock, given=None):
             print("   - this computer and the PlayStation use the same router (cable or Wi-Fi is fine). The first")
             print("     three numbers of their addresses must match: mesh Wi-Fi, extenders and guest networks can")
             print("     put them on different networks")
-            print("   - Windows Firewall allowed Python on Private networks (it asks the first time)")
+            print("   - Windows Firewall allowed " + ("the recorder" if FROZEN else "Python") + " on Private networks (it asks the first time)")
             print("   - no other telemetry app (the phone app, SimHub, Sim Racing Telemetry...) is running")
-            print("  Or give the address yourself: py telemetry.py 192.168.x.x")
+            print(f"  Or give the address yourself: {RUN} 192.168.x.x"
+                  + ("  (from Command Prompt or Terminal, in the folder it's in)" if FROZEN else ""))
             print("  (PS5: Settings > Network > Connection Status > View Connection Status). Ctrl+C to stop.")
             started = time.time()
 
@@ -249,7 +255,21 @@ def pause_before_closing():
         pass
 
 
+_stopping = False
+
+
+def _stop(signum, frame):
+    """Ctrl+C: stop once. The ready-made recorder can get Ctrl+C twice (the terminal and its launcher both pass it
+    on), and a second one must not cut short saving the file."""
+    global _stopping
+    if _stopping:
+        return
+    _stopping = True
+    raise KeyboardInterrupt
+
+
 def main():
+    signal.signal(signal.SIGINT, _stop)
     given = sys.argv[1] if len(sys.argv) > 1 else None
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:

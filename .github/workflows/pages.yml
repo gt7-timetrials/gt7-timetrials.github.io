@@ -46,6 +46,8 @@ jobs:
           python -m gt7tt site --out ../_site/beta
           # keep it out of search engines, and make it obvious it's the beta
           sed -i 's|<head>|<head>\n<meta name="robots" content="noindex">|; s|<body>|<body>\n<div class="beta-bar">Beta: work in progress, for testing. <a href="../">Go to the main site</a></div>|' ../_site/beta/index.html
+          # the beta website links to the beta recorder
+          sed -i 's|/releases/download/recorder/|/releases/download/recorder-beta/|g' ../_site/beta/index.html ../_site/beta/app.js ../_site/beta/readme.txt
           printf '.beta-bar { background: #fff3cd; color: #5c4400; padding: 6px 16px; font-size: 0.9rem; }\n.beta-bar a { color: inherit; }\n' >> ../_site/beta/style.css
       - uses: actions/upload-pages-artifact@v3
         with:

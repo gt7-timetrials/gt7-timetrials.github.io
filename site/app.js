@@ -181,6 +181,10 @@ function renderCurrent() {
   }));
 }
 
+// The recorder for a computer, ready to run (built from tools/telemetry.py by recorder.yml); the Python script is
+// telemetry.py on the site, linked from How to record.
+const RECORDER = "https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/";
+
 // --- lap comparison (coach.js does the analysis, in the browser) ---
 // A reference is a time trial's top lap (key = event id, with its driver's name; the record may have moved on since) or a license test's
 // gold-medal run (key = test id, with medal times).
@@ -203,8 +207,9 @@ function coachSection(e, i) {
            fastest lap is shown first, and you can switch to any other. Your file stays on your device.`
         : "No reference lap for this event yet. You can already record your laps with the recorder."}</p>
       <div class="coach-actions">
-        ${APP ? (r ? recordButton("event", i) : "") : `<a class="button-link" href="telemetry.py" download>Download recorder (telemetry.py)</a>
-        <a class="button-link" href="readme.txt" target="_blank" rel="noopener">How to record (readme.txt)</a>`}
+        ${APP ? (r ? recordButton("event", i) : "") : `<a class="button-link" href="${RECORDER}gt7-recorder-windows.exe">Recorder for Windows</a>
+        <a class="button-link" href="${RECORDER}gt7-recorder-mac.zip">Recorder for Mac</a>
+        <a class="button-link" href="readme.txt" target="_blank" rel="noopener">How to record</a>`}
         ${r ? `<label class="button-link${APP ? "" : " primary"}">Upload your lap (.csv)<input type="file" accept=".csv,text/csv" class="lap-file" data-i="${i}" hidden></label>` : ""}
       </div>
       <div class="coach-result" aria-live="polite"></div>
@@ -219,7 +224,7 @@ async function compareLap(e, file, out, save) {
     const [text, ref] = await Promise.all([file.text(),
       refCache[refKey(e)] ??= fetch(e.reference.url).then(r => (r.ok ? r.json() : Promise.reject()))]);
     if (!Coach.isRecording(text)) {
-      out.innerHTML = `<p class="miss">This doesn't look like a recording from telemetry.py. Upload the CSV file the recorder
+      out.innerHTML = `<p class="miss">This doesn't look like a recording from the recorder. Upload the CSV file the recorder
         saved (named like telemetry_20261025_214804.csv).</p>`;
       return;
     }
@@ -241,7 +246,7 @@ async function compareLap(e, file, out, save) {
     show(choices.pick);
   } catch (err) {
     delete refCache[refKey(e)]; // let the next try fetch the reference again
-    out.innerHTML = `<p class="miss">Couldn't read that file. Is it a CSV saved by telemetry.py?</p>`;
+    out.innerHTML = `<p class="miss">Couldn't read that file. Is it a CSV saved by the recorder?</p>`;
   }
 }
 

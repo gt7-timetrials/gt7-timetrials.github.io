@@ -239,6 +239,17 @@ Super License tests: keep it simple, and only take on what one person can look a
       Across your laps and the best composite lap; traffic is harder (lifting or braking where the reference doesn't,
       with no other explanation) and may only be worth a hint.
 
+11. **A ready-made recorder for computers** (owner, 6 November): a website can't record GT7 itself (browsers can't
+    send or receive the UDP packets GT7 uses), so people without the Android app need the recorder. Besides the Python
+    script, it's now a ready-to-run program for Windows and for Macs with Apple silicon, built by GitHub with
+    PyInstaller (`.github/workflows/recorder.yml`) onto the `recorder` release (beta's onto `recorder-beta`): download,
+    double-click, Ctrl+C to stop; it saves next to itself. Unsigned, so Windows and macOS warn the first time (the
+    readme says how to get past it), and antivirus can mistake it for a threat (the Python script stays as the
+    alternative). Intel Macs and Linux use the script.
+    - [x] Built and tested here on Linux: finds a fake PlayStation, records, stops cleanly on Ctrl+C (a second Ctrl+C,
+          which the packaged program can get, no longer cuts short saving), saves next to itself.
+    - [ ] The owner tries the Windows (or Mac) download on beta, then merge.
+
 ## Later, maybe
 
 - **Skills that matter most for you** (owner, 6 November; a significant build, to specify properly before starting).
