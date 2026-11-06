@@ -217,6 +217,12 @@ Super License tests: keep it simple, and only take on what one person can look a
    - Show two or more laps against the reference at once, for example your best and worst (asked for by a tester).
    - With several laps recorded, your **best composite lap** (your best section from each lap, put together) as a
      lap of its own, to compare corner by corner. Today Across your laps only gives its time.
+   - **Next, a simple step (owner, 6 November):** compare the selected lap with your best composite lap, with the
+     same corner-by-corner view and tips ("on your best pass through corner 5 you braked 8 m later"). It shows what
+     you already do on your good passes, next to the reference's comparison. Stint Lab (a paid GT7 app) builds its
+     exercises on this idea; here it needs no account or history, only the laps in the recording. The engine should
+     mostly support it: the composite is stitched from each section's best lap on the reference's distance grid,
+     then compared like any lap.
    - Set **your own best lap** (or composite) as the reference, kept on the phone, to compare later laps with.
    - **Audio cues between your best and the WR:** cue points moved part of the way from your own braking points
      towards the WR's (for example 25%, then 50%), so the cues stretch you a step at a time rather than asking for the
