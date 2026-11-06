@@ -1,7 +1,8 @@
 # Working on this project
 
 GT7 time trial tracker: the website (`site/`, built by `gt7tt/` into GitHub Pages) and the Android app (`android/`,
-"Time Trials for GT7" on Google Play, a WebView of the website plus recording). The plan is in `docs/plan.md`; the
+"Lap Companion for GT7", shown as "Laps for GT7" under the icon, on Google Play; a WebView of the website plus
+recording). The plan is in `docs/plan.md`; the
 app, builds and keys are in `docs/android.md`.
 
 ## How changes are made
@@ -25,4 +26,11 @@ app, builds and keys are in `docs/android.md`.
   running `python -m gt7tt daily` by hand so a new event
   shows the same day. The beta website can't show them anyway. Only data: any code change still goes through beta.
   Check first that the lap matches the event (car, and the world record time) and run the tests.
+- **Exception: the plan and notes go straight to main** (`docs/plan.md`, and other notes that change nothing on the
+  website or app, such as `docs/play-listing.md`), the owner's choice to avoid pointless beta commits; then bring beta
+  up to date with main (`git merge origin/main`) so both have them. `CLAUDE.md` itself counts as notes. Anything that
+  changes the website, the app, the tests or the builds still goes through beta.
+- **After pushing to beta, check the beta website has the change** (fetch a changed file from
+  https://gt7-timetrials.github.io/beta/) before telling the owner it's ready: several rebuilds close together can
+  report success without updating the site; start the "Publish website" workflow again if so.
 - Never put model names or IDs in commits, pull requests or files.
