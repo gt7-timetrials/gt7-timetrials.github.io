@@ -44,7 +44,7 @@ for (const [csv, json] of [["reference_barcelona.csv", ref], ["reference_sugo.cs
   const site = json ? roundLike(json) : roundLike(raw);
   const res = Coach.analyse(site, raw);
   assert.ok(!res.error, res.error);
-  res.corners.forEach(c => assert.deepStrictEqual(c.tips, ["Close to the reference here."], `${csv} corner ${c.n}: ${c.tips}`));
+  res.corners.forEach(c => assert.deepStrictEqual(c.tips, ["Close to the WR here."], `${csv} corner ${c.n}: ${c.tips}`));
 }
 function roundLike(lap) { // as gt7tt/telemetry.py writes it
   const digits = { x: 2, z: 2, speed_kmh: 1, throttle_pct: 0, brake_pct: 0, steering_rad: 3, wheel_rl_kmh: 1, wheel_rr_kmh: 1 };
