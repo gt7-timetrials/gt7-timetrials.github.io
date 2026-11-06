@@ -248,7 +248,9 @@ Super License tests: keep it simple, and only take on what one person can look a
     alternative). Intel Macs and Linux use the script.
     - [x] Built and tested here on Linux: finds a fake PlayStation, records, stops cleanly on Ctrl+C (a second Ctrl+C,
           which the packaged program can get, no longer cuts short saving), saves next to itself.
-    - [ ] The owner tries the Windows (or Mac) download on beta, then merge.
+    - [x] Merged 6 November (#79): live on the `recorder` release; the time trial cards show Recorder for Windows,
+          Recorder for Mac, Python script and How to record (the script's button was restored in #80).
+    - [ ] Try it on a real Windows PC (and a Mac if possible): double-click, "Run anyway", record, Ctrl+C, upload.
 
 ## Later, maybe
 
