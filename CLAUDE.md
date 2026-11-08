@@ -14,6 +14,9 @@ app, builds and keys are in `docs/android.md`.
   green on beta. Afterwards, bring beta up to date with main again.
 - **Run the tests before pushing:** `python -m unittest tests.test_gt7tt` (includes the Java and browser tests) and
   `node tests/test_coach.js`. GitHub runs them on every push; red means don't merge.
+- **Changing the lap advice** (the tips' wording or the rules for when they're given, in `site/coach.js`): the test
+  checks the advice for two real laps word for word, so it fails until `tests/fixtures/expected_advice.json` is
+  rewritten (`UPDATE_ADVICE=1 node tests/test_coach.js`). Read its diff and show the owner what changed.
 - **The Google Play app must keep working with the website.** Testers' installed app loads the live site, and app
   updates reach them only after the owner uploads the `.aab` and Google approves it. New app features are detected in
   `site/app.js` (for example `CUES`); the browser test in `tests/test_ui.js` checks this against the app on main (read
