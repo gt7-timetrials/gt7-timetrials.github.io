@@ -299,9 +299,20 @@ Super License tests: keep it simple, and only take on what one person can look a
 ## Regular jobs
 
 - **Tests** run on GitHub on every push to `main` and `beta` (the Tests workflow); a red one means don't merge.
+  Reviewed with the owner on 8 November (#82), and filled in where they were thin: Record on this phone on every kind
+  of card (time trial, daily race, Super License) in the apps testers have; the audio cues checkboxes turning on and
+  off together; a changed cue offset showing in the recording's status line; and the advice for two real laps
+  (Barcelona against the WR, the S-1 bronze attempt against the gold run) checked word for word against
+  `tests/fixtures/expected_advice.json`. Changing the tips' wording or rules means rewriting that file
+  (`UPDATE_ADVICE=1 node tests/test_coach.js`) and showing the owner its diff.
+- **Publishing waits for the tests** (since 8 November, #82): the website is published only when the Tests workflow
+  passes, from each branch's last commit that passed, so a red push (code or data) never reaches the site; it stays as
+  it was until fixed. The site changes a few minutes after a push.
 - **Changes:** built on the `beta` branch first and tried on the beta app and https://gt7-timetrials.github.io/beta/
   (see `docs/android.md`); merged into `main` only when the owner says so. Play releases are the owner's call.
-  `CLAUDE.md` (added 2 November) tells every Claude Code session to work this way.
+  `CLAUDE.md` (added 2 November) tells every Claude Code session to work this way. Exceptions, straight to main:
+  data (reference laps, free choice, daily races) and the plan and notes (this file, `docs/play-listing.md`,
+  `CLAUDE.md`), which beta picks up when the next beta work starts.
 - **Signing keys:** the test and beta APKs use a private test key from the secrets `TEST_KEYSTORE_BASE64` and
   `TEST_KEYSTORE_PASSWORD` (2 November 2026; the old key in the repository is no longer used), the Play bundle the
   upload key. The owner keeps copies of both.
@@ -321,4 +332,4 @@ Super License tests: keep it simple, and only take on what one person can look a
 - **Event ends:** automatic. It leaves Current at the next site build, and the next morning's update adds it to Past
   events with its final top 100. Delete its reference lap from `data/reference_laps`.
 - **Daily update:** a scheduled Claude Code session runs `python -m gt7tt daily` every morning (Melbourne) and
-  pushes to main, which republishes the site.
+  pushes to main, which republishes the site once the tests pass.

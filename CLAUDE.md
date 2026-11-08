@@ -30,8 +30,9 @@ app, builds and keys are in `docs/android.md`.
   shows the same day. The beta website can't show them anyway. Only data: any code change still goes through beta.
   Check first that the lap matches the event (car, and the world record time) and run the tests.
 - **Exception: the plan and notes go straight to main** (`docs/plan.md`, and other notes that change nothing on the
-  website or app, such as `docs/play-listing.md`), the owner's choice to avoid pointless beta commits; then bring beta
-  up to date with main (`git merge origin/main`) so both have them. `CLAUDE.md` itself counts as notes. Anything that
+  website or app, such as `docs/play-listing.md`), the owner's choice to keep them out of the beta and merge process:
+  no pull request, and no need to copy them to beta, which picks them up when the next beta work starts (`git merge
+  origin/main`). `CLAUDE.md` itself counts as notes. Anything that
   changes the website, the app, the tests or the builds still goes through beta.
 - **The website is published only after the tests pass:** "Publish website" starts when the Tests workflow finishes
   on main or beta (a few minutes after the push) and builds each from its last commit that passed. A red run leaves the
