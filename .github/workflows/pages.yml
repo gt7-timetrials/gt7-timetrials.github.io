@@ -1,42 +1,65 @@
 name: Publish website
 
-# Builds the website from main, plus the beta website at /beta/ from the beta branch (with main's data), and
-# publishes both. A push to beta starts this from main (see beta.yml), so only main ever deploys.
+# Builds the website, plus the beta website at /beta/ (with main's data), and publishes both. It waits for the tests:
+# it starts when the Tests workflow finishes on main or beta, and builds each from its last commit that passed them,
+# so a push with failing tests never reaches the website. Only main's copy of this file is used, so only main deploys.
+# Starting it by hand publishes the same: the last tested commit of each.
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: [Tests]
+    types: [completed]
+    branches: [main, beta]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency: pages
 
 jobs:
   deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: The last commits that passed the tests
+        id: tested
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          for b in main beta; do
+            # the run that started this has just passed: use its commit
+            if [ "$b" = "$RUN_BRANCH" ]; then echo "$b: $RUN_SHA"; echo "$b=$RUN_SHA" >> "$GITHUB_OUTPUT"; continue; fi
+            sha=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/tests.yml/runs?branch=$b&status=success&per_page=1" \
+              --jq '.workflow_runs[0].head_sha // empty')
+            echo "$b: ${sha:-none}"
+            echo "$b=$sha" >> "$GITHUB_OUTPUT"
+          done
+      - name: Stop if main has no tested commit
+        if: steps.tested.outputs.main == ''
+        run: echo "::error::No commit on main has passed the Tests workflow yet." && exit 1
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ steps.tested.outputs.main }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - run: python -m gt7tt site --out _site
-      - name: Check out the beta branch, if there is one
+      - name: Check out beta's last tested commit, if there is one
         id: beta
+        if: steps.tested.outputs.beta != ''
         run: |
-          if git ls-remote --exit-code --heads origin beta >/dev/null; then
-            git fetch --depth 1 origin beta
-            git worktree add beta-src FETCH_HEAD
-            echo "found=true" >> "$GITHUB_OUTPUT"
-          fi
+          git fetch --depth 1 origin ${{ steps.tested.outputs.beta }}
+          git worktree add beta-src FETCH_HEAD
+          echo "found=true" >> "$GITHUB_OUTPUT"
       - name: Build the beta website at /beta/
         if: steps.beta.outputs.found == 'true'
         working-directory: beta-src

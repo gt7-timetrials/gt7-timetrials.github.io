@@ -1,0 +1,162 @@
+{
+  "Barcelona, your lap against the WR": [
+    {
+      "section": 1,
+      "lost": "+0.83 s",
+      "colour": "warn",
+      "tips": [
+        "Start of the lap: you crossed the line at 176 km/h vs 189 km/h, which cost about 0.44 s before the first braking point. That comes from your exit of the last corner on the lap before.",
+        "Where the time goes: +0.43 s on the 697 m from the start line to the braking zone, +0.24 s in the corner, +0.15 s on the 221 m straight after it: you leave the corner 11 km/h slower (106 vs 116 km/h), and that carries all the way down the straight.",
+        "Braking point: you brake 9 m earlier than the WR.",
+        "Minimum speed: 95 km/h vs 111 km/h. You're slowing the car more than you need to."
+      ]
+    },
+    {
+      "section": 2,
+      "lost": "+0.32 s",
+      "colour": "good",
+      "tips": [
+        "Minimum speed: 133 km/h vs 144 km/h. You're slowing the car more than you need to.",
+        "Full throttle: you reach full throttle 36 m later than the WR.",
+        "Exit: you leave the corner at 162 km/h vs 166 km/h, and that costs time all the way down the straight after it.",
+        "Track use: on exit you run 1.8 m wider than the WR.",
+        "Lift: you average 34% throttle for 65 m, starting 38 m before the apex, where the WR averages 80%. That costs about 0.09 s."
+      ]
+    },
+    {
+      "section": 3,
+      "lost": "+0.25 s",
+      "colour": "good",
+      "tips": [
+        "Where the time goes: +0.08 s in the corner, +0.17 s on the 254 m straight after it: you leave the corner 10 km/h slower (98 vs 108 km/h), and that carries all the way down the straight.",
+        "Braking point: you brake 11 m earlier than the WR.",
+        "Minimum speed: 92 km/h vs 103 km/h. You're slowing the car more than you need to.",
+        "Throttle: you get back on the throttle 10 m later than the WR.",
+        "Track use: on exit you run 1.8 m wider than the WR."
+      ]
+    },
+    {
+      "section": 4,
+      "lost": "+0.23 s",
+      "colour": "good",
+      "tips": [
+        "Where the time goes: +0.05 s in the corner, +0.18 s on the 301 m straight after it: you leave the corner 6 km/h slower (85 vs 91 km/h), and that carries all the way down the straight.",
+        "Braking point: you brake 11 m earlier than the WR.",
+        "Throttle: you get back on the throttle 10 m later than the WR.",
+        "Full throttle: you reach full throttle 15 m later than the WR."
+      ]
+    },
+    {
+      "section": 5,
+      "lost": "+0.19 s",
+      "colour": "good",
+      "tips": [
+        "Braking point: you brake 12 m earlier than the WR.",
+        "Minimum speed: 107 km/h vs 113 km/h. You're slowing the car more than you need to."
+      ]
+    },
+    {
+      "section": 6,
+      "lost": "+0.21 s",
+      "colour": "good",
+      "tips": [
+        "Where the time goes: −0.01 s in the corner, +0.22 s on the 454 m straight after it: you leave the corner 6 km/h slower (141 vs 148 km/h), and that carries all the way down the straight.",
+        "Minimum speed: 141 km/h vs 146 km/h. You're slowing the car more than you need to.",
+        "Throttle: you get back on the throttle 10 m later than the WR.",
+        "Steering: here you use 60% more steering lock than you do elsewhere on the lap, compared with the WR. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle."
+      ]
+    },
+    {
+      "section": 7,
+      "lost": "+0.43 s",
+      "colour": "warn",
+      "tips": [
+        "Braking point: you brake 20 m earlier than the WR.",
+        "Brake pressure: the WR stays above 90% brake for 50 m; you do for 27 m. Brake hard at the start of the zone, then ease off.",
+        "Minimum speed: 58 km/h vs 63 km/h. You're slowing the car more than you need to.",
+        "Throttle: you get back on the throttle 9 m later than the WR.",
+        "Exit: you leave the corner at 69 km/h vs 78 km/h, and that costs time all the way down the straight after it.",
+        "Track use: at turn-in you're 2.7 m tighter than the WR, who starts the turn from further out; on exit you run 1.8 m wider than the WR. Use more of the track: start the turn from the outside edge."
+      ]
+    },
+    {
+      "section": 8,
+      "lost": "+0.34 s",
+      "colour": "good",
+      "tips": [
+        "Where the time goes: +0.18 s in the corner, +0.16 s on the 389 m straight after it.",
+        "Braking point: you brake 23 m earlier than the WR.",
+        "Minimum speed: 90 km/h vs 94 km/h. You're slowing the car more than you need to."
+      ]
+    },
+    {
+      "section": 9,
+      "lost": "+0.11 s",
+      "colour": "good",
+      "tips": [
+        "Braking point: you brake 7 m earlier than the WR.",
+        "Brake release: you're still at 77% brake when starting to turn; the WR is at 18%. Release more before turning in.",
+        "Minimum speed: 150 km/h vs 153 km/h. You're slowing the car more than you need to.",
+        "Steering: here you use 46% more steering lock than you do elsewhere on the lap, compared with the WR. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle.",
+        "Track use: at turn-in you're 1.7 m tighter than the WR, who starts the turn from further out. Use more of the track: start the turn from the outside edge."
+      ]
+    }
+  ],
+  "S-1, your bronze attempt against the gold run": [
+    {
+      "section": 1,
+      "lost": "+3.01 s",
+      "colour": "bad",
+      "tips": [
+        "Where the time goes: +1.64 s on the 1500 m from the start line to the braking zone, +1.04 s in the corner, +0.33 s on the 413 m straight after it: you leave the corner 16 km/h slower (139 vs 155 km/h), and that carries all the way down the straight.",
+        "Braking point: you brake 13 m earlier than the reference lap.",
+        "Brake pressure: the reference lap stays above 90% brake for 142 m; you do for 105 m. Brake hard at the start of the zone, then ease off.",
+        "Minimum speed: 123 km/h vs 143 km/h. You're slowing the car more than you need to.",
+        "Full throttle: you reach full throttle 55 m later than the reference lap.",
+        "Track use: at turn-in you're 2.3 m tighter than the reference lap, who starts the turn from further out. Use more of the track: start the turn from the outside edge.",
+        "Lift: you average 4% throttle for 517 m, starting 573 m after the start line, where the reference lap averages 96%. That costs about 0.60 s."
+      ]
+    },
+    {
+      "section": 2,
+      "lost": "+0.50 s",
+      "colour": "bad",
+      "tips": [
+        "Braking point: you brake 27 m earlier than the reference lap.",
+        "Brake pressure: the reference lap stays above 90% brake for 64 m; you do for 16 m. Brake hard at the start of the zone, then ease off.",
+        "Trail braking: the reference lap is still at 37% brake when starting to turn and keeps easing it off for 16 m into the corner; you're at 7%.",
+        "Throttle control: your throttle goes on and off 2 times before full throttle; the reference lap squeezes it on smoothly. Smooth, progressive throttle keeps the car balanced.",
+        "Exit: you leave the corner at 131 km/h vs 142 km/h, and that costs time all the way down the straight after it.",
+        "Track use: at the apex you're 3.3 m wide of the reference lap's line; on exit you run 2.9 m wider than the reference lap. Use more of the track: get closer to the apex."
+      ]
+    },
+    {
+      "section": 3,
+      "lost": "+1.07 s",
+      "colour": "bad",
+      "tips": [
+        "Where the time goes: +0.04 s in the corner, +1.04 s on the 616 m straight after it: you leave the corner 15 km/h slower (111 vs 126 km/h), and that carries all the way down the straight, and you lift on the straight (below).",
+        "Braking point: you brake 92 m later than the reference lap, then have to slow down more: you may be overshooting the entry.",
+        "Minimum speed: 107 km/h vs 113 km/h. You're slowing the car more than you need to.",
+        "Throttle: you get back on the throttle 8 m later than the reference lap.",
+        "Full throttle: you reach full throttle 32 m later than the reference lap.",
+        "Track use: at turn-in you're 3.5 m tighter than the reference lap, who starts the turn from further out; at the apex you're 4.9 m wide of the reference lap's line; on exit you run 6.2 m wider than the reference lap. Use more of the track: start the turn from the outside edge, and get closer to the apex.",
+        "Lifts: 5 times in this section you come off the throttle where the reference lap doesn't, for 172 m in all (starting 64 m after, 207 m after, 395 m after, 491 m after, 534 m after the apex). Together that costs about 0.63 s. Stay flat out until the braking point."
+      ]
+    },
+    {
+      "section": 4,
+      "lost": "+2.14 s",
+      "colour": "bad",
+      "tips": [
+        "Where the time goes: +0.74 s in the corner, +1.40 s on the 712 m straight after it to the finish line: you leave the corner 17 km/h slower (159 vs 176 km/h), and that carries all the way down the straight, and you lift on the straight (below).",
+        "Braking point: you brake 35 m earlier than the reference lap.",
+        "Minimum speed: 154 km/h vs 169 km/h. You're slowing the car more than you need to.",
+        "Throttle: you get back on the throttle 9 m later than the reference lap.",
+        "Full throttle: you reach full throttle 208 m later than the reference lap.",
+        "Track use: at turn-in you're 3.1 m wider than the reference lap; at the apex you're 8.3 m tighter than the reference lap; on exit the reference lap runs 9.0 m wider than you. Use more of the track: let the car run out to the edge on exit.",
+        "Lifts: 3 times in this section you come off the throttle where the reference lap doesn't, for 68 m in all (starting 119 m after, 234 m after, 468 m after the apex). Together that costs about 0.41 s. Stay flat out until the braking point."
+      ]
+    }
+  ]
+}

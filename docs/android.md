@@ -63,8 +63,8 @@ on every push to `main` and `beta` (`.github/workflows/tests.yml`).
 
 **Beta:** new work goes to the `beta` branch first, so the owner can try it before testers get it.
 - The **beta website** is built from `beta` (with main's data) at https://gt7-timetrials.github.io/beta/, hidden from
-  search engines and marked "Beta" at the top. A push to `beta` republishes the site (`beta.yml` starts
-  `pages.yml` from main, because only main may deploy).
+  search engines and marked "Beta" at the top. A push to `beta` republishes the site once its tests pass
+  (`pages.yml` starts when the Tests workflow finishes, and builds each branch's last tested commit).
 - The **beta app** ("Time Trials beta", orange icon, app ID `io.github.gt7timetrials.beta`, `gradle assembleBeta`)
   installs next to the Play app and shows the beta website. Pushes to `beta` that change `android/` put it on the
   `android-beta` release:

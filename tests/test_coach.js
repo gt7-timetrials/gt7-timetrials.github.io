@@ -167,6 +167,25 @@ assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several
 assert.ok(!s1.corners[2].tips.some(t => t.startsWith("Exit:")), "the straight tip says it instead");
 assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "one colour per section");
 
+// The advice, word for word, for the two real comparisons above (Barcelona against the WR, the S-1 bronze attempt
+// against the gold run): every section's time, colour and tips, as the site shows them. It's deterministic, so any
+// change to the advice shows up here. After a deliberate change, rewrite the file and read its diff:
+//   UPDATE_ADVICE=1 node tests/test_coach.js
+{
+  const file = path.join(__dirname, "fixtures", "expected_advice.json");
+  const advice = res => res.corners.map(c => ({ section: c.n, lost: (c.lost > 0 ? "+" : "") + c.lost.toFixed(2) + " s",
+    colour: c.colour, tips: c.tips }));
+  const now = { "Barcelona, your lap against the WR": advice(r), "S-1, your bronze attempt against the gold run": advice(s1) };
+  if (process.env.UPDATE_ADVICE) fs.writeFileSync(file, JSON.stringify(now, null, 2) + "\n");
+  const expected = JSON.parse(fs.readFileSync(file, "utf8"));
+  for (const lap of Object.keys(expected)) {
+    assert.strictEqual(now[lap].length, expected[lap].length, `${lap}: number of sections`);
+    now[lap].forEach((c, i) => assert.deepStrictEqual(c, expected[lap][i], `${lap}, section ${c.section}: the advice changed`));
+  }
+  assert.deepStrictEqual(Object.keys(now), Object.keys(expected));
+  console.log("expected advice ok");
+}
+
 console.log("coach.js tests passed");
 
 // audio cue points (the app): where the reference brakes (dabs too), lifts without braking, and gets back on the gas
