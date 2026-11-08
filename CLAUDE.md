@@ -30,6 +30,9 @@ app, builds and keys are in `docs/android.md`.
   website or app, such as `docs/play-listing.md`), the owner's choice to avoid pointless beta commits; then bring beta
   up to date with main (`git merge origin/main`) so both have them. `CLAUDE.md` itself counts as notes. Anything that
   changes the website, the app, the tests or the builds still goes through beta.
+- **The website is published only after the tests pass:** "Publish website" starts when the Tests workflow finishes
+  on main or beta (a few minutes after the push) and builds each from its last commit that passed. A red run leaves the
+  site as it was, data included, until it's fixed.
 - **After pushing to beta, check the beta website has the change** (fetch a changed file from
   https://gt7-timetrials.github.io/beta/) before telling the owner it's ready: several rebuilds close together can
   report success without updating the site; start the "Publish website" workflow again if so.

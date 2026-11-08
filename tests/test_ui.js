@@ -53,8 +53,9 @@ function standIn({ withCues, csv }) {
 (async () => {
   const browser = await chromium.launch();
   const errors = [];
-  const page = async (app) => {
+  const page = async (app, withRaces = false) => {
     const ctx = await browser.newContext({ ...devices["iPhone 13"] });
+    if (withRaces) await races(ctx);
     if (app === "cues") await ctx.addInitScript(standIn, { withCues: true, csv: s1 });
     else if (app) await ctx.addInitScript(earlierApp, { methods: APPS[app], csv: s1 });
     const p = await ctx.newPage();
@@ -66,6 +67,39 @@ function standIn({ withCues, csv }) {
   const calls = p => p.evaluate(() => window.__calls);
   const coach = p => p.locator("#license-list .coach").first(); // Super License S-1
   const event = (p, ev) => p.evaluate(e => window.GT7AppEvent(e), ev);
+  // a time trial with a reference lap (the first current event, given S-1's gold run in another car, as a free car
+  // choice) and the daily races: race A with a reference lap, race B without one yet
+  const races = async (ctx, free = true) => {
+    await ctx.route("**/data.json", async route => {
+      const data = await (await route.fetch()).json();
+      Object.assign(data.current[0], { free_choice: free,
+        reference: { lap_ms: 71809, driver: "Someone", url: "test-reference.json" } });
+      await route.fulfill({ json: data });
+    });
+    await ctx.route("**/test-reference.json", async route => {
+      const ref = await (await ctx.request.get(url + "license/S-1.json")).json();
+      await route.fulfill({ json: { ...ref, car_code: ref.car_code + 1 } });
+    });
+    await ctx.route("**/daily.json", route => route.fulfill({ json: { races: [
+      { id: "A", track: "High Speed Ring", car: "Gr.3", free_choice: true,
+        reference: { lap_ms: 71809, url: "license/S-1.json", key: "daily-A", driver: "Fast_One", car: "Some car" } },
+      { id: "B", track: "Monza", car: "Mazda Roadster", reference: null }] } }));
+  };
+  // Record on this phone on a card: the app is asked to start, a lap comes in, Stop and compare shows the comparison
+  const recordLap = async (p, card, label, start = ["start", ""]) => {
+    await card.locator(".record-btn").click();
+    assert.deepStrictEqual((await calls(p)).at(-1), start, `${label}: recording started`);
+    await event(p, { type: "connected", ip: "192.168.0.23" });
+    await event(p, { type: "state", state: "driving" });
+    await event(p, { type: "lap", lap: 1, ms: 78521, time: "1:18.521", replay: false, dropout: false });
+    assert.match(await card.locator(".rec-laps").innerText(), /1:18\.521/, `${label}: the lap is listed`);
+    await card.locator(".rec-stop").click();
+    await card.locator(".coach-summary").waitFor();
+    assert.match(await card.locator(".coach-summary").innerText(), /Your lap 1:18\.521/, `${label}: compared`);
+    // against this card's event: a daily race has no medals (the time trial and daily references are the same lap here)
+    assert.strictEqual(/within 3% of the reference/.test(await card.locator(".map-box .legend").innerText()), label.endsWith("daily race"),
+      `${label}: compared for this card's event`);
+  };
 
   // 1. a visitor (no app): upload a recording; no recording or audio cue controls
   {
@@ -128,6 +162,18 @@ function standIn({ withCues, csv }) {
     const asked = new Set((await calls(p)).map(c => c[0]));
     for (const name of asked) assert.ok(has(name), `${label}: the website asked it for ${name}`);
     await p.context().close();
+    // Record on this phone on a time trial and on a daily race too
+    const q = await page(app, true);
+    await q.goto(url + "#current");
+    const trial = q.locator("#current-list .coach").first();
+    await trial.locator(".record-btn").waitFor();
+    await recordLap(q, trial, `${label}, time trial`);
+    await q.goto(url + "#daily");
+    const daily = q.locator("#daily-list .coach").first();
+    await daily.locator(".record-btn").waitFor();
+    await recordLap(q, daily, `${label}, daily race`);
+    for (const name of new Set((await calls(q)).map(c => c[0]))) assert.ok(has(name), `${label}: the website asked it for ${name}`);
+    await q.context().close();
   }
 
   // 3. this checkout's app: the stand-in only has methods the app really has
@@ -147,8 +193,11 @@ function standIn({ withCues, csv }) {
   {
     const p = await page("cues");
     const box = coach(p).locator(".cue-toggle");
+    const boxes = p.locator(".cue-toggle");
+    assert.ok(await boxes.count() > 1, "a checkbox on every card");
     await box.check();
     assert.deepStrictEqual((await calls(p)).at(-1), ["saveCues", JSON.stringify({ enabled: true })]);
+    assert.ok((await boxes.evaluateAll(b => b.map(x => x.checked))).every(Boolean), "ticking one ticks them all");
     await coach(p).locator(".record-btn").click();
     await p.waitForFunction(() => window.__calls.some(c => c[0] === "startWithCues"));
     const start = (await calls(p)).find(c => c[0] === "startWithCues");
@@ -157,6 +206,16 @@ function standIn({ withCues, csv }) {
     await event(p, { type: "cues", output: "Phone speaker", delay: 0, calibrated: false });
     assert.match(await coach(p).locator(".rec-cues").innerText(), /Audio cues on \(Phone speaker.*brake cue on the reference's point\)/s);
     await coach(p).locator(".rec-cancel").click();
+    // unticking turns them all off: the next recording has no audio cues
+    await box.uncheck();
+    assert.deepStrictEqual((await calls(p)).at(-1), ["saveCues", JSON.stringify({ enabled: false })]);
+    assert.ok((await boxes.evaluateAll(b => b.map(x => x.checked))).every(c => !c), "unticking one unticks them all");
+    await coach(p).locator(".record-btn").click();
+    assert.deepStrictEqual((await calls(p)).at(-1), ["start", ""], "audio cues off: recording without them");
+    await event(p, { type: "connected", ip: "192.168.0.23" });
+    assert.strictEqual(await coach(p).locator(".rec-cues").innerText(), "", "no audio cue line");
+    await coach(p).locator(".rec-cancel").click();
+    await box.check(); // back on, for the Audio cues tab and the recording after it
 
     await p.goto(url + "#cues");
     await p.locator(".cue-test").first().waitFor();
@@ -169,6 +228,8 @@ function standIn({ withCues, csv }) {
     assert.strictEqual(JSON.parse((await calls(p)).at(-1)[1]).settings.brakeEarly, 0.15, "the offset is saved in the app");
     const gas = await p.locator('select[data-set="gasAdjust"] option').evaluateAll(o => o.map(x => x.value));
     assert.deepStrictEqual(gas, ["-0.2", "-0.15", "-0.1", "-0.05", "0", "0.05", "0.1", "0.15", "0.2"]);
+    await p.selectOption('select[data-set="gasAdjust"]', "-0.1");
+    assert.strictEqual(JSON.parse((await calls(p)).at(-1)[1]).settings.gasAdjust, -0.1, "the gas offset is saved in the app");
     await p.locator(".cue-calibrate").click();
     assert.deepStrictEqual((await calls(p)).at(-1), ["calibrate", ""]);
     await event(p, { type: "connected", ip: "192.168.0.23" });
@@ -181,7 +242,8 @@ function standIn({ withCues, csv }) {
     await coach(p).locator(".record-btn").click();
     await p.waitForFunction(() => window.__calls.filter(c => c[0] === "startWithCues").length === 2);
     await event(p, { type: "cues", output: "Phone speaker", delay: 0, calibrated: true });
-    assert.match(await coach(p).locator(".rec-cues").innerText(), /brake cue 0\.15 s early/);
+    assert.match(await coach(p).locator(".rec-cues").innerText(), /brake cue 0\.15 s early, gas beep 0\.10 s earlier/,
+      "the recording shows the changed offsets");
     await coach(p).locator(".rec-cancel").click();
     await p.context().close();
   }
@@ -214,10 +276,7 @@ function standIn({ withCues, csv }) {
   // the Daily races tab: a race with a free car choice and a reference lap in another car: compared with no warning
   {
     const ctx = await browser.newContext({ ...devices["iPhone 13"] });
-    await ctx.route("**/daily.json", route => route.fulfill({ json: { races: [
-      { id: "A", track: "High Speed Ring", car: "Gr.3", free_choice: true,
-        reference: { lap_ms: 71809, url: "license/S-1.json", key: "daily-A", driver: "Fast_One", car: "Some car" } },
-      { id: "B", track: "Monza", car: "Mazda Roadster", reference: null }] } }));
+    await races(ctx);
     const p = await ctx.newPage();
     p.on("pageerror", e => errors.push(`daily races: ${e.message}`));
     await p.goto(url + "#daily");
@@ -235,16 +294,7 @@ function standIn({ withCues, csv }) {
   // as free car choice. The first current event is given S-1's gold run as its reference, in another car.
   for (const free of [false, true]) {
     const ctx = await browser.newContext({ ...devices["iPhone 13"] });
-    await ctx.route("**/data.json", async route => {
-      const data = await (await route.fetch()).json();
-      Object.assign(data.current[0], { free_choice: free,
-        reference: { lap_ms: 71809, driver: "Someone", url: "test-reference.json" } });
-      await route.fulfill({ json: data });
-    });
-    await ctx.route("**/test-reference.json", async route => {
-      const ref = await (await ctx.request.get(url + "license/S-1.json")).json();
-      await route.fulfill({ json: { ...ref, car_code: ref.car_code + 1 } });
-    });
+    await races(ctx, free);
     const p = await ctx.newPage();
     p.on("pageerror", e => errors.push(`time trial: ${e.message}`));
     await p.goto(url + "#current");
