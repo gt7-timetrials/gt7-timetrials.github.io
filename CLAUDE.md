@@ -24,11 +24,16 @@ app, builds and keys are in `docs/android.md`.
   change can't work with the Play app, say so before merging.
 - **Main's daily snapshot job commits data** (`data/`); the beta website uses main's data.
 - **Exception: new reference laps go straight to main**, like the daily data: adding the owner's recording to
-  `data/reference_laps/` (with its driver in `data/reference_laps/drivers.json`; and removing an ended event's), flagging a free car choice event in
+  `data/reference_laps/` (with its driver in `data/reference_laps/drivers.json`; an ended or replaced lap moves to `data/archive/`, never deleted), flagging a free car choice event in
   `data/free_choice.json`, the week's daily races (`data/daily/races.json` and their laps in `data/daily/laps/`), and
   running `python -m gt7tt daily` by hand so a new event
   shows the same day. The beta website can't show them anyway. Only data: any code change still goes through beta.
   Check first that the lap matches the event (car, and the world record time) and run the tests.
+- **Reference laps are never deleted:** they're kept for the owner's analysis of what makes the most difference to lap
+  time. A time trial lap moves to `data/archive/time_trials/` when its event ends or a better lap replaces it, and each
+  week's daily race laps move to `data/archive/daily/` before the next week's replace them; add each to
+  `data/archive/index.json` (track, the lap's car, driver, lap time, the event's dates). The website doesn't read the
+  archive.
 - **Exception: the plan and notes go straight to main** (`docs/plan.md`, and other notes that change nothing on the
   website or app, such as `docs/play-listing.md`), the owner's choice to keep them out of the beta and merge process:
   no pull request, and no need to copy them to beta, which picks them up when the next beta work starts (`git merge

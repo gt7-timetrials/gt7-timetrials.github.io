@@ -1,0 +1,50 @@
+{
+  "about": "Every reference lap kept for later analysis (what makes the most difference to lap time): time trial world record laps once their event ends or a better one replaces them, and each week's daily race laps before the next week's replace them. Not used by the website. One entry per lap: file (under data/archive/), kind (time trial or daily race), event_id (time trials), track, car (the lap's own car), driver, lap time, the event's dates, when the lap was added, where it was before, and a note.",
+  "laps": [
+    {
+      "file": "time_trials/15000_barcelona_SFE_Asteria_1-50.133.csv",
+      "kind": "time trial",
+      "event_id": 15000,
+      "track": "Circuit de Barcelona-Catalunya GP Layout No Chicane",
+      "car": "ELANTRA N TC '24",
+      "driver": "SFE_Asteria",
+      "lap_ms": 110133,
+      "lap": "1:50.133",
+      "event_start": "2026-10-22",
+      "event_end": "2026-11-05",
+      "added": "2026-10-25",
+      "was": "data/reference_laps/telemetry_20261025_214232.csv",
+      "note": "The world record when recorded; replaced by tropicalarea's lap on 29 October."
+    },
+    {
+      "file": "time_trials/15000_barcelona_tropicalarea_1-50.098.csv",
+      "kind": "time trial",
+      "event_id": 15000,
+      "track": "Circuit de Barcelona-Catalunya GP Layout No Chicane",
+      "car": "ELANTRA N TC '24",
+      "driver": "tropicalarea",
+      "lap_ms": 110098,
+      "lap": "1:50.098",
+      "event_start": "2026-10-22",
+      "event_end": "2026-11-05",
+      "added": "2026-10-29",
+      "was": "data/reference_laps/telemetry_20261029_211501.csv",
+      "note": "The world record when recorded; the event's final record was L-Shooter_RB26's 1:49.897."
+    },
+    {
+      "file": "time_trials/14980_sugo_AMS__Andrew_1-16.684.csv",
+      "kind": "time trial",
+      "event_id": 14980,
+      "track": "SUGO International Racing Course",
+      "car": "Xiaomi VGT",
+      "driver": "AMS__Andrew",
+      "lap_ms": 76684,
+      "lap": "1:16.684",
+      "event_start": "2026-10-15",
+      "event_end": "2026-10-29",
+      "added": "2026-10-25",
+      "was": "data/reference_laps/telemetry_20261025_224654.csv",
+      "note": "The world record when recorded; the event's final record was AMS__Andrew's 1:16.458."
+    }
+  ]
+}

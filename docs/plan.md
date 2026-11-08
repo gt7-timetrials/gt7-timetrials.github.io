@@ -186,6 +186,11 @@ Kept short; the details are in the pull requests and the git history.
 - **Skills that matter most for you** (owner, 6 November; a significant build, to specify properly before starting).
   Which skills, out of the things the comparison measures, would gain a driver the most time, ranked from most to
   least important, and whether they're improving over time.
+  - **The laps kept for it** (since 8 November): every reference lap stays in `data/archive/` with an index
+    (`index.json`: track, car, driver, lap time, the event's dates) instead of being deleted, including the three
+    recovered from git history (Barcelona's SFE_Asteria and tropicalarea laps, SUGO's AMS__Andrew). The model also
+    needs the owner's own laps against them: the owner keeps their recordings (or sends them for
+    `data/archive/mine/`).
   - **First, a model from the owner's own laps:** the owner records many laps across tracks and cars; fit a
     statistical model of the time lost in each corner against the corner's and car's characteristics (corner type,
     speed, braking zone length, car class and so on) and the differences from the reference lap (braking point,
@@ -256,9 +261,12 @@ Kept short; the details are in the pull requests and the git history.
   a record that moves to another car, doesn't lose it. Data only, so
   straight to main like a reference lap.
 - **Daily races:** each week the owner sends the three races (track, car or rule, free choice or not, whose lap) and
-  a reference lap for each. Replace `data/daily/races.json` and `data/daily/laps/`. Data only, so straight to main.
-- **Better WR during an event:** the owner sends the new replay CSV. Replace the event's old reference lap with it.
+  a reference lap for each. First move last week's laps to `data/archive/daily/` (named by week, race and track) and
+  add them to `data/archive/index.json`; then replace `data/daily/races.json` and `data/daily/laps/`. Data only, so
+  straight to main.
+- **Better WR during an event:** the owner sends the new replay CSV. Replace the event's old reference lap with it, moving the old one to the archive.
 - **Event ends:** automatic. It leaves Current at the next site build, and the next morning's update adds it to Past
-  events with its final top 100. Delete its reference lap from `data/reference_laps`.
+  events with its final top 100. Move its reference lap from `data/reference_laps` to `data/archive/time_trials/`, and add
+  it to `data/archive/index.json`.
 - **Daily update:** a scheduled Claude Code session runs `python -m gt7tt daily` every morning (Melbourne) and
   pushes to main, which republishes the site once the tests pass.
