@@ -75,11 +75,11 @@ Super License tests: keep it simple, and only take on what one person can look a
              section, yellow 3–5%, red more than 5%. The close-ups: the line width is how much brake or throttle,
              yours and the reference's; the dots are your line against the reference's grey line, filled red for
              more brake than the reference and hollow for less, blue the same for the gas.
-           - Open: which black line they meant (the owner asked for a screenshot). Most likely the map's short dark
-             bands, drawn where you lift or brake and the reference doesn't; "more to less intense" is most likely
-             the map fading the other sections while one corner is selected. Neither is in the map's legend. Then
-             decide whether the legend should explain both, and whether the Audio cues tab should say when each
-             sound plays (the gas chirp read as the apex).
+           - Their answer: the black line at the start of section 3, and a lighter green next to more intense ones
+             when everything is green. These are the map's short dark bands, drawn where you lift off the throttle or
+             brake while the reference stays flat out (that section's "Lift" tip says how much), and the map fading
+             the other sections to about half while one corner is selected. Neither is in the map's legend: worth
+             adding both, and on the Audio cues tab when each sound plays (the gas chirp read as the apex).
          - **HomeworkBoth9844 (3 November):** "looks really great", and asked whether daily races could be added. The
            owner first thought reference laps were hard to get for races; the tester pointed out that each daily race
            quickly gets a world's best time whose replay can be downloaded, like a time trial's. The owner agreed, and
