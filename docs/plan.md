@@ -65,6 +65,18 @@ Super License tests: keep it simple, and only take on what one person can look a
              today, with ‹ › to step through laps on a corner; showing several laps at once is planned (item 5).
            - Assumed the app wouldn't update during the test, then asked how to update: the owner told them about the
              new version and linked the Play page with its Update button.
+         - **Worried_Bug_538, third post (8 November), after the update post, using the audio cues:** asked what the
+           black line that appears from time to time means, what the colours from more to less intense mean, and what
+           the two sounds before the "whistle" are ("the whistle is the peak of the curves, right?").
+           - The owner replied with screenshots: the brake cue is tock, tock, BEEP, the BEEP where the reference
+             brakes and the tocks to give time to react; the "whistle" is the gas chirp, 0.5 s before the reference
+             gets back on the throttle (near the apex, not at it); the lift cue is for no gas and no brake; each can
+             be heard on the Audio cues tab. The map's colours: green within 3% of the reference's time through a
+             section, yellow 3–5%, red more than 5%. The close-ups: the line width is how much brake or throttle,
+             yours and the reference's; the dots are your line against the reference's grey line, filled red for
+             more brake than the reference and hollow for less, blue the same for the gas.
+           - Open: which black line they meant (the owner asked for a screenshot); then whether the page needs to
+             explain it, the faded and strong colours, or when each sound plays (the gas chirp read as the apex).
          - **HomeworkBoth9844 (3 November):** "looks really great", and asked whether daily races could be added. The
            owner first thought reference laps were hard to get for races; the tester pointed out that each daily race
            quickly gets a world's best time whose replay can be downloaded, like a time trial's. The owner agreed, and
