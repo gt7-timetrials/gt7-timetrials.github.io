@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-08T21:38:02.852603+00:00",
+ "generated_at": "2026-11-09T21:37:58.586609+00:00",
  "history_events": 204,
  "snapshot_events": 2,
  "historical_entrants": {
@@ -17,14 +17,14 @@
    "car": "Porsche 911 GT3 R (992) '22",
    "starts": "2026-11-02T23:00:00+11:00",
    "ends": "2026-11-16T22:59:59+11:00",
-   "days_elapsed": 6.4,
-   "days_left": 7.6,
-   "entrants": 143359,
+   "days_elapsed": 7.4,
+   "days_left": 6.6,
+   "entrants": 152105,
    "entrants_projection": null,
    "wr_ms": 116840,
    "wr_holder": "Falcon_Josete",
    "gold_now_ms": 120345,
-   "top100_spread_pct": 1.1,
+   "top100_spread_pct": 1.096,
    "strong_drivers_posted": [
     "AT__1826",
     "Falcon_Josete",
@@ -40,9 +40,9 @@
    "predicted": {
     "final_wr_ms": 116840,
     "gold_ms": 120345,
-    "gold_fast_ms": 120107,
+    "gold_fast_ms": 120130,
     "gold_slow_ms": 120345,
-    "final_wr_fast_ms": 116609,
+    "final_wr_fast_ms": 116632,
     "final_wr_slow_ms": 116840,
     "method": "history: time elapsed + top drivers"
    }
@@ -55,14 +55,14 @@
    "car": "Maserati A6GCS/53 Spyder '54",
    "starts": "2026-10-29T18:00:00+11:00",
    "ends": "2026-11-12T17:59:59+11:00",
-   "days_elapsed": 10.6,
-   "days_left": 3.4,
-   "entrants": 151091,
+   "days_elapsed": 11.6,
+   "days_left": 2.4,
+   "entrants": 156257,
    "entrants_projection": null,
    "wr_ms": 80612,
    "wr_holder": "AT__1826",
    "gold_now_ms": 83030,
-   "top100_spread_pct": 0.813,
+   "top100_spread_pct": 0.804,
    "strong_drivers_posted": [
     "AT__1826",
     "MetalGear9493"
@@ -70,11 +70,11 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 80538,
-    "gold_ms": 82954,
-    "gold_fast_ms": 82828,
+    "final_wr_ms": 80552,
+    "gold_ms": 82968,
+    "gold_fast_ms": 82896,
     "gold_slow_ms": 83030,
-    "final_wr_fast_ms": 80416,
+    "final_wr_fast_ms": 80482,
     "final_wr_slow_ms": 80612,
     "method": "history: time elapsed + top drivers"
    }
@@ -87,26 +87,27 @@
    "car": "Dodge Viper SRT GT3-R '15",
    "starts": "2026-11-05T18:00:00+11:00",
    "ends": "2026-11-19T17:59:59+11:00",
-   "days_elapsed": 3.6,
-   "days_left": 10.4,
-   "entrants": 96037,
+   "days_elapsed": 4.6,
+   "days_left": 9.4,
+   "entrants": 106150,
    "entrants_projection": null,
    "wr_ms": 99865,
    "wr_holder": "N2_HyperzWC",
    "gold_now_ms": 102860,
-   "top100_spread_pct": 0.767,
+   "top100_spread_pct": 0.747,
    "strong_drivers_posted": [
     "Akagi_1942mi",
-    "SZ_yuhki02"
+    "SZ_yuhki02",
+    "pirata666pirata"
    ],
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 99654,
-    "gold_ms": 102643,
-    "gold_fast_ms": 102383,
+    "final_wr_ms": 99722,
+    "gold_ms": 102713,
+    "gold_fast_ms": 102473,
     "gold_slow_ms": 102860,
-    "final_wr_fast_ms": 99401,
+    "final_wr_fast_ms": 99489,
     "final_wr_slow_ms": 99865,
     "method": "history: time elapsed + top drivers"
    }
