@@ -46,3 +46,26 @@ app, builds and keys are in `docs/android.md`.
   https://gt7-timetrials.github.io/beta/) before telling the owner it's ready: several rebuilds close together can
   report success without updating the site; start the "Publish website" workflow again if so.
 - Never put model names or IDs in commits, pull requests or files.
+
+## Recording laps from the home laptop (when the owner is away)
+
+The daily update runs from the cloud agent only; a session on the owner's Windows laptop never schedules or repeats it.
+The laptop is a backup for recording replays when the owner is away (driving GT7 from a PS Portal over Remote
+Control). When the owner asks:
+
+- `git pull` first (the cloud agent commits every morning).
+- Record one replay per run: copy `tools/telemetry.py` to the scratchpad and run it there in the background
+  (`py -u telemetry.py <PlayStation IP>`; without the IP it finds the PlayStation and saves it in
+  `telemetry_ip.txt` next to the script). Confirm it says "Connected" before the owner starts the replay, and stop the
+  process when the owner says the lap is done.
+- Check the recording: one complete lap, no dropout (about 60 samples a second for the lap time), and the car from
+  its `car_code` (`gt7tt.store.Store().car(code)`). The car shown at the top of GT7's menus is the owner's own car, not
+  the race's.
+- The owner may send photos of the race list or the driver's name; copy names exactly, including non-Latin
+  characters (zoom into the photo if needed).
+- Then follow the reference lap and archive rules above (time trials: `data/reference_laps/` and `drivers.json`;
+  daily races: `data/daily/`), run `python -m gt7tt daily` and the tests, commit to main and push. On the laptop three
+  Python tests fail for local reasons (javac, Windows text encoding, the network test); GitHub's run is the one that
+  counts. Then check the live site has the change.
+- If a push hangs, Git Credential Manager is waiting for a GitHub sign-in on the laptop's screen, which only the owner
+  can do. Say so instead of waiting; the commit is safe locally until it's pushed.
