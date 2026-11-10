@@ -3,23 +3,23 @@
   "races": [
     {
       "id": "A",
-      "track": "Dragon Trail - Gardens",
-      "car": "Chevrolet Corvette Stingray Convertible (C3) '69",
-      "driver": "holl01"
+      "track": "Suzuka Circuit - East Course",
+      "car": "Honda Integra Type R (DC2) '95",
+      "driver": "BW-_ららぴぴ"
     },
     {
       "id": "B",
-      "track": "Grand Valley - Highway 1",
-      "car": "Gr.3 cars",
+      "track": "Trial Mountain Circuit",
+      "car": "Gr.4 cars",
       "free_choice": true,
-      "driver": "Miumiu"
+      "driver": "Sillon"
     },
     {
       "id": "C",
-      "track": "Watkins Glen - Long Course",
-      "car": "Gr.4 cars",
+      "track": "Michelin Raceway Road Atlanta",
+      "car": "Gr.3 cars",
       "free_choice": true,
-      "driver": "RTR_STOKIEBEN777"
+      "driver": "D. Chafe"
     }
   ]
 }

@@ -45,6 +45,51 @@
       "added": "2026-10-25",
       "was": "data/reference_laps/telemetry_20261025_224654.csv",
       "note": "The world record when recorded; the event's final record was AMS__Andrew's 1:16.458."
+    },
+    {
+      "file": "daily/2026-11-03_A_dragon-trail-gardens_holl01_1-51.889.csv",
+      "kind": "daily race",
+      "race": "A",
+      "track": "Dragon Trail - Gardens",
+      "car": "Chevrolet Corvette Stingray Convertible (C3) '69",
+      "driver": "holl01",
+      "lap_ms": 111889,
+      "lap": "1:51.889",
+      "event_start": "2026-11-03",
+      "event_end": "2026-11-10",
+      "added": "2026-11-03",
+      "was": "data/daily/laps/A.csv",
+      "note": "Week of 3 November, race A (Chevrolet Corvette Stingray Convertible (C3) '69)."
+    },
+    {
+      "file": "daily/2026-11-03_B_grand-valley-highway-1_Miumiu_1-46.689.csv",
+      "kind": "daily race",
+      "race": "B",
+      "track": "Grand Valley - Highway 1",
+      "car": "Dodge Viper SRT GT3-R '15",
+      "driver": "Miumiu",
+      "lap_ms": 106689,
+      "lap": "1:46.689",
+      "event_start": "2026-11-03",
+      "event_end": "2026-11-10",
+      "added": "2026-11-03",
+      "was": "data/daily/laps/B.csv",
+      "note": "Week of 3 November, race B (Gr.3 cars, free choice)."
+    },
+    {
+      "file": "daily/2026-11-03_C_watkins-glen-long-course_RTR_STOKIEBEN777_1-53.955.csv",
+      "kind": "daily race",
+      "race": "C",
+      "track": "Watkins Glen - Long Course",
+      "car": "Audi TT Cup '16",
+      "driver": "RTR_STOKIEBEN777",
+      "lap_ms": 113955,
+      "lap": "1:53.955",
+      "event_start": "2026-11-03",
+      "event_end": "2026-11-10",
+      "added": "2026-11-03",
+      "was": "data/daily/laps/C.csv",
+      "note": "Week of 3 November, race C (Gr.4 cars, free choice)."
     }
   ]
 }
