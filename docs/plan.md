@@ -207,8 +207,12 @@ Kept short; the details are in the pull requests and the git history.
   - **The laps kept for it** (since 8 November): every reference lap stays in `data/archive/` with an index
     (`index.json`: track, car, driver, lap time, the event's dates) instead of being deleted, including the three
     recovered from git history (Barcelona's SFE_Asteria and tropicalarea laps, SUGO's AMS__Andrew). The model also
-    needs the owner's own laps against them: the owner keeps their recordings (or sends them for
-    `data/archive/mine/`).
+    needs the owner's own laps against them: the owner keeps their recordings until then.
+  - **Where the owner's own laps go** (owner, 10 November; set up when collecting starts): a separate, **private**
+    repository (for example `gt7-laps`), not this one. This repository is public, and every test run and session
+    downloads all of it: a lap is about 1.2 MB (about 0.3 MB once git compresses it), so a thousand practice laps
+    would add over a gigabyte, past GitHub's suggested size of about 1 GB. The reference laps stay in
+    `data/archive/` here (about 5 MB a week); the model reads from both.
   - **First, a model from the owner's own laps:** the owner records many laps across tracks and cars; fit a
     statistical model of the time lost in each corner against the corner's and car's characteristics (corner type,
     speed, braking zone length, car class and so on) and the differences from the reference lap (braking point,
