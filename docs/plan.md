@@ -8,6 +8,9 @@ Super License tests: keep it simple, and only take on what one person can look a
 1. **Daily races** (live since 3 November 2026): each week's three races (A, B, C) with a reference lap each, to
    record or upload against; free car choice races are flagged, so a different car gets no warning.
    - [ ] Each week: the owner sends the new races and laps (straight to main, like reference laps).
+   - [x] Recording from the home laptop works (10 November): a Claude Code session on the laptop, driven remotely
+         while the owner plays the replays from the PS Portal, recorded the week's races and pushed them, with last
+         week's laps moved to the archive. The steps are in `CLAUDE.md`, for when the owner is away.
    - [ ] **The new name in the app** with the next app update or at the production launch: under the icon it's
          **"Laps for GT7"** (the owner, 5 November: the full name is too long for a phone's home screen; the beta app
          is "Laps beta"), while the Play listing and the website use the full name, **"Lap Companion for GT7"** (the
@@ -62,7 +65,7 @@ Super License tests: keep it simple, and only take on what one person can look a
            the track width at the apex); set 1:51.539. "Absolutely loved the experience." So the detail stays: the
            guide makes it easier to get into instead of cutting it.
            - Asked to compare their best and worst laps together with the WR's: each lap is compared with the WR
-             today, with ‹ › to step through laps on a corner; showing several laps at once is planned (item 5).
+             today, with ‹ › to step through laps on a corner; showing several laps at once is planned (item 6).
            - Assumed the app wouldn't update during the test, then asked how to update: the owner told them about the
              new version and linked the Play page with its Update button.
          - **Worried_Bug_538, third post (8 November), after the update post, using the audio cues:** asked what the
@@ -120,7 +123,22 @@ Super License tests: keep it simple, and only take on what one person can look a
      slower for understeer, smoother throttle on exit for oversteer. Needs steering and yaw (or speed against
      steering) from the telemetry, compared with the reference's at the same point.
 
-5. **Comparing several laps, and your own best lap as a reference.**
+5. **Turn-in inputs and wheel spin (pushing too hard)** (owner, 10 November). Two things the tips don't cover yet:
+   - **Turn-in:** how you steer into the corner compared with the reference: how quickly the steering winds on, how
+     much lock at turn-in and at the apex, and how the brake comes off as the steering goes on (trail braking).
+     Turning in too sharply or with too much lock scrubs speed and pushes the car wide (understeer). The recordings
+     already have the steering angle and the yaw rate (how fast the car turns). The angle depends on each player's
+     controller or wheel settings (the site already says so), so compare its shape and timing rather than its size,
+     or the car's response (yaw rate for the steering), and against the player's own laps where that's fairer.
+   - **Wheel spin:** the driven wheels turning faster than the car is moving on the exit (the recordings have each
+     wheel's speed), and traction control cutting in (also recorded): on the throttle too early or too hard. The
+     same data shows front wheels locking under braking (the lock-up idea in Later, maybe).
+   - Only mention them where they cost time (for example a slower exit than the reference after spinning the
+     wheels), and tie them to the understeer and oversteer causes in 4.
+   - First, a recording to check the signals: the owner drives a few laps turning in too sharply and spinning the
+     wheels on purpose, plus a clean lap, to see how clearly each shows.
+
+6. **Comparing several laps, and your own best lap as a reference.**
    - Show two or more laps against the reference at once, for example your best and worst (asked for by a tester).
    - With several laps recorded, your **best composite lap** (your best section from each lap, put together) as a
      lap of its own, to compare corner by corner. Today Across your laps only gives its time.
@@ -135,7 +153,7 @@ Super License tests: keep it simple, and only take on what one person can look a
      towards the WR's (for example 25%, then 50%), so the cues stretch you a step at a time rather than asking for the
      WR's points straight away.
 
-6. **Valid laps.** Extend the cut-corner check (today: a lap more than 1% and 30 m shorter than the reference is marked
+7. **Valid laps.** Extend the cut-corner check (today: a lap more than 1% and 30 m shorter than the reference is marked
    as a likely cut) to collisions with walls or other cars, and to running off the track, so such laps are flagged
    and left out of Across your laps and the best composite lap.
    - Ground truth first: as far as the community's decoding of GT7's telemetry goes, there's no flag for an invalid
@@ -151,7 +169,7 @@ Super License tests: keep it simple, and only take on what one person can look a
      Across your laps and the best composite lap; traffic is harder (lifting or braking where the reference doesn't,
      with no other explanation) and may only be worth a hint.
 
-7. **Skills that matter most for you**: in **Later, maybe**, as a significant build to specify first.
+8. **Skills that matter most for you**: in **Later, maybe**, as a significant build to specify first.
 
 ## Done
 
