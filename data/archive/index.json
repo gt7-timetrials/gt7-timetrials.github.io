@@ -90,6 +90,21 @@
       "added": "2026-11-03",
       "was": "data/daily/laps/C.csv",
       "note": "Week of 3 November, race C (Gr.4 cars, free choice)."
+    },
+    {
+      "file": "time_trials/15138_bluemoon_Calster_25_1-20.672.csv",
+      "kind": "time trial",
+      "event_id": 15138,
+      "track": "Blue Moon Bay Speedway - Infield A",
+      "car": "Maserati A6GCS/53 Spyder '54",
+      "driver": "Calster_25",
+      "lap_ms": 80672,
+      "lap": "1:20.672",
+      "event_start": "2026-10-29",
+      "event_end": "2026-11-12",
+      "added": "2026-10-29",
+      "was": "data/reference_laps/telemetry_20261029_210218.csv",
+      "note": "The event ended on 12 November; its final record was AT__1826's 1:20.612."
     }
   ]
 }
