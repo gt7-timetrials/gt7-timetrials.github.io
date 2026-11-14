@@ -137,5 +137,5 @@ game's players).
 > Recording, saving, uploading and the audio cues work with the phone locked and with Bluetooth. Every change is
 > tried on a separate beta version first and checked by automated tests (the app's recorder and audio cues, the
 > website's screens in each released version of the app, and the lap advice) before it reaches users. I use it
-> myself every week and it helped me get a gold time.
+> myself every week and it helped me reach gold pace.
 
