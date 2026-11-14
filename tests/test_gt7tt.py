@@ -264,6 +264,67 @@ class RecorderTest(unittest.TestCase):
             for s in (sock, console, asks, answer):
                 s.close()
 
+    def fake_packet(self, fmt, iv):
+        """An encrypted GT7 packet in format "A" (no steering) or "B"."""
+        length, xor = self.rec.FORMATS[fmt]
+        p = bytearray(length)
+        p[0:4] = (0x47375330).to_bytes(4, "little")
+        nonce = (iv ^ xor).to_bytes(4, "little") + iv.to_bytes(4, "little")
+        enc = bytearray(self.rec.salsa20(self.rec.KEY, nonce, bytes(p)))
+        enc[0x40:0x44] = iv.to_bytes(4, "little")
+        return bytes(enc)
+
+    def slow_console(self, answers_b):
+        """A fake PS5 at 127.0.0.1 that ignores "B" heartbeats until it has had an "A" one (GT7 slow to start), then
+        sends the format of the latest heartbeat; or that never sends "B". Returns what find_console chose."""
+        import threading
+        console = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        console.bind(("127.0.0.1", self.rec.SEND_PORT))
+        console.settimeout(0.2)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind(("0.0.0.0", self.rec.RECV_PORT))
+        sock.settimeout(0.5)
+        mode, stop = [None], threading.Event()
+
+        def play():
+            seen_a, iv = False, 1
+            while not stop.is_set():
+                try:
+                    beat, addr = console.recvfrom(16)
+                    if beat == b"A":
+                        seen_a, mode[0] = True, b"A"
+                    elif beat == b"B" and seen_a and answers_b:
+                        mode[0] = b"B"
+                except socket.timeout:
+                    pass
+                except OSError:
+                    return
+                if mode[0]:
+                    for _ in range(10):
+                        iv += 1
+                        console.sendto(self.fake_packet(mode[0], iv), ("127.0.0.1", self.rec.RECV_PORT))
+
+        t = threading.Thread(target=play, daemon=True)
+        t.start()
+        try:
+            result = []
+            finder = threading.Thread(target=lambda: result.append(self.rec.find_console(sock, "127.0.0.1")), daemon=True)
+            finder.start()
+            finder.join(20)
+            return result
+        finally:
+            stop.set()
+            t.join(2)
+            for s in (sock, console):
+                s.close()
+
+    def test_steering_kept_after_a_slow_start(self):
+        # GT7 doesn't answer "B" (with the steering angle) at first, so the search falls back to "A"; then it asks for
+        # "B" again and gets it. Before, the whole recording was "A", without steering.
+        self.assertEqual(self.slow_console(answers_b=True), [("127.0.0.1", b"B")])
+        # a console that only ever sends "A": recorded as "A"
+        self.assertEqual(self.slow_console(answers_b=False), [("127.0.0.1", b"A")])
+
     def test_lap_time_format(self):
         self.assertEqual(self.rec.fmt_lap(113057), "1:53.057")
         self.assertEqual(self.rec.fmt_lap(76684), "1:16.684")
@@ -331,6 +392,13 @@ class AndroidRecorderTest(unittest.TestCase):
         for how in ("discover", "sweep"):  # it answers the Remote Play discovery broadcast, or only the network sweep
             events = [json.loads(line) for line in self.java("find", how, lap).splitlines()]
             self.assertIn({"type": "connected", "ip": "127.0.0.1"}, events, how)
+
+    def test_steering_kept_after_a_slow_start(self):
+        # GT7 doesn't answer "B" (with the steering angle) at first: the app falls back to "A", asks for "B" again and
+        # records the steering; before, the whole recording was "A", without it
+        head, last = self.java("slowstart", os.path.join(self.HERE, "fixtures", "telemetry_lap.csv")).splitlines()[-2:]
+        row = dict(zip(head.split(","), last.split(",")))
+        self.assertNotEqual(row["steering_rad"], "", "the last row has the steering angle")
 
     def cue_file(self, reference):
         """The reference's cue points from the website's Coach.cuePoints, in CueCheck's text format."""
@@ -581,6 +649,16 @@ class TelemetryTest(unittest.TestCase):
         self.assertAlmostEqual(lap["t"][-1], 110.133, places=2)
         self.assertEqual(len(lap["x"]), len(lap["t"]))
         self.assertIsNone(telemetry.fastest_lap(telemetry.read_csv(self.LAP)[:1000]))
+
+    def test_steering_left_out_when_not_recorded(self):
+        # GT7's older data format has no steering angle: the lap has no steering field (not zeros, which would
+        # draw a flat line on the website's steering chart)
+        rows = telemetry.read_csv(self.REF)
+        self.assertIn("steering_rad", telemetry.fastest_lap(rows))
+        blank = [{**r, "steering_rad": ""} for r in rows]
+        lap = telemetry.fastest_lap(blank)
+        self.assertNotIn("steering_rad", lap)
+        self.assertEqual(lap["lap_ms"], 110133)
 
     def test_reference_matched_to_event_by_car_and_closest_record(self):
         lap = telemetry.fastest_lap(telemetry.read_csv(self.REF))

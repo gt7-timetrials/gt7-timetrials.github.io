@@ -180,6 +180,31 @@ def answers(d):
             out.add(addr[0])
 
 
+def prefer_steering(sock, ip):
+    """The PlayStation answered the older format "A", which has no steering angle. Usually GT7 was only slow to answer
+    "B" (it was loading, or busy with a replay), so ask for "B" again for a few seconds; keep "A" if it doesn't come."""
+    until, last = time.time() + 4, 0
+    while time.time() < until:
+        if time.time() - last > 1:
+            try:
+                sock.sendto(b"B", (ip, SEND_PORT))
+            except OSError:
+                pass
+            last = time.time()
+        try:
+            p, sender = read_packet(sock, b"B")
+        except (socket.timeout, ConnectionResetError):
+            continue
+        if p is not None and sender == ip:
+            return b"B"
+    try:
+        sock.sendto(b"A", (ip, SEND_PORT))
+    except OSError:
+        pass
+    print("  (This PlayStation only sends the older data, without the steering angle; everything else is recorded.)")
+    return b"A"
+
+
 def find_console(sock, given=None):
     """Send heartbeats until a PlayStation answers. Returns (ip, packet format).
 
@@ -227,7 +252,7 @@ def find_console(sock, given=None):
                 if p is not None:
                     if d:
                         d.close()
-                    return sender, fmt
+                    return sender, (prefer_steering(sock, sender) if fmt == b"A" else fmt)
         waited = time.time() - started
         if waited > 20 and found:
             print(f"  Found your PlayStation at {', '.join(sorted(found))}, but no data from GT7 yet. Check that GT7 is")

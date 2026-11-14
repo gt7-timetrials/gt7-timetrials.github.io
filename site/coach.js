@@ -43,7 +43,8 @@ const Coach = (() => {
   function extractLap(rows, a, b) {
     const lap = rows.slice(a, b + 1), p0 = lap[0].packet_id;
     const out = { lap_ms: rows[b].last_lap_ms, car_code: lap[0].car_code, t: lap.map(r => (r.packet_id - p0) / 60) };
-    LAP_FIELDS.forEach(k => (out[k] = lap.map(r => (Number.isNaN(r[k]) ? 0 : r[k]))));
+    // a field the recording doesn't have at all (steering, in GT7's older data format) stays empty (NaN), not 0
+    LAP_FIELDS.forEach(k => (out[k] = lap.every(r => Number.isNaN(r[k])) ? lap.map(() => NaN) : lap.map(r => (Number.isNaN(r[k]) ? 0 : r[k]))));
     return out;
   }
 
@@ -118,7 +119,7 @@ const Coach = (() => {
   function resample(lap, s, n) {
     const keep = [0];
     for (let i = 1; i < s.length; i++) if (s[i] > s[keep[keep.length - 1]]) keep.push(i);
-    const xs = keep.map(i => s[i]), col = k => keep.map(i => lap[k][i]);
+    const xs = keep.map(i => s[i]), col = k => keep.map(i => (lap[k] ? lap[k][i] : NaN)); // NaN: not recorded
     const cols = { t: col("t"), v: col("speed_kmh"), thr: col("throttle_pct"), brk: col("brake_pct"),
       steer: col("steering_rad"), spin: keep.map(i => (lap.wheel_rl_kmh[i] + lap.wheel_rr_kmh[i]) / 2 - lap.speed_kmh[i]),
       x: col("x"), z: col("z"), ...(lap.gear ? { gear: col("gear") } : {}) };
@@ -205,8 +206,21 @@ const Coach = (() => {
     }
     let maxSteer = 0, spin = 0;
     for (let k = turnIn ?? top; k < z1; k++) maxSteer = Math.max(maxSteer, Math.abs(L.steer[k]));
+    // Turn-in, as drawn (T): where the steering starts to wind on into the corner, at about 10% of this lap's own
+    // peak steering in the section (its own, since controllers and wheels differ). Found from the point where it
+    // passes 30%, walking back while it stays above 10% the same way. None without steering in the recording.
+    let own = 0, turnStart = null;
+    for (let k = z0; k < z1; k++) if (Math.abs(L.steer[k]) > own) own = Math.abs(L.steer[k]);
+    if (own > 0.05) {
+      const k30 = firstFrom(L.steer, top, z1, s => Math.abs(s) > 0.3 * own);
+      if (k30 !== null) {
+        const sign = Math.sign(L.steer[k30]);
+        turnStart = k30;
+        while (turnStart > top && Math.sign(L.steer[turnStart - 1]) === sign && Math.abs(L.steer[turnStart - 1]) > 0.1 * own) turnStart--;
+      }
+    }
     for (let k = apex; k < z1; k++) if (L.thr[k] > 50) spin = Math.max(spin, L.spin[k]);
-    return { top, topSpeed: L.v[top], brakeAt, liftAt, peakBrake, fullBrake, release, turnIn,
+    return { top, topSpeed: L.v[top], brakeAt, liftAt, peakBrake, fullBrake, release, turnIn, turnStart,
       // averaged over the first 15 m of turning: the brake is often being released fast at this point
       brakeAtTurnIn: turnIn === null ? 0 : mean(L.brk.slice(turnIn, Math.min(z1, turnIn + 15))), minAt, minSpeed: L.v[minAt], onGas, fullGas, saw,
       maxSteerDeg: maxSteer * 180 / Math.PI, spin, exitSpeed: L.v[z1 - 1], minThrottle: Math.min(...L.thr.slice(top, apex + 1)) };
@@ -295,6 +309,7 @@ const Coach = (() => {
     const ratios = corners.filter(c => c.ref_m.maxSteerDeg >= 20).map(c => c.me_m.maxSteerDeg / c.ref_m.maxSteerDeg).sort((a, b) => a - b);
     const steerRatio = ratios.length >= 3 ? ratios[Math.floor(ratios.length / 2)] : null;
     return { ...result(corners, steerRatio, R, M, delta, who), lapMs: myLap.lap_ms, refMs: refLap.lap_ms, length: n, ref,
+      otherCar: myLap.car_code !== refLap.car_code,
       recordedGap, gameGap: (myLap.lap_ms - refLap.lap_ms) / 1000 };
   }
 
@@ -495,7 +510,21 @@ const Coach = (() => {
     for (let k = x0; k <= x1 && !braking; k++) braking = R.brk[k] > 5 || M.brk[k] > 5;
     const W = 360, L = 30, Rt = 8, H1 = 62, gap = 18, H2 = 70, H3 = 54, top = 12;
     const kinds = braking ? [["Brake %", "brk", "brake"], ["Throttle %", "thr", "throttle"]] : [["Throttle %", "thr", "throttle"]];
-    const sTop = top + kinds.length * (H1 + gap); // speed, below the pedals
+    // steering, below the pedals: degrees of steering wheel turn, clockwise (right) up; GT7 records right as negative.
+    // Only for laps recorded with it (older recordings and the "A" data format don't have it).
+    const deg = v => (-v * 180) / Math.PI;
+    const has = arr => { for (let k = x0; k <= x1; k++) if (Number.isFinite(arr[k])) return true; return false; };
+    const steerR = has(R.steer), steerM = has(M.steer), steering = steerR || steerM;
+    const stTop = top + kinds.length * (H1 + gap);
+    let dLo = 0, dHi = 0;
+    for (let k = x0; k <= x1; k++) for (const v of [steerR ? R.steer[k] : NaN, steerM ? M.steer[k] : NaN]) {
+      if (Number.isFinite(v)) { dLo = Math.min(dLo, deg(v)); dHi = Math.max(dHi, deg(v)); }
+    }
+    // round out to 30°, ignoring a small swing the other way (under 10°) so the scale stays on the corner's side
+    dLo = dLo < -10 ? Math.floor(dLo / 30) * 30 : 0; dHi = dHi > 10 ? Math.ceil(dHi / 30) * 30 : 0;
+    if (dHi - dLo < 60) { if (dHi > -dLo) dHi = dLo + 60; else dLo = dHi - 60; }
+    const yD = v => stTop + H1 - ((deg(v) - dLo) / (dHi - dLo)) * H1, yDdeg = d => stTop + H1 - ((d - dLo) / (dHi - dLo)) * H1;
+    const sTop = stTop + (steering ? H1 + gap : 0); // speed, below the steering
     const gTop = sTop + H2 + gap, axisY = gTop + H3 + 4, H = axisY + 34;
     const x = k => L + ((k - x0) / (x1 - x0)) * (W - L - Rt);
     const g = [];
@@ -520,6 +549,26 @@ const Coach = (() => {
         <path class="pc-ref" d="${line(R[key], v => yP(t0, v))}"/>
         <path class="pc-me ${cls}" d="${line(M[key], v => yP(t0, v))}"/>`;
     }).join("");
+    // a line with gaps where the recording has no value
+    const gappy = (arr, y) => { let d = "", on = false; for (let k = x0; k <= x1; k++) { if (!Number.isFinite(arr[k])) { on = false; continue; } d += (on ? "L" : "M") + x(k).toFixed(1) + "," + y(arr[k]).toFixed(1); on = true; } return d; };
+    // T marks: a dashed line through the steering strip, labelled underneath (moved apart when the two are close)
+    const tAt = { ref: steerR ? c.ref.turnStart : null, me: steerM ? c.me.turnStart : null };
+    const tMark = (k, who2) => {
+      if (k === null || k < x0 || k > x1) return "";
+      const other = tAt[who2 === "me" ? "ref" : "me"];
+      let lx = x(k);
+      if (other !== null && other >= x0 && other <= x1 && Math.abs(lx - x(other)) < 8) lx += (lx >= x(other) ? 1 : -1) * (who2 === "me" ? 4 : 4);
+      return `<g class="pc-t ${who2}"><line x1="${x(k).toFixed(1)}" x2="${x(k).toFixed(1)}" y1="${stTop}" y2="${stTop + H1}"/>
+        <text x="${lx.toFixed(1)}" y="${(stTop + H1 + 9).toFixed(1)}" text-anchor="middle">T</text></g>`;
+    };
+    const dTicks = [[dHi, `${dHi}°`], [dLo, `${dLo}°`.replace("-", "−")]];
+    if (dHi > 0 && dLo < 0 && yDdeg(0) - yDdeg(dHi) > 10 && yDdeg(dLo) - yDdeg(0) > 10) dTicks.push([0, "0"]);
+    const steer = !steering ? "" : `<text class="pc-title" x="${L}" y="${stTop - 4}">Steering °, clockwise up${steerR ? "" : ` (${who}'s recording has none)`}${steerM ? "" : " (your recording has none)"}</text>
+        <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yDdeg(0)}" y2="${yDdeg(0)}"/>
+        ${dTicks.map(([v, t]) => `<text class="pc-tick" x="${L - 4}" y="${yDdeg(v) + 3}" text-anchor="end">${t}</text>`).join("")}
+        ${steerR ? `<path class="pc-ref" d="${gappy(R.steer, yD)}"/>` : ""}
+        ${steerM ? `<path class="pc-me steer" d="${gappy(M.steer, yD)}"/>` : ""}
+        ${tMark(tAt.ref, "ref")}${tMark(tAt.me, "me")}`;
     const speed = `<text class="pc-title" x="${L}" y="${sTop - 4}">Speed km/h</text>
         <line class="pc-grid" x1="${L}" x2="${W - Rt}" y1="${yS(vHi)}" y2="${yS(vHi)}"/>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yS(vLo)}" y2="${yS(vLo)}"/>
@@ -546,8 +595,8 @@ const Coach = (() => {
     const gTicks = [[0, "0"], [gHi, gHi.toFixed(2)]];
     if (yG(gLo) - yG(0) > 10) gTicks.push([gLo, gLo.toFixed(2).replace("-", "−")]); // only when clear of the 0
     return `<figure class="pedal-chart">
-      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${braking ? "Brake, throttle" : "Throttle"}, speed and time gap through corner ${c.n}, you against ${who}">
-        ${bands}${strips}${speed}
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${braking ? "Brake, throttle" : "Throttle"}, ${steering ? "steering, " : ""}speed and time gap through corner ${c.n}, you against ${who}">
+        ${bands}${strips}${steer}${speed}
         <text class="pc-title" x="${L}" y="${gTop - 4}">Time gap: <tspan class="pc-gapval">${secs(g[g.length - 1])}</tspan> over this stretch</text>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yG(0)}" y2="${yG(0)}"/>
         ${gTicks.map(([v, t]) => `<text class="pc-tick" x="${L - 4}" y="${yG(v) + 3}" text-anchor="end">${t}</text>`).join("")}
@@ -557,6 +606,8 @@ const Coach = (() => {
       <figcaption class="pc-legend"><span><i class="k-me"></i>You</span><span><i class="k-ref"></i>${who}</span>
         <span>metres from ${anchorName === "apex" ? "the apex (no braking here)" : `where ${who} starts braking`}</span>
         ${c.lifts.length ? `<span><i class="k-lift"></i>extra lift or braking</span>` : ""}
+        ${steering ? `<span>T: turn-in</span>` : ""}
+        ${steering && result.otherCar ? `<span>Steering: another car than ${who}'s, and cars have different steering lock</span>` : ""}
         ${braking ? "" : ""}</figcaption>
     </figure>`;
   }
@@ -695,7 +746,7 @@ const Coach = (() => {
   // Close-up 2: the corner drawn to scale, the same way round as the lap map. The reference's line is thin and plain; yours is a
   // dot every 3 m or more (so they don't overlap on long corners) showing how your pedals differ from the reference's at that point: the brake wherever either of you
   // is braking, the throttle everywhere else. Filled = more than the reference, ring = less, size = how much.
-  // Letter badges mark the first brake (B), back on the gas (G) and full throttle (F) on both lines.
+  // Letter badges mark the first brake (B), turn-in (T), back on the gas (G) and full throttle (F) on both lines.
   const DOT_STEP = 3, SAME = 10; // points of pedal travel that count as the same
   const dotSize = d => (d < 30 ? 2.2 : d < 60 ? 3.3 : 4.6);
   function pedalDiff(R, M, k) {
@@ -705,7 +756,7 @@ const Coach = (() => {
   function cornerLines(result, c, label) {
     const who = label === "Reference" ? "the reference" : label; // a license test's gold run reads as a name otherwise
     const { R, M } = result.grid, n = R.x.length;
-    const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
+    const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn, c.ref.turnStart, c.me.turnStart].filter(k => k !== null);
     let a = Math.max(0, Math.min(...starts) - 15), b = Math.min(n - 1, c.line.exit + 25);
     if (b - a > 450) a = Math.max(0, b - 450);
     const xs = [], zs = [];
@@ -733,7 +784,7 @@ const Coach = (() => {
       return `<g class="cl-badge ${who2}"><line x1="${px.toFixed(1)}" y1="${py.toFixed(1)}" x2="${bx.toFixed(1)}" y2="${by.toFixed(1)}"/>
         <circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="6"/><text x="${bx.toFixed(1)}" y="${(by + 3).toFixed(1)}">${letter}</text></g>`;
     };
-    const badges = (L, m, who2, side) => badge(L, m.brakeAt, "B", who2, side) + badge(L, m.onGas, "G", who2, side) + badge(L, m.fullGas, "F", who2, side);
+    const badges = (L, m, who2, side) => badge(L, m.brakeAt, "B", who2, side) + badge(L, m.turnStart, "T", who2, side) + badge(L, m.onGas, "G", who2, side) + badge(L, m.fullGas, "F", who2, side);
     // direction arrow at the start, scale bar in the bottom corner
     const k2 = Math.min(b, a + 8), ang = (Math.atan2(R.z[k2] - R.z[a], R.x[k2] - R.x[a]) * 180) / Math.PI;
     const ten = 10 * scale, sy = H - 8;
@@ -754,6 +805,7 @@ const Coach = (() => {
       </div>
       <div class="cl-legend">
         <span><b class="cl-key-badge me">B</b><b class="cl-key-badge ref">B</b>first brake</span>
+        ${c.ref.turnStart !== null || c.me.turnStart !== null ? `<span><b class="cl-key-badge me">T</b><b class="cl-key-badge ref">T</b>turn-in</span>` : ""}
         <span><b class="cl-key-badge me">G</b><b class="cl-key-badge ref">G</b>back on the gas</span>
         <span><b class="cl-key-badge me">F</b><b class="cl-key-badge ref">F</b>full throttle</span>
         <span><b class="cl-key-badge me"></b>you, <b class="cl-key-badge ref"></b>${who}</span>

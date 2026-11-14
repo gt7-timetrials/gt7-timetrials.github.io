@@ -45,6 +45,8 @@ def fastest_lap(rows):
     out = {"lap_ms": int(rows[b]["last_lap_ms"]), "car_code": int(lap[0]["car_code"]),
            "t": [round((int(r["packet_id"]) - p0) / 60, 3) for r in lap]}
     for k, digits in FIELDS.items():
+        if all(r.get(k, "") == "" for r in lap):  # not recorded: steering needs GT7's newer data format ("B")
+            continue
         out[k] = [round(float(r[k]), digits) if r[k] != "" else 0 for r in lap]
         if digits == 0:
             out[k] = [int(v) for v in out[k]]
