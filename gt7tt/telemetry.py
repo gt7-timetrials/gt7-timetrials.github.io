@@ -11,7 +11,7 @@ import json
 import os
 
 FIELDS = {"x": 2, "z": 2, "speed_kmh": 1, "throttle_pct": 0, "brake_pct": 0, "steering_rad": 3,
-          "wheel_rl_kmh": 1, "wheel_rr_kmh": 1, "gear": 0}
+          "wheel_rl_kmh": 1, "wheel_rr_kmh": 1, "gear": 0, "wheel_fl_kmh": 1, "wheel_fr_kmh": 1, "tcs_active": 0}
 
 
 def load_json(path):
@@ -45,6 +45,8 @@ def fastest_lap(rows):
     out = {"lap_ms": int(rows[b]["last_lap_ms"]), "car_code": int(lap[0]["car_code"]),
            "t": [round((int(r["packet_id"]) - p0) / 60, 3) for r in lap]}
     for k, digits in FIELDS.items():
+        if all(r.get(k, "") == "" for r in lap):  # not recorded: steering needs GT7's newer data format ("B")
+            continue
         out[k] = [round(float(r[k]), digits) if r[k] != "" else 0 for r in lap]
         if digits == 0:
             out[k] = [int(v) for v in out[k]]

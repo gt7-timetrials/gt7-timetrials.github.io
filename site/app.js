@@ -508,8 +508,8 @@ const GUIDE_STEPS = `<ol>
     <li><b>The top line</b> is your lap against the reference, and the total time between them.</li>
     <li><b>The map</b> colours each section by how much slower you are there than the reference: green is close, yellow
       and red are where the time goes. Start with the red ones.</li>
-    <li><b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line and pedals
-      drawn against the reference's.</li>
+    <li><b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and
+      steering drawn against the reference's.</li>
     <li><b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see
       the same corner on each. With 3 or more laps, <b>Across your laps</b> shows where you lose most on average and
       where you're least consistent.</li>

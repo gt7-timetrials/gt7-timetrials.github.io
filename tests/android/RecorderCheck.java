@@ -31,6 +31,10 @@ public final class RecorderCheck {
             }
             return;
         }
+        if (args[0].equals("slowstart")) {
+            slowStart(Files.readAllLines(Paths.get(args[1])));
+            return;
+        }
         if (args[0].equals("find")) {
             find(args[1].equals("discover"), Files.readAllLines(Paths.get(args[2])));
             return;
@@ -115,8 +119,55 @@ public final class RecorderCheck {
         throw new IllegalArgumentException(name);
     }
 
-    /** A GT7 packet ("B" format) carrying the recording's values, encrypted the way the console does it. */
+    /**
+     * GT7 slow to start: a fake console at 127.0.0.1 that ignores "B" heartbeats until it has had an "A" one, then
+     * sends the format of the latest heartbeat. The recorder falls back to "A", asks for "B" again and records with
+     * the steering angle. Prints the recording's last row.
+     */
+    private static void slowStart(List<String> rows) throws Exception {
+        DatagramSocket console = new DatagramSocket(new InetSocketAddress("127.0.0.1", Telemetry.SEND_PORT));
+        console.setSoTimeout(5);
+        Recorder rec = new Recorder(json -> { }, "127.0.0.1");
+        Thread t = new Thread(rec);
+        t.start();
+        String[] head = rows.get(0).split(",", -1);
+        InetSocketAddress to = new InetSocketAddress("127.0.0.1", Telemetry.RECV_PORT);
+        boolean seenA = false;
+        char mode = 0;
+        int sentB = 0;
+        long end = System.currentTimeMillis() + 20000;
+        for (int i = 1; sentB < 200 && System.currentTimeMillis() < end; ) {
+            DatagramPacket beat = new DatagramPacket(new byte[16], 16);
+            try {
+                console.receive(beat);
+                char f = (char) beat.getData()[0];
+                if (f == 'A') { seenA = true; mode = 'A'; }
+                else if (f == 'B' && seenA) mode = 'B';
+            } catch (java.net.SocketTimeoutException e) {
+                // no heartbeat just now
+            }
+            if (mode == 0) continue;
+            byte[] enc = packet(head, rows.get(i).split(",", -1), i, mode);
+            console.send(new DatagramPacket(enc, enc.length, to));
+            if (mode == 'B') sentB++;
+            i++;
+        }
+        Thread.sleep(300);
+        rec.stop();
+        t.join();
+        console.close();
+        String[] lines = rec.csv().split("\n");
+        System.out.println(lines[0]);
+        System.out.println(lines[lines.length - 1]);
+    }
+
     private static byte[] packet(String[] h, String[] r, int iv) throws IOException {
+        return packet(h, r, iv, 'B');
+    }
+
+    /** A GT7 packet in format "B" (or "A", without the steering angle) carrying the recording's values, encrypted the way the console does it. */
+    private static byte[] packet(String[] h, String[] r, int iv, char format) throws IOException {
+        int length = format == 'B' ? Telemetry.LENGTH_B : Telemetry.LENGTH_A;
         ByteBuffer p = ByteBuffer.allocate(Telemetry.LENGTH_B).order(ByteOrder.LITTLE_ENDIAN);
         p.putInt(0, Telemetry.MAGIC);
         p.putFloat(0x04, (float) col(h, r, "x")).putFloat(0x08, (float) col(h, r, "y")).putFloat(0x0C, (float) col(h, r, "z"));
@@ -128,8 +179,8 @@ public final class RecorderCheck {
         p.putFloat(0x128, (float) col(h, r, "steering_rad"));
         p.putFloat(0xB4 + 8, 0.3f).putFloat(0xB4 + 12, 0.3f);
         p.putFloat(0xA4 + 8, (float) (col(h, r, "wheel_rl_kmh") / 3.6 / 0.3)).putFloat(0xA4 + 12, (float) (col(h, r, "wheel_rr_kmh") / 3.6 / 0.3));
-        byte[] nonce = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putInt(iv ^ 0xDEADBEEF).putInt(iv).array();
-        byte[] enc = Telemetry.salsa20(nonce, p.array(), Telemetry.LENGTH_B);
+        byte[] nonce = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putInt(iv ^ Telemetry.nonceXor(format)).putInt(iv).array();
+        byte[] enc = Telemetry.salsa20(nonce, java.util.Arrays.copyOf(p.array(), length), length);
         ByteBuffer.wrap(enc).order(ByteOrder.LITTLE_ENDIAN).putInt(0x40, iv); // the console sends the IV in the clear
         return enc;
     }

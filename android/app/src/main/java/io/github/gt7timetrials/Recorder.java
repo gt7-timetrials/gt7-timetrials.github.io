@@ -257,6 +257,29 @@ final class Recorder implements Runnable {
             }
         }
         if (!running) return;
+        // "A" has no steering angle. Usually GT7 was only slow to answer "B" (loading, or busy with a replay): ask for
+        // "B" again for a few seconds, and keep "A" if it doesn't come
+        if (format == 'A') {
+            long until = System.currentTimeMillis() + 4000, lastAsk = 0;
+            while (running && System.currentTimeMillis() < until) {
+                if (System.currentTimeMillis() - lastAsk > 1000) {
+                    send(sock, 'B', ip);
+                    lastAsk = System.currentTimeMillis();
+                }
+                try {
+                    sock.receive(dp);
+                } catch (SocketTimeoutException | PortUnreachableException e) {
+                    continue;
+                }
+                if (dp.getAddress().getHostAddress().equals(ip)
+                        && Telemetry.decrypt(buf, dp.getLength(), Telemetry.nonceXor('B')) != null) {
+                    format = 'B';
+                    break;
+                }
+            }
+            if (format == 'A') send(sock, 'A', ip);
+        }
+        if (!running) return;
         emit("connected", "\"ip\":" + q(ip));
 
         long t0 = System.currentTimeMillis(), lastBeat = t0, lastPacket = t0, lastWarn = 0;

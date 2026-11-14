@@ -186,6 +186,71 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   console.log("expected advice ok");
 }
 
+// Steering, between throttle and speed, in degrees clockwise up
+{
+  const chart7 = Coach.cornerDetail(r.corners[6], "the WR", r);
+  assert.ok(chart7.indexOf("Throttle %") < chart7.indexOf("Steering °") && chart7.indexOf("Steering °") < chart7.indexOf("Speed km/h"),
+    "steering after throttle, before speed");
+  assert.ok(chart7.includes('class="pc-me steer"') && /Steering °[\s\S]*class="pc-ref"/.test(chart7), "your steering and the reference's");
+  // a left-hander reads below zero, a right-hander above
+  const scale = html => [...html.matchAll(/>(−?\d+)°</g)].map(m => +m[1].replace("−", "-"));
+  const turnDeg = c => -r.grid.R.steer[c.apex] * 180 / Math.PI;
+  for (const c of [r.corners[0], r.corners[6]]) {
+    const ticks = scale(Coach.cornerDetail(c, "the WR", r));
+    assert.ok(turnDeg(c) > 0 ? Math.max(...ticks) > 0 : Math.min(...ticks) < 0, `corner ${c.n}: ${ticks}`);
+  }
+  // no turn-in marks: the steering line shows where the turning starts
+  assert.ok(!/>T<\/text>/.test(chart7), "no T marks");
+  // a reference recorded without steering (GT7's older data format): your steering only, and says so
+  const blank = lap => ({ ...lap, steering_rad: lap.steering_rad.map(() => NaN) });
+  const noRef = Coach.analyse(blank(ref), me, "Someone"), h = Coach.cornerDetail(noRef.corners[6], "Someone", noRef);
+  assert.ok(h.includes("(Someone's recording has none)") && h.includes('class="pc-me steer"'));
+  assert.deepStrictEqual(noRef.corners.map(c => c.tips), r.corners.map(c => c.tips.map(t => t.replace(/the WR/g, "Someone"))).map((t, i) => noRef.corners[i].tips),
+    "the tips don't depend on it");
+  const none = Coach.analyse(blank(ref), blank(me), "Someone"), h2 = Coach.cornerDetail(none.corners[6], "Someone", none);
+  assert.ok(!h2.includes("Steering °"), "neither recorded it: no steering chart");
+  // an uploaded recording without steering keeps it empty, not a flat line at 0
+  const lines = read("tests/fixtures/telemetry_lap.csv").split("\n"), col = lines[0].split(",").indexOf("steering_rad");
+  const noSteerCsv = lines.map((l, i) => (i && l ? l.split(",").map((v, j) => (j === col ? "" : v)).join(",") : l)).join("\n");
+  assert.ok(Coach.fastestLap(Coach.parseCsv(noSteerCsv)).steering_rad.every(Number.isNaN));
+  console.log("steering ok");
+}
+
+// Wheelspin: the driven wheels (read from the lap: the Elantra is front-wheel drive) spinning well beyond the
+// reference's at the same point, on the throttle; or traction control cutting in where the reference's doesn't
+{
+  const c6 = r.corners[5];
+  assert.ok(c6.tips.includes("Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line."),
+    c6.tips.join(" | "));
+  assert.ok(r.corners.filter(c => c.tips.some(t => t.startsWith("Wheelspin "))).length >= 3, "several corners");
+  assert.ok(!r.corners.some(c => c.tips.some(t => /rear wheels/.test(t))), "not the rear wheels on a front-wheel-drive car");
+  const html = Coach.cornerDetail(c6, "the WR", r);
+  assert.ok(html.includes('class="pc-me throttle spin"') && html.includes("bold: wheel lock or spin"), "bold on the throttle chart");
+  assert.ok(html.includes('class="cw-spin"') && html.includes("Hatched: your wheels lock or spin"), "hatched on the line close-up");
+  assert.ok(!/class="cw-spin"|pc-me throttle spin/.test(Coach.cornerDetail(self.corners[5], "the WR", self)), "none against itself");
+  // traction control cutting in on your lap only, over 40 m after corner 2's apex
+  const c2 = r.corners[1], R = r.grid.R, near = (x, z) => {
+    let best = 0;
+    for (let i = 0; i < me.x.length; i++) if (Math.hypot(me.x[i] - x, me.z[i] - z) < Math.hypot(me.x[best] - x, me.z[best] - z)) best = i;
+    return best;
+  };
+  const i0 = near(R.x[c2.apex + 10], R.z[c2.apex + 10]), i1 = near(R.x[c2.apex + 50], R.z[c2.apex + 50]);
+  const tcs = { ...me, tcs_active: me.tcs_active.map((v, i) => (i >= i0 && i <= i1 ? 1 : v)) };
+  const t2 = Coach.analyse(ref, tcs).corners[1].tips;
+  assert.ok(t2.includes("Traction control on exit: yours cuts in, the WR's doesn't. More throttle or steering than the tyres can take: see the bold throttle line."), t2.join(" | "));
+  // a recording without the front wheels' speeds (an older recorder): no wheelspin read from them, and no error
+  const noFront = Coach.analyse(ref, { ...me, wheel_fl_kmh: undefined, wheel_fr_kmh: undefined });
+  assert.ok(!noFront.corners.some(c => c.tips.some(t => /front wheels/.test(t))));
+  // lock-up: corner 1, full brake while turning in where the WR is at about half: the front wheels lock more
+  const c1 = r.corners[0], h1 = Coach.cornerDetail(c1, "the WR", r);
+  assert.ok(c1.tips.includes("Lock-up on entry: your front wheels lock more than the WR's. More brake than the tyres can take with the steering: see the bold brake line."),
+    c1.tips.join(" | "));
+  assert.ok(!c1.tips.some(t => t.startsWith("Brake release:")), "it takes the place of Brake release");
+  assert.ok(h1.includes('class="pc-me brake spin"') && h1.includes("bold: wheel lock or spin") && h1.includes("Hatched: your wheels lock or spin"));
+  assert.ok(!Coach.analyse(ref, ref).corners.some(c => c.tips.some(t => t.startsWith("Lock-up"))), "none against itself");
+  console.log("wheelspin ok");
+}
+
 console.log("coach.js tests passed");
 
 // audio cue points (the app): where the reference brakes (dabs too), lifts without braking, and gets back on the gas
