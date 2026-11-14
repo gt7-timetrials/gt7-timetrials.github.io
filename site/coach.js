@@ -347,7 +347,7 @@ const Coach = (() => {
   function result(corners, steerRatio, R, M, delta, who) {
     const lifts = extraLifts(corners, R, M, delta), spin = wheelspin(R, M);
     return { grid: { R, M, delta, spinM: spin.me, spinR: spin.ref }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, share, approachLost, cornerLost, ref_m, me_m }, i) => {
-      me_m.wheelspin = spinTip(spin, R, M, z0, z1, apex, who, steerRatio);
+      me_m.wheelspin = spinTip(spin, R, M, z0, z1, apex, who);
       let t = tips(me_m, ref_m, lost, who, steerRatio);
       const line = lineUse(R, M, z0, z1, apex, ref_m), lt = lineTip(line, who);
       if (lt) t.push(lt);
@@ -414,31 +414,20 @@ const Coach = (() => {
     const m = cleanRuns(me);
     return { me: m.flags, runs: m.runs, ref: cleanRuns(ref).flags, why, axle, axleR };
   }
-  // The tip for a section with SPIN_MIN metres or more of wheelspin: how much in all, from where, and at its worst
-  function spinTip(spin, R, M, z0, z1, apex, who, steerRatio) {
+  // The tip for a section with SPIN_MIN metres or more of wheelspin: short, since the charts show it
+  function spinTip(spin, R, M, z0, z1, apex, who) {
     const runs = spin.runs.map(([a, b]) => [Math.max(a, z0), Math.min(b, z1)]).filter(([a, b]) => b > a);
     const total = runs.reduce((t, [a, b]) => t + b - a, 0);
     if (total < SPIN_MIN) return null;
-    const a = runs[0][0];
-    const where = a >= apex ? (a - apex <= 5 ? "from the apex" : `from ${a - apex} m after the apex`) : `from ${apex - a} m before the apex`;
-    let bySlip = 0, top = a, thr = 0;
-    for (const [from, to] of runs) for (let k = from; k < to; k++) {
-      if (spin.why[k] === 1) bySlip++;
-      if (slipOf(M, spin.axle, k) > slipOf(M, spin.axle, top)) top = k;
-      thr += M.thr[k];
-    }
-    const deg = v => Math.abs((v * 180) / Math.PI);
-    const sM = deg(M.steer[top]), sR = deg(R.steer[top]);
-    // steering angles depend on the controller or wheel: only when well beyond this driver's usual ratio to the reference
-    const moreLock = Number.isFinite(sM) && Number.isFinite(sR) && sR >= 10 && sM / sR >= 1.2 * (steerRatio || 1);
-    const steering = moreLock ? `, with ${r0(sM)}° of steering against ${r0(sR)}°` : "";
-    const cure = moreLock ? "squeeze it on as you unwind the steering" : "squeeze it on more gradually";
-    const metres = runs.length > 1 ? `${total} m in all` : `${total} m`;
+    const a = runs[0][0], where = a >= apex - 10 ? "on exit" : "before the apex";
+    let bySlip = 0;
+    for (const [from, to] of runs) for (let k = from; k < to; k++) if (spin.why[k] === 1) bySlip++;
+    const why = "More throttle or steering than the tyres can take: see the bold throttle line.";
     if (bySlip >= total / 2) {
       const wheels = spin.axle === "front" ? "front wheels" : spin.axle === "rear" ? "rear wheels" : "wheels";
-      return `Wheelspin: your ${wheels} spin for ${metres} ${where}, up to ${r0(slipOf(M, spin.axle, top))}% faster than the car, where ${who}'s reach ${r0(Math.max(0, slipOf(R, spin.axleR, top)))}%${steering}. That's more throttle than the tyres can take there: ${cure}.`;
+      return `Wheelspin ${where}: your ${wheels} spin more than ${who}'s. ${why}`;
     }
-    return `Traction control: it cuts in for ${metres} ${where}, at ${r0(thr / total)}% throttle, taking power away; ${who}'s doesn't here. That's more throttle than the tyres can take there: ${cure}.`;
+    return `Traction control ${where}: yours cuts in, ${who}'s doesn't. ${why}`;
   }
 
   function extraLifts(corners, R, M, delta) {
@@ -681,7 +670,7 @@ const Coach = (() => {
   }
 
   // Close-up 1: the corner drawn to scale with both racing lines, the same way round as the lap map. Line thickness shows
-  // the pedals: brake pressure wherever braking, throttle everywhere else
+  // the pedals: brake pressure from the braking point until the throttle is pressed again, throttle everywhere else
   // (thin = none, full thickness = 100%).
   // Across a recording's clean laps (3 or more): where the time goes on average, where it varies most from lap to
   // lap, and the "ideal lap" from each section's best time. Sections are the reference's, so they line up.
@@ -770,7 +759,14 @@ const Coach = (() => {
     const w = Math.round((maxX - minX) * scale), H = Math.round((maxZ - minZ) * scale) + 22;
     const X = x => ((x - minX) * scale).toFixed(1), Y = z => ((z - minZ) * scale).toFixed(1);
     const THIN = 1, FULL = 5.5;
-    const pedal = (L, m, k) => (L.brk[k] > 5 ? L.brk[k] : L.thr[k]); // whichever pedal is pressed at that point
+    // the brake from the braking point until the throttle is first pressed again (20%), the throttle before and after:
+    // one switch each way, so a brake-and-throttle overlap doesn't flicker between the two
+    const backOn = m => (m.brakeAt === null ? null : firstFrom(m === c.me ? M.thr : R.thr, m.brakeAt, n, t => t >= 20) ?? n);
+    const onR = backOn(c.ref), onM = backOn(c.me);
+    const pedal = (L, m, k) => {
+      const on = m === c.me ? onM : onR;
+      return m.brakeAt !== null && k >= m.brakeAt && k < on ? L.brk[k] : L.thr[k];
+    };
     // hatched where your wheels spin or traction control cuts in (see wheelspin)
     const spinM = result.grid.spinM;
     let hatched = false;
@@ -811,8 +807,8 @@ const Coach = (() => {
           ${shows("brakeAt") ? `<td><i class="k-dot brake ${k}"></i></td>` : ""}${shows("minAt") ? `<td><i class="k-dot slow ${k}"></i></td>` : ""}
           ${shows("fullGas") ? `<td><i class="k-dot gas ${k}"></i></td>` : ""}</tr>`).join("")}</tbody>
       </table>
-      <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: the pedal being pressed, the brake
-        wherever braking and the throttle everywhere else (thin = none, full = 100%).${hatched
+      <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: the brake from the braking point
+        until the throttle is pressed again, the throttle everywhere else (thin = none, full = 100%).${hatched
           ? " Hatched: your wheels spin, or traction control cuts in, more than the reference's." : ""}</p>
     </figure>`;
   }

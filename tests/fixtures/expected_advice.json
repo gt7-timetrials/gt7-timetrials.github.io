@@ -32,7 +32,7 @@
         "Braking point: you brake 11 m earlier than the WR.",
         "Minimum speed: 92 km/h vs 103 km/h. You're slowing the car more than you need to.",
         "Throttle: you get back on the throttle 10 m later than the WR.",
-        "Wheelspin: your front wheels spin for 15 m from 13 m after the apex, up to 17% faster than the car, where the WR's reach 8%. That's more throttle than the tyres can take there: squeeze it on more gradually.",
+        "Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line.",
         "Track use: on exit you run 1.8 m wider than the WR."
       ]
     },
@@ -45,7 +45,7 @@
         "Braking point: you brake 11 m earlier than the WR.",
         "Throttle: you get back on the throttle 10 m later than the WR.",
         "Full throttle: you reach full throttle 15 m later than the WR.",
-        "Wheelspin: your front wheels spin for 17 m from 23 m after the apex, up to 21% faster than the car, where the WR's reach 10%. That's more throttle than the tyres can take there: squeeze it on more gradually."
+        "Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line."
       ]
     },
     {
@@ -55,7 +55,7 @@
       "tips": [
         "Braking point: you brake 12 m earlier than the WR.",
         "Minimum speed: 107 km/h vs 113 km/h. You're slowing the car more than you need to.",
-        "Wheelspin: your front wheels spin for 13 m from 11 m before the apex, up to 13% faster than the car, where the WR's reach 3%. That's more throttle than the tyres can take there: squeeze it on more gradually."
+        "Wheelspin before the apex: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line."
       ]
     },
     {
@@ -67,7 +67,7 @@
         "Minimum speed: 141 km/h vs 146 km/h. You're slowing the car more than you need to.",
         "Throttle: you get back on the throttle 10 m later than the WR.",
         "Steering: here you use 60% more steering lock than you do elsewhere on the lap, compared with the WR. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle.",
-        "Wheelspin: your front wheels spin for 39 m from 24 m after the apex, up to 13% faster than the car, where the WR's reach 6%, with 147° of steering against 58°. That's more throttle than the tyres can take there: squeeze it on as you unwind the steering."
+        "Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line."
       ]
     },
     {
@@ -91,7 +91,7 @@
         "Where the time goes: +0.18 s in the corner, +0.16 s on the 389 m straight after it.",
         "Braking point: you brake 23 m earlier than the WR.",
         "Minimum speed: 90 km/h vs 94 km/h. You're slowing the car more than you need to.",
-        "Wheelspin: your front wheels spin for 57 m in all from 20 m before the apex, up to 20% faster than the car, where the WR's reach 4%. That's more throttle than the tyres can take there: squeeze it on more gradually."
+        "Wheelspin before the apex: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line."
       ]
     },
     {
