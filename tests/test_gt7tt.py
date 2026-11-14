@@ -654,7 +654,9 @@ class TelemetryTest(unittest.TestCase):
         # GT7's older data format has no steering angle: the lap has no steering field (not zeros, which would
         # draw a flat line on the website's steering chart)
         rows = telemetry.read_csv(self.REF)
-        self.assertIn("steering_rad", telemetry.fastest_lap(rows))
+        lap = telemetry.fastest_lap(rows)
+        for k in ("steering_rad", "wheel_fl_kmh", "wheel_fr_kmh", "wheel_rl_kmh", "wheel_rr_kmh", "tcs_active"):
+            self.assertIn(k, lap)  # the website's wheelspin reads all four wheels and traction control
         blank = [{**r, "steering_rad": ""} for r in rows]
         lap = telemetry.fastest_lap(blank)
         self.assertNotIn("steering_rad", lap)

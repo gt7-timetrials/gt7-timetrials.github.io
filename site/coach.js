@@ -7,7 +7,8 @@
 // 4. For each corner compare braking, trail braking, minimum speed, throttle and steering.
 
 const Coach = (() => {
-  const LAP_FIELDS = ["x", "z", "speed_kmh", "throttle_pct", "brake_pct", "steering_rad", "wheel_rl_kmh", "wheel_rr_kmh", "gear"];
+  const LAP_FIELDS = ["x", "z", "speed_kmh", "throttle_pct", "brake_pct", "steering_rad", "wheel_rl_kmh", "wheel_rr_kmh", "gear",
+    "wheel_fl_kmh", "wheel_fr_kmh", "tcs_active"];
   // a section's colour: time lost as a share of the reference's time through it (within 3%, like gold in a time
   // trial; within 5%, like silver; more). Under 0.1 s stays green, so a short section can't go red on a small slip.
   const COLOURS = [[0.03, "good"], [0.05, "warn"], [Infinity, "bad"]];
@@ -115,13 +116,17 @@ const Coach = (() => {
     return { s, off };
   }
 
-  // Every metre: time, speed, throttle (ignoring downshift blips while braking), brake, steering, rear wheelspin.
+  // Every metre: time, speed, throttle (ignoring downshift blips while braking), brake, steering, wheel slip (how much
+  // faster the front and the rear wheels turn than the car moves, %), and traction control cutting in (0 to 1).
   function resample(lap, s, n) {
     const keep = [0];
     for (let i = 1; i < s.length; i++) if (s[i] > s[keep[keep.length - 1]]) keep.push(i);
     const xs = keep.map(i => s[i]), col = k => keep.map(i => (lap[k] ? lap[k][i] : NaN)); // NaN: not recorded
     const cols = { t: col("t"), v: col("speed_kmh"), thr: col("throttle_pct"), brk: col("brake_pct"),
-      steer: col("steering_rad"), spin: keep.map(i => (lap.wheel_rl_kmh[i] + lap.wheel_rr_kmh[i]) / 2 - lap.speed_kmh[i]),
+      steer: col("steering_rad"),
+      slipF: keep.map(i => (lap.wheel_fl_kmh ? (100 * ((lap.wheel_fl_kmh[i] + lap.wheel_fr_kmh[i]) / 2 - lap.speed_kmh[i])) / Math.max(30, lap.speed_kmh[i]) : NaN)),
+      slipR: keep.map(i => (100 * ((lap.wheel_rl_kmh[i] + lap.wheel_rr_kmh[i]) / 2 - lap.speed_kmh[i])) / Math.max(30, lap.speed_kmh[i])),
+      tcs: col("tcs_active"),
       x: col("x"), z: col("z"), ...(lap.gear ? { gear: col("gear") } : {}) };
     const g = {};
     for (const k in cols) g[k] = Array.from({ length: n }, (_, m) => interp(xs, cols[k], m));
@@ -204,12 +209,12 @@ const Coach = (() => {
       let peak = 0;
       for (let k = onGas; k < (fullGas ?? z1); k++) { if (L.thr[k] < peak - 25) { saw++; peak = L.thr[k]; } peak = Math.max(peak, L.thr[k]); }
     }
-    let maxSteer = 0, spin = 0;
+    let maxSteer = 0;
     for (let k = turnIn ?? top; k < z1; k++) maxSteer = Math.max(maxSteer, Math.abs(L.steer[k]));
     return { top, topSpeed: L.v[top], brakeAt, liftAt, peakBrake, fullBrake, release, turnIn,
       // averaged over the first 15 m of turning: the brake is often being released fast at this point
       brakeAtTurnIn: turnIn === null ? 0 : mean(L.brk.slice(turnIn, Math.min(z1, turnIn + 15))), minAt, minSpeed: L.v[minAt], onGas, fullGas, saw,
-      maxSteerDeg: maxSteer * 180 / Math.PI, spin, exitSpeed: L.v[z1 - 1], minThrottle: Math.min(...L.thr.slice(top, apex + 1)) };
+      maxSteerDeg: maxSteer * 180 / Math.PI, exitSpeed: L.v[z1 - 1], minThrottle: Math.min(...L.thr.slice(top, apex + 1)) };
   }
 
   const r0 = v => Math.round(v);
@@ -249,7 +254,7 @@ const Coach = (() => {
     if (steerRatio && ref.maxSteerDeg >= 20 && me.maxSteerDeg / ref.maxSteerDeg >= 1.3 * steerRatio) {
       out.push(`Steering: here you use ${Math.round(100 * (me.maxSteerDeg / ref.maxSteerDeg / steerRatio - 1))}% more steering lock than you do elsewhere on the lap, compared with ${who}. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle.`);
     }
-    if (me.spin >= 8 && me.spin >= ref.spin + 5) out.push(`Wheelspin: your rear wheels turn up to ${r0(me.spin)} km/h faster than the car on exit. That's too much throttle too early.`);
+    if (me.wheelspin) out.push(me.wheelspin);
     if (me.exitSpeed <= ref.exitSpeed - 4 && lost > 0) out.push(`Exit: you leave the corner at ${r0(me.exitSpeed)} km/h vs ${r0(ref.exitSpeed)} km/h, and that costs time all the way down the straight after it.`);
     if (!out.length) out.push(lost < 0.1 ? `Close to ${who} here.` : "No single big difference: small losses through the whole section.");
     return out;
@@ -340,8 +345,9 @@ const Coach = (() => {
 
   const FASTER = 0.05; // s: a section this much quicker than the reference, or closer than this to it, gets no advice
   function result(corners, steerRatio, R, M, delta, who) {
-    const lifts = extraLifts(corners, R, M, delta);
-    return { grid: { R, M, delta }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, share, approachLost, cornerLost, ref_m, me_m }, i) => {
+    const lifts = extraLifts(corners, R, M, delta), spin = wheelspin(R, M);
+    return { grid: { R, M, delta, spinM: spin.me, spinR: spin.ref }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, share, approachLost, cornerLost, ref_m, me_m }, i) => {
+      me_m.wheelspin = spinTip(spin, R, M, z0, z1, apex, who, steerRatio);
       let t = tips(me_m, ref_m, lost, who, steerRatio);
       const line = lineUse(R, M, z0, z1, apex, ref_m), lt = lineTip(line, who);
       if (lt) t.push(lt);
@@ -368,6 +374,73 @@ const Coach = (() => {
   // part of each corner, you're on the brake, or below 90% throttle and 20 points under the reference, for 10 m
   // or more. Stretches that run straight into or out of that part are early braking or a late exit, which the
   // corner's own tips already cover. Only stretches costing 0.03 s or more are kept.
+  // Wheelspin: the driven wheels turning clearly faster than the car is moving. Which wheels are driven is read from
+  // each lap (under power the driven pair slips a little; the others roll at the car's speed), so it works for front,
+  // rear and four-wheel drive. Some slip is normal, and the fastest laps use it, so it counts against the reference
+  // at the same point: at least SPIN_SLIP % and SPIN_OVER points more than the reference's, on the throttle. Traction
+  // control cutting in where the reference's doesn't counts too: it stops the spin by taking power away.
+  const SPIN_SLIP = 10, SPIN_OVER = 5, SPIN_MIN = 10; // %, points, metres in a section for a tip
+  function drivenAxle(L) {
+    let f = 0, b = 0, n = 0;
+    for (let k = 0; k < L.v.length; k++) {
+      if (L.thr[k] > 80 && L.v[k] > 50 && Number.isFinite(L.slipF[k]) && Number.isFinite(L.slipR[k])) { f += L.slipF[k]; b += L.slipR[k]; n++; }
+    }
+    if (n < 50) return null;
+    return f / n > b / n + 1 ? "front" : b / n > f / n + 1 ? "rear" : "all";
+  }
+  const slipOf = (L, axle, k) => (axle === "front" ? L.slipF[k] : axle === "rear" ? L.slipR[k] : axle ? Math.max(L.slipF[k], L.slipR[k]) : NaN);
+  // runs of set metres, gaps of up to 5 m closed, runs under 5 m dropped
+  function cleanRuns(flags) {
+    const runs = [];
+    for (let k = 0; k < flags.length; k++) {
+      if (!flags[k]) continue;
+      const last = runs[runs.length - 1];
+      if (last && k - last[1] <= 5) last[1] = k + 1; else runs.push([k, k + 1]);
+    }
+    const kept = runs.filter(([a, b]) => b - a >= 5), out = new Uint8Array(flags.length);
+    for (const [a, b] of kept) out.fill(1, a, b);
+    return { runs: kept, flags: out };
+  }
+  function wheelspin(R, M) {
+    const n = R.v.length, axleR = drivenAxle(R), axle = drivenAxle(M);
+    const me = new Uint8Array(n), ref = new Uint8Array(n), why = new Uint8Array(n); // why: 1 slip, 2 traction control
+    for (let k = 0; k < n; k++) {
+      const sM = slipOf(M, axle, k), sR = slipOf(R, axleR, k), tM = M.tcs[k] > 0.5, tR = R.tcs[k] > 0.5;
+      if (M.thr[k] >= 30 && M.v[k] > 30) {
+        if (sM >= SPIN_SLIP && !(sR > sM - SPIN_OVER)) { me[k] = 1; why[k] = 1; } else if (tM && !tR) { me[k] = 1; why[k] = 2; }
+      }
+      if (R.thr[k] >= 30 && R.v[k] > 30 && (sR >= SPIN_SLIP || tR)) ref[k] = 1;
+    }
+    const m = cleanRuns(me);
+    return { me: m.flags, runs: m.runs, ref: cleanRuns(ref).flags, why, axle, axleR };
+  }
+  // The tip for a section with SPIN_MIN metres or more of wheelspin: how much in all, from where, and at its worst
+  function spinTip(spin, R, M, z0, z1, apex, who, steerRatio) {
+    const runs = spin.runs.map(([a, b]) => [Math.max(a, z0), Math.min(b, z1)]).filter(([a, b]) => b > a);
+    const total = runs.reduce((t, [a, b]) => t + b - a, 0);
+    if (total < SPIN_MIN) return null;
+    const a = runs[0][0];
+    const where = a >= apex ? (a - apex <= 5 ? "from the apex" : `from ${a - apex} m after the apex`) : `from ${apex - a} m before the apex`;
+    let bySlip = 0, top = a, thr = 0;
+    for (const [from, to] of runs) for (let k = from; k < to; k++) {
+      if (spin.why[k] === 1) bySlip++;
+      if (slipOf(M, spin.axle, k) > slipOf(M, spin.axle, top)) top = k;
+      thr += M.thr[k];
+    }
+    const deg = v => Math.abs((v * 180) / Math.PI);
+    const sM = deg(M.steer[top]), sR = deg(R.steer[top]);
+    // steering angles depend on the controller or wheel: only when well beyond this driver's usual ratio to the reference
+    const moreLock = Number.isFinite(sM) && Number.isFinite(sR) && sR >= 10 && sM / sR >= 1.2 * (steerRatio || 1);
+    const steering = moreLock ? `, with ${r0(sM)}° of steering against ${r0(sR)}°` : "";
+    const cure = moreLock ? "squeeze it on as you unwind the steering" : "squeeze it on more gradually";
+    const metres = runs.length > 1 ? `${total} m in all` : `${total} m`;
+    if (bySlip >= total / 2) {
+      const wheels = spin.axle === "front" ? "front wheels" : spin.axle === "rear" ? "rear wheels" : "wheels";
+      return `Wheelspin: your ${wheels} spin for ${metres} ${where}, up to ${r0(slipOf(M, spin.axle, top))}% faster than the car, where ${who}'s reach ${r0(Math.max(0, slipOf(R, spin.axleR, top)))}%${steering}. That's more throttle than the tyres can take there: ${cure}.`;
+    }
+    return `Traction control: it cuts in for ${metres} ${where}, at ${r0(thr / total)}% throttle, taking power away; ${who}'s doesn't here. That's more throttle than the tyres can take there: ${cure}.`;
+  }
+
   function extraLifts(corners, R, M, delta) {
     const n = R.v.length, busy = new Uint8Array(n);
     for (const c of corners) {
@@ -491,6 +564,8 @@ const Coach = (() => {
     let x1 = Math.max(c.ref.fullGas ?? c.to, c.me.fullGas ?? c.to) + 30;
     // include extra lifts, but never so far back that the corner itself drops out of the chart
     for (const z of c.lifts) { x0 = Math.min(x0, Math.max(z.from - 20, anchor - 300)); x1 = Math.max(x1, z.to + 20); }
+    // and the section's wheelspin, to its end
+    for (let k = c.from; k < c.to; k++) if (result.grid.spinM && result.grid.spinM[k]) x1 = Math.max(x1, k + 10);
     x0 = Math.max(0, x0); x1 = Math.min(n - 1, x1, x0 + 700);
     let braking = false;
     for (let k = x0; k <= x1 && !braking; k++) braking = R.brk[k] > 5 || M.brk[k] > 5;
@@ -525,15 +600,33 @@ const Coach = (() => {
     const yS = v => sTop + H2 - ((v - vLo) / (vHi - vLo)) * H2;
     const line = (arr, y) => { let d = ""; for (let k = x0; k <= x1; k++) d += (d ? "L" : "M") + x(k).toFixed(1) + "," + y(arr[k]).toFixed(1); return d; };
     const secs = v => `${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(2)} s`;
+    // bold stretches: where the wheels spin or traction control cuts in (yours against the reference's: see wheelspin)
+    const { spinM, spinR } = result.grid;
+    const bold = (arr, flags, y) => {
+      let d = "", on = false;
+      for (let k = x0; k <= x1; k++) {
+        if (!flags || !flags[k] || arr[k] < 30) { on = false; continue; } // on the throttle only
+        d += (on ? "L" : "M") + x(k).toFixed(1) + "," + y(arr[k]).toFixed(1);
+        on = true;
+      }
+      return d;
+    };
+    let spinShown = false;
     const strips = kinds.map(([label, key, cls], i) => {
       const t0 = top + i * (H1 + gap);
+      let spins = "";
+      if (key === "thr") {
+        const dR = bold(R.thr, spinR, v => yP(t0, v)), dM = bold(M.thr, spinM, v => yP(t0, v));
+        spins = (dR ? `<path class="pc-ref spin" d="${dR}"/>` : "") + (dM ? `<path class="pc-me throttle spin" d="${dM}"/>` : "");
+        spinShown = !!(dR || dM);
+      }
       return `<text class="pc-title" x="${L}" y="${t0 - 4}">${label}</text>
         <line class="pc-grid" x1="${L}" x2="${W - Rt}" y1="${yP(t0, 100)}" y2="${yP(t0, 100)}"/>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yP(t0, 0)}" y2="${yP(t0, 0)}"/>
         <text class="pc-tick" x="${L - 4}" y="${yP(t0, 100) + 3}" text-anchor="end">100</text>
         <text class="pc-tick" x="${L - 4}" y="${yP(t0, 0) + 3}" text-anchor="end">0</text>
         <path class="pc-ref" d="${line(R[key], v => yP(t0, v))}"/>
-        <path class="pc-me ${cls}" d="${line(M[key], v => yP(t0, v))}"/>`;
+        <path class="pc-me ${cls}" d="${line(M[key], v => yP(t0, v))}"/>${spins}`;
     }).join("");
     // a line with gaps where the recording has no value
     const gappy = (arr, y) => { let d = "", on = false; for (let k = x0; k <= x1; k++) { if (!Number.isFinite(arr[k])) { on = false; continue; } d += (on ? "L" : "M") + x(k).toFixed(1) + "," + y(arr[k]).toFixed(1); on = true; } return d; };
@@ -581,6 +674,7 @@ const Coach = (() => {
       <figcaption class="pc-legend"><span><i class="k-me"></i>You</span><span><i class="k-ref"></i>${who}</span>
         <span>metres from ${anchorName === "apex" ? "the apex (no braking here)" : `where ${who} starts braking`}</span>
         ${c.lifts.length ? `<span><i class="k-lift"></i>extra lift or braking</span>` : ""}
+        ${spinShown ? `<span><i class="k-spin"></i>bold throttle: wheelspin or traction control</span>` : ""}
         ${steering && result.otherCar ? `<span>Steering: another car than ${who}'s, and cars have different steering lock</span>` : ""}
         ${braking ? "" : ""}</figcaption>
     </figure>`;
@@ -677,14 +771,20 @@ const Coach = (() => {
     const X = x => ((x - minX) * scale).toFixed(1), Y = z => ((z - minZ) * scale).toFixed(1);
     const THIN = 1, FULL = 5.5;
     const pedal = (L, m, k) => (m.brakeAt !== null && k >= m.brakeAt && k < m.minAt ? L.brk[k] : L.thr[k]);
+    // hatched where your wheels spin or traction control cuts in (see wheelspin)
+    const spinM = result.grid.spinM;
+    let hatched = false;
     const line = (L, m, cls) => {
       let out = "";
       for (let k = a; k < b; k += 2) {
         const e = Math.min(b, k + 2), width = THIN + ((FULL - THIN) * Math.max(0, Math.min(100, pedal(L, m, k)))) / 100;
-        out += `<path class="${cls}" d="M${X(L.x[k])},${Y(L.z[k])}L${X(L.x[e])},${Y(L.z[e])}" style="stroke-width:${width.toFixed(2)}"/>`;
+        const seg = `d="M${X(L.x[k])},${Y(L.z[k])}L${X(L.x[e])},${Y(L.z[e])}" style="stroke-width:${width.toFixed(2)}"`;
+        out += `<path class="${cls}" ${seg}/>`;
+        if (cls === "cw-me" && spinM && spinM[k]) { out += `<path class="cw-spin" stroke="url(#cw-hatch)" ${seg}/>`; hatched = true; }
       }
       return out;
     };
+    const meLine = line(M, c.me, "cw-me");
     const dot = (L, k, cls, r = 4) => (k === null || k < a || k > b ? "" :
       `<circle class="cw-dot ${cls}" cx="${X(L.x[k])}" cy="${Y(L.z[k])}" r="${r}"/>`);
     // the slowest-point ring goes last and a little larger, so it still shows round a dot at the same spot
@@ -696,7 +796,9 @@ const Coach = (() => {
     return `<figure class="corner-widths">
       <button type="button" class="cw-toggle" aria-pressed="true">Hide your line</button>
       <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale with your line and ${who}'s line">
-        <g>${line(R, c.ref, "cw-ref")}</g><g class="cw-me-line">${line(M, c.me, "cw-me")}</g>
+        <defs><pattern id="cw-hatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect class="cw-hatch-bg" width="4" height="4"/><rect class="cw-hatch-fg" width="2" height="4"/></pattern></defs>
+        <g>${line(R, c.ref, "cw-ref")}</g><g class="cw-me-line">${meLine}</g>
         ${dots(R, c.ref, "ref")}${dots(M, c.me, "me")}
         <path class="cw-arrow" d="M-7,-5L5,0L-7,5Z" transform="translate(${X(R.x[a])},${Y(R.z[a])}) rotate(${ang.toFixed(1)})"/>
         <line class="cw-scale" x1="4" x2="${(4 + ten).toFixed(1)}" y1="${sy}" y2="${sy}"/>
@@ -711,7 +813,8 @@ const Coach = (() => {
       </table>
       <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: brake pressure from the braking
         point to the slowest point, then throttle before braking and after the slowest point (thin = none, full = 100%).
-        It doesn't show throttle used in the braking zone, or braking outside it: the pedal chart below shows all of it.
+        It doesn't show throttle used in the braking zone, or braking outside it: the pedal chart below shows all of it.${hatched
+          ? " Hatched: your wheels spin, or traction control cuts in, more than the reference's." : ""}
         The track edges aren't in the data: where the grey line uses the whole width, it shows roughly where
         they are.</p>
     </figure>`;

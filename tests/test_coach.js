@@ -216,6 +216,34 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   console.log("steering ok");
 }
 
+// Wheelspin: the driven wheels (read from the lap: the Elantra is front-wheel drive) spinning well beyond the
+// reference's at the same point, on the throttle; or traction control cutting in where the reference's doesn't
+{
+  const c6 = r.corners[5];
+  assert.ok(c6.tips.some(t => /^Wheelspin: your front wheels spin for \d+ m from \d+ m after the apex, up to \d+% faster than the car, where the WR's reach \d+%/.test(t)),
+    c6.tips.join(" | "));
+  assert.ok(r.corners.filter(c => c.tips.some(t => t.startsWith("Wheelspin:"))).length >= 3, "several corners");
+  assert.ok(!r.corners.some(c => c.tips.some(t => /rear wheels/.test(t))), "not the rear wheels on a front-wheel-drive car");
+  const html = Coach.cornerDetail(c6, "the WR", r);
+  assert.ok(html.includes('class="pc-me throttle spin"') && html.includes("bold throttle: wheelspin"), "bold on the throttle chart");
+  assert.ok(html.includes('class="cw-spin"') && html.includes("Hatched: your wheels spin"), "hatched on the line close-up");
+  assert.ok(!/class="cw-spin"|pc-me throttle spin/.test(Coach.cornerDetail(self.corners[5], "the WR", self)), "none against itself");
+  // traction control cutting in on your lap only, over 40 m after corner 2's apex
+  const c2 = r.corners[1], R = r.grid.R, near = (x, z) => {
+    let best = 0;
+    for (let i = 0; i < me.x.length; i++) if (Math.hypot(me.x[i] - x, me.z[i] - z) < Math.hypot(me.x[best] - x, me.z[best] - z)) best = i;
+    return best;
+  };
+  const i0 = near(R.x[c2.apex + 10], R.z[c2.apex + 10]), i1 = near(R.x[c2.apex + 50], R.z[c2.apex + 50]);
+  const tcs = { ...me, tcs_active: me.tcs_active.map((v, i) => (i >= i0 && i <= i1 ? 1 : v)) };
+  const t2 = Coach.analyse(ref, tcs).corners[1].tips;
+  assert.ok(t2.some(t => /^Traction control: it cuts in for \d+ m from \d+ m after the apex, at \d+% throttle, taking power away; the WR's doesn't here/.test(t)), t2.join(" | "));
+  // a recording without the front wheels' speeds (an older recorder): no wheelspin read from them, and no error
+  const noFront = Coach.analyse(ref, { ...me, wheel_fl_kmh: undefined, wheel_fr_kmh: undefined });
+  assert.ok(!noFront.corners.some(c => c.tips.some(t => /front wheels/.test(t))));
+  console.log("wheelspin ok");
+}
+
 console.log("coach.js tests passed");
 
 // audio cue points (the app): where the reference brakes (dabs too), lifts without braking, and gets back on the gas
