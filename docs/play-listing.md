@@ -90,52 +90,26 @@ icon; update the listing (name, short and full description above) at the same ti
 
 **How easy was it to recruit testers?** Easy.
 
+Each answer is limited to 300 characters.
+
 **Describe the engagement you received from testers during your closed test.**
 
-> Testers joined through a Google Group linked from a post on r/granturismo and a thread on GTPlanet, so they
-> signed up themselves; 24 had opted in by 4 November. By 2 November, 15 testers had used the app in the past month
-> and 6 used it on the day the audio cues update came out. Testers recorded laps in the current time trials and
-> Super License tests and compared them with the reference laps, and several came back with detailed feedback in
-> the Reddit thread: one drove four sessions at Barcelona checking the app's corner descriptions against the game's
-> own telemetry and found them accurate. Two updates were published during the test (recording with the phone
-> locked, then audio cues), and testers updated and kept using it.
+> 24 testers joined via a Google Group linked from Reddit and GTPlanet. 15 used the app in its first month, 6 on the day the audio cues update came out. Testers recorded time trial and license laps, and one checked the corner advice against GT7's own telemetry over 4 sessions: accurate.
 
 **Provide a summary of the feedback you received from testers, and how you collected it.**
 
-> Feedback came through comments on the Reddit post and its update post, the GTPlanet thread and Play's private
-> feedback, plus my own use of the app in every event. Testers liked that it shows where they lose time corner by
-> corner and why, and found the advice accurate. The main points: the comparison was very detailed and could be
-> hard to get into at first; one tester thought each lap needed a restart; testers asked for graphs like the game's
-> own telemetry, for comparing their best and worst laps, for Super License tests and for daily races; and one asked
-> what some marks on the track map meant. Testing the audio cues myself showed unwanted beeps on gear changes and
-> that Bluetooth headphones need a delay setting.
+> Via Reddit, GTPlanet and Play feedback. Testers liked the corner-by-corner advice. They found it detailed and hard to start with, thought laps needed a restart, and asked for graphs, best vs worst laps, license tests and daily races. My own testing found audio cue issues.
 
-**What changes did you make based on what you learned during testing?** (if asked)
+**What changes did you make based on what you learned during testing?**
 
-> I added a short "How to read this" guide on the first comparison and a How to use page, and made it clear that you
-> can drive as many laps as you like without restarting. A speed chart now sits with each corner's brake and
-> throttle charts. The Super License tab (gold-medal runs for S-1 to S-9) and a Daily races tab with a reference lap
-> for each week's races were added after testers asked for them; daily races went live the same day. Audio cues now
-> ignore gear-change lifts, have different sounds for braking and lifting, a calibration for each speaker or
-> Bluetooth device, and settings to bring the braking cue earlier or move the throttle beep. Sections where you're
-> already faster than the reference no longer get advice. Comparing several laps at once is planned next.
+> Added a first-time guide and How to use page, clearer wording on recording many laps, a speed chart, Super License and Daily races tabs, and audio cue fixes: no beeps on gear changes, distinct sounds, Bluetooth calibration and timing settings. Comparing several laps is next.
 
-**Who is the intended audience, and how does your app provide value to them?** (if asked)
+**Who is the intended audience, and how does your app provide value to them?**
 
-> Gran Turismo 7 players who want to get faster in the weekly time trials, daily races and Super License tests,
-> whatever their level. Other telemetry tools mostly need a PC and setup; this needs only a phone on the same Wi-Fi
-> as the PlayStation. It gives a reference lap ready every week, explains in plain words where and why you lose
-> time, and plays audio cues for the braking points while you drive. It is free, with no account, no ads and no
-> data collected.
+> GT7 players wanting to get faster in time trials, daily races and license tests. Only a phone is needed, no PC: a reference lap ready every week, plain-word tips on where you lose time, and audio braking cues. Free, no account, no ads, no data collected.
 
-**How many installs do you expect in your first year?** The smallest range offered (it's a free hobby app for one
-game's players).
+**How many installs do you expect in your first year?** The smallest range offered.
 
-**How did you decide the app is ready for production?** (if asked)
+**How did you decide the app is ready for production?**
 
-> It has run for over two weeks with testers on several phones and has been updated twice without problems.
-> Recording, saving, uploading and the audio cues work with the phone locked and with Bluetooth. Every change is
-> tried on a separate beta version first and checked by automated tests (the app's recorder and audio cues, the
-> website's screens in each released version of the app, and the lap advice) before it reaches users. I use it
-> myself every week and it helped me reach gold pace.
-
+> Two weeks of testing on several phones and two updates without problems. Recording, uploading and audio cues work with the phone locked. Every change goes through a beta version and automated tests first. I use it every week; it helped me reach gold pace.
