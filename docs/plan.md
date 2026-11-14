@@ -135,6 +135,15 @@ Super License tests: keep it simple, and only take on what one person can look a
      already have the steering angle and the yaw rate (how fast the car turns). The angle depends on each player's
      controller or wheel settings (the site already says so), so compare its shape and timing rather than its size,
      or the car's response (yaw rate for the steering), and against the player's own laps where that's fairer.
+   - **Agreed for turn-in (owner, 14 November):** a **T** badge for turn-in on the line close-up, in each lap's colour
+     like the B (first brake) badge; turn-in is where the steering reaches about 10% of the corner's peak (today's
+     tips use 30%, well into the turn); and a **steering chart** after throttle and before speed (brake, throttle,
+     steering, speed, time gap), in degrees of steering wheel turn, clockwise (right) up, yours and the reference's,
+     with the T marks. Free choice events in another car: shown with a note (each car has its own steering lock).
+   - **Recordings without steering** (Blue Moon Bay's and Fuji's references, both Calster_25's): not the controller.
+     Steering is only in GT7's newer packet format ("B"); the recorders ask for it first, but if nothing answers
+     within 3 s they fall back to the older format ("A") and keep it for the whole recording. So a slow start loses
+     the steering. Fix (computer recorder and app): after "A" answers, try "B" again before settling.
    - **Wheel spin:** the driven wheels turning faster than the car is moving on the exit (the recordings have each
      wheel's speed), and traction control cutting in (also recorded): on the throttle too early or too hard. The
      same data shows front wheels locking under braking (the lock-up idea in Later, maybe).
