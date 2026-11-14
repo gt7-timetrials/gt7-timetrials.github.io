@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-14T11:43:39.049793+00:00",
+ "generated_at": "2026-11-14T21:38:36.576291+00:00",
  "history_events": 205,
  "snapshot_events": 3,
  "historical_entrants": {
@@ -17,13 +17,13 @@
    "car": "Porsche 911 GT3 R (992) '22",
    "starts": "2026-11-02T23:00:00+11:00",
    "ends": "2026-11-16T22:59:59+11:00",
-   "days_elapsed": 12.0,
-   "days_left": 2.0,
-   "entrants": 188345,
+   "days_elapsed": 12.4,
+   "days_left": 1.6,
+   "entrants": 194044,
    "entrants_projection": {
-    "projected": 204399,
-    "low": 203454,
-    "high": 205233,
+    "projected": 202697,
+    "low": 202433,
+    "high": 203305,
     "events": 3
    },
    "wr_ms": 116831,
@@ -46,9 +46,9 @@
    "predicted": {
     "final_wr_ms": 116831,
     "gold_ms": 120335,
-    "gold_fast_ms": 120223,
+    "gold_fast_ms": 120234,
     "gold_slow_ms": 120335,
-    "final_wr_fast_ms": 116722,
+    "final_wr_fast_ms": 116733,
     "final_wr_slow_ms": 116831,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
@@ -61,19 +61,19 @@
    "car": "Dodge Viper SRT GT3-R '15",
    "starts": "2026-11-05T18:00:00+11:00",
    "ends": "2026-11-19T17:59:59+11:00",
-   "days_elapsed": 9.2,
-   "days_left": 4.8,
-   "entrants": 143538,
+   "days_elapsed": 9.6,
+   "days_left": 4.4,
+   "entrants": 148430,
    "entrants_projection": {
-    "projected": 171642,
-    "low": 168318,
-    "high": 172671,
+    "projected": 177492,
+    "low": 174055,
+    "high": 178556,
     "events": 3
    },
    "wr_ms": 99865,
    "wr_holder": "N2_HyperzWC",
    "gold_now_ms": 102860,
-   "top100_spread_pct": 0.672,
+   "top100_spread_pct": 0.648,
    "strong_drivers_posted": [
     "Akagi_1942mi",
     "pirata666pirata"
@@ -81,11 +81,11 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 99802,
-    "gold_ms": 102796,
-    "gold_fast_ms": 102663,
+    "final_wr_ms": 99805,
+    "gold_ms": 102799,
+    "gold_fast_ms": 102665,
     "gold_slow_ms": 102860,
-    "final_wr_fast_ms": 99673,
+    "final_wr_fast_ms": 99675,
     "final_wr_slow_ms": 99865,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
@@ -98,14 +98,14 @@
    "car": "Mazda ɛ̃fini RX-7 Type R (FD) '91",
    "starts": "2026-11-12T18:00:00+11:00",
    "ends": "2026-11-26T17:59:59+11:00",
-   "days_elapsed": 2.2,
-   "days_left": 11.8,
-   "entrants": 62048,
+   "days_elapsed": 2.6,
+   "days_left": 11.4,
+   "entrants": 70618,
    "entrants_projection": null,
    "wr_ms": 128786,
    "wr_holder": "MetalGear9493",
    "gold_now_ms": 132649,
-   "top100_spread_pct": 1.151,
+   "top100_spread_pct": 1.103,
    "strong_drivers_posted": [
     "AT__1826",
     "MetalGear9493"
