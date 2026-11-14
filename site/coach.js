@@ -681,7 +681,7 @@ const Coach = (() => {
   }
 
   // Close-up 1: the corner drawn to scale with both racing lines, the same way round as the lap map. Line thickness shows
-  // the pedals: brake pressure from the braking point to the slowest point, throttle everywhere else
+  // the pedals: brake pressure wherever braking, throttle everywhere else
   // (thin = none, full thickness = 100%).
   // Across a recording's clean laps (3 or more): where the time goes on average, where it varies most from lap to
   // lap, and the "ideal lap" from each section's best time. Sections are the reference's, so they line up.
@@ -770,7 +770,7 @@ const Coach = (() => {
     const w = Math.round((maxX - minX) * scale), H = Math.round((maxZ - minZ) * scale) + 22;
     const X = x => ((x - minX) * scale).toFixed(1), Y = z => ((z - minZ) * scale).toFixed(1);
     const THIN = 1, FULL = 5.5;
-    const pedal = (L, m, k) => (m.brakeAt !== null && k >= m.brakeAt && k < m.minAt ? L.brk[k] : L.thr[k]);
+    const pedal = (L, m, k) => (L.brk[k] > 5 ? L.brk[k] : L.thr[k]); // whichever pedal is pressed at that point
     // hatched where your wheels spin or traction control cuts in (see wheelspin)
     const spinM = result.grid.spinM;
     let hatched = false;
@@ -811,12 +811,9 @@ const Coach = (() => {
           ${shows("brakeAt") ? `<td><i class="k-dot brake ${k}"></i></td>` : ""}${shows("minAt") ? `<td><i class="k-dot slow ${k}"></i></td>` : ""}
           ${shows("fullGas") ? `<td><i class="k-dot gas ${k}"></i></td>` : ""}</tr>`).join("")}</tbody>
       </table>
-      <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: brake pressure from the braking
-        point to the slowest point, then throttle before braking and after the slowest point (thin = none, full = 100%).
-        It doesn't show throttle used in the braking zone, or braking outside it: the pedal chart below shows all of it.${hatched
-          ? " Hatched: your wheels spin, or traction control cuts in, more than the reference's." : ""}
-        The track edges aren't in the data: where the grey line uses the whole width, it shows roughly where
-        they are.</p>
+      <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: the pedal being pressed, the brake
+        wherever braking and the throttle everywhere else (thin = none, full = 100%).${hatched
+          ? " Hatched: your wheels spin, or traction control cuts in, more than the reference's." : ""}</p>
     </figure>`;
   }
 
@@ -888,8 +885,7 @@ const Coach = (() => {
       </div>
       <p class="hint">Drawn to scale, the same way round as the lap map. Your line is a dot every ${step} m comparing your pedals
         with ${who}'s at the same point: the brake wherever either of you is braking, the throttle everywhere else. Bigger
-        dots = bigger difference (${SAME}–30, 30–60, 60+ points of pedal travel). The track edges aren't in the data: where
-        the grey line uses the whole width, it shows roughly where they are.</p>
+        dots = bigger difference (${SAME}–30, 30–60, 60+ points of pedal travel).</p>
     </figure>`;
   }
 
