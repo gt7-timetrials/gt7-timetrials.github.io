@@ -41,9 +41,9 @@ Super License tests: keep it simple, and only take on what one person can look a
    - [x] 12 testers opted in on 31 October 2026 (one joined the group but hadn't opted in at first). Countries: all.
    - [x] 18 testers opted in by 3 November 2026, 22 later that day, 24 by 4 November, while the Reddit post's new
          views had slowed to a trickle (its upvote ratio rose from about 50% to 62%).
-   - [ ] Keep 12+ opted in for 14 days in a row, to about **14 November 2026** (aim for a few more as a buffer). Google
+   - [x] Keep 12+ opted in for 14 days in a row, to about **14 November 2026** (aim for a few more as a buffer). Google
          tracks this by itself: progress is on the Play Console Dashboard; nothing to trigger.
-   - [ ] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
+   - [x] Keep a note of tester feedback and what changed because of it: Google asks for this when applying for
          production. So far, all on the Reddit thread:
          - **likasumboooowdy (about 26 October, the first Reddit post, before the Play test):** asked whether it could
            be used for license tests ("would have helped a ton on the super licenses… I've got some tricky ones
@@ -88,7 +88,7 @@ Super License tests: keep it simple, and only take on what one person can look a
            quickly gets a world's best time whose replay can be downloaded, like a time trial's. The owner agreed, and
            the Daily races tab went live the same day with all three races (A one car, B and C free choice of Gr.3 and
            Gr.4, using the new free car choice flag); the tester said they'd try the app soon.
-   - [ ] Before production: lead the Play listing and posts with what the app does: **easy and convenient**,
+   - [x] Before production: lead the Play listing and posts with what the app does: **easy and convenient**,
          for time trials, daily races and licenses. Keep it neutral about who it's for (no "for beginners" or "for
          experts"): people can decide for themselves. The others: GT7's own Data Logger (since November
          2025: laps compared as graphs), Coach Dave Delta (paid, needs a PC), GT Coach (voice coaching with a braking
@@ -100,9 +100,14 @@ Super License tests: keep it simple, and only take on what one person can look a
          races and licenses. Just your phone: a reference lap ready every week, tips in plain words, and audio cues
          for the braking points." For new features: keep the main view simple; more detailed features (graphs,
          comparing several laps) are welcome as long as they don't crowd it. Update `docs/play-listing.md` (short and full
-         description) and the production questionnaire's answers.
-   - [ ] From about 14 November: Apply for production (Dashboard; a short questionnaire on how testers were found,
-         how they used the app, their feedback and what changed; review up to about a week), then release to everyone.
+         description) and the production questionnaire's answers. Done 14 November: the new short and full
+         description are in `docs/play-listing.md`, to go on the listing with the release.
+   - [x] **Applied for production on 14 November 2026**, after the 14 days with 12+ testers. The answers (each at
+         most 300 characters) are in `docs/play-listing.md`. Google's review takes up to about a week.
+   - [ ] When approved: create a production release with test build 34 (`gt7-timetrials-play.aab` on the
+         android-test release: the name "Laps for GT7" under the icon), and at the same time rename the listing
+         **Lap Companion for GT7** and paste the new short and full description.
+   - [ ] Then the launch post on r/granturismo (and GTPlanet), and after that about one post a month.
 
    Website changes (including reference laps) reach the app straight away. Only changes to the app's own code
    (`android/`) need a new `.aab` uploaded to the Play Console; each build's version number goes up by itself.
