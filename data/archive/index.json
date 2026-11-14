@@ -105,6 +105,21 @@
       "added": "2026-10-29",
       "was": "data/reference_laps/telemetry_20261029_210218.csv",
       "note": "The event ended on 12 November; its final record was AT__1826's 1:20.612."
+    },
+    {
+      "file": "time_trials/15251_fuji_Calster_25_1-39.935.csv",
+      "kind": "time trial",
+      "event_id": 15251,
+      "track": "Fuji International Speedway",
+      "car": "Jaguar F-type Gr.3",
+      "driver": "Calster_25",
+      "lap_ms": 99935,
+      "lap": "1:39.935",
+      "event_start": "2026-11-05",
+      "event_end": "2026-11-19",
+      "added": "2026-11-05",
+      "was": "data/reference_laps/telemetry_20261105_fuji.csv",
+      "note": "Replaced on 14 November by AMS__Andrew's 1:39.912 in the same car, which has the steering angle (this recording doesn't: the recorder fell back to GT7's older data format)."
     }
   ]
 }
