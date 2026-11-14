@@ -65,7 +65,7 @@ Super License tests: keep it simple, and only take on what one person can look a
            the track width at the apex); set 1:51.539. "Absolutely loved the experience." So the detail stays: the
            guide makes it easier to get into instead of cutting it.
            - Asked to compare their best and worst laps together with the WR's: each lap is compared with the WR
-             today, with ‹ › to step through laps on a corner; showing several laps at once is planned (item 6).
+             today, with ‹ › to step through laps on a corner; showing several laps at once is planned (item 5).
            - Assumed the app wouldn't update during the test, then asked how to update: the owner told them about the
              new version and linked the Play page with its Update button.
          - **Worried_Bug_538, third post (8 November), after the update post, using the audio cues:** asked what the
@@ -104,9 +104,10 @@ Super License tests: keep it simple, and only take on what one person can look a
          description are in `docs/play-listing.md`, to go on the listing with the release.
    - [x] **Applied for production on 14 November 2026**, after the 14 days with 12+ testers. The answers (each at
          most 300 characters) are in `docs/play-listing.md`. Google's review takes up to about a week.
-   - [ ] When approved: create a production release with test build 34 (`gt7-timetrials-play.aab` on the
-         android-test release: the name "Laps for GT7" under the icon), and at the same time rename the listing
-         **Lap Companion for GT7** and paste the new short and full description.
+   - [ ] When approved: create a production release with test build 36 (`gt7-timetrials-play.aab` on the
+         android-test release, built 15 November: the name "Laps for GT7" under the icon, and the recorder keeping the
+         steering after a slow start), and at the same time rename the listing **Lap Companion for GT7** and paste the
+         new short and full description.
    - [ ] Then the launch post on r/granturismo (and GTPlanet), and after that about one post a month.
 
    Website changes (including reference laps) reach the app straight away. Only changes to the app's own code
@@ -115,7 +116,7 @@ Super License tests: keep it simple, and only take on what one person can look a
 3. **More graphs like GT7's own telemetry** (a tester asked for them): the owner is looking at what GT7 shows to decide
    what else is worth adding. Owner, 5 November: wait for feedback; no whole-lap view (a lap trace means watching it
    through and is easily forgotten), the corner-by-corner view stays the way in: an overall picture you can click
-   through and take in. Candidates if asked for: gear or revs under the speed chart, steering.
+   through and take in. Candidates if asked for: gear or revs under the speed chart. (Steering is done: see Done.)
 
 4. **Line feedback** (going wide, missing the apex, not using the track at the exit). The close-ups already draw both
    lines; the tips say little about the line itself.
@@ -128,31 +129,7 @@ Super License tests: keep it simple, and only take on what one person can look a
      slower for understeer, smoother throttle on exit for oversteer. Needs steering and yaw (or speed against
      steering) from the telemetry, compared with the reference's at the same point.
 
-5. **Turn-in inputs and wheel spin (pushing too hard)** (owner, 10 November). Two things the tips don't cover yet:
-   - **Turn-in:** how you steer into the corner compared with the reference: how quickly the steering winds on, how
-     much lock at turn-in and at the apex, and how the brake comes off as the steering goes on (trail braking).
-     Turning in too sharply or with too much lock scrubs speed and pushes the car wide (understeer). The recordings
-     already have the steering angle and the yaw rate (how fast the car turns). The angle depends on each player's
-     controller or wheel settings (the site already says so), so compare its shape and timing rather than its size,
-     or the car's response (yaw rate for the steering), and against the player's own laps where that's fairer.
-   - **Agreed for turn-in (owner, 14 November):** a **T** badge for turn-in on the line close-up, in each lap's colour
-     like the B (first brake) badge; turn-in is where the steering reaches about 10% of the corner's peak (today's
-     tips use 30%, well into the turn); and a **steering chart** after throttle and before speed (brake, throttle,
-     steering, speed, time gap), in degrees of steering wheel turn, clockwise (right) up, yours and the reference's,
-     with the T marks. Free choice events in another car: shown with a note (each car has its own steering lock).
-   - **Recordings without steering** (Blue Moon Bay's and Fuji's references, both Calster_25's): not the controller.
-     Steering is only in GT7's newer packet format ("B"); the recorders ask for it first, but if nothing answers
-     within 3 s they fall back to the older format ("A") and keep it for the whole recording. So a slow start loses
-     the steering. Fix (computer recorder and app): after "A" answers, try "B" again before settling.
-   - **Wheel spin:** the driven wheels turning faster than the car is moving on the exit (the recordings have each
-     wheel's speed), and traction control cutting in (also recorded): on the throttle too early or too hard. The
-     same data shows front wheels locking under braking (the lock-up idea in Later, maybe).
-   - Only mention them where they cost time (for example a slower exit than the reference after spinning the
-     wheels), and tie them to the understeer and oversteer causes in 4.
-   - First, a recording to check the signals: the owner drives a few laps turning in too sharply and spinning the
-     wheels on purpose, plus a clean lap, to see how clearly each shows.
-
-6. **Comparing several laps, and your own best lap as a reference.**
+5. **Comparing several laps, and your own best lap as a reference.**
    - Show two or more laps against the reference at once, for example your best and worst (asked for by a tester).
    - With several laps recorded, your **best composite lap** (your best section from each lap, put together) as a
      lap of its own, to compare corner by corner. Today Across your laps only gives its time.
@@ -167,7 +144,7 @@ Super License tests: keep it simple, and only take on what one person can look a
      towards the WR's (for example 25%, then 50%), so the cues stretch you a step at a time rather than asking for the
      WR's points straight away.
 
-7. **Valid laps.** Extend the cut-corner check (today: a lap more than 1% and 30 m shorter than the reference is marked
+6. **Valid laps.** Extend the cut-corner check (today: a lap more than 1% and 30 m shorter than the reference is marked
    as a likely cut) to collisions with walls or other cars, and to running off the track, so such laps are flagged
    and left out of Across your laps and the best composite lap.
    - Ground truth first: as far as the community's decoding of GT7's telemetry goes, there's no flag for an invalid
@@ -183,7 +160,7 @@ Super License tests: keep it simple, and only take on what one person can look a
      Across your laps and the best composite lap; traffic is harder (lifting or braking where the reference doesn't,
      with no other explanation) and may only be worth a hint.
 
-8. **Skills that matter most for you**: in **Later, maybe**, as a significant build to specify first.
+7. **Skills that matter most for you**: in **Later, maybe**, as a significant build to specify first.
 
 ## Done
 
@@ -212,6 +189,25 @@ Kept short; the details are in the pull requests and the git history.
   script; unsigned, so the readme explains the first-run warnings. The owner tried it on a real computer (8 November):
   it works.
 - **Test review and publishing after green** (8 November, #82): see Regular jobs.
+- **Steering, wheelspin and lock-ups** (owner's idea of 10 November, merged 15 November, #83; the owner: "feels right
+  relative to my driving"):
+  - A **steering chart** after throttle and before speed, in degrees of steering wheel turn, clockwise up, yours and
+    the reference's. Turn-in marks (a T badge, then T lines on the chart) were tried and dropped: the line itself
+    shows where the turning starts, next to the brake.
+  - **Wheelspin**: the driven wheels, read from each lap (front, rear or all: the Elantra at Barcelona is front-wheel
+    drive, the Jaguar at Fuji rear), slipping at least 10% and 5 points more than the reference's at the same point
+    on the throttle, or traction control cutting in where the reference's doesn't (the owner's Fuji laps: traction
+    control on and cutting in after most apexes, AMS__Andrew's never). **Lock-up**: the same under braking, which
+    shows full brake while turning in (straight-line threshold braking slows everyone's front wheels 13-19%, so it
+    isn't flagged). Bold on the throttle and brake charts ("bold: wheel lock or spin"), hatched on the line
+    close-up, and a one-line tip that points at the charts; the lock-up tip replaces "Brake release" there.
+  - The line close-up's thickness is the brake from the braking point until the throttle is pressed again, the
+    throttle elsewhere (before, a late slowest point hid full throttle); no track-edges note.
+  - **Recorders** (computer, and the app from build 36): if GT7 answers the older data format at first, they ask
+    again for the one with steering. Blue Moon Bay's and Fuji's references had lost it this way (not the
+    controller); Fuji's was replaced by AMS__Andrew's 1:39.912 with steering on 14 November.
+  - Not built: tips on how quickly the steering winds on or trail braking beyond the lock-up tip; the chart shows
+    them. Understeer and oversteer as causes stay with line feedback (item 4).
 
 ## Later, maybe
 
@@ -260,7 +256,7 @@ Kept short; the details are in the pull requests and the git history.
 
 - Audio cues: spoken feedback after each corner ("braked 12 m early, gas 5 m late"), and track position compared with
   the reference.
-- Front tyre lock-up detection, and lap consistency across several laps.
+- Lap consistency across several laps (lock-up detection: done, see Done).
 - Compare any two recordings (for example your own laps against each other).
 - Super License S-10 (Spa, partly wet): medal times and a gold reference run, once the owner has unlocked it.
 - Drivers page: country flags and search. Link previews (Open Graph) for posts.
