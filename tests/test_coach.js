@@ -186,23 +186,12 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   console.log("expected advice ok");
 }
 
-// Steering (between throttle and speed, degrees clockwise up) and turn-in (T): where the steering starts to wind on,
-// at about 10% of the lap's own peak steering in the section
+// Steering, between throttle and speed, in degrees clockwise up
 {
   const chart7 = Coach.cornerDetail(r.corners[6], "the WR", r);
   assert.ok(chart7.indexOf("Throttle %") < chart7.indexOf("Steering °") && chart7.indexOf("Steering °") < chart7.indexOf("Speed km/h"),
     "steering after throttle, before speed");
   assert.ok(chart7.includes('class="pc-me steer"') && /Steering °[\s\S]*class="pc-ref"/.test(chart7), "your steering and the reference's");
-  for (const c of r.corners) for (const [L, m] of [[r.grid.R, c.ref], [r.grid.M, c.me]]) {
-    if (m.turnStart === null) continue;
-    let own = 0;
-    for (let k = c.from; k < c.to; k++) own = Math.max(own, Math.abs(L.steer[k]));
-    // where it passes 10% (or changes direction, or at the top speed before the corner if it's already turning there)
-    assert.ok(m.turnStart < c.apex && Math.abs(L.steer[m.turnStart]) > 0.1 * own && (m.turnStart === m.top
-      || Math.abs(L.steer[m.turnStart - 1]) <= 0.1 * own || Math.sign(L.steer[m.turnStart - 1]) !== Math.sign(L.steer[m.turnStart])),
-      `corner ${c.n}: turn-in where the steering passes 10%`);
-  }
-  assert.ok(r.corners.filter(c => c.ref.turnStart !== null && c.me.turnStart !== null).length >= 6, "turn-in found in most corners");
   // a left-hander reads below zero, a right-hander above
   const scale = html => [...html.matchAll(/>(−?\d+)°</g)].map(m => +m[1].replace("−", "-"));
   const turnDeg = c => -r.grid.R.steer[c.apex] * 180 / Math.PI;
@@ -210,18 +199,16 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
     const ticks = scale(Coach.cornerDetail(c, "the WR", r));
     assert.ok(turnDeg(c) > 0 ? Math.max(...ticks) > 0 : Math.min(...ticks) < 0, `corner ${c.n}: ${ticks}`);
   }
-  // turn-in is marked on the steering chart only, not as a badge on the line close-up
-  assert.strictEqual((chart7.match(/<g class="cl-badge (me|ref)"><line[^>]*\/>\s*<circle[^>]*\/><text[^>]*>T<\/text>/g) || []).length, 0);
-  assert.strictEqual((chart7.match(/<g class="pc-t (me|ref)">/g) || []).length, 2, "T on the steering chart, both laps");
+  // no turn-in marks: the steering line shows where the turning starts
+  assert.ok(!/>T<\/text>/.test(chart7), "no T marks");
   // a reference recorded without steering (GT7's older data format): your steering only, and says so
   const blank = lap => ({ ...lap, steering_rad: lap.steering_rad.map(() => NaN) });
   const noRef = Coach.analyse(blank(ref), me, "Someone"), h = Coach.cornerDetail(noRef.corners[6], "Someone", noRef);
   assert.ok(h.includes("(Someone's recording has none)") && h.includes('class="pc-me steer"'));
-  assert.strictEqual(noRef.corners[6].ref.turnStart, null);
   assert.deepStrictEqual(noRef.corners.map(c => c.tips), r.corners.map(c => c.tips.map(t => t.replace(/the WR/g, "Someone"))).map((t, i) => noRef.corners[i].tips),
     "the tips don't depend on it");
   const none = Coach.analyse(blank(ref), blank(me), "Someone"), h2 = Coach.cornerDetail(none.corners[6], "Someone", none);
-  assert.ok(!h2.includes("Steering °") && !h2.includes(">T</text>"), "neither recorded it: no steering chart, no T");
+  assert.ok(!h2.includes("Steering °"), "neither recorded it: no steering chart");
   // an uploaded recording without steering keeps it empty, not a flat line at 0
   const lines = read("tests/fixtures/telemetry_lap.csv").split("\n"), col = lines[0].split(",").indexOf("steering_rad");
   const noSteerCsv = lines.map((l, i) => (i && l ? l.split(",").map((v, j) => (j === col ? "" : v)).join(",") : l)).join("\n");

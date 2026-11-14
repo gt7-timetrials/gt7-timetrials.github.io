@@ -289,10 +289,6 @@ table.corner-table thead th:first-child { font-weight: 500; }
 .pc-me.gap { stroke: var(--text); }
 .pc-me.speed { stroke: var(--you); }
 .pc-me.steer { stroke: var(--you); }
-.pc-t line { stroke-width: 1; stroke-dasharray: 2 2; }
-.pc-t text { font-size: 8px; font-weight: 700; }
-.pc-t.me line { stroke: var(--you); } .pc-t.me text { fill: var(--you); }
-.pc-t.ref line { stroke: var(--muted); } .pc-t.ref text { fill: var(--muted); }
 .pc-axis { stroke: var(--line); }
 .pc-grid { stroke: var(--line); stroke-dasharray: 2 3; }
 .pc-tickline { stroke: var(--muted); }

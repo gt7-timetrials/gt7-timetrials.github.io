@@ -206,21 +206,7 @@ const Coach = (() => {
     }
     let maxSteer = 0, spin = 0;
     for (let k = turnIn ?? top; k < z1; k++) maxSteer = Math.max(maxSteer, Math.abs(L.steer[k]));
-    // Turn-in, as drawn (T): where the steering starts to wind on into the corner, at about 10% of this lap's own
-    // peak steering in the section (its own, since controllers and wheels differ). Found from the point where it
-    // passes 30%, walking back while it stays above 10% the same way. None without steering in the recording.
-    let own = 0, turnStart = null;
-    for (let k = z0; k < z1; k++) if (Math.abs(L.steer[k]) > own) own = Math.abs(L.steer[k]);
-    if (own > 0.05) {
-      const k30 = firstFrom(L.steer, top, z1, s => Math.abs(s) > 0.3 * own);
-      if (k30 !== null) {
-        const sign = Math.sign(L.steer[k30]);
-        turnStart = k30;
-        while (turnStart > top && Math.sign(L.steer[turnStart - 1]) === sign && Math.abs(L.steer[turnStart - 1]) > 0.1 * own) turnStart--;
-      }
-    }
-    for (let k = apex; k < z1; k++) if (L.thr[k] > 50) spin = Math.max(spin, L.spin[k]);
-    return { top, topSpeed: L.v[top], brakeAt, liftAt, peakBrake, fullBrake, release, turnIn, turnStart,
+    return { top, topSpeed: L.v[top], brakeAt, liftAt, peakBrake, fullBrake, release, turnIn,
       // averaged over the first 15 m of turning: the brake is often being released fast at this point
       brakeAtTurnIn: turnIn === null ? 0 : mean(L.brk.slice(turnIn, Math.min(z1, turnIn + 15))), minAt, minSpeed: L.v[minAt], onGas, fullGas, saw,
       maxSteerDeg: maxSteer * 180 / Math.PI, spin, exitSpeed: L.v[z1 - 1], minThrottle: Math.min(...L.thr.slice(top, apex + 1)) };
@@ -551,24 +537,13 @@ const Coach = (() => {
     }).join("");
     // a line with gaps where the recording has no value
     const gappy = (arr, y) => { let d = "", on = false; for (let k = x0; k <= x1; k++) { if (!Number.isFinite(arr[k])) { on = false; continue; } d += (on ? "L" : "M") + x(k).toFixed(1) + "," + y(arr[k]).toFixed(1); on = true; } return d; };
-    // T marks: a dashed line through the steering strip, labelled underneath (moved apart when the two are close)
-    const tAt = { ref: steerR ? c.ref.turnStart : null, me: steerM ? c.me.turnStart : null };
-    const tMark = (k, who2) => {
-      if (k === null || k < x0 || k > x1) return "";
-      const other = tAt[who2 === "me" ? "ref" : "me"];
-      let lx = x(k);
-      if (other !== null && other >= x0 && other <= x1 && Math.abs(lx - x(other)) < 8) lx += (lx >= x(other) ? 1 : -1) * (who2 === "me" ? 4 : 4);
-      return `<g class="pc-t ${who2}"><line x1="${x(k).toFixed(1)}" x2="${x(k).toFixed(1)}" y1="${stTop}" y2="${stTop + H1}"/>
-        <text x="${lx.toFixed(1)}" y="${(stTop + H1 + 9).toFixed(1)}" text-anchor="middle">T</text></g>`;
-    };
     const dTicks = [[dHi, `${dHi}°`], [dLo, `${dLo}°`.replace("-", "−")]];
     if (dHi > 0 && dLo < 0 && yDdeg(0) - yDdeg(dHi) > 10 && yDdeg(dLo) - yDdeg(0) > 10) dTicks.push([0, "0"]);
     const steer = !steering ? "" : `<text class="pc-title" x="${L}" y="${stTop - 4}">Steering °, clockwise up${steerR ? "" : ` (${who}'s recording has none)`}${steerM ? "" : " (your recording has none)"}</text>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yDdeg(0)}" y2="${yDdeg(0)}"/>
         ${dTicks.map(([v, t]) => `<text class="pc-tick" x="${L - 4}" y="${yDdeg(v) + 3}" text-anchor="end">${t}</text>`).join("")}
         ${steerR ? `<path class="pc-ref" d="${gappy(R.steer, yD)}"/>` : ""}
-        ${steerM ? `<path class="pc-me steer" d="${gappy(M.steer, yD)}"/>` : ""}
-        ${tMark(tAt.ref, "ref")}${tMark(tAt.me, "me")}`;
+        ${steerM ? `<path class="pc-me steer" d="${gappy(M.steer, yD)}"/>` : ""}`;
     const speed = `<text class="pc-title" x="${L}" y="${sTop - 4}">Speed km/h</text>
         <line class="pc-grid" x1="${L}" x2="${W - Rt}" y1="${yS(vHi)}" y2="${yS(vHi)}"/>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yS(vLo)}" y2="${yS(vLo)}"/>
@@ -606,7 +581,6 @@ const Coach = (() => {
       <figcaption class="pc-legend"><span><i class="k-me"></i>You</span><span><i class="k-ref"></i>${who}</span>
         <span>metres from ${anchorName === "apex" ? "the apex (no braking here)" : `where ${who} starts braking`}</span>
         ${c.lifts.length ? `<span><i class="k-lift"></i>extra lift or braking</span>` : ""}
-        ${steering ? `<span>T: turn-in</span>` : ""}
         ${steering && result.otherCar ? `<span>Steering: another car than ${who}'s, and cars have different steering lock</span>` : ""}
         ${braking ? "" : ""}</figcaption>
     </figure>`;
