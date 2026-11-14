@@ -346,9 +346,16 @@ const Coach = (() => {
   const FASTER = 0.05; // s: a section this much quicker than the reference, or closer than this to it, gets no advice
   function result(corners, steerRatio, R, M, delta, who) {
     const lifts = extraLifts(corners, R, M, delta), spin = wheelspin(R, M);
-    return { grid: { R, M, delta, spinM: spin.me, spinR: spin.ref }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, share, approachLost, cornerLost, ref_m, me_m }, i) => {
+    return { grid: { R, M, delta, spinM: spin.me, spinR: spin.ref, lockM: spin.lockM, lockR: spin.lockR }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, share, approachLost, cornerLost, ref_m, me_m }, i) => {
       me_m.wheelspin = spinTip(spin, R, M, z0, z1, apex, who);
       let t = tips(me_m, ref_m, lost, who, steerRatio);
+      // lock-up says what "Brake release" would, from the wheels themselves: it takes its place
+      const lock = lockTip(spin, R, M, z0, z1, apex, who);
+      if (lock) {
+        const at = t.findIndex(x => x.startsWith("Brake release:"));
+        if (at >= 0) t[at] = lock; else t.splice(t.findIndex(x => x.startsWith("Braking point:")) + 1, 0, lock);
+        t = t.filter(x => !x.startsWith("No single big difference") && !x.startsWith("Close to "));
+      }
       const line = lineUse(R, M, z0, z1, apex, ref_m), lt = lineTip(line, who);
       if (lt) t.push(lt);
       const mine = lifts.filter(z => z.corner === i);
@@ -412,7 +419,32 @@ const Coach = (() => {
       if (R.thr[k] >= 30 && R.v[k] > 30 && (sR >= SPIN_SLIP || tR)) ref[k] = 1;
     }
     const m = cleanRuns(me);
-    return { me: m.flags, runs: m.runs, ref: cleanRuns(ref).flags, why, axle, axleR };
+    return { me: m.flags, runs: m.runs, ref: cleanRuns(ref).flags, why, axle, axleR, ...lockups(R, M) };
+  }
+  // Lock-up, the same under braking: a wheel pair turning clearly slower than the car. Hard braking in a straight line
+  // slows the front wheels 13-19% for everyone (ABS stops a full lock), so it counts against the other lap at the same
+  // point: at least LOCK_SLIP % slower and LOCK_OVER points more. It shows braking hard while turning in.
+  const LOCK_SLIP = 10, LOCK_OVER = 5;
+  const lockOf = (L, k) => Math.min(Number.isFinite(L.slipF[k]) ? L.slipF[k] : 0, L.slipR[k]);
+  function lockups(R, M) {
+    const n = R.v.length, me = new Uint8Array(n), ref = new Uint8Array(n);
+    for (let k = 0; k < n; k++) {
+      const lM = lockOf(M, k), lR = lockOf(R, k);
+      if (M.brk[k] > 5 && M.v[k] > 30 && lM <= -LOCK_SLIP && lM <= lR - LOCK_OVER) me[k] = 1;
+      if (R.brk[k] > 5 && R.v[k] > 30 && lR <= -LOCK_SLIP && lR <= lM - LOCK_OVER) ref[k] = 1;
+    }
+    const m = cleanRuns(me);
+    return { lockM: m.flags, lockRuns: m.runs, lockR: cleanRuns(ref).flags };
+  }
+  function lockTip(spin, R, M, z0, z1, apex, who) {
+    const runs = spin.lockRuns.map(([a, b]) => [Math.max(a, z0), Math.min(b, z1)]).filter(([a, b]) => b > a);
+    if (runs.reduce((t, [a, b]) => t + b - a, 0) < SPIN_MIN) return null;
+    let worst = runs[0][0];
+    for (const [from, to] of runs) for (let k = from; k < to; k++) if (lockOf(M, k) < lockOf(M, worst)) worst = k;
+    const wheels = !Number.isFinite(M.slipF[worst]) ? "wheels" : M.slipF[worst] <= M.slipR[worst] ? "front wheels" : "rear wheels";
+    const turning = Math.abs((M.steer[worst] * 180) / Math.PI) >= 15; // false without steering in the recording
+    const where = runs[0][0] < apex ? "on entry" : "after the apex";
+    return `Lock-up ${where}: your ${wheels} lock more than ${who}'s. More brake than the tyres can take${turning ? " with the steering" : ""}: see the bold brake line.`;
   }
   // The tip for a section with SPIN_MIN metres or more of wheelspin: short, since the charts show it
   function spinTip(spin, R, M, z0, z1, apex, who) {
@@ -594,21 +626,21 @@ const Coach = (() => {
     const bold = (arr, flags, y) => {
       let d = "", on = false;
       for (let k = x0; k <= x1; k++) {
-        if (!flags || !flags[k] || arr[k] < 30) { on = false; continue; } // on the throttle only
+        if (!flags || !flags[k] || arr[k] < 30) { on = false; continue; } // on the pedal only
         d += (on ? "L" : "M") + x(k).toFixed(1) + "," + y(arr[k]).toFixed(1);
         on = true;
       }
       return d;
     };
     let spinShown = false;
+    const { lockM, lockR } = result.grid;
     const strips = kinds.map(([label, key, cls], i) => {
       const t0 = top + i * (H1 + gap);
       let spins = "";
-      if (key === "thr") {
-        const dR = bold(R.thr, spinR, v => yP(t0, v)), dM = bold(M.thr, spinM, v => yP(t0, v));
-        spins = (dR ? `<path class="pc-ref spin" d="${dR}"/>` : "") + (dM ? `<path class="pc-me throttle spin" d="${dM}"/>` : "");
-        spinShown = !!(dR || dM);
-      }
+      const [fR, fM] = key === "thr" ? [spinR, spinM] : [lockR, lockM];
+      const dR = bold(R[key], fR, v => yP(t0, v)), dM = bold(M[key], fM, v => yP(t0, v));
+      spins = (dR ? `<path class="pc-ref spin" d="${dR}"/>` : "") + (dM ? `<path class="pc-me ${cls} spin" d="${dM}"/>` : "");
+      if (dR || dM) spinShown = true;
       return `<text class="pc-title" x="${L}" y="${t0 - 4}">${label}</text>
         <line class="pc-grid" x1="${L}" x2="${W - Rt}" y1="${yP(t0, 100)}" y2="${yP(t0, 100)}"/>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yP(t0, 0)}" y2="${yP(t0, 0)}"/>
@@ -663,7 +695,7 @@ const Coach = (() => {
       <figcaption class="pc-legend"><span><i class="k-me"></i>You</span><span><i class="k-ref"></i>${who}</span>
         <span>metres from ${anchorName === "apex" ? "the apex (no braking here)" : `where ${who} starts braking`}</span>
         ${c.lifts.length ? `<span><i class="k-lift"></i>extra lift or braking</span>` : ""}
-        ${spinShown ? `<span><i class="k-spin"></i>bold throttle: wheelspin or traction control</span>` : ""}
+        ${spinShown ? `<span><i class="k-spin"></i>bold: wheel lock or spin</span>` : ""}
         ${steering && result.otherCar ? `<span>Steering: another car than ${who}'s, and cars have different steering lock</span>` : ""}
         ${braking ? "" : ""}</figcaption>
     </figure>`;
@@ -767,8 +799,8 @@ const Coach = (() => {
       const on = m === c.me ? onM : onR;
       return m.brakeAt !== null && k >= m.brakeAt && k < on ? L.brk[k] : L.thr[k];
     };
-    // hatched where your wheels spin or traction control cuts in (see wheelspin)
-    const spinM = result.grid.spinM;
+    // hatched where your wheels lock or spin, or traction control cuts in (see wheelspin and lockups)
+    const { spinM, lockM } = result.grid;
     let hatched = false;
     const line = (L, m, cls) => {
       let out = "";
@@ -776,7 +808,7 @@ const Coach = (() => {
         const e = Math.min(b, k + 2), width = THIN + ((FULL - THIN) * Math.max(0, Math.min(100, pedal(L, m, k)))) / 100;
         const seg = `d="M${X(L.x[k])},${Y(L.z[k])}L${X(L.x[e])},${Y(L.z[e])}" style="stroke-width:${width.toFixed(2)}"`;
         out += `<path class="${cls}" ${seg}/>`;
-        if (cls === "cw-me" && spinM && spinM[k]) { out += `<path class="cw-spin" stroke="url(#cw-hatch)" ${seg}/>`; hatched = true; }
+        if (cls === "cw-me" && ((spinM && spinM[k]) || (lockM && lockM[k]))) { out += `<path class="cw-spin" stroke="url(#cw-hatch)" ${seg}/>`; hatched = true; }
       }
       return out;
     };
@@ -809,7 +841,7 @@ const Coach = (() => {
       </table>
       <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: the brake from the braking point
         until the throttle is pressed again, the throttle everywhere else (thin = none, full = 100%).${hatched
-          ? " Hatched: your wheels spin, or traction control cuts in, more than the reference's." : ""}</p>
+          ? " Hatched: your wheels lock or spin, or traction control cuts in, more than the reference's." : ""}</p>
     </figure>`;
   }
 

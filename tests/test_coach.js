@@ -225,8 +225,8 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   assert.ok(r.corners.filter(c => c.tips.some(t => t.startsWith("Wheelspin "))).length >= 3, "several corners");
   assert.ok(!r.corners.some(c => c.tips.some(t => /rear wheels/.test(t))), "not the rear wheels on a front-wheel-drive car");
   const html = Coach.cornerDetail(c6, "the WR", r);
-  assert.ok(html.includes('class="pc-me throttle spin"') && html.includes("bold throttle: wheelspin"), "bold on the throttle chart");
-  assert.ok(html.includes('class="cw-spin"') && html.includes("Hatched: your wheels spin"), "hatched on the line close-up");
+  assert.ok(html.includes('class="pc-me throttle spin"') && html.includes("bold: wheel lock or spin"), "bold on the throttle chart");
+  assert.ok(html.includes('class="cw-spin"') && html.includes("Hatched: your wheels lock or spin"), "hatched on the line close-up");
   assert.ok(!/class="cw-spin"|pc-me throttle spin/.test(Coach.cornerDetail(self.corners[5], "the WR", self)), "none against itself");
   // traction control cutting in on your lap only, over 40 m after corner 2's apex
   const c2 = r.corners[1], R = r.grid.R, near = (x, z) => {
@@ -241,6 +241,13 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   // a recording without the front wheels' speeds (an older recorder): no wheelspin read from them, and no error
   const noFront = Coach.analyse(ref, { ...me, wheel_fl_kmh: undefined, wheel_fr_kmh: undefined });
   assert.ok(!noFront.corners.some(c => c.tips.some(t => /front wheels/.test(t))));
+  // lock-up: corner 1, full brake while turning in where the WR is at about half: the front wheels lock more
+  const c1 = r.corners[0], h1 = Coach.cornerDetail(c1, "the WR", r);
+  assert.ok(c1.tips.includes("Lock-up on entry: your front wheels lock more than the WR's. More brake than the tyres can take with the steering: see the bold brake line."),
+    c1.tips.join(" | "));
+  assert.ok(!c1.tips.some(t => t.startsWith("Brake release:")), "it takes the place of Brake release");
+  assert.ok(h1.includes('class="pc-me brake spin"') && h1.includes("bold: wheel lock or spin") && h1.includes("Hatched: your wheels lock or spin"));
+  assert.ok(!Coach.analyse(ref, ref).corners.some(c => c.tips.some(t => t.startsWith("Lock-up"))), "none against itself");
   console.log("wheelspin ok");
 }
 
