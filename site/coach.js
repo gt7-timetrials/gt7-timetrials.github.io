@@ -746,7 +746,7 @@ const Coach = (() => {
   // Close-up 2: the corner drawn to scale, the same way round as the lap map. The reference's line is thin and plain; yours is a
   // dot every 3 m or more (so they don't overlap on long corners) showing how your pedals differ from the reference's at that point: the brake wherever either of you
   // is braking, the throttle everywhere else. Filled = more than the reference, ring = less, size = how much.
-  // Letter badges mark the first brake (B), turn-in (T), back on the gas (G) and full throttle (F) on both lines.
+  // Letter badges mark the first brake (B), back on the gas (G) and full throttle (F) on both lines.
   const DOT_STEP = 3, SAME = 10; // points of pedal travel that count as the same
   const dotSize = d => (d < 30 ? 2.2 : d < 60 ? 3.3 : 4.6);
   function pedalDiff(R, M, k) {
@@ -756,7 +756,7 @@ const Coach = (() => {
   function cornerLines(result, c, label) {
     const who = label === "Reference" ? "the reference" : label; // a license test's gold run reads as a name otherwise
     const { R, M } = result.grid, n = R.x.length;
-    const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn, c.ref.turnStart, c.me.turnStart].filter(k => k !== null);
+    const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
     let a = Math.max(0, Math.min(...starts) - 15), b = Math.min(n - 1, c.line.exit + 25);
     if (b - a > 450) a = Math.max(0, b - 450);
     const xs = [], zs = [];
@@ -784,7 +784,7 @@ const Coach = (() => {
       return `<g class="cl-badge ${who2}"><line x1="${px.toFixed(1)}" y1="${py.toFixed(1)}" x2="${bx.toFixed(1)}" y2="${by.toFixed(1)}"/>
         <circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="6"/><text x="${bx.toFixed(1)}" y="${(by + 3).toFixed(1)}">${letter}</text></g>`;
     };
-    const badges = (L, m, who2, side) => badge(L, m.brakeAt, "B", who2, side) + badge(L, m.turnStart, "T", who2, side) + badge(L, m.onGas, "G", who2, side) + badge(L, m.fullGas, "F", who2, side);
+    const badges = (L, m, who2, side) => badge(L, m.brakeAt, "B", who2, side) + badge(L, m.onGas, "G", who2, side) + badge(L, m.fullGas, "F", who2, side);
     // direction arrow at the start, scale bar in the bottom corner
     const k2 = Math.min(b, a + 8), ang = (Math.atan2(R.z[k2] - R.z[a], R.x[k2] - R.x[a]) * 180) / Math.PI;
     const ten = 10 * scale, sy = H - 8;
@@ -805,7 +805,6 @@ const Coach = (() => {
       </div>
       <div class="cl-legend">
         <span><b class="cl-key-badge me">B</b><b class="cl-key-badge ref">B</b>first brake</span>
-        ${c.ref.turnStart !== null || c.me.turnStart !== null ? `<span><b class="cl-key-badge me">T</b><b class="cl-key-badge ref">T</b>turn-in</span>` : ""}
         <span><b class="cl-key-badge me">G</b><b class="cl-key-badge ref">G</b>back on the gas</span>
         <span><b class="cl-key-badge me">F</b><b class="cl-key-badge ref">F</b>full throttle</span>
         <span><b class="cl-key-badge me"></b>you, <b class="cl-key-badge ref"></b>${who}</span>

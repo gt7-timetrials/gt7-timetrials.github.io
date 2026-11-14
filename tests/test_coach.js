@@ -210,8 +210,9 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
     const ticks = scale(Coach.cornerDetail(c, "the WR", r));
     assert.ok(turnDeg(c) > 0 ? Math.max(...ticks) > 0 : Math.min(...ticks) < 0, `corner ${c.n}: ${ticks}`);
   }
-  // T badges on the line close-up, both laps
-  assert.strictEqual((chart7.match(/<g class="cl-badge (me|ref)"><line[^>]*\/>\s*<circle[^>]*\/><text[^>]*>T<\/text>/g) || []).length, 2);
+  // turn-in is marked on the steering chart only, not as a badge on the line close-up
+  assert.strictEqual((chart7.match(/<g class="cl-badge (me|ref)"><line[^>]*\/>\s*<circle[^>]*\/><text[^>]*>T<\/text>/g) || []).length, 0);
+  assert.strictEqual((chart7.match(/<g class="pc-t (me|ref)">/g) || []).length, 2, "T on the steering chart, both laps");
   // a reference recorded without steering (GT7's older data format): your steering only, and says so
   const blank = lap => ({ ...lap, steering_rad: lap.steering_rad.map(() => NaN) });
   const noRef = Coach.analyse(blank(ref), me, "Someone"), h = Coach.cornerDetail(noRef.corners[6], "Someone", noRef);
