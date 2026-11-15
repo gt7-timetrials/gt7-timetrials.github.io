@@ -218,11 +218,16 @@ Kept short; the details are in the pull requests and the git history.
     (`index.json`: track, car, driver, lap time, the event's dates) instead of being deleted, including the three
     recovered from git history (Barcelona's SFE_Asteria and tropicalarea laps, SUGO's AMS__Andrew). The model also
     needs the owner's own laps against them: the owner keeps their recordings until then.
-  - **Where the owner's own laps go** (owner, 10 November; set up when collecting starts): a separate, **private**
-    repository (for example `gt7-laps`), not this one. This repository is public, and every test run and session
+  - **Where the owner's own laps go** (owner, 10 November; set up 15 November): the separate, **private**
+    repository `nghiepluu75-alt/gt7laps`, not this one, one folder per track with an `index.csv` tagging each
+    recording to its reference lap here. Started with 9 recordings (Fuji, Blue Moon Bay, Barcelona, S-1). This repository is public, and every test run and session
     downloads all of it: a lap is about 1.2 MB (about 0.3 MB once git compresses it), so a thousand practice laps
     would add over a gigabyte, past GitHub's suggested size of about 1 GB. The reference laps stay in
     `data/archive/` here (about 5 MB a week); the model reads from both.
+  - **Exploratory, not pre-labelled** (owner, 15 November): no documenting each lap to fit a pattern; laps only
+    need tagging to the right reference. The owner will record a variety of laps, and the analysis (for example
+    principal component analysis over the per-corner differences from the reference) finds the patterns, to be
+    specified and explored together.
   - **First, a model from the owner's own laps:** the owner records many laps across tracks and cars; fit a
     statistical model of the time lost in each corner against the corner's and car's characteristics (corner type,
     speed, braking zone length, car class and so on) and the differences from the reference lap (braking point,
