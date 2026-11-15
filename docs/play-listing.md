@@ -51,9 +51,11 @@ on the phone it's the shorter "Laps for GT7"; the "for GT7" form, so it reads as
 **Graphics:**
 - App icon: `docs/play/icon-512.png` (512 × 512).
 - Feature graphic: `docs/play/feature-1024x500.png`.
-- Phone screenshots, in this order: `docs/play/phone-1.png` to `phone-7.png` (1080 × 2160).
-  1. Current time trials and gold predictions; 2. recording; 3. result; 4. track map;
-  5. corner tips; 6. racing line close-up; 7. brake and throttle chart.
+- Phone screenshots, in this order: `docs/play/phone-1.png` to `phone-8.png` (1080 × 2160; Play takes up to 8).
+  Taken 15 November 2026 from the live site in the app (`docs/play/shots.js`, with the owner's Fuji laps against
+  AMS__Andrew's): 1. time trials and gold predictions; 2. daily races; 3. recording with audio cues; 4. the result and
+  Across your laps; 5. corner tips; 6. brake, throttle, steering and speed charts (bold: wheel lock or spin); 7. the
+  line close-up (hatched: lock or spin); 8. the Audio cues tab.
 - Tablet screenshots: not needed for a phone app (leave empty).
 
 **Category:** App · Tools. **Tags:** pick the closest to "racing" / "games tools" offered.
