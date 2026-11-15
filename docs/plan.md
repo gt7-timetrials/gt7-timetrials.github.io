@@ -11,7 +11,7 @@ Super License tests: keep it simple, and only take on what one person can look a
    - [x] Recording from the home laptop works (10 November): a Claude Code session on the laptop, driven remotely
          while the owner plays the replays from the PS Portal, recorded the week's races and pushed them, with last
          week's laps moved to the archive. The steps are in `CLAUDE.md`, for when the owner is away.
-   - [ ] **The new name in the app** with the next app update or at the production launch: under the icon it's
+   - [x] **The new name in the app** (live with the production release, 15 November): under the icon it's
          **"Laps for GT7"** (the owner, 5 November: the full name is too long for a phone's home screen; the beta app
          is "Laps beta"), while the Play listing and the website use the full name, **"Lap Companion for GT7"** (the
          owner, 4 November: "coach" claims too much). The app's own name (`app_name`, in the `.aab` on the
@@ -104,7 +104,11 @@ Super License tests: keep it simple, and only take on what one person can look a
          description are in `docs/play-listing.md`, to go on the listing with the release.
    - [x] **Applied for production on 14 November 2026**, after the 14 days with 12+ testers. The answers (each at
          most 300 characters) are in `docs/play-listing.md`. Google's review takes up to about a week.
-   - [ ] When approved: create a production release with test build 36 (`gt7-timetrials-play.aab` on the
+   - [x] **Live on Google Play on 15 November 2026** (submission 7: production with build 36 in 177 countries
+         and the rest of the world, the listing renamed Lap Companion for GT7 with the new descriptions and eight
+         new screenshots). A first try put build 36 on open testing by mistake; it was withdrawn before review.
+         https://play.google.com/store/apps/details?id=io.github.gt7timetrials
+   - [x] (was) When approved: create a production release with test build 36 (`gt7-timetrials-play.aab` on the
          android-test release, built 15 November: the name "Laps for GT7" under the icon, and the recorder keeping the
          steering after a slow start), and at the same time rename the listing **Lap Companion for GT7** and paste the
          new short and full description.
