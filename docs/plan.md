@@ -109,6 +109,13 @@ Super License tests: keep it simple, and only take on what one person can look a
          steering after a slow start), and at the same time rename the listing **Lap Companion for GT7** and paste the
          new short and full description.
    - [ ] Then the launch post on r/granturismo (and GTPlanet), and after that about one post a month.
+         **Positioning for it** (owner, 16 November: Reddit is getting crowded with similar apps): lead with what's
+         easy, and with what's hard to copy, without claiming to be unique: **free** (no account, no ads), **just
+         your phone** (no PC or setup), and **this week's reference laps already in** for the time trials, daily
+         races and licenses, recorded by the owner each week (most others ask players to find their own comparison
+         laps, need a PC, or charge a subscription). The features follow from that: tips in plain words, the charts
+         (brake, throttle, steering, speed, wheel lock and spin), audio cues for the braking points.
+         - Play figures by 7 November (the day after the update post): 18 monthly active users, 4 on the day.
 
    Website changes (including reference laps) reach the app straight away. Only changes to the app's own code
    (`android/`) need a new `.aab` uploaded to the Play Console; each build's version number goes up by itself.
