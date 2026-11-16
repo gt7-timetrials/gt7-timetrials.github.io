@@ -120,6 +120,51 @@
       "added": "2026-11-05",
       "was": "data/reference_laps/telemetry_20261105_fuji.csv",
       "note": "Replaced on 14 November by AMS__Andrew's 1:39.912 in the same car, which has the steering angle (this recording doesn't: the recorder fell back to GT7's older data format)."
+    },
+    {
+      "file": "daily/2026-11-10_A_suzuka-east-course_BW-_rarapipi_0-59.992.csv",
+      "kind": "daily race",
+      "race": "A",
+      "track": "Suzuka Circuit - East Course",
+      "car": "Honda Integra Type R (DC2) '95",
+      "driver": "BW-_ららぴぴ",
+      "lap_ms": 59992,
+      "lap": "0:59.992",
+      "event_start": "2026-11-10",
+      "event_end": "2026-11-16",
+      "added": "2026-11-10",
+      "was": "data/daily/laps/A.csv",
+      "note": "Week of 10 November, race A (Honda Integra Type R (DC2) '95). Recorded on the home laptop over Remote Control."
+    },
+    {
+      "file": "daily/2026-11-10_B_trial-mountain_Sillon_1-59.089.csv",
+      "kind": "daily race",
+      "race": "B",
+      "track": "Trial Mountain Circuit",
+      "car": "Lamborghini Huracán Gr.4",
+      "driver": "Sillon",
+      "lap_ms": 119089,
+      "lap": "1:59.089",
+      "event_start": "2026-11-10",
+      "event_end": "2026-11-16",
+      "added": "2026-11-10",
+      "was": "data/daily/laps/B.csv",
+      "note": "Week of 10 November, race B (Gr.4 cars, free choice). Recorded on the home laptop over Remote Control."
+    },
+    {
+      "file": "daily/2026-11-10_C_road-atlanta_D-Chafe_1-15.918.csv",
+      "kind": "daily race",
+      "race": "C",
+      "track": "Michelin Raceway Road Atlanta",
+      "car": "Toyota GR Supra Racing Concept '18",
+      "driver": "D. Chafe",
+      "lap_ms": 75918,
+      "lap": "1:15.918",
+      "event_start": "2026-11-10",
+      "event_end": "2026-11-16",
+      "added": "2026-11-10",
+      "was": "data/daily/laps/C.csv",
+      "note": "Week of 10 November, race C (Gr.3 cars, free choice). Recorded on the home laptop over Remote Control."
     }
   ]
 }
