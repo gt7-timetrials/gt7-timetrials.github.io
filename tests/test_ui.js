@@ -8,6 +8,8 @@
 const { chromium, devices } = require("playwright");
 const assert = require("assert");
 const fs = require("fs");
+const { keysInCode, nonLiteralCalls, keysOnPage } = require("./i18n_keys.js");
+const ES = require("../site/lang/es.js");
 
 const [url, s1File, multiFile, appsJson] = process.argv.slice(2);
 const s1 = fs.readFileSync(s1File, "utf8");
@@ -131,6 +133,51 @@ function standIn({ withCues, csv }) {
     assert.ok(rating.length && rating.every((r, i) => (days[i] < 2 ? r === "TBD" : ["Easy", "Medium", "Hard", "V.hard"].includes(r))),
       `difficulty ratings: ${rating}, TBD before day 2 (days ${days})`);
     await p.context().close();
+  }
+
+  // 1b. languages: every text has a Spanish translation and none is left over; a Spanish phone gets Spanish
+  // (Automatic), and the Settings tab switches language
+  {
+    const p = await page(null);
+    assert.deepStrictEqual(nonLiteralCalls(), [], "tr() always starts with a plain string, so the texts can be listed");
+    const keys = new Set([...keysInCode(), ...(await p.evaluate(`(${keysOnPage})()`))]);
+    assert.deepStrictEqual([...keys].filter(k => !(k in ES)), [], "texts without a Spanish translation (site/lang/es.js)");
+    assert.deepStrictEqual(Object.keys(ES).filter(k => !keys.has(k)), [], "Spanish translations of texts no longer used");
+    assert.strictEqual(await p.locator('nav a[data-tab="settings"]').innerText(), "Settings");
+    await p.context().close();
+
+    const ctx = await browser.newContext({ ...devices["iPhone 13"], locale: "es-ES" });
+    await races(ctx);
+    const es = await ctx.newPage();
+    es.on("pageerror", e => errors.push(`Spanish: ${e.message}`));
+    await es.goto(url + "#license");
+    await es.waitForSelector(".license-file", { state: "attached" });
+    assert.strictEqual(await es.evaluate(() => document.documentElement.lang), "es");
+    assert.strictEqual(await es.locator('nav a[data-tab="current"]').innerText(), "Contrarrelojes", "a Spanish phone: Spanish");
+    await es.locator('input.license-file[data-i="0"]').setInputFiles(s1File);
+    await es.locator("#license-list .coach-summary").first().waitFor();
+    assert.match(await es.locator("#license-list .coach-summary").first().innerText(), /Tu vuelta 1:18\.521/);
+    for (const tab of ["current", "daily", "past", "drivers", "howto", "about", "settings"]) {
+      await es.evaluate(t => { location.hash = t; }, tab);
+      await es.locator(`#tab-${tab}`).waitFor();
+    }
+    await es.locator("#current-list .stat").first().waitFor({ state: "attached" });
+    assert.deepStrictEqual(await es.evaluate(() => I18N.missing), [], "texts shown in English on the Spanish site");
+    // links and names keep their attributes; names from the game aren't machine-translated
+    assert.strictEqual(await es.locator('#tab-about a[href="privacy.html"]').innerText(), "privacidad");
+    assert.ok(await es.locator('#current-list h2 [translate="no"]').count() > 0, "track names are marked not to translate");
+    // Settings: Automatic (Español) is chosen; English sticks after a reload, and Automatic comes back
+    await es.evaluate(() => { location.hash = "settings"; });
+    assert.strictEqual(await es.locator("#set-lang").inputValue(), "auto");
+    assert.match(await es.locator('#set-lang option[value="auto"]').innerText(), /Español/);
+    await Promise.all([es.waitForEvent("load"), es.selectOption("#set-lang", "en")]);
+    await es.locator('nav a[data-tab="current"]').waitFor();
+    assert.strictEqual(await es.locator('nav a[data-tab="current"]').innerText(), "Time trials", "English chosen in Settings");
+    assert.strictEqual(await es.evaluate(() => document.documentElement.lang), "en");
+    await Promise.all([es.waitForEvent("load"), es.selectOption("#set-lang", "auto")]);
+    await es.locator('nav a[data-tab="current"]').waitFor();
+    assert.strictEqual(await es.locator('nav a[data-tab="current"]').innerText(), "Contrarrelojes", "back to Automatic");
+    await ctx.close();
   }
 
   // 2. the earlier apps: the app on main (what testers have, or will once its .aab is on Google Play) and the first
