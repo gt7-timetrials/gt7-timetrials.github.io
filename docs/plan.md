@@ -88,6 +88,12 @@ Super License tests: keep it simple, and only take on what one person can look a
            quickly gets a world's best time whose replay can be downloaded, like a time trial's. The owner agreed, and
            the Daily races tab went live the same day with all three races (A one car, B and C free choice of Gr.3 and
            Gr.4, using the new free car choice flag); the tester said they'd try the app soon.
+         - **A Reddit tester (17 November):** liked the time trials, the daily races and consecutive laps ("quite good
+           for improvement"). Thought the gas chirp meant full throttle or the apex; it plays half a second before the
+           reference starts to apply throttle, so the Audio cues tab now says so ("start squeezing it on, not flat
+           out"). Asked for downshift markers on the dots close-up (added: the gear number where each lap shifts
+           down). Asked for other languages (Spanish first, then Portuguese, French and German): a separate piece of
+           work, ideally with a native speaker checking each.
    - [x] Before production: lead the Play listing and posts with what the app does: **easy and convenient**,
          for time trials, daily races and licenses. Keep it neutral about who it's for (no "for beginners" or "for
          experts"): people can decide for themselves. The others: GT7's own Data Logger (since November
