@@ -7,6 +7,14 @@
 // 4. For each corner compare braking, trail braking, minimum speed, throttle and steering.
 
 const Coach = (() => {
+  // The language (site/i18n.js): the page's in the browser, English under Node unless a test chooses (useLanguage).
+  // Each tip is { kind, text }, so the rules below that drop or replace tips don't depend on the wording.
+  let tr = typeof I18N !== "undefined" ? I18N.t : require("./i18n.js").create("en").t;
+  const useLanguage = t => { tr = t; };
+  // who a lap is compared with: a driver's name as it is; the reference, in the page's language
+  const named = who => ({ "the reference lap": tr("the reference lap"), "the WR": tr("the WR"), Reference: tr("Reference") })[who] ?? who;
+  const tip = (kind, text, vars) => ({ kind, text: tr(text, vars) });
+  const joinAnd = list => list.reduce((a, b) => tr("{a}, and {b}", { a, b }));
   const LAP_FIELDS = ["x", "z", "speed_kmh", "throttle_pct", "brake_pct", "steering_rad", "wheel_rl_kmh", "wheel_rr_kmh", "gear",
     "wheel_fl_kmh", "wheel_fr_kmh", "tcs_active"];
   // a section's colour: time lost as a share of the reference's time through it (within 3%, like gold in a time
@@ -219,56 +227,61 @@ const Coach = (() => {
 
   const r0 = v => Math.round(v);
   function tips(me, ref, lost, who, steerRatio) {
-    const out = [];
+    const out = [], W = { who, Who: cap(who) };
     const d = (a, b) => (a === null || b === null ? null : a - b);
     if (ref.brakeAt !== null && me.brakeAt !== null) {
       const db = d(me.brakeAt, ref.brakeAt);
-      if (db <= -5) out.push(`Braking point: you brake ${-db} m earlier than ${who}.`);
-      else if (db >= 5) out.push(`Braking point: you brake ${db} m later than ${who}` +
-        (me.minSpeed < ref.minSpeed - 3 ? `, then have to slow down more: you may be overshooting the entry.` : "."));
-      if (ref.fullBrake - me.fullBrake >= 15) out.push(`Brake pressure: ${who} stays above 90% brake for ${ref.fullBrake} m; you do for ${me.fullBrake} m. Brake hard at the start of the zone, then ease off.`);
+      if (db <= -5) out.push(tip("brakingPoint", "Braking point: you brake {m} m earlier than {who}.", { ...W, m: -db }));
+      else if (db >= 5) out.push(me.minSpeed < ref.minSpeed - 3
+        ? tip("brakingPoint", "Braking point: you brake {m} m later than {who}, then have to slow down more: you may be overshooting the entry.", { ...W, m: db })
+        : tip("brakingPoint", "Braking point: you brake {m} m later than {who}.", { ...W, m: db }));
+      if (ref.fullBrake - me.fullBrake >= 15) out.push(tip("brakePressure", "Brake pressure: {who} stays above 90% brake for {ref} m; you do for {me} m. Brake hard at the start of the zone, then ease off.", { ...W, ref: ref.fullBrake, me: me.fullBrake }));
       if (ref.brakeAtTurnIn >= 15 && me.brakeAtTurnIn < ref.brakeAtTurnIn / 2) {
         const trail = ref.release !== null && ref.turnIn !== null ? ref.release - ref.turnIn : 0;
-        out.push(`Trail braking: ${who} is still at ${r0(ref.brakeAtTurnIn)}% brake when starting to turn` +
-          (trail > 5 ? ` and keeps easing it off for ${trail} m into the corner` : "") + `; you're at ${r0(me.brakeAtTurnIn)}%.`);
+        const v = { ...W, ref: r0(ref.brakeAtTurnIn), me: r0(me.brakeAtTurnIn), m: trail };
+        out.push(trail > 5
+          ? tip("trail", "Trail braking: {who} is still at {ref}% brake when starting to turn and keeps easing it off for {m} m into the corner; you're at {me}%.", v)
+          : tip("trail", "Trail braking: {who} is still at {ref}% brake when starting to turn; you're at {me}%.", v));
       } else if (me.brakeAtTurnIn >= 15 && me.brakeAtTurnIn > 2 * ref.brakeAtTurnIn) {
-        out.push(`Brake release: you're still at ${r0(me.brakeAtTurnIn)}% brake when starting to turn; ${who} is at ${r0(ref.brakeAtTurnIn)}%. Release more before turning in.`);
+        out.push(tip("brakeRelease", "Brake release: you're still at {me}% brake when starting to turn; {who} is at {ref}%. Release more before turning in.", { ...W, me: r0(me.brakeAtTurnIn), ref: r0(ref.brakeAtTurnIn) }));
       }
     } else if (ref.brakeAt !== null && me.brakeAt === null) {
-      out.push(`${cap(who)} brakes here (up to ${r0(ref.peakBrake)}%); you only lift off the throttle.`);
+      out.push(tip("refBrakes", "{Who} brakes here (up to {p}%); you only lift off the throttle.", { ...W, p: r0(ref.peakBrake) }));
     } else if (ref.brakeAt === null && me.brakeAt !== null) {
-      out.push(`${cap(who)} doesn't brake here` + (ref.minThrottle > 5 ? `, only easing to ${r0(ref.minThrottle)}% throttle` : `, just lifting off`) +
-        `; you brake to ${r0(me.peakBrake)}%.`);
+      out.push(ref.minThrottle > 5
+        ? tip("refNoBrake", "{Who} doesn't brake here, only easing to {t}% throttle; you brake to {p}%.", { ...W, t: r0(ref.minThrottle), p: r0(me.peakBrake) })
+        : tip("refNoBrake", "{Who} doesn't brake here, just lifting off; you brake to {p}%.", { ...W, p: r0(me.peakBrake) }));
     } else if (ref.liftAt !== null && me.liftAt !== null && me.minThrottle < ref.minThrottle - 15) {
-      out.push(`Lift: you come off the throttle to ${r0(me.minThrottle)}%; ${who} only to ${r0(ref.minThrottle)}%.`);
+      out.push(tip("lift", "Lift: you come off the throttle to {me}%; {who} only to {ref}%.", { ...W, me: r0(me.minThrottle), ref: r0(ref.minThrottle) }));
     }
-    const dv = me.minSpeed - ref.minSpeed;
-    if (dv <= -3) out.push(`Minimum speed: ${r0(me.minSpeed)} km/h vs ${r0(ref.minSpeed)} km/h. You're slowing the car more than you need to.`);
-    else if (dv >= 3 && lost > 0.1) out.push(`Minimum speed: you carry ${r0(me.minSpeed)} km/h vs ${r0(ref.minSpeed)} km/h but lose time afterwards. Too fast on entry can mean a wide, slow exit.`);
+    const dv = me.minSpeed - ref.minSpeed, speeds = { me: r0(me.minSpeed), ref: r0(ref.minSpeed) };
+    if (dv <= -3) out.push(tip("minSpeed", "Minimum speed: {me} km/h vs {ref} km/h. You're slowing the car more than you need to.", speeds));
+    else if (dv >= 3 && lost > 0.1) out.push(tip("minSpeed", "Minimum speed: you carry {me} km/h vs {ref} km/h but lose time afterwards. Too fast on entry can mean a wide, slow exit.", speeds));
     const dg = d(me.onGas, ref.onGas), df = d(me.fullGas, ref.fullGas);
-    if (dg !== null && dg >= 8) out.push(`Throttle: you get back on the throttle ${dg} m later than ${who}.`);
-    if (df !== null && df >= 15) out.push(`Full throttle: you reach full throttle ${df} m later than ${who}.`);
-    if (me.saw >= 2 && ref.saw <= 1) out.push(`Throttle control: your throttle goes on and off ${me.saw} times before full throttle; ${who} squeezes it on smoothly. Smooth, progressive throttle keeps the car balanced.`);
+    if (dg !== null && dg >= 8) out.push(tip("throttle", "Throttle: you get back on the throttle {m} m later than {who}.", { ...W, m: dg }));
+    if (df !== null && df >= 15) out.push(tip("fullThrottle", "Full throttle: you reach full throttle {m} m later than {who}.", { ...W, m: df }));
+    if (me.saw >= 2 && ref.saw <= 1) out.push(tip("throttleControl", "Throttle control: your throttle goes on and off {n} times before full throttle; {who} squeezes it on smoothly. Smooth, progressive throttle keeps the car balanced.", { ...W, n: me.saw }));
     // Steering angles depend on the controller or wheel and its settings, so compare against the
     // ratio this driver typically uses over the lap rather than the reference's raw angle.
     if (steerRatio && ref.maxSteerDeg >= 20 && me.maxSteerDeg / ref.maxSteerDeg >= 1.3 * steerRatio) {
-      out.push(`Steering: here you use ${Math.round(100 * (me.maxSteerDeg / ref.maxSteerDeg / steerRatio - 1))}% more steering lock than you do elsewhere on the lap, compared with ${who}. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle.`);
+      out.push(tip("steering", "Steering: here you use {p}% more steering lock than you do elsewhere on the lap, compared with {who}. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle.", { ...W, p: Math.round(100 * (me.maxSteerDeg / ref.maxSteerDeg / steerRatio - 1)) }));
     }
     if (me.wheelspin) out.push(me.wheelspin);
-    if (me.exitSpeed <= ref.exitSpeed - 4 && lost > 0) out.push(`Exit: you leave the corner at ${r0(me.exitSpeed)} km/h vs ${r0(ref.exitSpeed)} km/h, and that costs time all the way down the straight after it.`);
-    if (!out.length) out.push(lost < 0.1 ? `Close to ${who} here.` : "No single big difference: small losses through the whole section.");
+    if (me.exitSpeed <= ref.exitSpeed - 4 && lost > 0) out.push(tip("exit", "Exit: you leave the corner at {me} km/h vs {ref} km/h, and that costs time all the way down the straight after it.", { me: r0(me.exitSpeed), ref: r0(ref.exitSpeed) }));
+    if (!out.length) out.push(lost < 0.1 ? tip("close", "Close to {who} here.", W) : tip("noSingle", "No single big difference: small losses through the whole section."));
     return out;
   }
   const cap = s => s[0].toUpperCase() + s.slice(1);
 
   function analyse(refLap, myLap, who = "the WR") {
+    who = named(who);
     const ref = { ...refLap, s: [0] };
     for (let i = 1; i < ref.x.length; i++) ref.s.push(ref.s[i - 1] + Math.hypot(ref.x[i] - ref.x[i - 1], ref.z[i] - ref.z[i - 1]));
     const n = Math.floor(ref.s[ref.s.length - 1]);
     const p = project(ref, myLap);
     const sorted = p.off.slice().sort((a, b) => a - b);
     if (sorted[Math.floor(sorted.length / 2)] > 25 || p.s[p.s.length - 1] < 0.9 * n) {
-      return { error: "This lap doesn't follow the reference lap's track. Is it the same track and layout?" };
+      return { error: tr("This lap doesn't follow the reference lap's track. Is it the same track and layout?") };
     }
     const R = resample(ref, ref.s, n), M = resample(myLap, p.s, n);
     const delta = M.t.map((t, i) => t - R.t[i]);
@@ -333,14 +346,15 @@ const Coach = (() => {
   function lineTip(L, who) {
     if (L.turnDeg < 15) return null; // a kink: inside and outside mean little
     const m = v => Math.abs(v).toFixed(1), parts = [], advice = [];
-    if (L.atTurnIn <= -1.5) { parts.push(`at turn-in you're ${m(L.atTurnIn)} m tighter than ${who}, who starts the turn from further out`); advice.push("start the turn from the outside edge"); }
-    else if (L.atTurnIn >= 1.5) parts.push(`at turn-in you're ${m(L.atTurnIn)} m wider than ${who}`);
-    if (L.atApex >= 1.5) { parts.push(`at the apex you're ${m(L.atApex)} m wide of ${who}'s line`); advice.push("get closer to the apex"); }
-    else if (L.atApex <= -1.5) parts.push(`at the apex you're ${m(L.atApex)} m tighter than ${who}`);
-    if (L.atExit <= -1.5) { parts.push(`on exit ${who} runs ${m(L.atExit)} m wider than you`); advice.push("let the car run out to the edge on exit"); }
-    else if (L.atExit >= 1.5) parts.push(`on exit you run ${m(L.atExit)} m wider than ${who}`);
+    if (L.atTurnIn <= -1.5) { parts.push(tr("at turn-in you're {m} m tighter than {who}, who starts the turn from further out", { m: m(L.atTurnIn), who })); advice.push(tr("start the turn from the outside edge")); }
+    else if (L.atTurnIn >= 1.5) parts.push(tr("at turn-in you're {m} m wider than {who}", { m: m(L.atTurnIn), who }));
+    if (L.atApex >= 1.5) { parts.push(tr("at the apex you're {m} m wide of {who}'s line", { m: m(L.atApex), who })); advice.push(tr("get closer to the apex")); }
+    else if (L.atApex <= -1.5) parts.push(tr("at the apex you're {m} m tighter than {who}", { m: m(L.atApex), who }));
+    if (L.atExit <= -1.5) { parts.push(tr("on exit {who} runs {m} m wider than you", { m: m(L.atExit), who })); advice.push(tr("let the car run out to the edge on exit")); }
+    else if (L.atExit >= 1.5) parts.push(tr("on exit you run {m} m wider than {who}", { m: m(L.atExit), who }));
     if (!parts.length) return null;
-    return `Track use: ${parts.join("; ")}.${advice.length ? ` Use more of the track: ${advice.join(", and ")}.` : ""}`;
+    return tip("line", "Track use: {parts}.{advice}", { parts: parts.join("; "),
+      advice: advice.length ? " " + tr("Use more of the track: {list}.", { list: joinAnd(advice) }) : "" });
   }
 
   const FASTER = 0.05; // s: a section this much quicker than the reference, or closer than this to it, gets no advice
@@ -351,29 +365,31 @@ const Coach = (() => {
       let t = tips(me_m, ref_m, lost, who, steerRatio);
       // lock-up says what "Brake release" would, from the wheels themselves: it takes its place
       const lock = lockTip(spin, R, M, z0, z1, apex, who);
+      const quiet = x => x.kind !== "noSingle" && x.kind !== "close";
       if (lock) {
-        const at = t.findIndex(x => x.startsWith("Brake release:"));
-        if (at >= 0) t[at] = lock; else t.splice(t.findIndex(x => x.startsWith("Braking point:")) + 1, 0, lock);
-        t = t.filter(x => !x.startsWith("No single big difference") && !x.startsWith("Close to "));
+        const at = t.findIndex(x => x.kind === "brakeRelease");
+        if (at >= 0) t[at] = lock; else t.splice(t.findIndex(x => x.kind === "brakingPoint") + 1, 0, lock);
+        t = t.filter(quiet);
       }
       const line = lineUse(R, M, z0, z1, apex, ref_m), lt = lineTip(line, who);
       if (lt) t.push(lt);
       const mine = lifts.filter(z => z.corner === i);
-      if (mine.some(z => z.kind === "brake")) t = t.filter(x => !x.startsWith(`${cap(who)} doesn't brake`)); // said more precisely below
+      if (mine.some(z => z.kind === "brake")) t = t.filter(x => x.kind !== "refNoBrake"); // said more precisely below
       if (mine.length >= 3) t.push(liftsTip(mine, apex, who)); else mine.forEach(z => t.push(liftTip(z, apex, who)));
       const after = straightTip(entry - z0, approachLost, cornerLost, z1 - exit, lost - cornerLost - approachLost, me_m, ref_m,
         mine.some(z => z.from >= exit), i === corners.length - 1);
-      if (after) { t = t.filter(x => !x.startsWith("Exit:")); t.unshift(after); }
-      if (t.length > 1) t = t.filter(x => !x.startsWith("No single big difference") && !x.startsWith("Close to "));
+      if (after) { t = t.filter(x => x.kind !== "exit"); t.unshift(after); }
+      if (t.length > 1) t = t.filter(quiet);
       // faster than the reference here (as shown, so a "−0.05 s" chip counts), or within 0.05 s of it: no advice; at
       // that level the charts show the differences
       const shown = Math.round(lost * 100); // hundredths, as the chip shows it
-      if (shown <= -FASTER * 100) t = [`You're ${(-lost).toFixed(2)} s faster than ${who} here.`];
-      else if (Math.abs(shown) < FASTER * 100) t = [`Close to ${who} here.`];
+      if (shown <= -FASTER * 100) t = [tip("faster", "You're {s} s faster than {who} here.", { s: (-lost).toFixed(2), who })];
+      else if (Math.abs(shown) < FASTER * 100) t = [tip("close", "Close to {who} here.", { who })];
       else if (i === 0 && R.v[0] - M.v[0] >= 5) {
-        t.unshift(`Start of the lap: you crossed the line at ${r0(M.v[0])} km/h vs ${r0(R.v[0])} km/h, which cost about ${delta[ref_m.top].toFixed(2)} s before the first braking point. That comes from your exit of the last corner on the lap before.`);
+        t.unshift(tip("start", "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.",
+          { me: r0(M.v[0]), ref: r0(R.v[0]), s: delta[ref_m.top].toFixed(2) }));
       }
-      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t, lifts: mine, line };
+      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t.map(x => x.text), lifts: mine, line };
     }) };
   }
 
@@ -441,25 +457,26 @@ const Coach = (() => {
     if (runs.reduce((t, [a, b]) => t + b - a, 0) < SPIN_MIN) return null;
     let worst = runs[0][0];
     for (const [from, to] of runs) for (let k = from; k < to; k++) if (lockOf(M, k) < lockOf(M, worst)) worst = k;
-    const wheels = !Number.isFinite(M.slipF[worst]) ? "wheels" : M.slipF[worst] <= M.slipR[worst] ? "front wheels" : "rear wheels";
+    const wheels = !Number.isFinite(M.slipF[worst]) ? tr("wheels") : M.slipF[worst] <= M.slipR[worst] ? tr("front wheels") : tr("rear wheels");
     const turning = Math.abs((M.steer[worst] * 180) / Math.PI) >= 15; // false without steering in the recording
-    const where = runs[0][0] < apex ? "on entry" : "after the apex";
-    return `Lock-up ${where}: your ${wheels} lock more than ${who}'s. More brake than the tyres can take${turning ? " with the steering" : ""}: see the bold brake line.`;
+    const where = runs[0][0] < apex ? tr("on entry") : tr("after the apex");
+    return tip("lock", "Lock-up {where}: your {wheels} lock more than {who}'s. More brake than the tyres can take{steering}: see the bold brake line.",
+      { where, wheels, who, steering: turning ? " " + tr("with the steering") : "" });
   }
   // The tip for a section with SPIN_MIN metres or more of wheelspin: short, since the charts show it
   function spinTip(spin, R, M, z0, z1, apex, who) {
     const runs = spin.runs.map(([a, b]) => [Math.max(a, z0), Math.min(b, z1)]).filter(([a, b]) => b > a);
     const total = runs.reduce((t, [a, b]) => t + b - a, 0);
     if (total < SPIN_MIN) return null;
-    const a = runs[0][0], where = a >= apex - 10 ? "on exit" : "before the apex";
+    const a = runs[0][0], where = a >= apex - 10 ? tr("on exit") : tr("before the apex");
     let bySlip = 0;
     for (const [from, to] of runs) for (let k = from; k < to; k++) if (spin.why[k] === 1) bySlip++;
-    const why = "More throttle or steering than the tyres can take: see the bold throttle line.";
+    const why = tr("More throttle or steering than the tyres can take: see the bold throttle line.");
     if (bySlip >= total / 2) {
-      const wheels = spin.axle === "front" ? "front wheels" : spin.axle === "rear" ? "rear wheels" : "wheels";
-      return `Wheelspin ${where}: your ${wheels} spin more than ${who}'s. ${why}`;
+      const wheels = spin.axle === "front" ? tr("front wheels") : spin.axle === "rear" ? tr("rear wheels") : tr("wheels");
+      return tip("wheelspin", "Wheelspin {where}: your {wheels} spin more than {who}'s. {why}", { where, wheels, who, why });
     }
-    return `Traction control ${where}: yours cuts in, ${who}'s doesn't. ${why}`;
+    return tip("wheelspin", "Traction control {where}: yours cuts in, {who}'s doesn't. {why}", { where, who, why });
   }
 
   function extraLifts(corners, R, M, delta) {
@@ -500,29 +517,32 @@ const Coach = (() => {
     if (length < 150) { inCorner += onStraight; onStraight = 0; }
     if ((!before || Math.abs(onApproach) < 0.1) && (length < 150 || Math.abs(onStraight) < 0.1)) return null;
     const why = [];
-    if (me.exitSpeed <= ref.exitSpeed - 2 && onStraight > 0) why.push(`you leave the corner ${r0(ref.exitSpeed - me.exitSpeed)} km/h slower (${r0(me.exitSpeed)} vs ${r0(ref.exitSpeed)} km/h), and that carries all the way down the straight`);
-    if (lifted) why.push(`you lift on the straight (below)`);
+    if (me.exitSpeed <= ref.exitSpeed - 2 && onStraight > 0) why.push(tr("you leave the corner {d} km/h slower ({me} vs {ref} km/h), and that carries all the way down the straight",
+      { d: r0(ref.exitSpeed - me.exitSpeed), me: r0(me.exitSpeed), ref: r0(ref.exitSpeed) }));
+    if (lifted) why.push(tr("you lift on the straight (below)"));
     const parts = [];
-    if (before) parts.push(`${fmtLost(onApproach)} on the ${before} m from the start line to the braking zone`);
-    parts.push(`${fmtLost(inCorner)} in the corner`);
-    if (length >= 150) parts.push(`${fmtLost(onStraight)} on the ${length} m straight after it${last ? " to the finish line" : ""}`);
-    return `Where the time goes: ${parts.join(", ")}` + (why.length && length >= 150 ? `: ${why.join(", and ")}.` : ".");
+    if (before) parts.push(tr("{lost} on the {m} m from the start line to the braking zone", { lost: fmtLost(onApproach), m: before }));
+    parts.push(tr("{lost} in the corner", { lost: fmtLost(inCorner) }));
+    if (length >= 150) parts.push(last ? tr("{lost} on the {m} m straight after it to the finish line", { lost: fmtLost(onStraight), m: length })
+      : tr("{lost} on the {m} m straight after it", { lost: fmtLost(onStraight), m: length }));
+    return why.length && length >= 150 ? tip("where", "Where the time goes: {parts}: {why}.", { parts: parts.join(", "), why: joinAnd(why) })
+      : tip("where", "Where the time goes: {parts}.", { parts: parts.join(", ") });
   }
 
   function liftsTip(zs, apex, who) {
-    const where = z => (z.from <= apex ? `${apex - z.from} m before` : `${z.from - apex} m after`);
     const braking = zs.filter(z => z.kind === "brake").length;
-    return `Lifts: ${zs.length} times in this section you come off the throttle${braking ? ` or brake` : ""} where ${who} doesn't, ` +
-      `for ${zs.reduce((a, z) => a + z.length, 0)} m in all (starting ${zs.map(where).join(", ")} the apex). ` +
-      `Together that costs about ${zs.reduce((a, z) => a + z.cost, 0).toFixed(2)} s. Stay flat out until the braking point.`;
+    return tip("lifts", "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.", {
+      n: zs.length, brake: braking ? " " + tr("or brake") : "", who, m: zs.reduce((a, z) => a + z.length, 0),
+      where: zs.map(z => metres(z.from, apex)).join(", "), s: zs.reduce((a, z) => a + z.cost, 0).toFixed(2) });
   }
 
   function liftTip(z, apex, who) {
-    const where = z.from < apex - 300 ? `${z.from} m after the start line`
-      : z.from <= apex ? `${apex - z.from} m before the apex` : `${z.from - apex} m after the apex`;
+    const where = z.from < apex - 300 ? tr("{m} m after the start line", { m: z.from })
+      : z.from <= apex ? tr("{m} m before the apex", { m: apex - z.from }) : tr("{m} m after the apex", { m: z.from - apex });
+    const v = { p: r0(z.peakBrake), m: z.length, where, who, ref: r0(z.refThr), me: r0(z.thr), s: z.cost.toFixed(2) };
     return z.kind === "brake"
-      ? `Extra braking: you brake (up to ${r0(z.peakBrake)}%) for ${z.length} m, starting ${where}, where ${who} doesn't brake and averages ${r0(z.refThr)}% throttle. That costs about ${z.cost.toFixed(2)} s.`
-      : `Lift: you average ${r0(z.thr)}% throttle for ${z.length} m, starting ${where}, where ${who} averages ${r0(z.refThr)}%. That costs about ${z.cost.toFixed(2)} s.`;
+      ? tip("extraBrake", "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.", v)
+      : tip("extraLift", "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.", v);
   }
 
   // --- drawing ---
@@ -552,7 +572,7 @@ const Coach = (() => {
       for (let s = a; s <= b; s += 4) { const [x, z] = pts(s); d += (d ? "L" : "M") + x.toFixed(1) + "," + z.toFixed(1); }
       const [x, z] = pts(b); return d + "L" + x.toFixed(1) + "," + z.toFixed(1);
     };
-    const zones = corners.map(c => `<g class="zone" data-n="${c.n}" tabindex="0" role="button" aria-label="Corner ${c.n}, ${fmtLost(c.lost)}">
+    const zones = corners.map(c => `<g class="zone" data-n="${c.n}" tabindex="0" role="button" aria-label="${tr("Corner {n}, {lost}", { n: c.n, lost: fmtLost(c.lost) })}">
         <path d="${path(c.from, c.to)}" class="hit" style="stroke-width:${sw * 5}"/>
         <path d="${path(c.from, c.to)}" class="seg ${c.colour}" style="stroke-width:${sw * 1.6}"/></g>`).join("");
     const labels = corners.map((c, i) => {
@@ -567,20 +587,21 @@ const Coach = (() => {
     const start = `<line class="sf" x1="${sx + nx * sw * 3}" y1="${sz + nz * sw * 3}" x2="${sx - nx * sw * 3}" y2="${sz - nz * sw * 3}" style="stroke-width:${sw * 0.8}"/>`;
     const [bx, bz] = pts(70);
     const arrow = `<path class="arrow" d="M${-sw * 2},${-sw * 1.4}L${sw * 1.2},0L${-sw * 2},${sw * 1.4}" transform="translate(${bx.toFixed(1)},${bz.toFixed(1)}) rotate(${(Math.atan2(pts(74)[1] - bz, pts(74)[0] - bx) * 180 / Math.PI).toFixed(1)})"/>`;
-    return `<svg class="trackmap" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" role="img" aria-label="Track map coloured by time lost">
+    return `<svg class="trackmap" viewBox="${vb.map(v => v.toFixed(1)).join(" ")}" role="img" aria-label="${tr("Track map coloured by time lost")}">
       <path d="${path(0, result.length)}" class="base" style="stroke-width:${sw * 3}"/>${zones}${lifts}${start}${arrow}${labels}</svg>`;
   }
 
   const fmtLost = s => `${s > -0.005 ? "+" : "−"}${Math.abs(s).toFixed(2)} s`; // no "−0.00"
-  const fmtShare = f => `${Math.abs(f * 100).toFixed(1)}% ${f > -0.0005 ? "slower" : "faster"}`;
-  const metres = (k, apex) => (k === null ? "—" : k <= apex ? `${apex - k} m before` : `${k - apex} m after`);
+  const fmtShare = f => (f > -0.0005 ? tr("{p}% slower", { p: Math.abs(f * 100).toFixed(1) }) : tr("{p}% faster", { p: Math.abs(f * 100).toFixed(1) }));
+  const metres = (k, apex) => (k === null ? "—" : k <= apex ? tr("{m} m before", { m: apex - k }) : tr("{m} m after", { m: k - apex }));
   const pct = v => `${Math.round(v)}%`;
   // Brake and throttle (you vs the reference) and the time gap building up, in metres from where the reference
   // starts braking (or lifting) for this corner.
   function pedalChart(result, c, who) {
+    who = named(who);
     const { R, M, delta } = result.grid, n = R.v.length;
     const anchor = c.ref.brakeAt ?? c.apex;
-    const anchorName = c.ref.brakeAt !== null ? `${who} brakes` : "apex";
+    const anchorName = c.ref.brakeAt !== null ? tr("{who} brakes", { who }) : tr("apex");
     let x0 = Math.min(anchor - 100, (c.me.brakeAt ?? c.me.liftAt ?? anchor) - 30);
     let x1 = Math.max(c.ref.fullGas ?? c.to, c.me.fullGas ?? c.to) + 30;
     // include extra lifts, but never so far back that the corner itself drops out of the chart
@@ -591,7 +612,7 @@ const Coach = (() => {
     let braking = false;
     for (let k = x0; k <= x1 && !braking; k++) braking = R.brk[k] > 5 || M.brk[k] > 5;
     const W = 360, L = 30, Rt = 8, H1 = 62, gap = 18, H2 = 70, H3 = 54, top = 12;
-    const kinds = braking ? [["Brake %", "brk", "brake"], ["Throttle %", "thr", "throttle"]] : [["Throttle %", "thr", "throttle"]];
+    const kinds = braking ? [[tr("Brake %"), "brk", "brake"], [tr("Throttle %"), "thr", "throttle"]] : [[tr("Throttle %"), "thr", "throttle"]];
     // steering, below the pedals: degrees of steering wheel turn, clockwise (right) up; GT7 records right as negative.
     // Only for laps recorded with it (older recordings and the "A" data format don't have it).
     const deg = v => (-v * 180) / Math.PI;
@@ -653,12 +674,12 @@ const Coach = (() => {
     const gappy = (arr, y) => { let d = "", on = false; for (let k = x0; k <= x1; k++) { if (!Number.isFinite(arr[k])) { on = false; continue; } d += (on ? "L" : "M") + x(k).toFixed(1) + "," + y(arr[k]).toFixed(1); on = true; } return d; };
     const dTicks = [[dHi, `${dHi}°`], [dLo, `${dLo}°`.replace("-", "−")]];
     if (dHi > 0 && dLo < 0 && yDdeg(0) - yDdeg(dHi) > 10 && yDdeg(dLo) - yDdeg(0) > 10) dTicks.push([0, "0"]);
-    const steer = !steering ? "" : `<text class="pc-title" x="${L}" y="${stTop - 4}">Steering °, clockwise up${steerR ? "" : ` (${who}'s recording has none)`}${steerM ? "" : " (your recording has none)"}</text>
+    const steer = !steering ? "" : `<text class="pc-title" x="${L}" y="${stTop - 4}">${tr("Steering °, clockwise up")}${steerR ? "" : " " + tr("({who}'s recording has none)", { who })}${steerM ? "" : " " + tr("(your recording has none)")}</text>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yDdeg(0)}" y2="${yDdeg(0)}"/>
         ${dTicks.map(([v, t]) => `<text class="pc-tick" x="${L - 4}" y="${yDdeg(v) + 3}" text-anchor="end">${t}</text>`).join("")}
         ${steerR ? `<path class="pc-ref" d="${gappy(R.steer, yD)}"/>` : ""}
         ${steerM ? `<path class="pc-me steer" d="${gappy(M.steer, yD)}"/>` : ""}`;
-    const speed = `<text class="pc-title" x="${L}" y="${sTop - 4}">Speed km/h</text>
+    const speed = `<text class="pc-title" x="${L}" y="${sTop - 4}">${tr("Speed km/h")}</text>
         <line class="pc-grid" x1="${L}" x2="${W - Rt}" y1="${yS(vHi)}" y2="${yS(vHi)}"/>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yS(vLo)}" y2="${yS(vLo)}"/>
         <text class="pc-tick" x="${L - 4}" y="${yS(vHi) + 3}" text-anchor="end">${vHi}</text>
@@ -674,7 +695,7 @@ const Coach = (() => {
     }
     // vertical markers, named under the distance labels so they never sit on a line
     const marks = [[anchor, anchorName]];
-    if (anchor !== c.apex) marks.push([c.apex, "apex"]);
+    if (anchor !== c.apex) marks.push([c.apex, tr("apex")]);
     const markers = marks.filter(([k]) => k >= x0 && k <= x1).map(([k, label], i, all) => {
       const close = i > 0 && Math.abs(x(k) - x(all[i - 1][0])) < 40; // keep two close labels apart
       return `<line class="pc-mark" x1="${x(k)}" x2="${x(k)}" y1="${top - 2}" y2="${axisY}"/>
@@ -684,20 +705,19 @@ const Coach = (() => {
     const gTicks = [[0, "0"], [gHi, gHi.toFixed(2)]];
     if (yG(gLo) - yG(0) > 10) gTicks.push([gLo, gLo.toFixed(2).replace("-", "−")]); // only when clear of the 0
     return `<figure class="pedal-chart">
-      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${braking ? "Brake, throttle" : "Throttle"}, ${steering ? "steering, " : ""}speed and time gap through corner ${c.n}, you against ${who}">
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${tr("Pedals, speed and time gap through corner {n}, you against {who}", { n: c.n, who })}">
         ${bands}${strips}${steer}${speed}
-        <text class="pc-title" x="${L}" y="${gTop - 4}">Time gap: <tspan class="pc-gapval">${secs(g[g.length - 1])}</tspan> over this stretch</text>
+        <text class="pc-title" x="${L}" y="${gTop - 4}">${tr('Time gap: <tspan class="pc-gapval">{gap}</tspan> over this stretch', { gap: secs(g[g.length - 1]) })}</text>
         <line class="pc-axis" x1="${L}" x2="${W - Rt}" y1="${yG(0)}" y2="${yG(0)}"/>
         ${gTicks.map(([v, t]) => `<text class="pc-tick" x="${L - 4}" y="${yG(v) + 3}" text-anchor="end">${t}</text>`).join("")}
         <path class="pc-me gap" d="${gd}"/>
         ${markers}${ticks.join("")}
       </svg>
-      <figcaption class="pc-legend"><span><i class="k-me"></i>You</span><span><i class="k-ref"></i>${who}</span>
-        <span>metres from ${anchorName === "apex" ? "the apex (no braking here)" : `where ${who} starts braking`}</span>
-        ${c.lifts.length ? `<span><i class="k-lift"></i>extra lift or braking</span>` : ""}
-        ${spinShown ? `<span><i class="k-spin"></i>bold: wheel lock or spin</span>` : ""}
-        ${steering && result.otherCar ? `<span>Steering: another car than ${who}'s, and cars have different steering lock</span>` : ""}
-        ${braking ? "" : ""}</figcaption>
+      <figcaption class="pc-legend"><span><i class="k-me"></i>${tr("You")}</span><span><i class="k-ref"></i>${who}</span>
+        <span>${c.ref.brakeAt === null ? tr("metres from the apex (no braking here)") : tr("metres from where {who} starts braking", { who })}</span>
+        ${c.lifts.length ? `<span><i class="k-lift"></i>${tr("extra lift or braking")}</span>` : ""}
+        ${spinShown ? `<span><i class="k-spin"></i>${tr("bold: wheel lock or spin")}</span>` : ""}
+        ${steering && result.otherCar ? `<span>${tr("Steering: another car than {who}'s, and cars have different steering lock", { who })}</span>` : ""}</figcaption>
     </figure>`;
   }
 
@@ -780,6 +800,7 @@ const Coach = (() => {
   }
 
   function cornerWidths(result, c, who) {
+    who = named(who);
     const { R, M } = result.grid, n = R.x.length;
     const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
     let a = Math.max(0, Math.min(...starts) - 15), b = Math.min(n - 1, c.line.exit + 25);
@@ -822,8 +843,8 @@ const Coach = (() => {
     const k2 = Math.min(b, a + 8), ang = (Math.atan2(R.z[k2] - R.z[a], R.x[k2] - R.x[a]) * 180) / Math.PI;
     const ten = 10 * scale, sy = H - 8;
     return `<figure class="corner-widths">
-      <button type="button" class="cw-toggle" aria-pressed="true">Hide your line</button>
-      <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale with your line and ${who}'s line">
+      <button type="button" class="cw-toggle" aria-pressed="true">${tr("Hide your line")}</button>
+      <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="${tr("Corner {n} drawn to scale with your line and {who}'s line", { n: c.n, who })}">
         <defs><pattern id="cw-hatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
           <rect class="cw-hatch-bg" width="4" height="4"/><rect class="cw-hatch-fg" width="2" height="4"/></pattern></defs>
         <g>${line(R, c.ref, "cw-ref")}</g><g class="cw-me-line">${meLine}</g>
@@ -833,15 +854,15 @@ const Coach = (() => {
         <text class="cw-scaletext" x="${(8 + ten).toFixed(1)}" y="${sy + 3}">10 m</text>
       </svg>
       <table class="cw-legend">
-        <thead><tr><th></th>${shows("brakeAt") ? "<th>braking starts</th>" : ""}${shows("minAt") ? "<th>slowest point</th>" : ""}
-          ${shows("fullGas") ? "<th>full throttle</th>" : ""}</tr></thead>
-        <tbody>${[["me", "You"], ["ref", who]].map(([k, name]) => `<tr><th><i class="k-line ${k}"></i>${name}</th>
+        <thead><tr><th></th>${shows("brakeAt") ? `<th>${tr("braking starts")}</th>` : ""}${shows("minAt") ? `<th>${tr("slowest point")}</th>` : ""}
+          ${shows("fullGas") ? `<th>${tr("full throttle")}</th>` : ""}</tr></thead>
+        <tbody>${[["me", tr("You")], ["ref", who]].map(([k, name]) => `<tr><th><i class="k-line ${k}"></i>${name}</th>
           ${shows("brakeAt") ? `<td><i class="k-dot brake ${k}"></i></td>` : ""}${shows("minAt") ? `<td><i class="k-dot slow ${k}"></i></td>` : ""}
           ${shows("fullGas") ? `<td><i class="k-dot gas ${k}"></i></td>` : ""}</tr>`).join("")}</tbody>
       </table>
-      <p class="hint">Drawn to scale, the same way round as the lap map. Line thickness: the brake from the braking point
-        until the throttle is pressed again, the throttle everywhere else (thin = none, full = 100%).${hatched
-          ? " Hatched: your wheels lock or spin, or traction control cuts in, more than the reference's." : ""}</p>
+      <p class="hint">${tr(`Drawn to scale, the same way round as the lap map. Line thickness: the brake from the braking point
+        until the throttle is pressed again, the throttle everywhere else (thin = none, full = 100%).`)}${hatched
+          ? " " + tr("Hatched: your wheels lock or spin, or traction control cuts in, more than the reference's.") : ""}</p>
     </figure>`;
   }
 
@@ -869,7 +890,9 @@ const Coach = (() => {
   }
 
   function cornerLines(result, c, label) {
-    const who = label === "Reference" ? "the reference" : label; // a license test's gold run reads as a name otherwise
+    const plain = label === "Reference", who = plain ? tr("the reference") : named(label); // a license test's gold run reads as a name otherwise
+    // the badges' letters: first brake, back on the gas, full throttle
+    const B = tr("B"), G = tr("G"), F = tr("F");
     const { R, M } = result.grid, n = R.x.length;
     const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
     let a = Math.max(0, Math.min(...starts) - 15), b = Math.min(n - 1, c.line.exit + 25);
@@ -899,7 +922,7 @@ const Coach = (() => {
       return `<g class="cl-badge ${who2}"><line x1="${px.toFixed(1)}" y1="${py.toFixed(1)}" x2="${bx.toFixed(1)}" y2="${by.toFixed(1)}"/>
         <circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="6"/><text x="${bx.toFixed(1)}" y="${(by + 3).toFixed(1)}">${letter}</text></g>`;
     };
-    const badges = (L, m, who2, side) => badge(L, m.brakeAt, "B", who2, side) + badge(L, m.onGas, "G", who2, side) + badge(L, m.fullGas, "F", who2, side);
+    const badges = (L, m, who2, side) => badge(L, m.brakeAt, B, who2, side) + badge(L, m.onGas, G, who2, side) + badge(L, m.fullGas, F, who2, side);
     // gear shifts: a square with the new gear, further out than the letters. Shifts closer than 12 px on the drawing
     // share one square (at the first, showing the last gear) so the numbers stay readable.
     const shifts = (L, who2, side) => {
@@ -922,8 +945,8 @@ const Coach = (() => {
     const ten = 10 * scale, sy = H - 8;
     const key = (cls, r) => `<svg class="k-dot" viewBox="-6 -6 12 12" aria-hidden="true"><circle class="${cls}" r="${r}"/></svg>`;
     return `<figure class="corner-lines">
-      <button type="button" class="cl-toggle" aria-pressed="true">Hide ${label === "Reference" ? "the reference" : who + "'s"} line</button>
-      <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="Corner ${c.n} drawn to scale: your line coloured by how your pedals differ from ${who}'s">
+      <button type="button" class="cl-toggle" aria-pressed="true">${plain ? tr("Hide the reference line") : tr("Hide {who}'s line", { who })}</button>
+      <svg viewBox="0 0 ${Math.max(w, 80)} ${H}" role="img" aria-label="${tr("Corner {n} drawn to scale: your line coloured by how your pedals differ from {who}'s", { n: c.n, who })}">
         <g class="cl-ref-line"><path class="cl-ref" d="${ref}"/>${shifts(R, "ref", -1)}${badges(R, c.ref, "ref", -1)}</g>
         ${dots}${shifts(M, "me", 1)}${badges(M, c.me, "me", 1)}
         <path class="cl-arrow" d="M-7,-5L5,0L-7,5Z" transform="translate(${X(R.x[a])},${Y(R.z[a])}) rotate(${ang.toFixed(1)})"/>
@@ -931,38 +954,39 @@ const Coach = (() => {
         <text class="cl-scaletext" x="${(8 + ten).toFixed(1)}" y="${sy + 3}">10 m</text>
       </svg>
       <div class="cl-legend">
-        <span>${key("cl-diff brk more", 4)}more brake than ${who}</span><span>${key("cl-diff brk less", 4)}less brake</span>
-        <span>${key("cl-diff gas more", 4)}more throttle</span><span>${key("cl-diff gas less", 4)}less throttle</span>
-        <span>${key("cl-same", 1.6)}about the same</span>
+        <span>${key("cl-diff brk more", 4)}${tr("more brake than {who}", { who })}</span><span>${key("cl-diff brk less", 4)}${tr("less brake")}</span>
+        <span>${key("cl-diff gas more", 4)}${tr("more throttle")}</span><span>${key("cl-diff gas less", 4)}${tr("less throttle")}</span>
+        <span>${key("cl-same", 1.6)}${tr("about the same")}</span>
       </div>
       <div class="cl-legend">
-        <span><b class="cl-key-badge me">B</b><b class="cl-key-badge ref">B</b>first brake</span>
-        <span><b class="cl-key-badge me">G</b><b class="cl-key-badge ref">G</b>back on the gas</span>
-        <span><b class="cl-key-badge me">F</b><b class="cl-key-badge ref">F</b>full throttle</span>
-        ${R.gear || M.gear ? `<span><b class="cl-key-shift me">3</b><b class="cl-key-shift ref">3</b>gear shift to that gear</span>` : ""}
-        <span><b class="cl-key-badge me"></b>you, <b class="cl-key-badge ref"></b>${who}</span>
+        <span><b class="cl-key-badge me">${B}</b><b class="cl-key-badge ref">${B}</b>${tr("first brake")}</span>
+        <span><b class="cl-key-badge me">${G}</b><b class="cl-key-badge ref">${G}</b>${tr("back on the gas")}</span>
+        <span><b class="cl-key-badge me">${F}</b><b class="cl-key-badge ref">${F}</b>${tr("full throttle")}</span>
+        ${R.gear || M.gear ? `<span><b class="cl-key-shift me">3</b><b class="cl-key-shift ref">3</b>${tr("gear shift to that gear")}</span>` : ""}
+        <span>${tr('<b class="cl-key-badge me"></b>you, <b class="cl-key-badge ref"></b>{who}', { who })}</span>
       </div>
-      <p class="hint">Drawn to scale, the same way round as the lap map. Your line is a dot every ${step} m comparing your pedals
-        with ${who}'s at the same point: the brake wherever either of you is braking, the throttle everywhere else. Bigger
-        dots = bigger difference (${SAME}–30, 30–60, 60+ points of pedal travel).</p>
+      <p class="hint">${tr(`Drawn to scale, the same way round as the lap map. Your line is a dot every {step} m comparing your pedals
+        with {who}'s at the same point: the brake wherever either of you is braking, the throttle everywhere else. Bigger
+        dots = bigger difference ({same}–30, 30–60, 60+ points of pedal travel).`, { step, who, same: SAME })}</p>
     </figure>`;
   }
 
   function cornerDetail(c, who, result) {
-    const row = (label, f) => `<tr><th>${label}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
-    return `<div class="corner-head"><b>Corner ${c.n}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span>
-      <span class="muted">${fmtShare(c.share)} in this section</span></div>
+    const label = named(who);
+    const row = (name, f) => `<tr><th>${name}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
+    return `<div class="corner-head"><b>${tr("Corner {n}", { n: c.n })}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span>
+      <span class="muted">${tr("{share} in this section", { share: fmtShare(c.share) })}</span></div>
       <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
       ${result ? cornerWidths(result, c, who) + cornerLines(result, c, who) + pedalChart(result, c, who) : ""}
-      <table class="corner-table"><thead><tr><th>Distances from the apex</th><th class="num">You</th><th class="num">${who}</th></tr></thead><tbody>
-        ${row("Braking point", m => (m.brakeAt === null ? (m.liftAt === null ? "no braking" : "lift only") : metres(m.brakeAt, c.apex)))}
-        ${row("Peak brake", m => (m.brakeAt === null ? "—" : pct(m.peakBrake)))}
-        ${row("Brake when turning in", m => pct(m.brakeAtTurnIn))}
-        ${row("Slowest speed", m => `${Math.round(m.minSpeed)} km/h`)}
-        ${row("Back on throttle", m => metres(m.onGas, c.apex))}
-        ${row("Full throttle", m => metres(m.fullGas, c.apex))}
-        ${row("Steering lock", m => `${Math.round(m.maxSteerDeg)}°`)}
-        ${row("Exit speed", m => `${Math.round(m.exitSpeed)} km/h`)}
+      <table class="corner-table"><thead><tr><th>${tr("Distances from the apex")}</th><th class="num">${tr("You")}</th><th class="num">${label}</th></tr></thead><tbody>
+        ${row(tr("Braking point"), m => (m.brakeAt === null ? (m.liftAt === null ? tr("no braking") : tr("lift only")) : metres(m.brakeAt, c.apex)))}
+        ${row(tr("Peak brake"), m => (m.brakeAt === null ? "—" : pct(m.peakBrake)))}
+        ${row(tr("Brake when turning in"), m => pct(m.brakeAtTurnIn))}
+        ${row(tr("Slowest speed"), m => `${Math.round(m.minSpeed)} km/h`)}
+        ${row(tr("Back on throttle"), m => metres(m.onGas, c.apex))}
+        ${row(tr("Full throttle"), m => metres(m.fullGas, c.apex))}
+        ${row(tr("Steering lock"), m => `${Math.round(m.maxSteerDeg)}°`)}
+        ${row(tr("Exit speed"), m => `${Math.round(m.exitSpeed)} km/h`)}
       </tbody></table>`;
   }
 
@@ -987,7 +1011,7 @@ const Coach = (() => {
     return NEEDED.every(h => head.includes(h));
   }
 
-  return { parseCsv, fastestLap, lapChoices, analyse, acrossLaps, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost };
+  return { parseCsv, fastestLap, lapChoices, analyse, acrossLaps, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost, useLanguage };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;

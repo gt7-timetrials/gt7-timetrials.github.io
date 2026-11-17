@@ -11,47 +11,48 @@
 <body>
 <header>
   <div class="wrap">
-    <h1>Lap Companion for GT7</h1>
-    <p class="sub">Record and compare your laps with fast reference laps for Gran Turismo 7 time trials, daily races and
+    <h1 translate="no">Lap Companion for GT7</h1>
+    <p data-t class="sub">Record and compare your laps with fast reference laps for Gran Turismo 7 time trials, daily races and
       Super License tests. Updated every morning, Melbourne time.<span class="web-only"> On Android:
       <a href="https://play.google.com/store/apps/details?id=io.github.gt7timetrials">get the app on Google Play</a>, free.</span></p>
     <nav>
-      <a href="#current" data-tab="current">Time trials</a>
-      <a href="#daily" data-tab="daily">Daily races</a>
-      <a href="#past" data-tab="past">Past trials</a>
-      <a href="#license" data-tab="license">Super License</a>
-      <a href="#drivers" data-tab="drivers">Top drivers</a>
-      <a href="#cues" data-tab="cues" hidden>Audio cues</a>
-      <a href="#howto" data-tab="howto">How to use</a>
-      <a href="#about" data-tab="about">About this app</a>
+      <a data-t href="#current" data-tab="current">Time trials</a>
+      <a data-t href="#daily" data-tab="daily">Daily races</a>
+      <a data-t href="#past" data-tab="past">Past trials</a>
+      <a data-t href="#license" data-tab="license">Super License</a>
+      <a data-t href="#drivers" data-tab="drivers">Top drivers</a>
+      <a data-t href="#cues" data-tab="cues" hidden>Audio cues</a>
+      <a data-t href="#howto" data-tab="howto">How to use</a>
+      <a data-t href="#about" data-tab="about">About this app</a>
+      <a data-t href="#settings" data-tab="settings">Settings</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
   <section id="tab-current" class="tab">
-    <div id="current-list"><p class="muted">Loading…</p></div>
+    <div id="current-list"><p data-t class="muted">Loading…</p></div>
   </section>
 
   <section id="tab-daily" class="tab" hidden>
-    <p class="muted license-intro">Compare your laps in this week's daily races with a fast lap, corner by corner.
+    <p data-t class="muted license-intro">Compare your laps in this week's daily races with a fast lap, corner by corner.
       <span class="web-only">Record your laps with the free recorder for <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-windows.exe">Windows</a>
       or <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-mac.zip">Mac</a> (or the <a href="telemetry.py" download>Python script</a>;
       <a href="readme.txt" target="_blank" rel="noopener">how to record</a>), then upload the file under the race. Your
       file stays on your device.</span><span class="app-only" hidden>Tap Record on this phone under a race, or upload a
       recording.</span></p>
-    <div id="daily-list"><p class="muted">Loading…</p></div>
+    <div id="daily-list"><p data-t class="muted">Loading…</p></div>
   </section>
 
   <section id="tab-past" class="tab" hidden>
-    <h2 class="section">Prediction scorecard</h2>
+    <h2 data-t class="section">Prediction scorecard</h2>
     <div id="scorecard"></div>
-    <h2 class="section">Past time trials</h2>
-    <input id="past-filter" type="search" placeholder="Filter by track, car or driver">
+    <h2 data-t class="section">Past time trials</h2>
+    <input data-t id="past-filter" type="search" placeholder="Filter by track, car or driver">
     <div class="table-scroll">
       <table id="past-table" class="stack">
-        <thead><tr><th>Start</th><th>Track · car</th><th class="num">Entrants</th>
-          <th class="num">World record</th><th class="num">Gold</th><th class="num">Difficulty</th></tr></thead>
+        <thead><tr><th data-t>Start</th><th data-t>Track · car</th><th data-t class="num">Entrants</th>
+          <th data-t class="num">World record</th><th data-t class="num">Gold</th><th data-t class="num">Difficulty</th></tr></thead>
         <tbody id="past-list"></tbody>
       </table>
     </div>
@@ -59,29 +60,29 @@
   </section>
 
   <section id="tab-event" class="tab" hidden>
-    <a href="#past" class="back">← All past trials</a>
+    <a data-t href="#past" class="back">← All past trials</a>
     <div id="event-detail"></div>
   </section>
 
   <section id="tab-license" class="tab" hidden>
-    <p class="muted license-intro">Compare your Super License test runs with a gold-medal run, corner by corner.
+    <p data-t class="muted license-intro">Compare your Super License test runs with a gold-medal run, corner by corner.
       <span class="web-only">Record your run with the free recorder for <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-windows.exe">Windows</a>
       or <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-mac.zip">Mac</a> (or the <a href="telemetry.py" download>Python script</a>;
       <a href="readme.txt" target="_blank" rel="noopener">how to record</a>), then upload the file under the test. Your
       file stays on your device.</span><span class="app-only" hidden>Tap Record on this phone under a test, or upload a
       recording.</span></p>
-    <div id="license-list"><p class="muted">Loading…</p></div>
+    <div id="license-list"><p data-t class="muted">Loading…</p></div>
   </section>
 
   <section id="tab-drivers" class="tab" hidden>
-    <p class="muted">The 50 most consistently fast drivers across past time trials, ranked by their typical
+    <p data-t class="muted">The 50 most consistently fast drivers across past time trials, ranked by their typical
       gap to the world record when they make the top 100. Drivers with few events are pulled towards the
       average. Events = times in the top 100; Gap = typical gap to the world record. ★ marks the drivers the
       prediction watches for.</p>
     <div class="table-scroll">
       <table id="driver-table">
-        <thead><tr><th class="num">#</th><th>Driver</th><th>Country</th><th class="num">Events</th>
-          <th class="num">Gap</th><th class="num">Wins</th><th class="num">Top 10s</th></tr></thead>
+        <thead><tr><th class="num">#</th><th data-t>Driver</th><th data-t>Country</th><th data-t class="num">Events</th>
+          <th data-t class="num">Gap</th><th data-t class="num">Wins</th><th data-t class="num">Top 10s</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -90,105 +91,110 @@
   <section id="tab-cues" class="tab prose" hidden><div id="cues-panel"></div></section>
 
   <section id="tab-howto" class="tab prose" hidden>
-    <h2>What's here</h2>
+    <h2 data-t>What's here</h2>
     <ul>
-      <li><b>Time trials</b>: the time trials running now, with where the gold, silver and bronze times are likely to end up,
+      <li data-t><b>Time trials</b>: the time trials running now, with where the gold, silver and bronze times are likely to end up,
         and a reference lap (a top lap, named by its driver) to compare your laps with.</li>
-      <li><b>Daily races</b>: a fast lap for each of this week's daily races, to compare your laps with.</li>
-      <li><b>Past trials</b>: how earlier time trials finished, and how close the predictions were.</li>
-      <li><b>Super License</b>: a gold-medal run for each test, to compare your runs with.</li>
-      <li><b>Top drivers</b>: the most consistently fast time trial drivers.</li>
-      <li><b>Audio cues</b> (Android app): beeps that count you down to the reference's braking points while you drive.</li>
+      <li data-t><b>Daily races</b>: a fast lap for each of this week's daily races, to compare your laps with.</li>
+      <li data-t><b>Past trials</b>: how earlier time trials finished, and how close the predictions were.</li>
+      <li data-t><b>Super License</b>: a gold-medal run for each test, to compare your runs with.</li>
+      <li data-t><b>Top drivers</b>: the most consistently fast time trial drivers.</li>
+      <li data-t><b>Audio cues</b> (Android app): beeps that count you down to the reference's braking points while you drive.</li>
     </ul>
-    <h2>Record your laps</h2>
-    <p>GT7 sends live data (telemetry) to your home network while you drive. The app, or the recorder on a computer,
+    <h2 data-t>Record your laps</h2>
+    <p data-t>GT7 sends live data (telemetry) to your home network while you drive. The app, or the recorder on a computer,
       saves it, and this site compares it with the reference lap. The phone or computer must be on the same Wi-Fi or
       network as the PlayStation, and only one telemetry app can listen at a time: close SimHub or similar apps first.</p>
-    <h3>With the Android app</h3>
+    <h3 data-t>With the Android app</h3>
     <ol>
-      <li>Start GT7 and go to the time trial or license test.</li>
-      <li>In the app, tap <b>Record on this phone</b> under that event or test. The app finds your PlayStation by
+      <li data-t>Start GT7 and go to the time trial or license test.</li>
+      <li data-t>In the app, tap <b>Record on this phone</b> under that event or test. The app finds your PlayStation by
         itself; if it can't, it shows what to check and lets you type in the PlayStation's address.</li>
-      <li>Drive. Every complete lap is saved, so drive as many as you like: there's no need to restart between them.
+      <li data-t>Drive. Every complete lap is saved, so drive as many as you like: there's no need to restart between them.
         Recording carries on with the phone locked.</li>
-      <li>Tap <b>Stop and compare</b>. Your fastest lap is shown first; tap any other lap to compare it instead.
+      <li data-t>Tap <b>Stop and compare</b>. Your fastest lap is shown first; tap any other lap to compare it instead.
         <b>Save to Downloads</b> keeps the file.</li>
     </ol>
-    <h3>With a computer</h3>
+    <h3 data-t>With a computer</h3>
     <ol>
-      <li>Download the free recorder: for <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-windows.exe">Windows</a> or
+      <li data-t>Download the free recorder: for <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-windows.exe">Windows</a> or
         <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-mac.zip">Mac</a> (Apple silicon), ready to run, or the
         <a href="telemetry.py" download>Python script</a> for any computer with Python. See
         <a href="readme.txt" target="_blank" rel="noopener">how to record</a>.</li>
-      <li>Start it (double-click), then drive as many laps as you like. Press Ctrl+C when you're done: it saves a .csv
+      <li data-t>Start it (double-click), then drive as many laps as you like. Press Ctrl+C when you're done: it saves a .csv
         file next to itself.</li>
-      <li>Upload the file under the event or test. It's read in your browser and isn't uploaded anywhere.</li>
+      <li data-t>Upload the file under the event or test. It's read in your browser and isn't uploaded anywhere.</li>
     </ol>
-    <p>A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The
+    <p data-t>A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The
       record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that
       race, and a Super License reference is a gold-medal run.</p>
-    <h2>Read the comparison</h2>
+    <h2 data-t>Read the comparison</h2>
     <div id="howto-guide"></div>
-    <h2>Audio cues (Android app)</h2>
-    <p>While you record, the app can play a countdown to each point where the reference lap brakes or lifts, and a chirp
+    <h2 data-t>Audio cues (Android app)</h2>
+    <p data-t>While you record, the app can play a countdown to each point where the reference lap brakes or lifts, and a chirp
       half a second before it starts to apply throttle: brake on the BEEP, and on the chirp start squeezing the throttle
       on, not flat out. They follow the reference's line, and go quiet when
       you're well off it, reversing or stopped.</p>
     <ol>
-      <li>On the <b>Audio cues</b> tab, listen to the sounds so you know them in the game.</li>
-      <li>Tick <b>Audio cues</b> next to Record on this phone, and record as usual.</li>
-      <li>If the cues seem early or late, calibrate your phone speaker, headphones or Bluetooth device on the Audio cues
+      <li data-t>On the <b>Audio cues</b> tab, listen to the sounds so you know them in the game.</li>
+      <li data-t>Tick <b>Audio cues</b> next to Record on this phone, and record as usual.</li>
+      <li data-t>If the cues seem early or late, calibrate your phone speaker, headphones or Bluetooth device on the Audio cues
         tab: about 20 seconds, sitting in the car.</li>
     </ol>
-    <p>The phone speaker and wired headphones give the steadiest timing. Bluetooth adds a delay that can vary.</p>
+    <p data-t>The phone speaker and wired headphones give the steadiest timing. Bluetooth adds a delay that can vary.</p>
   </section>
 
+  <section id="tab-settings" class="tab prose" hidden><div id="settings-panel"></div></section>
+
   <section id="tab-about" class="tab prose" hidden>
-    <h2>About this project</h2>
-    <p>A free hobby project for GT7 time trials, daily races and Super License tests. It relies on community work: the drivers
+    <h2 data-t>About this project</h2>
+    <p data-t>A free hobby project for GT7 time trials, daily races and Super License tests. It relies on community work: the drivers
       whose laps are the references, and the people who decoded GT7's telemetry. If you find it useful, consider
       supporting a GT7 creator you enjoy.</p>
-    <p>I built this with an AI coding assistant, Claude, which wrote all of the code. The ideas, testing and
+    <p data-t>I built this with an AI coding assistant, Claude, which wrote all of the code. The ideas, testing and
       decisions are mine.</p>
-    <h2>Android app</h2>
-    <p>The Android app is this website plus recording on the phone: no computer needed. It's free on Google Play:
+    <h2 data-t>Android app</h2>
+    <p data-t>The Android app is this website plus recording on the phone: no computer needed. It's free on Google Play:
       <a href="https://play.google.com/store/apps/details?id=io.github.gt7timetrials">Lap Companion for GT7</a> ("Laps for GT7" under the icon).</p>
-    <p>Feedback is very welcome: leave a review or use the private feedback on the app's Google Play page, or reply
+    <p data-t>Feedback is very welcome: leave a review or use the private feedback on the app's Google Play page, or reply
       in the <a href="https://www.reddit.com/r/granturismo/s/WTRsxSB3m2">Reddit thread</a> or the
       <a href="https://www.gtplanet.net/forum/threads/free-time-trial-lap-comparison-android-app.440044/">GTPlanet thread</a>.
       Thanks to everyone who tested it before it went public. The app collects nothing (<a href="privacy.html">privacy</a>).</p>
-    <h2>What the numbers mean</h2>
+    <h2 data-t>What the numbers mean</h2>
     <ul>
-      <li><b>Gold</b> is the world record + 3%, as in the game. Silver is +5% and bronze +10%.</li>
-      <li><b>Predicted gold</b> is where the gold time is likely to end up when the event closes. The world record
+      <li data-t><b>Gold</b> is the world record + 3%, as in the game. Silver is +5% and bronze +10%.</li>
+      <li data-t><b>Predicted gold</b> is where the gold time is likely to end up when the event closes. The world record
         usually keeps falling for the first week, so gold gets harder. The range covers 8 out of 10 past events.</li>
-      <li><b>Entrants</b> is everyone who has set a time so far, PS4 and PS5 combined.</li>
-      <li><b>Safe target</b> beats the fast end of the predicted range. In 9 out of 10 past events the final gold time
+      <li data-t><b>Entrants</b> is everyone who has set a time so far, PS4 and PS5 combined.</li>
+      <li data-t><b>Safe target</b> beats the fast end of the predicted range. In 9 out of 10 past events the final gold time
         was slower than that.</li>
-      <li><b>Course difficulty</b> is how far 100th place is behind the world record: the bigger the gap, the harder
+      <li data-t><b>Course difficulty</b> is how far 100th place is behind the world record: the bigger the gap, the harder
         the course is to master. It's rated against all past events: <b>Easy</b> is the closest quarter, <b>Medium</b>
         up to 70% of them, <b>Hard</b> up to 90%, and <b>V.hard</b> (very hard) the widest 10%.</li>
-      <li><b>Gold time on the day</b> in the chart is rebuilt from when each current top-100 time was set.</li>
+      <li data-t><b>Gold time on the day</b> in the chart is rebuilt from when each current top-100 time was set.</li>
     </ul>
-    <h2>How the prediction works</h2>
-    <p>It learns from every regular time trial since March 2023 (<span id="n-history"></span> events) how much the
+    <h2 data-t>How the prediction works</h2>
+    <p data-t>It learns from every regular time trial since March 2023 (<span id="n-history"></span> events) how much the
       world record still falls after each day of an event. It adjusts for how many of the top-rated drivers have
       already set a time: if the fastest drivers haven't driven yet, expect more to come off. As daily snapshots
       build up, it also uses the top-100 spread.</p>
-    <p>Typical error in the final gold time, tested on past events: 0.16% after day 1, 0.12% after day 3 and
+    <p data-t>Typical error in the final gold time, tested on past events: 0.16% after day 1, 0.12% after day 3 and
       0.08% after day 7. On a 1:50 lap, that's about 0.18 s, 0.13 s and 0.09 s.</p>
-    <h2>Other languages</h2>
-    <p>This site is in English. <span class="web-only">Most browsers can translate it: in Chrome, tap ⋮ and then
-      Translate.</span><span class="app-only" hidden>The app can't translate yet; that's on the list for later. Until then, open
-      gt7-timetrials.github.io in Chrome on your phone or computer and translate it there.</span></p>
-    <h2>Source</h2>
-    <p>Data comes from the public leaderboards on gran-turismo.com. This is an unofficial fan project, not affiliated
+    <h2 data-t>Languages</h2>
+    <p data-t>Choose the language on the <a href="#settings">Settings</a> tab: English or Spanish so far. The Spanish
+      translation is new: if something reads wrong, please say so.<span class="web-only"> For other languages, most
+      browsers can translate this site: in Chrome, tap ⋮ and then Translate.</span><span class="app-only" hidden> For
+      other languages, open gt7-timetrials.github.io in Chrome and translate it there.</span></p>
+    <h2 data-t>Source</h2>
+    <p data-t>Data comes from the public leaderboards on gran-turismo.com. This is an unofficial fan project, not affiliated
       with Sony Interactive Entertainment or Polyphony Digital. Code and data:
       <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io">github.com/gt7-timetrials/gt7-timetrials.github.io</a>.</p>
   </section>
 </main>
 
 <footer class="wrap muted" id="footer"></footer>
+<script src="lang/es.js"></script>
+<script src="i18n.js"></script>
 <script src="coach.js"></script>
 <script src="app.js"></script>
 </body>

@@ -198,6 +198,28 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   console.log("expected advice ok");
 }
 
+// The same advice in Spanish, word for word (site/lang/es.js), with every text translated. Rewritten with the English
+// one (UPDATE_ADVICE=1), so a change of wording in either language shows in its diff.
+{
+  const I18N = require("../site/i18n.js"), es = I18N.create("es", { es: require("../site/lang/es.js") });
+  Coach.useLanguage(es.t);
+  try {
+    const file = path.join(__dirname, "fixtures", "expected_advice_es.json");
+    const advice = res => res.corners.map(c => ({ section: c.n, tips: c.tips }));
+    const now = { "Barcelona, your lap against the WR": advice(Coach.analyse(ref, me, "the WR")),
+      "S-1, your bronze attempt against the gold run": advice(Coach.analyse(s1ref, s1me, "the reference lap")) };
+    for (const c of r.corners) Coach.cornerDetail(c, "WR", Coach.analyse(ref, me, "the WR")); // the charts' texts too
+    Coach.cornerDetail(s1.corners[0], "Reference", Coach.analyse(s1ref, s1me, "the reference lap"));
+    assert.deepStrictEqual(es.missing, [], "texts with no Spanish translation");
+    if (process.env.UPDATE_ADVICE) fs.writeFileSync(file, JSON.stringify(now, null, 2) + "\n");
+    assert.deepStrictEqual(now, JSON.parse(fs.readFileSync(file, "utf8")), "the Spanish advice changed");
+    assert.ok(now["Barcelona, your lap against the WR"][0].tips.some(t => t.startsWith("Punto de frenada:")), "in Spanish");
+  } finally {
+    Coach.useLanguage(I18N.create("en").t);
+  }
+  console.log("Spanish advice ok");
+}
+
 // Steering, between throttle and speed, in degrees clockwise up
 {
   const chart7 = Coach.cornerDetail(r.corners[6], "the WR", r);
