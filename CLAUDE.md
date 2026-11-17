@@ -14,6 +14,11 @@ app, builds and keys are in `docs/android.md`.
   green on beta. Afterwards, bring beta up to date with main again.
 - **Run the tests before pushing:** `python -m unittest tests.test_gt7tt` (includes the Java and browser tests) and
   `node tests/test_coach.js`. GitHub runs them on every push; red means don't merge.
+- **The website is in English and Spanish** (chosen on the Settings tab; Automatic follows the phone's language). Any
+  new or changed text on the website needs its Spanish in `site/lang/es.js`, keyed by the English: page text is marked
+  `data-t` in `site/index.html`, code text goes through `tr("…")` in `site/app.js` (placeholders as `{name}`, never
+  `${…}`). The browser test fails on a text without Spanish, or Spanish for a text no longer used. The owner can't read
+  Spanish: say what was translated, and testers' corrections go straight into `es.js` (through beta).
 - **Changing the lap advice** (the tips' wording or the rules for when they're given, in `site/coach.js`): the test
   checks the advice for two real laps word for word, so it fails until `tests/fixtures/expected_advice.json` is
   rewritten (`UPDATE_ADVICE=1 node tests/test_coach.js`). Read its diff and show the owner what changed.
