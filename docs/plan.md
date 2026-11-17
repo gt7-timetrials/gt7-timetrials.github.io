@@ -92,8 +92,9 @@ Super License tests: keep it simple, and only take on what one person can look a
            for improvement"). Thought the gas chirp meant full throttle or the apex; it plays half a second before the
            reference starts to apply throttle, so the Audio cues tab now says so ("start squeezing it on, not flat
            out"). Asked for downshift markers on the dots close-up (added: the gear number where each lap shifts
-           down). Asked for other languages (Spanish first, then Portuguese, French and German): a separate piece of
-           work, ideally with a native speaker checking each.
+           down; then every gear shift, up or down, at the owner's suggestion, #85). Asked for other languages
+           (Spanish first, then Portuguese, French and German): **Spanish done** (17 November, #86), not yet checked
+           by a native speaker; Portuguese, French and German later, if Spanish speakers use it.
    - [x] Before production: lead the Play listing and posts with what the app does: **easy and convenient**,
          for time trials, daily races and licenses. Keep it neutral about who it's for (no "for beginners" or "for
          experts"): people can decide for themselves. The others: GT7's own Data Logger (since November
@@ -183,6 +184,10 @@ Super License tests: keep it simple, and only take on what one person can look a
 
 Kept short; the details are in the pull requests and the git history.
 
+- **Spanish and a Settings tab** (17 November, #86): the whole website, lap comparison included, in Spanish;
+  Automatic follows the phone's language. Written by the assistant, not yet checked by a native speaker:
+  corrections from testers go into `site/lang/es.js`. The app's own notification text is still English (next app
+  update). Also the gas chirp wording and gear shift markers on the dots close-up (#85).
 - **Daily races tab** (3 November, #58), with the first week's races: A Dragon Trail - Gardens (one car, holl01),
   B Grand Valley - Highway 1 (Gr.3, Miumiu), C Watkins Glen - Long Course (Gr.4, RTR_STOKIEBEN777); race B checked
   with the owner's lap in another Gr.3 car (no warning). Tabs renamed **Time trials** and **Past trials** (#60); the
