@@ -75,15 +75,17 @@ const Coach = (() => {
   // a clean lap's line is within about 0.5% of the reference's. `pick` is the fastest lap that isn't marked (or the
   // fastest of all, if they all are).
   const CUT_SHARE = 0.01, CUT_MIN_M = 30;
+  // A lap with a spin or crash (see SPIN_SPEED) is treated the same way: `incident` lists its corners.
   function lapChoices(rows, ref) {
     const refLength = pathLength(ref);
     const laps = completeLaps(rows).map(l => {
-      const lap = extractLap(rows, l.a, l.b), short = refLength - pathLength(lap);
+      const lap = extractLap(rows, l.a, l.b), short = refLength - pathLength(lap), res = analyse(ref, lap);
       return { number: l.number, lap_ms: l.lap_ms, lap, short: Math.round(short),
-        cut: short > Math.max(CUT_MIN_M, CUT_SHARE * refLength) };
+        cut: short > Math.max(CUT_MIN_M, CUT_SHARE * refLength),
+        incident: res.error ? [] : res.corners.filter(c => c.incident).map(c => c.n) };
     });
     const by = list => list.reduce((x, y) => (y.lap_ms < x.lap_ms ? y : x), list[0]);
-    const clean = laps.filter(l => !l.cut);
+    const clean = laps.filter(l => !l.cut && !l.incident.length);
     const pick = laps.length ? laps.indexOf(by(clean.length ? clean : laps)) : -1;
     return { laps, pick, fastest: laps.length ? laps.indexOf(by(laps)) : -1 };
   }
@@ -308,7 +310,11 @@ const Coach = (() => {
       exit = Math.max(Math.min(apex + 20, z1 - 1), exit);
       ref_m.exitSpeed = R.v[exit]; me_m.exitSpeed = M.v[exit];
       const entry = i === 0 && entries[0] >= 150 ? entries[0] : z0;
-      return { apex, z0, z1, entry, exit, lost, share: lost / refTime, approachLost: delta[entry] - delta[z0], cornerLost: delta[exit] - delta[entry], ref_m, me_m };
+      // a spin or crash: below SPIN_SPEED of the reference's speed at the same point (after the start, where a
+      // standing start would be slow anyway)
+      let incident = false;
+      for (let k = Math.max(z0, SPIN_FROM); k < z1 && !incident; k++) incident = M.v[k] < SPIN_SPEED * R.v[k];
+      return { apex, z0, z1, entry, exit, lost, incident, share: lost / refTime, approachLost: delta[entry] - delta[z0], cornerLost: delta[exit] - delta[entry], ref_m, me_m };
     });
     const ratios = corners.filter(c => c.ref_m.maxSteerDeg >= 20).map(c => c.me_m.maxSteerDeg / c.ref_m.maxSteerDeg).sort((a, b) => a - b);
     const steerRatio = ratios.length >= 3 ? ratios[Math.floor(ratios.length / 2)] : null;
@@ -357,10 +363,13 @@ const Coach = (() => {
       advice: advice.length ? " " + tr("Use more of the track: {list}.", { list: joinAnd(advice) }) : "" });
   }
 
+  // A spin or crash: your speed under half the reference's at the same point. Every clean lap recorded so far (time
+  // trials, daily races, other drivers' replays, an overshoot) stays above 60%; spins and crashes go to 0-36%.
+  const SPIN_SPEED = 0.5, SPIN_FROM = 100; // share of the reference's speed; metres from the line
   const FASTER = 0.05; // s: a section this much quicker than the reference, or closer than this to it, gets no advice
   function result(corners, steerRatio, R, M, delta, who) {
     const lifts = extraLifts(corners, R, M, delta), spin = wheelspin(R, M);
-    return { grid: { R, M, delta, spinM: spin.me, spinR: spin.ref, lockM: spin.lockM, lockR: spin.lockR }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, share, approachLost, cornerLost, ref_m, me_m }, i) => {
+    return { grid: { R, M, delta, spinM: spin.me, spinR: spin.ref, lockM: spin.lockM, lockR: spin.lockR }, lifts, corners: corners.map(({ apex, z0, z1, entry, exit, lost, incident, share, approachLost, cornerLost, ref_m, me_m }, i) => {
       me_m.wheelspin = spinTip(spin, R, M, z0, z1, apex, who);
       let t = tips(me_m, ref_m, lost, who, steerRatio);
       // lock-up says what "Brake release" would, from the wheels themselves: it takes its place
@@ -389,7 +398,9 @@ const Coach = (() => {
         t.unshift(tip("start", "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.",
           { me: r0(M.v[0]), ref: r0(R.v[0]), s: delta[ref_m.top].toFixed(2) }));
       }
-      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t.map(x => x.text), lifts: mine, line };
+      // a spin or crash: everything else in the corner follows from it, so no advice
+      if (incident) t = [tip("incident", "You spin out or crash on this corner.")];
+      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, incident, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t.map(x => x.text), lifts: mine, line };
     }) };
   }
 
@@ -727,7 +738,7 @@ const Coach = (() => {
   // Across a recording's clean laps (3 or more): where the time goes on average, where it varies most from lap to
   // lap, and the "ideal lap" from each section's best time. Sections are the reference's, so they line up.
   function acrossLaps(refLap, laps, who) {
-    const runs = laps.filter(l => !l.cut).map(l => analyse(refLap, l.lap, who)).filter(r => !r.error);
+    const runs = laps.filter(l => !l.cut && !l.incident?.length).map(l => analyse(refLap, l.lap, who)).filter(r => !r.error);
     if (runs.length < 3 || runs.some(r => r.corners.length !== runs[0].corners.length)) return null;
     const sections = runs[0].corners.map((c, i) => {
       const lost = runs.map(r => r.corners[i].lost), avg = mean(lost);

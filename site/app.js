@@ -629,11 +629,13 @@ function lapPicker(p) {
   let html = "";
   if (p.laps.length > 1) {
     html += `<div class="lap-pick" role="group" aria-label="${tr("Lap to compare")}"><span class="muted">${tr("Laps:")}</span>
-      ${p.laps.map((l, i) => `<button type="button" class="lap-btn${i === p.chosen ? " chosen" : ""}${l.cut ? " cut" : ""}"
+      ${p.laps.map((l, i) => `<button type="button" class="lap-btn${i === p.chosen ? " chosen" : ""}${l.cut || l.incident?.length ? " cut" : ""}"
         data-lap="${i}" aria-pressed="${i === p.chosen}">${tr("Lap {n}", { n: l.number })} <b>${fmt(l.lap_ms)}</b>${i === p.fastest ? " · " + tr("fastest") : ""}${l.cut
-        ? " · " + tr("⚠ short") : ""}</button>`).join("")}</div>`;
+        ? " · " + tr("⚠ short") : ""}${l.incident?.length ? " · " + tr("⚠ spin or crash") : ""}</button>`).join("")}</div>`;
   }
   if (chosen.cut) html += `<p class="hint miss">${tr("This lap is {note}. The comparison may be misleading.", { note: note(chosen) })}</p>`;
+  if (chosen.incident?.length) html += `<p class="hint miss">${tr("This lap has a spin or crash (corner {n}), so it's left out of Across your laps.",
+    { n: chosen.incident.join(", ") })}</p>`;
   else if (fastest.cut && p.chosen === p.pick) html += `<p class="hint">${tr(`Lap {n} ({time}) was faster,
     but it's {note}. Comparing lap {chosen} instead: tap lap {n} to compare it anyway.`, { n: fastest.number, time: fmt(fastest.lap_ms), note: note(fastest), chosen: chosen.number })}</p>`;
   return html;
@@ -647,7 +649,7 @@ function acrossLaps(a) {
   return `<div class="across"><h4>${tr("Across your {n} laps", { n: a.laps })}</h4>
     ${a.gain.length ? `<p class="across-head">${tr("Most time to gain")}</p>${list(a.gain, x => tr("you lose {s} s on average", { s: x.avg.toFixed(2) }))}` : ""}
     ${a.varies.length ? `<p class="across-head">${tr("Least consistent")}</p>${list(a.varies, x => tr("your time here varies by ±{s} s", { s: x.sd.toFixed(2) }))}` : ""}
-    <p class="hint">${tr("Your best time in each section adds up to <b>{ideal}</b>{faster}. Laps that look cut are left out.", { ideal: fmt(a.idealMs),
+    <p class="hint">${tr("Your best time in each section adds up to <b>{ideal}</b>{faster}. Laps that look cut, or with a spin or crash, are left out.", { ideal: fmt(a.idealMs),
       faster: a.idealMs < a.bestMs ? tr(", {gap} faster than your best lap ({best})", { gap: secs(a.bestMs - a.idealMs), best: fmt(a.bestMs) }) : "" })}</p></div>`;
 }
 
@@ -684,7 +686,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
           <button class="nav-btn close" aria-label="${tr("Close")}">✕</button>
         </div>${picker && picker.laps.length > 1 ? `
         <div class="sheet-laps"><button class="nav-btn" data-lapstep="-1" aria-label="${tr("Previous lap")}">‹</button>
-          <span>${tr("Lap {n}", { n: picker.laps[picker.chosen].number })} · ${fmt(picker.laps[picker.chosen].lap_ms)}${picker.laps[picker.chosen].cut ? " · " + tr("⚠ short") : ""}</span>
+          <span>${tr("Lap {n}", { n: picker.laps[picker.chosen].number })} · ${fmt(picker.laps[picker.chosen].lap_ms)}${picker.laps[picker.chosen].cut ? " · " + tr("⚠ short") : ""}${picker.laps[picker.chosen].incident?.length ? " · " + tr("⚠ spin or crash") : ""}</span>
           <button class="nav-btn" data-lapstep="1" aria-label="${tr("Next lap")}">›</button></div>` : ""}
         <div class="detail-body"></div>
       </div>
