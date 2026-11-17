@@ -855,14 +855,15 @@ const Coach = (() => {
     const braking = R.brk[k] > 5 || M.brk[k] > 5;
     return { pedal: braking ? "brk" : "gas", d: braking ? M.brk[k] - R.brk[k] : M.thr[k] - R.thr[k] };
   }
-  // Where a lap shifts down between metres a and b: [{ k, gear }], the new gear. The gear is resampled every metre
-  // with interpolation, so it's rounded; 0 (reverse or no gear) is ignored.
-  function downshifts(L, a, b) {
+  // Where a lap changes gear (down, or up: some drivers shift up mid-corner for stability) between metres a and b:
+  // [{ k, gear }], the new gear. The gear is resampled every metre with interpolation, so it's rounded; 0 (reverse or
+  // no gear) is ignored.
+  function gearShifts(L, a, b) {
     const out = [];
     if (!L.gear) return out;
     for (let k = Math.max(1, a); k <= b; k++) {
       const g0 = Math.round(L.gear[k - 1]), g1 = Math.round(L.gear[k]);
-      if (g1 >= 1 && g0 > g1) out.push({ k, gear: g1 });
+      if (g0 >= 1 && g1 >= 1 && g0 !== g1) out.push({ k, gear: g1 });
     }
     return out;
   }
@@ -899,7 +900,7 @@ const Coach = (() => {
         <circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="6"/><text x="${bx.toFixed(1)}" y="${(by + 3).toFixed(1)}">${letter}</text></g>`;
     };
     const badges = (L, m, who2, side) => badge(L, m.brakeAt, "B", who2, side) + badge(L, m.onGas, "G", who2, side) + badge(L, m.fullGas, "F", who2, side);
-    // downshifts: a square with the new gear, further out than the letters. Shifts closer than 12 px on the drawing
+    // gear shifts: a square with the new gear, further out than the letters. Shifts closer than 12 px on the drawing
     // share one square (at the first, showing the last gear) so the numbers stay readable.
     const shifts = (L, who2, side) => {
       let out = "", last = null;
@@ -909,7 +910,7 @@ const Coach = (() => {
         out += `<g class="cl-shift ${who2}"><line x1="${px.toFixed(1)}" y1="${py.toFixed(1)}" x2="${bx.toFixed(1)}" y2="${by.toFixed(1)}"/>
         <rect x="${(bx - 5.5).toFixed(1)}" y="${(by - 5.5).toFixed(1)}" width="11" height="11" rx="2"/><text x="${bx.toFixed(1)}" y="${(by + 3).toFixed(1)}">${sh.gear}</text></g>`;
       };
-      for (const sh of downshifts(L, a, b)) {
+      for (const sh of gearShifts(L, a, b)) {
         if (last && Math.hypot(sx(L.x[sh.k]) - sx(L.x[last.k]), sz(L.z[sh.k]) - sz(L.z[last.k])) < 12) last.gear = sh.gear;
         else { if (last) draw(last); last = { ...sh }; }
       }
@@ -938,7 +939,7 @@ const Coach = (() => {
         <span><b class="cl-key-badge me">B</b><b class="cl-key-badge ref">B</b>first brake</span>
         <span><b class="cl-key-badge me">G</b><b class="cl-key-badge ref">G</b>back on the gas</span>
         <span><b class="cl-key-badge me">F</b><b class="cl-key-badge ref">F</b>full throttle</span>
-        ${R.gear || M.gear ? `<span><b class="cl-key-shift me">3</b><b class="cl-key-shift ref">3</b>downshift to that gear</span>` : ""}
+        ${R.gear || M.gear ? `<span><b class="cl-key-shift me">3</b><b class="cl-key-shift ref">3</b>gear shift to that gear</span>` : ""}
         <span><b class="cl-key-badge me"></b>you, <b class="cl-key-badge ref"></b>${who}</span>
       </div>
       <p class="hint">Drawn to scale, the same way round as the lap map. Your line is a dot every ${step} m comparing your pedals
