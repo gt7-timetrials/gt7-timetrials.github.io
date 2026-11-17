@@ -358,6 +358,11 @@ table.cw-legend tbody th { text-align: left; color: var(--text); white-space: no
 .cl-badge circle { stroke: var(--card); stroke-width: 1; }
 .cl-badge.me circle { fill: var(--text); } .cl-badge.ref circle { fill: var(--line-ref); }
 .cl-badge text { fill: var(--card); font-size: 8px; font-weight: 700; text-anchor: middle; }
+.cl-shift line { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 2; }
+.cl-shift rect { fill: var(--card); stroke-width: 1.5; }
+.cl-shift.me rect { stroke: var(--text); } .cl-shift.ref rect { stroke: var(--line-ref); }
+.cl-shift text { font-size: 8px; font-weight: 700; text-anchor: middle; }
+.cl-shift.me text { fill: var(--text); } .cl-shift.ref text { fill: var(--line-ref); }
 .cl-arrow { fill: var(--muted); stroke: none; }
 .cl-scale { stroke: var(--muted); stroke-width: 2; }
 .cl-scaletext { fill: var(--muted); font-size: 9px; }
@@ -373,6 +378,10 @@ table.cw-legend tbody th { text-align: left; color: var(--text); white-space: no
 .cl-key-badge { display: inline-block; width: 14px; height: 14px; line-height: 14px; border-radius: 50%; text-align: center;
   font-size: 0.6rem; color: var(--card); }
 .cl-key-badge.me { background: var(--text); } .cl-key-badge.ref { background: var(--line-ref); margin-right: 2px; }
+.cl-key-shift { display: inline-block; width: 12px; height: 12px; line-height: 12px; border-radius: 2px; text-align: center;
+  font-size: 0.6rem; font-weight: 700; background: var(--card); }
+.cl-key-shift.me { border: 1.5px solid var(--text); color: var(--text); }
+.cl-key-shift.ref { border: 1.5px solid var(--line-ref); color: var(--line-ref); margin-right: 2px; }
 
 /* Super License tab */
 .license-intro { margin-top: 0; max-width: 760px; }

@@ -88,6 +88,18 @@ assert.ok(closeUp.includes('class="corner-lines"'));
 assert.strictEqual((closeUp.match(/class="cl-badge (me|ref)">[\s\S]*?>B<\/text>/g) || []).length, 2);
 assert.ok(/cl-diff brk more"[^>]*r="4.6"/.test(closeUp), "early braking shows as large filled red dots");
 assert.ok(closeUp.includes("Hide WR's line"), "the button hides the reference's line");
+// gear shifts, down or up: a numbered square with the new gear (corner 7: both go 3, 2, 1 and up to 2 on the exit),
+// the reference's inside the part the button hides, and a legend entry; none on a lap without gear
+const shiftsIn = h => [...h.matchAll(/class="cl-shift (me|ref)">[\s\S]*?>(\d)<\/text>/g)].map(m => m[1] + m[2]);
+assert.deepStrictEqual(shiftsIn(closeUp), ["ref3", "ref2", "ref1", "ref2", "me3", "me2", "me1", "me2"]);
+assert.ok(/class="cl-ref-line">[\s\S]*cl-shift ref[\s\S]*<\/g>\s*<circle/.test(closeUp), "the reference's gear shifts hide with its line");
+assert.ok(closeUp.includes("gear shift to that gear"));
+{
+  const noGear = l => Object.fromEntries(Object.entries(l).filter(([k]) => k !== "gear"));
+  const ng = Coach.analyse(noGear(ref), noGear(me));
+  const h = Coach.cornerDetail(ng.corners[6], "WR", ng);
+  assert.ok(!h.includes("cl-shift") && !h.includes("gear shift to that gear"), "no gear recorded: no gear shift squares");
+}
 const dots = closeUp.slice(closeUp.indexOf('class="corner-lines"'));
 assert.ok(dots.includes('class="cl-legend"') && !dots.includes("slowest"), "legend; no slowest-point marker");
 // the line-width close-up comes first: both lines, thickness following the pedals, both braking points, its own button
