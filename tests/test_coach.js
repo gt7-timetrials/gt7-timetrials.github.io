@@ -179,6 +179,35 @@ assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several
 assert.ok(!s1.corners[2].tips.some(t => t.startsWith("Exit:")), "the straight tip says it instead");
 assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "one colour per section");
 
+// A spin or crash: under half the reference's speed at the same point. That corner gets one line and no advice, and
+// the lap is left out of the pick and of "across your laps", like a cut lap. The real laps above have none.
+{
+  assert.ok(r.corners.every(c => !c.incident) && s1.corners.every(c => !c.incident), "no spin in a clean lap or an overshoot");
+  const spun = { ...me, speed_kmh: me.speed_kmh.slice() };
+  const mid = Math.floor(spun.speed_kmh.length / 2);
+  for (let i = mid; i < mid + 60; i++) spun.speed_kmh[i] = 5; // a second at a standstill, mid-lap
+  const res = Coach.analyse(ref, spun);
+  const hit = res.corners.filter(c => c.incident);
+  assert.strictEqual(hit.length, 1, "one corner with the spin");
+  assert.deepStrictEqual(hit[0].tips, ["You spin out or crash on this corner."]);
+  assert.ok(res.corners.filter(c => !c.incident).every(c => c.tips.length && c.tips[0] !== hit[0].tips[0]), "the other corners keep their advice");
+  // in a recording of four laps (the Barcelona lap four times; the second, fastest, with a stop): that lap is marked,
+  // not the one compared first, and left out of the laps compared together
+  const rows = Coach.parseCsv(read("tests/fixtures/telemetry_lap.csv"));
+  const ups = rows.map((x, i) => (i && x.lap === rows[i - 1].lap + 1 ? i : -1)).filter(i => i > 0);
+  const one = rows.slice(ups[0], ups[1]), pid = { n: rows[rows.length - 1].packet_id };
+  const copy = (lapNo, ms, stop) => one.map((x, i) => ({ ...x, lap: lapNo, packet_id: ++pid.n, last_lap_ms: i === 0 ? ms : x.last_lap_ms,
+    speed_kmh: stop && i >= 2000 && i < 2060 ? 5 : x.speed_kmh }));
+  const more = [...rows.slice(0, ups[1]), ...copy(2, 113057, true), ...copy(3, 112000), ...copy(4, 113500), ...copy(5, 113900)];
+  more.forEach((x, i) => { if (i && x.lap === more[i - 1].lap) x.last_lap_ms = more[i - 1].last_lap_ms; });
+  const ch = Coach.lapChoices(more, ref);
+  assert.deepStrictEqual(ch.laps.map(l => l.incident.length), [0, 1, 0, 0], "the lap with the stop is marked");
+  assert.strictEqual(ch.fastest, 1);
+  assert.strictEqual(ch.pick, 0, "the fastest lap without a spin is compared first");
+  assert.strictEqual(Coach.acrossLaps(ref, ch.laps, "the WR").laps, 3, "left out of across your laps");
+  console.log("spins ok");
+}
+
 // The advice, word for word, for the two real comparisons above (Barcelona against the WR, the S-1 bronze attempt
 // against the gold run): every section's time, colour and tips, as the site shows them. It's deterministic, so any
 // change to the advice shows up here. After a deliberate change, rewrite the file and read its diff:

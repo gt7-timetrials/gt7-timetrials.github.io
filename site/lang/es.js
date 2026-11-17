@@ -496,8 +496,8 @@ const I18N_ES = {
     "Donde menos constante eres",
   "your time here varies by ±{s} s":
     "tu tiempo aquí varía ±{s} s",
-  "Your best time in each section adds up to <b>{ideal}</b>{faster}. Laps that look cut are left out.":
-    "Tu mejor tiempo en cada tramo suma <b>{ideal}</b>{faster}. Se dejan fuera las vueltas que parecen atajadas.",
+  "Your best time in each section adds up to <b>{ideal}</b>{faster}. Laps that look cut, or with a spin or crash, are left out.":
+    "Tu mejor tiempo en cada tramo suma <b>{ideal}</b>{faster}. Se dejan fuera las vueltas que parecen atajadas o que tienen un trompo o un choque.",
   ", {gap} faster than your best lap ({best})":
     ", {gap} más rápido que tu mejor vuelta ({best})",
   "Your lap <b>{lap}</b> vs {ref}: <b>{gap}</b>.":
@@ -866,5 +866,11 @@ const I18N_ES = {
     "Giro de volante",
   "Exit speed":
     "Velocidad de salida",
+  "⚠ spin or crash":
+    "⚠ trompo o choque",
+  "This lap has a spin or crash (corner {n}), so it's left out of Across your laps.":
+    "Esta vuelta tiene un trompo o un choque (curva {n}), así que queda fuera de «En tus vueltas».",
+  "You spin out or crash on this corner.":
+    "En esta curva haces un trompo o chocas.",
 };
 if (typeof module !== "undefined") module.exports = I18N_ES;
