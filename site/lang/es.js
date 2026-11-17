@@ -1,6 +1,6 @@
 // Spanish. Keys: the English text as site/i18n.js reads it (whitespace collapsed, no attributes in tags). Written
 // by the developer's AI assistant, not yet checked by a native speaker: corrections welcome. Kept in the order the texts
-// appear: the page (index.html), then the code (app.js). tests/test_ui.js checks every text has a translation here.
+// appear: the page (index.html), then the code (app.js, coach.js). tests/test_ui.js checks every text has a translation here.
 const I18N_ES = {
   "Record and compare your laps with fast reference laps for Gran Turismo 7 time trials, daily races and Super License tests. Updated every morning, Melbourne time.<span> On Android: <a>get the app on Google Play</a>, free.</span>":
     "Graba tus vueltas y compáralas con vueltas de referencia rápidas en las contrarrelojes, las carreras diarias y las pruebas de la Superlicencia de Gran Turismo 7. Se actualiza cada mañana, hora de Melbourne.<span> En Android: <a>descarga la app en Google Play</a>, gratis.</span>",
@@ -226,6 +226,12 @@ const I18N_ES = {
     "{n} de {total}",
   "fewer means more time likely to come off":
     "cuantos menos, más es probable que baje el tiempo",
+  "Your file stays on your device.":
+    "El archivo no sale de tu dispositivo.",
+  "Tap Record on this phone and drive as many laps as you like: there's no need to restart between them. Then tap Stop and compare":
+    "Toca Grabar en este móvil y da todas las vueltas que quieras: no hace falta reiniciar entre una y otra. Luego toca Parar y comparar",
+  "Record your laps with the free recorder (as many as you like, no need to restart between them), then upload the file":
+    "Graba tus vueltas con el grabador gratuito (todas las que quieras, sin reiniciar entre una y otra) y sube el archivo",
   "Compare your laps with the reference lap":
     "Compara tus vueltas con la vuelta de referencia",
   "No reference lap for this event yet. You can already record your laps with the recorder.":
@@ -234,12 +240,6 @@ const I18N_ES = {
     "{how} para ver dónde pierdes tiempo frente al {time} de {driver}, curva a curva. Primero se muestra tu vuelta más rápida, y puedes cambiar a cualquier otra.{file}",
   "{how} to see where you lose time against the reference lap's {time}, corner by corner. Your fastest lap is shown first, and you can switch to any other.{file}":
     "{how} para ver dónde pierdes tiempo frente al {time} de la vuelta de referencia, curva a curva. Primero se muestra tu vuelta más rápida, y puedes cambiar a cualquier otra.{file}",
-  "Tap Record on this phone and drive as many laps as you like: there's no need to restart between them. Then tap Stop and compare":
-    "Toca Grabar en este móvil y da todas las vueltas que quieras: no hace falta reiniciar entre una y otra. Luego toca Parar y comparar",
-  "Record your laps with the free recorder (as many as you like, no need to restart between them), then upload the file":
-    "Graba tus vueltas con el grabador gratuito (todas las que quieras, sin reiniciar entre una y otra) y sube el archivo",
-  "Your file stays on your device.":
-    "El archivo no sale de tu dispositivo.",
   "Recorder for Windows":
     "Grabador para Windows",
   "Recorder for Mac":
@@ -446,8 +446,6 @@ const I18N_ES = {
     "Automático ({lang})",
   "Automatic follows your phone's or browser's language: Spanish if it's set to Spanish, otherwise English. The Spanish translation is new: if something reads wrong, please say so.":
     "Automático sigue el idioma de tu móvil o navegador: español si está en español y, si no, inglés. La traducción al español es nueva: si algo suena mal, dímelo, por favor.",
-  "The lap comparison's tips and charts are still in English, for now.":
-    "Los consejos y gráficos de la comparación de vueltas siguen en inglés, de momento.",
   "No medal":
     "Sin medalla",
   "{medal} needs {time}, {gap} faster.":
@@ -552,6 +550,14 @@ const I18N_ES = {
     "Mostrar tu trazada",
   "Hide your line":
     "Ocultar tu trazada",
+  "Show the reference line":
+    "Mostrar la trazada de referencia",
+  "Hide the reference line":
+    "Ocultar la trazada de referencia",
+  "Show {who}'s line":
+    "Mostrar la trazada de {who}",
+  "Hide {who}'s line":
+    "Ocultar la trazada de {who}",
   "Couldn't save the file.":
     "No se ha podido guardar el archivo.",
   "Predictions started on 24 Oct 2026. The first results will appear here after the current events finish{first}.":
@@ -620,5 +626,245 @@ const I18N_ES = {
     "Privacidad",
   "Could not load data.":
     "No se han podido cargar los datos.",
+  "the reference lap":
+    "la vuelta de referencia",
+  "the WR":
+    "WR",
+  "Reference":
+    "Referencia",
+  "{a}, and {b}":
+    "{a} y {b}",
+  "Braking point: you brake {m} m earlier than {who}.":
+    "Punto de frenada: frenas {m} m antes que {who}.",
+  "Braking point: you brake {m} m later than {who}, then have to slow down more: you may be overshooting the entry.":
+    "Punto de frenada: frenas {m} m más tarde que {who} y luego tienes que frenar más: puede que te pases en la entrada.",
+  "Braking point: you brake {m} m later than {who}.":
+    "Punto de frenada: frenas {m} m más tarde que {who}.",
+  "Brake pressure: {who} stays above 90% brake for {ref} m; you do for {me} m. Brake hard at the start of the zone, then ease off.":
+    "Presión de freno: {who} se mantiene por encima del 90% de freno durante {ref} m; tú, durante {me} m. Frena fuerte al principio de la frenada y luego ve soltando.",
+  "Trail braking: {who} is still at {ref}% brake when starting to turn and keeps easing it off for {m} m into the corner; you're at {me}%.":
+    "Frenada en curva (trail braking): {who} todavía lleva un {ref}% de freno al empezar a girar y lo va soltando durante {m} m dentro de la curva; tú llevas un {me}%.",
+  "Trail braking: {who} is still at {ref}% brake when starting to turn; you're at {me}%.":
+    "Frenada en curva (trail braking): {who} todavía lleva un {ref}% de freno al empezar a girar; tú llevas un {me}%.",
+  "Brake release: you're still at {me}% brake when starting to turn; {who} is at {ref}%. Release more before turning in.":
+    "Soltar el freno: todavía llevas un {me}% de freno al empezar a girar; {who} lleva un {ref}%. Suelta más antes de girar.",
+  "{Who} brakes here (up to {p}%); you only lift off the throttle.":
+    "{Who} frena aquí (hasta un {p}%); tú solo levantas el pie del acelerador.",
+  "{Who} doesn't brake here, only easing to {t}% throttle; you brake to {p}%.":
+    "{Who} no frena aquí, solo baja al {t}% de acelerador; tú frenas hasta un {p}%.",
+  "{Who} doesn't brake here, just lifting off; you brake to {p}%.":
+    "{Who} no frena aquí, solo levanta el pie; tú frenas hasta un {p}%.",
+  "Lift: you come off the throttle to {me}%; {who} only to {ref}%.":
+    "Levantar el pie: bajas el acelerador al {me}%; {who} solo al {ref}%.",
+  "Minimum speed: {me} km/h vs {ref} km/h. You're slowing the car more than you need to.":
+    "Velocidad mínima: {me} km/h frente a {ref} km/h. Frenas el coche más de lo necesario.",
+  "Minimum speed: you carry {me} km/h vs {ref} km/h but lose time afterwards. Too fast on entry can mean a wide, slow exit.":
+    "Velocidad mínima: llevas {me} km/h frente a {ref} km/h, pero pierdes tiempo después. Entrar demasiado rápido puede llevar a una salida abierta y lenta.",
+  "Throttle: you get back on the throttle {m} m later than {who}.":
+    "Acelerador: vuelves a acelerar {m} m más tarde que {who}.",
+  "Full throttle: you reach full throttle {m} m later than {who}.":
+    "A fondo: pisas el acelerador a fondo {m} m más tarde que {who}.",
+  "Throttle control: your throttle goes on and off {n} times before full throttle; {who} squeezes it on smoothly. Smooth, progressive throttle keeps the car balanced.":
+    "Control del acelerador: aceleras y sueltas {n} veces antes de ir a fondo; {who} lo pisa de forma suave. Un acelerador suave y progresivo mantiene el coche equilibrado.",
+  "Steering: here you use {p}% more steering lock than you do elsewhere on the lap, compared with {who}. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle.":
+    "Dirección: aquí giras el volante un {p}% más que en el resto de la vuelta, comparado con {who}. El morro se va (subviraje) o vas por una trazada más cerrada. Prueba con algo menos de velocidad en la entrada y endereza el volante a medida que aceleras.",
+  "Exit: you leave the corner at {me} km/h vs {ref} km/h, and that costs time all the way down the straight after it.":
+    "Salida: sales de la curva a {me} km/h frente a {ref} km/h, y eso cuesta tiempo en toda la recta siguiente.",
+  "Close to {who} here.":
+    "Aquí vas cerca de {who}.",
+  "No single big difference: small losses through the whole section.":
+    "Ninguna gran diferencia concreta: pequeñas pérdidas en todo el tramo.",
+  "This lap doesn't follow the reference lap's track. Is it the same track and layout?":
+    "Esta vuelta no sigue el circuito de la vuelta de referencia. ¿Es el mismo circuito y trazado?",
+  "at turn-in you're {m} m tighter than {who}, who starts the turn from further out":
+    "al empezar a girar vas {m} m más por dentro que {who}, que empieza el giro desde más afuera",
+  "start the turn from the outside edge":
+    "empieza el giro desde el borde exterior",
+  "at turn-in you're {m} m wider than {who}":
+    "al empezar a girar vas {m} m más por fuera que {who}",
+  "at the apex you're {m} m wide of {who}'s line":
+    "en el vértice vas {m} m por fuera de la trazada de {who}",
+  "get closer to the apex":
+    "acércate más al vértice",
+  "at the apex you're {m} m tighter than {who}":
+    "en el vértice vas {m} m más por dentro que {who}",
+  "on exit {who} runs {m} m wider than you":
+    "a la salida {who} se abre {m} m más que tú",
+  "let the car run out to the edge on exit":
+    "deja que el coche se abra hasta el borde a la salida",
+  "on exit you run {m} m wider than {who}":
+    "a la salida te abres {m} m más que {who}",
+  "Track use: {parts}.{advice}":
+    "Uso de la pista: {parts}.{advice}",
+  "Use more of the track: {list}.":
+    "Usa más pista: {list}.",
+  "You're {s} s faster than {who} here.":
+    "Aquí eres {s} s más rápido que {who}.",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
+    "Inicio de la vuelta: cruzaste la línea a {me} km/h frente a {ref} km/h, lo que costó unos {s} s antes del primer punto de frenada. Viene de tu salida de la última curva en la vuelta anterior.",
+  "wheels":
+    "ruedas",
+  "front wheels":
+    "ruedas delanteras",
+  "rear wheels":
+    "ruedas traseras",
+  "on entry":
+    "en la entrada",
+  "after the apex":
+    "después del vértice",
+  "Lock-up {where}: your {wheels} lock more than {who}'s. More brake than the tyres can take{steering}: see the bold brake line.":
+    "Bloqueo {where}: tus {wheels} se bloquean más que las de {who}. Más freno del que admiten los neumáticos{steering}: mira la línea de freno en negrita.",
+  "with the steering":
+    "con el volante girado",
+  "on exit":
+    "a la salida",
+  "before the apex":
+    "antes del vértice",
+  "More throttle or steering than the tyres can take: see the bold throttle line.":
+    "Más acelerador o más giro del que admiten los neumáticos: mira la línea de acelerador en negrita.",
+  "Wheelspin {where}: your {wheels} spin more than {who}'s. {why}":
+    "Patinan las ruedas {where}: tus {wheels} patinan más que las de {who}. {why}",
+  "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
+    "Control de tracción {where}: el tuyo actúa y el de {who} no. {why}",
+  "you leave the corner {d} km/h slower ({me} vs {ref} km/h), and that carries all the way down the straight":
+    "sales de la curva {d} km/h más lento ({me} frente a {ref} km/h), y eso se arrastra por toda la recta",
+  "you lift on the straight (below)":
+    "levantas el pie en la recta (más abajo)",
+  "{lost} on the {m} m from the start line to the braking zone":
+    "{lost} en los {m} m desde la línea de salida hasta la frenada",
+  "{lost} in the corner":
+    "{lost} en la curva",
+  "{lost} on the {m} m straight after it to the finish line":
+    "{lost} en la recta de {m} m que sigue, hasta la meta",
+  "{lost} on the {m} m straight after it":
+    "{lost} en la recta de {m} m que sigue",
+  "Where the time goes: {parts}: {why}.":
+    "Dónde se va el tiempo: {parts}: {why}.",
+  "Where the time goes: {parts}.":
+    "Dónde se va el tiempo: {parts}.",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
+    "Levantadas: {n} veces en este tramo sueltas el acelerador{brake} donde {who} no lo hace, {m} m en total (empezando {where} del vértice). En conjunto cuesta unos {s} s. Mantén el acelerador a fondo hasta el punto de frenada.",
+  "or brake":
+    "o frenas",
+  "{m} m after the start line":
+    "{m} m después de la línea de salida",
+  "{m} m before the apex":
+    "{m} m antes del vértice",
+  "{m} m after the apex":
+    "{m} m después del vértice",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
+    "Frenada de más: frenas (hasta un {p}%) durante {m} m, empezando {where}, donde {who} no frena y lleva de media un {ref}% de acelerador. Cuesta unos {s} s.",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
+    "Levantar el pie: llevas de media un {me}% de acelerador durante {m} m, empezando {where}, donde {who} lleva un {ref}%. Cuesta unos {s} s.",
+  "Corner {n}, {lost}":
+    "Curva {n}, {lost}",
+  "Track map coloured by time lost":
+    "Mapa del circuito coloreado según el tiempo perdido",
+  "{p}% slower":
+    "{p}% más lento",
+  "{p}% faster":
+    "{p}% más rápido",
+  "{m} m before":
+    "{m} m antes",
+  "{m} m after":
+    "{m} m después",
+  "{who} brakes":
+    "{who} frena",
+  "apex":
+    "vértice",
+  "Brake %":
+    "Freno %",
+  "Throttle %":
+    "Acelerador %",
+  "Steering °, clockwise up":
+    "Dirección °, a la derecha hacia arriba",
+  "({who}'s recording has none)":
+    "(la grabación de {who} no la tiene)",
+  "(your recording has none)":
+    "(tu grabación no la tiene)",
+  "Speed km/h":
+    "Velocidad km/h",
+  "Pedals, speed and time gap through corner {n}, you against {who}":
+    "Pedales, velocidad y diferencia de tiempo en la curva {n}, tú frente a {who}",
+  "Time gap: <tspan>{gap}</tspan> over this stretch":
+    "Diferencia: <tspan>{gap}</tspan> en este tramo",
+  "You":
+    "Tú",
+  "metres from the apex (no braking here)":
+    "metros desde el vértice (aquí no se frena)",
+  "metres from where {who} starts braking":
+    "metros desde donde {who} empieza a frenar",
+  "extra lift or braking":
+    "levantada o frenada de más",
+  "bold: wheel lock or spin":
+    "en negrita: ruedas bloqueadas o patinando",
+  "Steering: another car than {who}'s, and cars have different steering lock":
+    "Dirección: otro coche que el de {who}, y cada coche tiene un giro de volante distinto",
+  "Corner {n} drawn to scale with your line and {who}'s line":
+    "Curva {n} dibujada a escala con tu trazada y la de {who}",
+  "braking starts":
+    "empieza la frenada",
+  "slowest point":
+    "punto más lento",
+  "full throttle":
+    "a fondo",
+  "Drawn to scale, the same way round as the lap map. Line thickness: the brake from the braking point until the throttle is pressed again, the throttle everywhere else (thin = none, full = 100%).":
+    "Dibujado a escala, con la misma orientación que el mapa de la vuelta. Grosor de la línea: el freno desde el punto de frenada hasta que se vuelve a pisar el acelerador, y el acelerador en el resto (fina = nada, gruesa = 100%).",
+  "Hatched: your wheels lock or spin, or traction control cuts in, more than the reference's.":
+    "Rayado: tus ruedas se bloquean o patinan, o actúa el control de tracción, más que en la referencia.",
+  "the reference":
+    "la referencia",
+  "B":
+    "F",
+  "G":
+    "G",
+  "F":
+    "A",
+  "Corner {n} drawn to scale: your line coloured by how your pedals differ from {who}'s":
+    "Curva {n} dibujada a escala: tu trazada coloreada según cuánto difieren tus pedales de los de {who}",
+  "more brake than {who}":
+    "más freno que {who}",
+  "less brake":
+    "menos freno",
+  "more throttle":
+    "más acelerador",
+  "less throttle":
+    "menos acelerador",
+  "about the same":
+    "más o menos igual",
+  "first brake":
+    "primer toque de freno",
+  "back on the gas":
+    "vuelta al gas",
+  "gear shift to that gear":
+    "cambio a esa marcha",
+  "<b></b>you, <b></b>{who}":
+    "<b></b>tú, <b></b>{who}",
+  "Drawn to scale, the same way round as the lap map. Your line is a dot every {step} m comparing your pedals with {who}'s at the same point: the brake wherever either of you is braking, the throttle everywhere else. Bigger dots = bigger difference ({same}–30, 30–60, 60+ points of pedal travel).":
+    "Dibujado a escala, con la misma orientación que el mapa de la vuelta. Tu trazada es un punto cada {step} m que compara tus pedales con los de {who} en el mismo sitio: el freno donde cualquiera de los dos frena, el acelerador en el resto. Puntos más grandes = más diferencia ({same}–30, 30–60, 60+ puntos de recorrido del pedal).",
+  "{share} in this section":
+    "{share} en este tramo",
+  "Distances from the apex":
+    "Distancias desde el vértice",
+  "Braking point":
+    "Punto de frenada",
+  "no braking":
+    "sin frenada",
+  "lift only":
+    "solo levanta el pie",
+  "Peak brake":
+    "Freno máximo",
+  "Brake when turning in":
+    "Freno al empezar a girar",
+  "Slowest speed":
+    "Velocidad mínima",
+  "Back on throttle":
+    "Vuelta al acelerador",
+  "Full throttle":
+    "A fondo",
+  "Steering lock":
+    "Giro de volante",
+  "Exit speed":
+    "Velocidad de salida",
 };
 if (typeof module !== "undefined") module.exports = I18N_ES;

@@ -543,7 +543,7 @@ function renderSettings() {
       Object.entries(I18N.LANGS).map(([code, label]) => opt(code, label)).join("")}</select></p>
     <p class="hint">${tr(`Automatic follows your phone's or browser's language: Spanish if it's set to Spanish, otherwise
       English. The Spanish translation is new: if something reads wrong, please say so.`)}</p>
-    <p class="hint">${tr("The lap comparison's tips and charts are still in English, for now.")}</p>`;
+`;
   panel.querySelector("#set-lang").addEventListener("change", ev => {
     I18N.setPref(ev.target.value);
     location.reload();
@@ -711,7 +711,8 @@ function renderComparison(out, res, e, otherCar, picker, save) {
   const applyHideRef = () => body.querySelectorAll(".corner-lines").forEach(f => {
     f.classList.toggle("hide-ref", hideRef);
     const b = f.querySelector(".cl-toggle");
-    b.textContent = `${hideRef ? "Show" : "Hide"} ${who === "Reference" ? "the reference" : who + "'s"} line`;
+    b.textContent = who === "Reference" ? (hideRef ? tr("Show the reference line") : tr("Hide the reference line"))
+      : hideRef ? tr("Show {who}'s line", { who }) : tr("Hide {who}'s line", { who });
     b.setAttribute("aria-pressed", String(!hideRef));
   });
   body.addEventListener("click", ev => {

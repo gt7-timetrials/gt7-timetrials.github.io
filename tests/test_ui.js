@@ -157,6 +157,9 @@ function standIn({ withCues, csv }) {
     await es.locator('input.license-file[data-i="0"]').setInputFiles(s1File);
     await es.locator("#license-list .coach-summary").first().waitFor();
     assert.match(await es.locator("#license-list .coach-summary").first().innerText(), /Tu vuelta 1:18\.521/);
+    // the corner's tips and charts too
+    const panel = await es.locator("#license-list .detail-body").first().innerHTML();
+    assert.ok(/Curva \d/.test(panel) && panel.includes("Velocidad km/h") && panel.includes("Ocultar la trazada de referencia"), "the corner panel in Spanish");
     for (const tab of ["current", "daily", "past", "drivers", "howto", "about", "settings"]) {
       await es.evaluate(t => { location.hash = t; }, tab);
       await es.locator(`#tab-${tab}`).waitFor();

@@ -9,7 +9,34 @@
 // A text with no translation stays in English and is listed in I18N.missing (the tests check it's empty).
 const I18N = (() => {
   const LANGS = { en: "English", es: "Español" };
-  const TABLES = { es: typeof I18N_ES !== "undefined" ? I18N_ES : {} };
+  const TAG = /<([a-zA-Z][a-zA-Z0-9]*)(\s[^>]*?)?(\/?)>/g;
+  // the lookup key, and the attributes taken out of its tags, in order
+  function split(text) {
+    const attrs = [];
+    const key = String(text).replace(TAG, (m, tag, a, self) => { attrs.push(a || ""); return `<${tag}${self}>`; })
+      .replace(/\s+/g, " ").trim();
+    return { key, attrs };
+  }
+
+  // a translator for one language: tables = { es: { english key: translation } }. Also used by the tests.
+  function create(lang, tables = {}) {
+    const table = tables[lang] || {}, missing = [];
+    function t(text, vars) {
+      const { key, attrs } = split(text);
+      let out = lang === "en" ? key : table[key];
+      if (out === undefined) {
+        if (!missing.includes(key)) missing.push(key);
+        out = key;
+      }
+      let i = 0;
+      out = out.replace(TAG, (m, tag, a, self) => `<${tag}${attrs[i++] || ""}${self}>`);
+      if (vars) out = out.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m));
+      return out;
+    }
+    return { t, lang, missing };
+  }
+
+  // this page's language: the Settings tab's choice, kept on the device
   const STORE = "lang";
   let pref = "auto";
   try { pref = localStorage.getItem(STORE) || "auto"; } catch (err) { /* no storage: automatic */ }
@@ -22,35 +49,10 @@ const I18N = (() => {
     }
     return "en";
   };
-  const lang = pref === "auto" ? automatic() : pref;
+  const { t, lang, missing } = create(pref === "auto" ? automatic() : pref, { es: typeof I18N_ES !== "undefined" ? I18N_ES : {} });
   // dates and numbers: the phone's own variant of the language if it has one (es-MX, en-AU), else the language
   const locale = wanted().find(l => String(l).toLowerCase().split("-")[0] === lang) || lang;
-  const missing = [];
 
-  const TAG = /<([a-zA-Z][a-zA-Z0-9]*)(\s[^>]*?)?(\/?)>/g;
-  // the lookup key, and the attributes taken out of its tags, in order
-  function split(text) {
-    const attrs = [];
-    const key = String(text).replace(TAG, (m, tag, a, self) => { attrs.push(a || ""); return `<${tag}${self}>`; })
-      .replace(/\s+/g, " ").trim();
-    return { key, attrs };
-  }
-  function lookup(text) {
-    const { key, attrs } = split(text);
-    if (lang === "en") return key;
-    const table = TABLES[lang], out = table[key];
-    if (out === undefined) {
-      if (!missing.includes(key)) missing.push(key);
-      return key;
-    }
-    let i = 0;
-    return out.replace(TAG, (m, tag, a, self) => `<${tag}${attrs[i++] || ""}${self}>`);
-  }
-  function t(text, vars) {
-    let s = text === "" ? "" : lookup(text);
-    if (vars) s = s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m));
-    return s;
-  }
   // the page's own text, marked data-t in index.html
   const pageKeys = []; // what was looked up, for the tests
   function translatePage(root = document) {
@@ -69,7 +71,7 @@ const I18N = (() => {
       else localStorage.setItem(STORE, p);
     } catch (err) { /* not kept */ }
   }
-  return { t, lang, pref, locale, LANGS, automatic, setPref, translatePage, missing, split, pageKeys };
+  return { t, lang, pref, locale, LANGS, automatic, setPref, translatePage, missing, split, pageKeys, create };
 })();
 const tr = I18N.t;
 
