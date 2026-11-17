@@ -405,8 +405,8 @@ function renderCues() {
   panel.innerHTML = `
     <h2>Audio cues</h2>
     <p>Tick <b>Audio cues</b> next to Record on this phone, and while you record the app plays a countdown to each point
-      where the reference lap brakes or lifts, and a beep just before it gets back on the throttle. It works with the
-      phone locked.</p>
+      where the reference lap brakes or lifts, and a chirp half a second before it starts to apply throttle. It works
+      with the phone locked.</p>
     <h3>Hear the sounds</h3>
     <p class="hint">Listen here so you know what they sound like in the game. They play through what the phone is using
       now: ${esc(st.current?.name || "this output")}.</p>
@@ -415,6 +415,8 @@ function renderCues() {
       <button type="button" class="button-link cue-test" data-kind="lift">Lift: tick, tick, BEEP</button>
       <button type="button" class="button-link cue-test" data-kind="gas">Gas: chirp</button>
       <button type="button" class="button-link cue-test" data-kind="pip">Chicane: pip</button></p>
+    <p class="hint">Gas chirp: half a second before the reference starts to apply throttle. Start squeezing it on, not
+      flat out.</p>
     <h3>Cue settings</h3>
     <p class="hint">The countdown before each brake or lift, which cues play, and when they play. Changes apply from
       the next recording.</p>
@@ -423,7 +425,7 @@ function renderCues() {
     <p class="cue-row"><span>Beep timing</span>${select("spacing", range(0.3, 1, 0.1), v => `${s(v)} apart`)}</p>
     <h4>Which cues</h4>
     <p class="cue-row">${check("lift", "Lift beeps: where the reference comes off the throttle without braking")}</p>
-    <p class="cue-row">${check("gas", "Gas beep: 0.5 s before the reference gets back on the throttle")}</p>
+    <p class="cue-row">${check("gas", "Gas chirp: half a second before the reference starts to apply throttle (start squeezing it on, not flat out)")}</p>
     <p class="cue-row">${check("chicane", "Chicane beep: one short pip for a brake or lift that comes too soon after the last one for its own countdown (otherwise it gets no sound)")}</p>
     <h4>Timing</h4>
     <p class="cue-row"><span>Brake cue earlier than the reference</span>${select("brakeEarly", range(0, 0.2, 0.05), v => (v ? `${v.toFixed(2)} s earlier` : "on the reference's point"))}</p>
