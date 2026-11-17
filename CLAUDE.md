@@ -16,12 +16,13 @@ app, builds and keys are in `docs/android.md`.
   `node tests/test_coach.js`. GitHub runs them on every push; red means don't merge.
 - **The website is in English and Spanish** (chosen on the Settings tab; Automatic follows the phone's language). Any
   new or changed text on the website needs its Spanish in `site/lang/es.js`, keyed by the English: page text is marked
-  `data-t` in `site/index.html`, code text goes through `tr("…")` in `site/app.js` (placeholders as `{name}`, never
-  `${…}`). The browser test fails on a text without Spanish, or Spanish for a text no longer used. The owner can't read
+  `data-t` in `site/index.html`, code text goes through `tr("…")` in `site/app.js` and `site/coach.js` (placeholders as
+  `{name}`, never `${…}`; a tip is `tip("kind", "…")`). The browser test fails on a text without Spanish, or Spanish for a text no longer used. The owner can't read
   Spanish: say what was translated, and testers' corrections go straight into `es.js` (through beta).
 - **Changing the lap advice** (the tips' wording or the rules for when they're given, in `site/coach.js`): the test
   checks the advice for two real laps word for word, so it fails until `tests/fixtures/expected_advice.json` is
-  rewritten (`UPDATE_ADVICE=1 node tests/test_coach.js`). Read its diff and show the owner what changed.
+  rewritten (`UPDATE_ADVICE=1 node tests/test_coach.js`, which also rewrites the Spanish,
+  `tests/fixtures/expected_advice_es.json`). Read its diff and show the owner what changed.
 - **The Google Play app must keep working with the website.** Testers' installed app loads the live site, and app
   updates reach them only after the owner uploads the `.aab` and Google approves it. New app features are detected in
   `site/app.js` (for example `CUES`); the browser test in `tests/test_ui.js` checks this against the app on main (read
