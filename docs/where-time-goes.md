@@ -93,7 +93,7 @@ themes in proportion to their sizes.
 
 - **What each tip measures** is independent of the split: e.g. "you brake 9 m earlier", "you're at 77% brake when
   starting to turn", each against the reference at the same point.
-- **Each tip has a theme:** braking point, brake pressure, trail braking, brake release, lock-up, minimum speed,
+- **Each tip has a theme:** braking point, brake pressure (too little hard braking, or too much: hard braking held 20 m+ and over twice as long as the reference), trail braking, brake release, lock-up, minimum speed,
   steering → braking; throttle, full throttle, throttle control, wheelspin, traction control, exit speed → exit; track
   use → line; lifts and extra braking → the theme their own metres' time went to; the start of the lap → straight.
 - **Shown** only if its theme is at least **15%** of the corner's split (by size) and at least **0.03 s**. If none is,
