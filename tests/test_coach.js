@@ -208,6 +208,34 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   console.log("spins ok");
 }
 
+// Where the time goes, by theme: each stretch from a reference braking point to the next, split into braking, exit,
+// straight and line with the reference's own physics; the parts add up to the lap's gap; in a stretch slower overall
+// every part counts as time lost (and the mirror when quicker); within 0.5% of the reference, no split
+{
+  for (const res of [r, s1]) {
+    const sum = Object.values(res.themes).reduce((a, b) => a + b, 0);
+    assert.ok(Math.abs(sum - res.recordedGap) < 1e-6, `themes add up to the gap: ${sum} vs ${res.recordedGap}`);
+    const st = res.corners.filter(c => c.themes);
+    assert.ok(st.length >= 4, "a stretch for each braking corner");
+    for (const c of st) {
+      const parts = Object.values(c.themes.parts);
+      assert.ok(Math.abs(parts.reduce((a, b) => a + b, 0) - c.themes.lost) < 1e-9);
+      assert.ok(parts.every(v => Math.sign(v) === Math.sign(c.themes.lost) || Math.abs(v) < 1e-12), "all with the stretch's sign");
+    }
+  }
+  // a stretch where a part was quicker but the stretch slower overall: that part counts as time lost
+  const mixed = [...r.corners, ...s1.corners].filter(c => c.themes && Object.values(c.themes.signed).some(v => v < -0.01) && c.themes.lost > 0);
+  assert.ok(mixed.length >= 1, "a fast-in, slow-out stretch in the test laps");
+  // the reference against itself: every stretch within 0.5%, nothing split
+  assert.ok(self.corners.filter(c => c.themes).every(c => c.themes.close));
+  assert.ok(Math.abs(Object.values(self.themes).reduce((a, b) => a + b, 0)) < 1e-6);
+  // shown under the lap and in the corner's panel (not for a corner with a spin)
+  const panel = Coach.cornerDetail(r.corners[0], "WR", r);
+  assert.ok(panel.includes("From this braking point to the next") && panel.includes('class="th-bar"'));
+  assert.ok(Coach.cornerDetail(self.corners[0], "WR", self).includes("Within 0.5% of WR's time here"));
+  console.log("themes ok");
+}
+
 // The advice, word for word, for the two real comparisons above (Barcelona against the WR, the S-1 bronze attempt
 // against the gold run): every section's time, colour and tips, as the site shows them. It's deterministic, so any
 // change to the advice shows up here. After a deliberate change, rewrite the file and read its diff:

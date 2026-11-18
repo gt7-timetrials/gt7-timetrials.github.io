@@ -653,6 +653,16 @@ function acrossLaps(a) {
       faster: a.idealMs < a.bestMs ? tr(", {gap} faster than your best lap ({best})", { gap: secs(a.bestMs - a.idealMs), best: fmt(a.bestMs) }) : "" })}</p></div>`;
 }
 
+// Where the lap's time goes, by theme (coach.js themeSplit); a lap with a spin or crash isn't split
+function themesBox(res) {
+  if (!res.themes || res.corners.some(c => c.incident)) return "";
+  return `<div class="themes"><h4>${tr("Where your time goes")}</h4>${Coach.themeBar(res.themes)}
+    <p class="hint">${tr(`From each of the reference's braking points to the next: <b>braking</b> is the speed you lose to
+      the apex and what it costs after, <b>exit</b> what you lose from the apex out and down the straight after it,
+      <b>straight</b> lifting or a slower car on the straight, <b>line</b> the extra distance of a different line. Where
+      you're slower overall, a quicker part counts as time lost too: braking less only to exit slower isn't a gain.`)}</p></div>`;
+}
+
 function renderComparison(out, res, e, otherCar, picker, save) {
   const total = (res.lapMs - res.refMs) / 1000;
   const worst = res.corners.reduce((a, c) => (c.lost > a.lost ? c : a), res.corners[0]);
@@ -666,6 +676,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     ${Math.abs(res.gameGap - res.recordedGap) > 0.1 ? `<p class="hint">${tr(`The game's times include
       {s} s that isn't in the recorded laps (in a license test the timer can
       start before the car reaches the line), so the corners below add up to {total}.`, { s: Math.abs(res.gameGap - res.recordedGap).toFixed(2), total: Coach.fmtLost(res.recordedGap) })}</p>` : ""}
+    ${themesBox(res)}
     ${guide()}
     ${acrossLaps(picker?.across)}
     <p class="hint tap-hint">${phone() ? tr("Tap a corner to see where you lose time.") : tr("Hover over or click a corner on the map.")}</p>

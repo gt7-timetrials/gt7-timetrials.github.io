@@ -318,9 +318,88 @@ const Coach = (() => {
     });
     const ratios = corners.filter(c => c.ref_m.maxSteerDeg >= 20).map(c => c.me_m.maxSteerDeg / c.ref_m.maxSteerDeg).sort((a, b) => a - b);
     const steerRatio = ratios.length >= 3 ? ratios[Math.floor(ratios.length / 2)] : null;
-    return { ...result(corners, steerRatio, R, M, delta, who), lapMs: myLap.lap_ms, refMs: refLap.lap_ms, length: n, ref,
+    const out = { ...result(corners, steerRatio, R, M, delta, who), lapMs: myLap.lap_ms, refMs: refLap.lap_ms, length: n, ref,
       otherCar: myLap.car_code !== refLap.car_code,
       recordedGap, gameGap: (myLap.lap_ms - refLap.lap_ms) / 1000 };
+    const split = themeSplit(R, M, delta, corners, recordedGap);
+    out.themes = split.totals;
+    for (const sg of split.segments) out.corners[sg.i].themes = sg;
+    return out;
+  }
+
+  // Where the time goes, by theme: each stretch from one of the reference's braking points to the next (the last runs
+  // over the line to the first) is split into
+  //   braking  - the loss from the braking point to the apex, and what your apex speed costs after it
+  //   exit     - what the exit adds beyond that, to the corner exit and, through your exit speed, down the straight
+  //   straight - the straight's loss beyond what your exit speed explains: lifting, braking, a slower car
+  //   line     - time not explained by speed: the extra distance of a different line
+  // using the reference lap's own physics, no fitted numbers. "The reference's way" from another speed: where the
+  // reference is flat out, the car's flat-out acceleration at that speed (read from the reference lap: engine, gears,
+  // drag); elsewhere (part throttle, grip-limited), the reference's acceleration at that point. Before the apex there's
+  // no carry-over: arriving slower costs only the time until the reference slows to your speed (you'd brake less), and
+  // that goes back to the stretch before. Then a stretch's net loss (or gain) is shared by the themes' sizes, all with
+  // its sign: in a stretch slower than the reference, a quicker entry followed by a slow exit counts as time lost, not
+  // as a gain. A stretch within THEME_CLOSE of the reference's time isn't split.
+  const THEMES = ["braking", "exit", "straight", "line"], THEME_CLOSE = 0.005;
+  function themeSplit(R, M, delta, corners, gap) {
+    const n = delta.length - 1, sec = v => 1 / Math.max(1, v / 3.6);
+    const bins = {};
+    for (let k = 0; k + 1 < R.v.length; k++) if (R.thr[k] >= 95 && R.brk[k] < 5 && R.thr[k + 1] >= 95) (bins[Math.floor(R.v[k] / 5)] ||= []).push(R.v[k + 1] ** 2 - R.v[k] ** 2);
+    const keys = Object.keys(bins).map(Number).filter(b => bins[b].length >= 5);
+    const med = Object.fromEntries(keys.map(b => { const x = bins[b].sort((p, q) => p - q); return [b, x[x.length >> 1]]; }));
+    const G = v => { if (!keys.length) return 0; const b = Math.floor(v / 5); let best = keys[0]; for (const k of keys) if (Math.abs(k - b) < Math.abs(best - b)) best = k; return med[best]; };
+    const refWay = (ks, j, u) => {
+      const out = [], slower = u < R.v[ks[j]];
+      for (let i = j; i < ks.length; i++) {
+        out.push(u);
+        const k = ks[i], k2 = ks[i + 1] ?? k, flat = R.thr[k] >= 95 && R.brk[k] < 5;
+        u = Math.sqrt(Math.max(1, u * u + (R.v[k2] ** 2 - R.v[k] ** 2) + (flat ? G(u) - G(R.v[k]) : 0)));
+        u = slower ? Math.min(u, R.v[k2]) : Math.max(u, R.v[k2]);
+      }
+      return out;
+    };
+    const idx = corners.map((c, i) => i).filter(i => { const c = corners[i]; return c.ref_m.brakeAt !== null && c.ref_m.brakeAt < c.apex && c.exit > c.apex; });
+    const segs = idx.map((i, m) => {
+      const c = corners[i], b = c.ref_m.brakeAt, a = c.apex, x = c.exit, last = m === idx.length - 1;
+      const end = last ? n : corners[idx[m + 1]].ref_m.brakeAt, first = corners[idx[0]].ref_m.brakeAt;
+      const ks = []; for (let k = b; k < end; k++) ks.push(k);
+      if (last) for (let k = 0; k < first; k++) ks.push(k);
+      // the last runs to the finish line, timed from the recordings like the last corner (see recordedGap)
+      const lost = (last ? gap : delta[end]) - delta[b] + (last ? delta[first] - delta[0] : 0);
+      const p = { braking: 0, exit: 0, straight: 0, line: 0 };
+      let carried = 0, speed = 0;
+      const ja = a - b, jx = x - b, u0 = M.v[b];
+      for (let j = 0; j < ja; j++) {
+        const k = ks[j], L = sec(M.v[k]) - sec(R.v[k]); speed += L;
+        const cr = u0 < R.v[b] ? sec(Math.min(u0, R.v[k])) - sec(R.v[k]) : 0;
+        carried += cr; p.braking += L - cr;
+      }
+      const fromApex = refWay(ks, ja, M.v[a]), fromExit = refWay(ks, jx, M.v[x]);
+      const dvx = M.v[x] - R.v[x], ca = fromApex[jx - ja] - R.v[x], own = dvx - ca;
+      const shareB = Math.abs(dvx) < 0.5 ? (Math.abs(ca) + Math.abs(own) ? Math.abs(ca) / (Math.abs(ca) + Math.abs(own)) : 0.5)
+        : Math.sign(ca) === Math.sign(own) ? ca / dvx : Math.abs(ca) / (Math.abs(ca) + Math.abs(own));
+      for (let j = ja; j < ks.length; j++) {
+        const k = ks[j], L = sec(M.v[k]) - sec(R.v[k]); speed += L;
+        if (j < jx) { const fb = sec(fromApex[j - ja]) - sec(R.v[k]); p.braking += fb; p.exit += L - fb; }
+        else { const fx = sec(fromExit[j - jx]) - sec(R.v[k]); p.braking += fx * shareB; p.exit += fx * (1 - shareB); p.straight += L - fx; }
+      }
+      p.line = lost - speed;
+      return { i, n: i + 1, refTime: ks.reduce((t, k) => t + sec(R.v[k]), 0), signed: p, carried };
+    });
+    // arriving slower is the stretch before's: back to its themes, by their sizes
+    segs.forEach((sg, m) => {
+      const prev = segs[(m - 1 + segs.length) % segs.length].signed, tot = THEMES.reduce((t, k) => t + Math.abs(prev[k]), 0);
+      if (tot > 0) for (const k of THEMES) prev[k] += sg.carried * Math.abs(prev[k]) / tot;
+    });
+    const totals = { braking: 0, exit: 0, straight: 0, line: 0 };
+    for (const sg of segs) {
+      const net = THEMES.reduce((t, k) => t + sg.signed[k], 0), size = THEMES.reduce((t, k) => t + Math.abs(sg.signed[k]), 0);
+      sg.lost = net;
+      sg.parts = Object.fromEntries(THEMES.map(k => [k, size > 0 ? net * Math.abs(sg.signed[k]) / size : 0]));
+      sg.close = Math.abs(net) < THEME_CLOSE * sg.refTime;
+      for (const k of THEMES) totals[k] += sg.parts[k];
+    }
+    return { segments: segs, totals };
   }
 
   // Where you are across the track compared with the reference: metres to the outside of the reference's line
@@ -982,12 +1061,27 @@ const Coach = (() => {
     </figure>`;
   }
 
+  // The themes as a bar (widths by size) with their times: for the lap, and for a stretch in its corner's panel
+  function themeBar(parts) {
+    const names = { braking: tr("Braking"), exit: tr("Exit"), straight: tr("Straight"), line: tr("Line") };
+    const size = THEMES.reduce((t, k) => t + Math.abs(parts[k]), 0) || 1;
+    return `<div class="th-bar" aria-hidden="true">${THEMES.map(k => `<i class="th-${k}" style="width:${(100 * Math.abs(parts[k]) / size).toFixed(1)}%"></i>`).join("")}</div>
+      <div class="th-legend">${THEMES.map(k => `<span><i class="th-key th-${k}"></i>${names[k]} <b>${fmtLost(parts[k])}</b></span>`).join("")}</div>`;
+  }
+  function stretchThemes(c, who) {
+    if (!c.themes) return "";
+    const t = c.themes;
+    return `<div class="th-corner"><p class="th-head">${tr("From this braking point to the next: <b>{lost}</b>", { lost: fmtLost(t.lost) })}</p>
+      ${t.close ? `<p class="hint">${tr("Within 0.5% of {who}'s time here, so it isn't split into themes.", { who })}</p>` : themeBar(t.parts)}</div>`;
+  }
+
   function cornerDetail(c, who, result) {
     const label = named(who);
     const row = (name, f) => `<tr><th>${name}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
     return `<div class="corner-head"><b>${tr("Corner {n}", { n: c.n })}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span>
       <span class="muted">${tr("{share} in this section", { share: fmtShare(c.share) })}</span></div>
       <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
+      ${c.incident ? "" : stretchThemes(c, who === "Reference" ? tr("the reference") : label)}
       ${result ? cornerWidths(result, c, who) + cornerLines(result, c, who) + pedalChart(result, c, who) : ""}
       <table class="corner-table"><thead><tr><th>${tr("Distances from the apex")}</th><th class="num">${tr("You")}</th><th class="num">${label}</th></tr></thead><tbody>
         ${row(tr("Braking point"), m => (m.brakeAt === null ? (m.liftAt === null ? tr("no braking") : tr("lift only")) : metres(m.brakeAt, c.apex)))}
@@ -1022,7 +1116,7 @@ const Coach = (() => {
     return NEEDED.every(h => head.includes(h));
   }
 
-  return { parseCsv, fastestLap, lapChoices, analyse, acrossLaps, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost, useLanguage };
+  return { parseCsv, fastestLap, lapChoices, analyse, acrossLaps, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost, useLanguage, themeBar };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;

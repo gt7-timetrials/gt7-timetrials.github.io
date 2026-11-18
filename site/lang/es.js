@@ -872,5 +872,21 @@ const I18N_ES = {
     "Esta vuelta tiene un trompo o un choque (curva {n}), así que queda fuera de «En tus vueltas».",
   "You spin out or crash on this corner.":
     "En esta curva haces un trompo o chocas.",
+  "Where your time goes":
+    "Dónde se va tu tiempo",
+  "From each of the reference's braking points to the next: <b>braking</b> is the speed you lose to the apex and what it costs after, <b>exit</b> what you lose from the apex out and down the straight after it, <b>straight</b> lifting or a slower car on the straight, <b>line</b> the extra distance of a different line. Where you're slower overall, a quicker part counts as time lost too: braking less only to exit slower isn't a gain.":
+    "De cada punto de frenada de la referencia al siguiente: <b>frenada</b> es la velocidad que pierdes hasta el vértice y lo que cuesta después, <b>salida</b> lo que pierdes desde el vértice hacia fuera y en la recta siguiente, <b>recta</b> levantar el pie o un coche más lento en la recta, <b>trazada</b> la distancia de más de otra trazada. Donde vas más lento en conjunto, una parte más rápida también cuenta como tiempo perdido: frenar menos para luego salir más lento no es una ganancia.",
+  "Braking":
+    "Frenada",
+  "Exit":
+    "Salida",
+  "Straight":
+    "Recta",
+  "Line":
+    "Trazada",
+  "From this braking point to the next: <b>{lost}</b>":
+    "De este punto de frenada al siguiente: <b>{lost}</b>",
+  "Within 0.5% of {who}'s time here, so it isn't split into themes.":
+    "A menos de un 0,5% del tiempo de {who} aquí, así que no se reparte por temas.",
 };
 if (typeof module !== "undefined") module.exports = I18N_ES;

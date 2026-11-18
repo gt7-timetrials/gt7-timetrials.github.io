@@ -176,6 +176,19 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .save-btn { padding: 3px 10px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent);
   font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .save-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.themes { margin: 4px 0 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.themes h4 { margin: 0 0 6px; font-size: 0.95rem; }
+.themes .hint { margin: 6px 0 0; }
+.th-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--line); }
+.th-bar i { display: block; height: 100%; }
+.th-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; font-size: 0.85rem; }
+.th-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.th-key { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+.th-braking { background: var(--you); } .th-exit { background: var(--gas); }
+.th-straight { background: var(--gold); } .th-line { background: var(--line-ref); }
+.th-corner { margin: 4px 0 10px; }
+.th-corner .th-head { margin: 0 0 4px; font-size: 0.9rem; }
+.th-corner .hint { margin: 0; }
 .across { margin: 4px 0 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
 .across h4 { margin: 0 0 4px; font-size: 0.95rem; }
 .across .hint { margin: 0; }
