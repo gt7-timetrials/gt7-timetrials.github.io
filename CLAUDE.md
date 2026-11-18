@@ -14,11 +14,15 @@ app, builds and keys are in `docs/android.md`.
   green on beta. Afterwards, bring beta up to date with main again.
 - **Run the tests before pushing:** `python -m unittest tests.test_gt7tt` (includes the Java and browser tests) and
   `node tests/test_coach.js`. GitHub runs them on every push; red means don't merge.
-- **The website is in English and Spanish** (chosen on the Settings tab; Automatic follows the phone's language). Any
-  new or changed text on the website needs its Spanish in `site/lang/es.js`, keyed by the English: page text is marked
-  `data-t` in `site/index.html`, code text goes through `tr("…")` in `site/app.js` and `site/coach.js` (placeholders as
-  `{name}`, never `${…}`; a tip is `tip("kind", "…")`). The browser test fails on a text without Spanish, or Spanish for a text no longer used. The owner can't read
-  Spanish: say what was translated, and testers' corrections go straight into `es.js` (through beta).
+- **The website is in English, Spanish, French, Italian, German, Japanese and Simplified Chinese** (chosen on the
+  Settings tab; Automatic follows the phone's language). Any new or changed text on the website needs its translation in
+  every `site/lang/<code>.js`, keyed by the English: page text is marked `data-t` in `site/index.html`, code text goes
+  through `tr("…")` in `site/app.js` and `site/coach.js` (placeholders as `{name}`, never `${…}`; a tip is
+  `tip("kind", "…")`). The tests fail on a text missing in any language, a translation no longer used, or different
+  placeholders or tags (`node tests/lang_check.js` checks the files against `es.js`). The owner reads none of them: say
+  what was translated, and testers' corrections go straight into the language's file (through beta). A new language is
+  a new `site/lang/<code>.js` (adding itself to `I18N_TABLES`), its `<script>` in `index.html`, and its name in
+  `site/i18n.js`.
 - **Changing the lap advice** (the tips' wording or the rules for when they're given, in `site/coach.js`): the test
   checks the advice for two real laps word for word, so it fails until `tests/fixtures/expected_advice.json` is
   rewritten (`UPDATE_ADVICE=1 node tests/test_coach.js`, which also rewrites the Spanish,
