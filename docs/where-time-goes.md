@@ -2,7 +2,7 @@
 
 How a lap's gap to the reference is split into **braking, exit, straight and line**, and how the tips are chosen and
 ordered (`site/coach.js`: `themeSplit`, and the end of `analyse`). Everything is measured from the two laps and the
-reference lap's own physics: no fitted numbers. Written 18 November 2026, from the code as it is.
+reference lap's own physics: no fitted numbers. Written 18 November 2026, from the code as it is (tips within a theme ranked on beta, 18 November).
 
 ## 1. Lining the laps up
 
@@ -98,13 +98,16 @@ themes in proportion to their sizes.
   use → line; lifts and extra braking → the theme their own metres' time went to; the start of the lap → straight.
 - **Shown** only if its theme is at least **15%** of the corner's split (by size) and at least **0.03 s**. If none is,
   "No single big difference: small losses through the whole section."
-- **Ordered** by the size of their theme in that corner, biggest first; within a theme, a fixed order (braking point
-  first).
+- **Ordered** by the size of their theme in that corner, biggest first; within a theme, the habits that usually cost
+  most first, from the analysis of the owner's and top drivers' laps (gt7laps `analysis/`; `TIP_RANK` in coach.js):
+  - braking: brake release (brake held after the braking point, the biggest cost), braking where the reference
+    doesn't, braking point, lock-up, then the results (minimum speed, steering), a lift, and last the tips about less
+    brake than the reference (brake pressure, trail braking, braking where it only lifts), which save braking time;
+  - exit: throttle (back on later), throttle control, lifts, then the exit speed they cause, full throttle and
+    wheelspin, which add little once the throttle shortfall is known.
 - **Within 0.5%** of the reference: only "Close to … here". **Faster** by 0.05 s or more: "You're … s faster than …
   here."
 
 ## Not yet
 
-- Within a theme, the order is fixed; the regression (gt7laps `analysis/`) could rank the habits that usually cost most
-  first.
 - The straight theme can pick up some of a hesitant exit that carries on as part throttle past the corner exit.
