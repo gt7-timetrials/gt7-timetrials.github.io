@@ -148,8 +148,8 @@ const I18N_ES = {
     "Error típico en el tiempo de oro final, probado con pruebas pasadas: 0,16% tras el día 1, 0,12% tras el día 3 y 0,08% tras el día 7. En una vuelta de 1:50, son unos 0,18 s, 0,13 s y 0,09 s.",
   "Languages":
     "Idiomas",
-  "Choose the language on the <a>Settings</a> tab: English or Spanish so far. The Spanish translation is new: if something reads wrong, please say so.<span> For other languages, most browsers can translate this site: in Chrome, tap ⋮ and then Translate.</span><span> For other languages, open gt7-timetrials.github.io in Chrome and translate it there.</span>":
-    "Elige el idioma en la pestaña <a>Ajustes</a>: por ahora inglés o español. La traducción al español es nueva: si algo suena mal, dímelo, por favor.<span> Para otros idiomas, la mayoría de navegadores pueden traducir esta web: en Chrome, toca ⋮ y luego Traducir.</span><span> Para otros idiomas, abre gt7-timetrials.github.io en Chrome y tradúcela allí.</span>",
+  "Choose the language on the <a>Settings</a> tab. The translations are new: if something reads wrong, please say so.<span> For other languages, most browsers can translate this site: in Chrome, tap ⋮ and then Translate.</span><span> For other languages, open gt7-timetrials.github.io in Chrome and translate it there.</span>":
+    "Elige el idioma en la pestaña <a>Ajustes</a>. Las traducciones son nuevas: si algo suena mal, dímelo, por favor.<span> Para otros idiomas, la mayoría de navegadores pueden traducir esta web: en Chrome, toca ⋮ y luego Traducir.</span><span> Para otros idiomas, abre gt7-timetrials.github.io en Chrome y tradúcela allí.</span>",
   "Source":
     "Fuente",
   "Data comes from the public leaderboards on gran-turismo.com. This is an unofficial fan project, not affiliated with Sony Interactive Entertainment or Polyphony Digital. Code and data: <a>github.com/gt7-timetrials/gt7-timetrials.github.io</a>.":
@@ -444,8 +444,8 @@ const I18N_ES = {
     "Idioma",
   "Automatic ({lang})":
     "Automático ({lang})",
-  "Automatic follows your phone's or browser's language: Spanish if it's set to Spanish, otherwise English. The Spanish translation is new: if something reads wrong, please say so.":
-    "Automático sigue el idioma de tu móvil o navegador: español si está en español y, si no, inglés. La traducción al español es nueva: si algo suena mal, dímelo, por favor.",
+  "Automatic follows your phone's or browser's language if the site has it, otherwise English. The translations are new: if something reads wrong, please say so.":
+    "Automático sigue el idioma de tu móvil o navegador si la web lo tiene y, si no, inglés. Las traducciones son nuevas: si algo suena mal, dímelo, por favor.",
   "No medal":
     "Sin medalla",
   "{medal} needs {time}, {gap} faster.":

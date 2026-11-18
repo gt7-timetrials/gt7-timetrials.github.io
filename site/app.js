@@ -542,8 +542,8 @@ function renderSettings() {
     <h3><label for="set-lang">${tr("Language")}</label></h3>
     <p class="cue-row"><select id="set-lang">${opt("auto", tr("Automatic ({lang})", { lang: I18N.LANGS[I18N.automatic()] }))}${
       Object.entries(I18N.LANGS).map(([code, label]) => opt(code, label)).join("")}</select></p>
-    <p class="hint">${tr(`Automatic follows your phone's or browser's language: Spanish if it's set to Spanish, otherwise
-      English. The Spanish translation is new: if something reads wrong, please say so.`)}</p>
+    <p class="hint">${tr(`Automatic follows your phone's or browser's language if the site has it, otherwise English. The
+      translations are new: if something reads wrong, please say so.`)}</p>
 `;
   panel.querySelector("#set-lang").addEventListener("change", ev => {
     I18N.setPref(ev.target.value);
