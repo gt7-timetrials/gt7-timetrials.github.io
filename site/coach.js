@@ -323,13 +323,36 @@ const Coach = (() => {
       recordedGap, gameGap: (myLap.lap_ms - refLap.lap_ms) / 1000 };
     const split = themeSplit(R, M, delta, corners, recordedGap);
     out.themes = split.totals;
+    // a tip's theme: by its kind, or for a lift, the theme its metres' time went to
+    const themeOf = (c, j) => {
+      const span = c.tipSpans[j];
+      if (!span) return TIP_THEME[c.tipKinds[j]];
+      const sum = Object.fromEntries(THEMES.map(t => [t, 0]));
+      for (let k = span[0]; k < Math.min(span[1], split.per.length); k++) for (const t of THEMES) sum[t] += split.per[k][t];
+      return THEMES.reduce((a, b) => (Math.abs(sum[b]) > Math.abs(sum[a]) ? b : a));
+    };
     out.corners.forEach((c, i) => {
       c.themes = split.corners[i];
+      c.tipThemes = c.tips.map((t, j) => themeOf(c, j));
       // the tips, most important first: by the size of their theme in this corner, keeping the order within a theme
-      if (c.tips.length < 2) return;
-      const size = k => Math.abs(c.themes.signed[TIP_THEME[k]] ?? 0);
-      const order = c.tips.map((t, j) => j).sort((x, y) => size(c.tipKinds[y]) - size(c.tipKinds[x]) || x - y);
-      c.tips = order.map(j => c.tips[j]); c.tipKinds = order.map(j => c.tipKinds[j]);
+      const size = th => Math.abs(c.themes.signed[th] ?? 0);
+      const order = c.tips.map((t, j) => j).sort((x, y) => size(c.tipThemes[y]) - size(c.tipThemes[x]) || x - y);
+      for (const key of ["tips", "tipKinds", "tipThemes"]) c[key] = order.map(j => c[key][j]);
+    });
+    out.corners.forEach(c => {
+      delete c.tipSpans;
+      if (c.incident) return;
+      const one = t => { c.tips = [t.text]; c.tipKinds = [t.kind]; c.tipThemes = [TIP_THEME[t.kind]]; };
+      // a corner within 0.5% of the reference's time: no advice, like the bar
+      if (c.themes.close) { one(tip("close", "Close to {who} here.", { who })); return; }
+      // only tips about a theme that matters here: at least TIP_SHARE of the corner's split and TIP_MIN_S
+      const sizes = THEMES.reduce((v, t) => v + Math.abs(c.themes.signed[t]), 0);
+      const keep = c.tips.map((t, j) => {
+        const th = c.tipThemes[j];
+        return !th || (Math.abs(c.themes.signed[th]) >= TIP_SHARE * sizes && Math.abs(c.themes.parts[th]) >= TIP_MIN_S);
+      });
+      if (!keep.some(Boolean)) { one(tip("noSingle", "No single big difference: small losses through the whole section.")); return; }
+      for (const key of ["tips", "tipKinds", "tipThemes"]) c[key] = c[key].filter((t, j) => keep[j]);
     });
     return out;
   }
@@ -349,12 +372,14 @@ const Coach = (() => {
   // as a gain. Each corner's section (the one its time and colour are for) adds up its metres; one within THEME_CLOSE
   // of the reference's time isn't split. The start of the lap counts as the last corner's (from your crossing speed).
   const THEMES = ["braking", "exit", "straight", "line"], THEME_CLOSE = 0.005;
+  // a tip is shown only if its theme is at least this share of the corner's split and this many seconds
+  const TIP_SHARE = 0.15, TIP_MIN_S = 0.03;
   // which theme each kind of tip is about
   const TIP_THEME = { brakingPoint: "braking", brakePressure: "braking", trail: "braking", brakeRelease: "braking", lock: "braking",
     refBrakes: "braking", refNoBrake: "braking", lift: "braking", minSpeed: "braking", steering: "braking",
     throttle: "exit", fullThrottle: "exit", throttleControl: "exit", wheelspin: "exit", exit: "exit",
-    line: "line", lifts: "straight", extraBrake: "straight", extraLift: "straight", start: "straight",
-    extraBrakeExit: "exit", extraLiftExit: "exit" }; // a lift or brake before the corner exit is in the exit's time
+    line: "line", lifts: "straight", extraBrake: "straight", extraLift: "straight", start: "straight" };
+  // (a lift's tip takes the theme its own metres' time went to: see analyse)
   function themeSplit(R, M, delta, corners, gap) {
     const n = delta.length - 1, sec = v => 1 / Math.max(1, v / 3.6);
     const bins = {};
@@ -427,7 +452,7 @@ const Coach = (() => {
       for (const t of THEMES) totals[t] += parts[t];
       return { lost: net, signed, parts, refTime, close: Math.abs(net) < THEME_CLOSE * refTime };
     });
-    return { corners: out, totals };
+    return { corners: out, totals, per };
   }
 
   // Where you are across the track compared with the reference: metres to the outside of the reference's line
@@ -491,7 +516,7 @@ const Coach = (() => {
       if (lt) t.push(lt);
       const mine = lifts.filter(z => z.corner === i);
       if (mine.some(z => z.kind === "brake")) t = t.filter(x => x.kind !== "refNoBrake"); // said more precisely below
-      if (mine.length >= 3) t.push(liftsTip(mine, apex, who)); else mine.forEach(z => t.push(liftTip(z, apex, who, exit)));
+      if (mine.length >= 3) t.push(liftsTip(mine, apex, who)); else mine.forEach(z => t.push(liftTip(z, apex, who)));
       // (where the time goes: the stretch's theme bar shows it, above the tips)
       if (t.length > 1) t = t.filter(quiet);
       // faster than the reference here (as shown, so a "−0.05 s" chip counts), or within 0.05 s of it: no advice; at
@@ -505,7 +530,7 @@ const Coach = (() => {
       }
       // a spin or crash: everything else in the corner follows from it, so no advice
       if (incident) t = [tip("incident", "You spin out or crash on this corner.")];
-      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, incident, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t.map(x => x.text), tipKinds: t.map(x => x.kind), lifts: mine, line };
+      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, incident, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t.map(x => x.text), tipKinds: t.map(x => x.kind), tipSpans: t.map(x => x.span ?? null), lifts: mine, line };
     }) };
   }
 
@@ -631,19 +656,21 @@ const Coach = (() => {
   // when they're long, say which part the time went in.
   function liftsTip(zs, apex, who) {
     const braking = zs.filter(z => z.kind === "brake").length;
-    return tip("lifts", "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.", {
+    const t = tip("lifts", "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.", {
       n: zs.length, brake: braking ? " " + tr("or brake") : "", who, m: zs.reduce((a, z) => a + z.length, 0),
       where: zs.map(z => metres(z.from, apex)).join(", "), s: zs.reduce((a, z) => a + z.cost, 0).toFixed(2) });
+    t.span = [Math.min(...zs.map(z => z.from)), Math.max(...zs.map(z => z.to))];
+    return t;
   }
 
-  function liftTip(z, apex, who, exit) {
+  function liftTip(z, apex, who) {
     const where = z.from < apex - 300 ? tr("{m} m after the start line", { m: z.from })
       : z.from <= apex ? tr("{m} m before the apex", { m: apex - z.from }) : tr("{m} m after the apex", { m: z.from - apex });
     const v = { p: r0(z.peakBrake), m: z.length, where, who, ref: r0(z.refThr), me: r0(z.thr), s: z.cost.toFixed(2) };
     const t = z.kind === "brake"
       ? tip("extraBrake", "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.", v)
       : tip("extraLift", "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.", v);
-    if (z.from < exit) t.kind += "Exit"; // before the corner exit: part of the exit's time
+    t.span = [z.from, z.to]; // its theme is the one its metres' time went to
     return t;
   }
 
