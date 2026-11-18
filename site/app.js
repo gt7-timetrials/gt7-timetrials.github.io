@@ -656,9 +656,9 @@ function acrossLaps(a) {
 
 // Where the time goes, by theme (coach.js themeSplit): averaged over the recording's clean laps, then for the lap
 // being compared (just the bar: the description is above it, or under it with one lap). Not for a lap with a spin.
-const THEMES_ABOUT = () => tr(`From each of the reference's braking points to the next: <b>braking</b> is the speed you
-  lose to the apex and what it costs after, <b>exit</b> what you lose from the apex out and down the straight after it,
-  <b>straight</b> lifting or a slower car on the straight, <b>line</b> the extra distance of a different line.`);
+const THEMES_ABOUT = () => tr(`<b>Braking</b> is the speed you lose from the braking point to the apex and what it costs
+  after, <b>exit</b> what you lose from the apex out and down the straight after it, <b>straight</b> lifting or a slower car
+  on the straight, <b>line</b> the extra distance of a different line.`);
 function themesAcrossBox(all) {
   if (!all) return "";
   return `<div class="themes"><h4>${tr("Where your time goes: average over your {n} laps", { n: all.laps })}</h4>${Coach.themeBar(all.parts)}

@@ -8,8 +8,8 @@
         "Braking point: you brake 9 m earlier than the WR.",
         "Lock-up on entry: your front wheels lock more than the WR's. More brake than the tyres can take with the steering: see the bold brake line.",
         "Minimum speed: 95 km/h vs 111 km/h. You're slowing the car more than you need to.",
-        "Exit: you leave the corner at 106 km/h vs 116 km/h, and that costs time all the way down the straight after it.",
-        "Start of the lap: you crossed the line at 176 km/h vs 189 km/h, which cost about 0.44 s before the first braking point. That comes from your exit of the last corner on the lap before."
+        "Start of the lap: you crossed the line at 176 km/h vs 189 km/h, which cost about 0.44 s before the first braking point. That comes from your exit of the last corner on the lap before.",
+        "Exit: you leave the corner at 106 km/h vs 116 km/h, and that costs time all the way down the straight after it."
       ]
     },
     {
@@ -116,10 +116,10 @@
         "Braking point: you brake 13 m earlier than the reference lap.",
         "Brake pressure: the reference lap stays above 90% brake for 142 m; you do for 105 m. Brake hard at the start of the zone, then ease off.",
         "Minimum speed: 123 km/h vs 143 km/h. You're slowing the car more than you need to.",
+        "Track use: at turn-in you're 2.3 m tighter than the reference lap, who starts the turn from further out. Use more of the track: start the turn from the outside edge.",
         "Full throttle: you reach full throttle 55 m later than the reference lap.",
         "Exit: you leave the corner at 139 km/h vs 155 km/h, and that costs time all the way down the straight after it.",
-        "Lift: you average 4% throttle for 517 m, starting 573 m after the start line, where the reference lap averages 96%. That costs about 0.60 s.",
-        "Track use: at turn-in you're 2.3 m tighter than the reference lap, who starts the turn from further out. Use more of the track: start the turn from the outside edge."
+        "Lift: you average 4% throttle for 517 m, starting 573 m after the start line, where the reference lap averages 96%. That costs about 0.60 s."
       ]
     },
     {

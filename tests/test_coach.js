@@ -175,18 +175,14 @@ assert.ok([...r.corners, ...s1.corners].every(c => !c.tips.some(t => t.startsWit
 assert.ok(s1.corners[3].tips.some(t => /^Exit: you leave the corner at 159 km\/h vs 176 km\/h/.test(t)), s1.corners[3].tips.join(" | "));
 assert.ok(s1.corners[0].tips.some(t => t.includes("517 m, starting 573 m after the start line")), "the coast before corner 1");
 assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several lifts are one tip");
-// tips in order of importance: by the size of their theme in the corner's stretch
-for (const res of [r, s1]) {
-  let st = res.corners.filter(c => c.themes).at(-1).themes;
-  for (const c of res.corners) {
-    if (c.themes) st = c.themes;
-    const THEME = { brakingPoint: "braking", brakePressure: "braking", trail: "braking", brakeRelease: "braking", lock: "braking", refBrakes: "braking",
-      refNoBrake: "braking", lift: "braking", minSpeed: "braking", steering: "braking", throttle: "exit", fullThrottle: "exit", throttleControl: "exit",
-      wheelspin: "exit", exit: "exit", line: "line", lifts: "straight", extraBrake: "straight", extraLift: "straight", start: "straight",
-      extraBrakeExit: "exit", extraLiftExit: "exit" };
-    const sizes = c.tipKinds.map(k => Math.abs(st.signed[THEME[k]] ?? 0));
-    assert.ok(sizes.every((v, i) => i === 0 || v <= sizes[i - 1]), `corner ${c.n}: ${c.tipKinds}`);
-  }
+// tips in order of importance: by the size of their theme in the corner
+for (const res of [r, s1]) for (const c of res.corners) {
+  const THEME = { brakingPoint: "braking", brakePressure: "braking", trail: "braking", brakeRelease: "braking", lock: "braking", refBrakes: "braking",
+    refNoBrake: "braking", lift: "braking", minSpeed: "braking", steering: "braking", throttle: "exit", fullThrottle: "exit", throttleControl: "exit",
+    wheelspin: "exit", exit: "exit", line: "line", lifts: "straight", extraBrake: "straight", extraLift: "straight", start: "straight",
+    extraBrakeExit: "exit", extraLiftExit: "exit" };
+  const sizes = c.tipKinds.map(k => Math.abs(c.themes.signed[THEME[k]] ?? 0));
+  assert.ok(sizes.every((v, i) => i === 0 || v <= sizes[i - 1]), `corner ${c.n}: ${c.tipKinds}`);
 }
 assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "one colour per section");
 
@@ -219,31 +215,29 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   console.log("spins ok");
 }
 
-// Where the time goes, by theme: each stretch from a reference braking point to the next, split into braking, exit,
-// straight and line with the reference's own physics; the parts add up to the lap's gap; in a stretch slower overall
-// every part counts as time lost (and the mirror when quicker); within 0.5% of the reference, no split
+// Where the time goes, by theme: split with the reference's own physics (from each braking point to the next), then
+// added up over each corner's section (the one its time and colour are for), so every corner has a split that adds up
+// to its time, and the corners to the lap's gap; in a section slower overall every part counts as time lost (and the
+// mirror when quicker); a section within 0.5% of the reference's time isn't split
 {
   for (const res of [r, s1]) {
     const sum = Object.values(res.themes).reduce((a, b) => a + b, 0);
     assert.ok(Math.abs(sum - res.recordedGap) < 1e-6, `themes add up to the gap: ${sum} vs ${res.recordedGap}`);
-    const st = res.corners.filter(c => c.themes);
-    assert.ok(st.length >= 4, "a stretch for each braking corner");
-    for (const c of st) {
+    for (const c of res.corners) {
+      assert.ok(Math.abs(c.themes.lost - c.lost) < 1e-6, `corner ${c.n}: the split adds up to its time (${c.themes.lost} vs ${c.lost})`);
       const parts = Object.values(c.themes.parts);
-      assert.ok(Math.abs(parts.reduce((a, b) => a + b, 0) - c.themes.lost) < 1e-9);
-      assert.ok(parts.every(v => Math.sign(v) === Math.sign(c.themes.lost) || Math.abs(v) < 1e-12), "all with the stretch's sign");
+      assert.ok(parts.every(v => Math.sign(v) === Math.sign(c.themes.lost) || Math.abs(v) < 1e-12), "all with the section's sign");
     }
   }
-  // a stretch where a part was quicker but the stretch slower overall: that part counts as time lost
-  const mixed = [...r.corners, ...s1.corners].filter(c => c.themes && Object.values(c.themes.signed).some(v => v < -0.01) && c.themes.lost > 0);
-  assert.ok(mixed.length >= 1, "a fast-in, slow-out stretch in the test laps");
-  // the reference against itself: every stretch within 0.5%, nothing split
-  assert.ok(self.corners.filter(c => c.themes).every(c => c.themes.close));
-  assert.ok(Math.abs(Object.values(self.themes).reduce((a, b) => a + b, 0)) < 1e-6);
+  // a section where a part was quicker but the section slower overall: that part counts as time lost
+  assert.ok([...r.corners, ...s1.corners].some(c => Object.values(c.themes.signed).some(v => v < -0.01) && c.themes.lost > 0));
+  // a corner without braking (Barcelona's 2 and 6) gets its own split too
+  assert.ok(r.corners[1].themes && !r.corners[1].themes.close && r.corners[1].ref.brakeAt === null);
+  // the reference against itself: every section within 0.5%, nothing split
+  assert.ok(self.corners.every(c => c.themes.close));
   // shown under the lap and in the corner's panel (not for a corner with a spin)
-  const panel = Coach.cornerDetail(r.corners[0], "WR", r);
-  assert.ok(panel.includes("From this braking point to the next") && panel.includes('class="th-bar"'));
-  assert.ok(Coach.cornerDetail(self.corners[0], "WR", self).includes("Within 0.5% of WR's time here"));
+  assert.ok(Coach.cornerDetail(r.corners[0], "WR", r).includes('class="th-bar"'));
+  assert.ok(Coach.cornerDetail(self.corners[0], "WR", self).includes("Within 0.5% of WR's time in this section"));
   console.log("themes ok");
 }
 

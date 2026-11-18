@@ -504,8 +504,8 @@ const I18N_ES = {
     "Tu mejor tiempo en cada tramo suma <b>{ideal}</b>{faster}. Se dejan fuera las vueltas que parecen atajadas o que tienen un trompo o un choque.",
   ", {gap} faster than your best lap ({best})":
     ", {gap} más rápido que tu mejor vuelta ({best})",
-  "From each of the reference's braking points to the next: <b>braking</b> is the speed you lose to the apex and what it costs after, <b>exit</b> what you lose from the apex out and down the straight after it, <b>straight</b> lifting or a slower car on the straight, <b>line</b> the extra distance of a different line.":
-    "De cada punto de frenada de la referencia al siguiente: <b>frenada</b> es la velocidad que pierdes hasta el vértice y lo que cuesta después, <b>salida</b> lo que pierdes desde el vértice hacia fuera y en la recta siguiente, <b>recta</b> levantar el pie o un coche más lento en la recta, <b>trazada</b> la distancia de más de otra trazada.",
+  "<b>Braking</b> is the speed you lose from the braking point to the apex and what it costs after, <b>exit</b> what you lose from the apex out and down the straight after it, <b>straight</b> lifting or a slower car on the straight, <b>line</b> the extra distance of a different line.":
+    "<b>Frenada</b> es la velocidad que pierdes desde el punto de frenada hasta el vértice y lo que cuesta después, <b>salida</b> lo que pierdes desde el vértice hacia fuera y en la recta siguiente, <b>recta</b> levantar el pie o un coche más lento en la recta, <b>trazada</b> la distancia de más de otra trazada.",
   "Where your time goes: average over your {n} laps":
     "Dónde se va tu tiempo: media de tus {n} vueltas",
   "Where your time goes on this lap":
@@ -846,10 +846,8 @@ const I18N_ES = {
     "Recta",
   "Line":
     "Trazada",
-  "From this braking point to the next: <b>{lost}</b>":
-    "De este punto de frenada al siguiente: <b>{lost}</b>",
-  "Within 0.5% of {who}'s time here, so it isn't split into themes.":
-    "A menos de un 0,5% del tiempo de {who} aquí, así que no se reparte por temas.",
+  "Within 0.5% of {who}'s time in this section, so it isn't split into themes.":
+    "A menos de un 0,5% del tiempo de {who} en este tramo, así que no se reparte por temas.",
   "{share} in this section":
     "{share} en este tramo",
   "Distances from the apex":
