@@ -130,9 +130,9 @@ Super License tests: keep it simple, and only take on what one person can look a
          - Play figures by 7 November (the day after the update post): 18 monthly active users, 4 on the day.
          - Mention the seven languages ("translated by AI, corrections welcome"): it widens who can use it and
            invites the native-speaker checks the translations need.
-   - [ ] **Owner: paste the translated Play listing** (`docs/play-listing.md` → Translations: Spanish, French,
-         Italian, German, Japanese, Simplified Chinese, plus the updated English) in Play Console → Store presence →
-         Main store listing → Manage translations, a day or two before the launch post (Google reviews it; no `.aab`).
+   - [x] **The translated Play listing** (owner, 18 November): Spanish, French, Italian, German, Japanese and
+         Simplified Chinese, plus the updated English, from `docs/play-listing.md`, in Play Console's Manage
+         translations.
    - [ ] Next app update (no hurry): the app's own few English texts (the recording notification, two error messages,
          the sound output names, the file picker title) in the phone's language.
 
@@ -142,7 +142,8 @@ Super License tests: keep it simple, and only take on what one person can look a
 3. **More graphs like GT7's own telemetry** (a tester asked for them): the owner is looking at what GT7 shows to decide
    what else is worth adding. Owner, 5 November: wait for feedback; no whole-lap view (a lap trace means watching it
    through and is easily forgotten), the corner-by-corner view stays the way in: an overall picture you can click
-   through and take in. Candidates if asked for: gear or revs under the speed chart. (Steering is done: see Done.)
+   through and take in. Done: steering (see Done) and gear shifts (#85: a square with the new gear wherever either
+   lap changes gear, on the dots close-up). Candidate if asked for: revs.
 
 4. **Line feedback** (going wide, missing the apex, not using the track at the exit). The close-ups already draw both
    lines; the tips say little about the line itself.
