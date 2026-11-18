@@ -59,7 +59,7 @@ const I18N = (() => {
   // the page's own text, marked data-t in index.html
   const pageKeys = []; // what was looked up, for the tests
   function translatePage(root = document) {
-    document.documentElement.lang = lang;
+    document.documentElement.lang = lang === "zh" ? "zh-Hans" : lang; // Simplified Chinese glyphs, not Japanese ones
     root.querySelectorAll("[data-t]").forEach(el => {
       const placeholder = el.hasAttribute("placeholder"), text = placeholder ? el.placeholder : el.innerHTML;
       pageKeys.push(split(text).key);
