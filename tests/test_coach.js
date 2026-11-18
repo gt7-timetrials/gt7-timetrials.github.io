@@ -180,9 +180,6 @@ assert.ok(s1.corners[3].themes.signed.braking > 5 * s1.corners[3].themes.signed.
 assert.deepStrictEqual(s1.corners[3].tips.map(t => t.split(":")[0]), ["Lifts", "Braking point", "Minimum speed"]);
 assert.ok(s1.corners[0].tips.some(t => t.includes("517 m, starting 573 m after the start line")), "the coast before corner 1");
 assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several lifts are one tip");
-// within a theme, the habits that usually cost most first (TIP_RANK, from the analysis): throttle shortfall before the
-// exit speed it causes, then full throttle and wheelspin, which add little
-assert.deepStrictEqual(r.corners[3].tips.map(t => t.split(":")[0]), ["Throttle", "Exit", "Full throttle", "Wheelspin on exit"]);
 // tips in order of importance: by the size of their theme in the corner (and only tips about a theme that matters)
 for (const res of [r, s1]) for (const c of res.corners) {
   const sizes = c.tipThemes.map(th => Math.abs(c.themes.signed[th] ?? 0));

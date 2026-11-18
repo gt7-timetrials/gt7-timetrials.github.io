@@ -334,10 +334,9 @@ const Coach = (() => {
     out.corners.forEach((c, i) => {
       c.themes = split.corners[i];
       c.tipThemes = c.tips.map((t, j) => themeOf(c, j));
-      // the tips, most important first: by the size of their theme in this corner, then within a theme by TIP_RANK
+      // the tips, most important first: by the size of their theme in this corner, keeping the order within a theme
       const size = th => Math.abs(c.themes.signed[th] ?? 0);
-      const rank = j => TIP_RANK[c.tipKinds[j]] ?? 50;
-      const order = c.tips.map((t, j) => j).sort((x, y) => size(c.tipThemes[y]) - size(c.tipThemes[x]) || rank(x) - rank(y) || x - y);
+      const order = c.tips.map((t, j) => j).sort((x, y) => size(c.tipThemes[y]) - size(c.tipThemes[x]) || x - y);
       for (const key of ["tips", "tipKinds", "tipThemes"]) c[key] = order.map(j => c[key][j]);
     });
     out.corners.forEach(c => {
@@ -381,17 +380,6 @@ const Coach = (() => {
     throttle: "exit", fullThrottle: "exit", throttleControl: "exit", wheelspin: "exit", exit: "exit",
     line: "line", lifts: "straight", extraBrake: "straight", extraLift: "straight", start: "straight" };
   // (a lift's tip takes the theme its own metres' time went to: see analyse)
-  // Within a theme, the habits that usually cost most come first: from the analysis of the owner's and top drivers' laps
-  // (gt7laps analysis/report.md, models_ref.py). Braking time: brake held over the reference's after its braking point
-  // costs most (+1.5% of the section per typical spread), then braking early (+0.9), then wheel lock (+0.4); less brake
-  // than the reference saves braking time (any cost shows on the exit), so those tips come last; minimum speed and
-  // steering are results, in between. Exit time: the throttle shortfall carries it (+1.5); full throttle later and
-  // wheelspin add about nothing once it's known.
-  const TIP_RANK = {
-    brakeRelease: 1, refNoBrake: 2, brakingPoint: 3, lock: 4, minSpeed: 5, steering: 6, lift: 7,
-    brakePressure: 8, trail: 9, refBrakes: 10,
-    throttle: 1, throttleControl: 2, extraLift: 3, extraBrake: 3, lifts: 3, exit: 4, fullThrottle: 5, wheelspin: 6,
-    start: 9, line: 1 };
   function themeSplit(R, M, delta, corners, gap) {
     const n = delta.length - 1, sec = v => 1 / Math.max(1, v / 3.6);
     const bins = {};
