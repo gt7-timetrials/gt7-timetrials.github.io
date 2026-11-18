@@ -871,6 +871,8 @@ const I18N_FR = {
     "Braquage",
   "Exit speed":
     "Vitesse de sortie",
+  "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
+    "Pression de freinage : tu restes au-dessus de 90 % de frein sur {me} m ; {who}, sur {ref} m, et freine plus doucement. Tu ralentis plus que nécessaire : freine moins fort et entre avec plus de vitesse.",
 };
 (globalThis.I18N_TABLES ||= {}).fr = I18N_FR;
 if (typeof module !== "undefined") module.exports = I18N_FR;

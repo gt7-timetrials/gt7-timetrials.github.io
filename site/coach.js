@@ -238,6 +238,8 @@ const Coach = (() => {
         ? tip("brakingPoint", "Braking point: you brake {m} m later than {who}, then have to slow down more: you may be overshooting the entry.", { ...W, m: db })
         : tip("brakingPoint", "Braking point: you brake {m} m later than {who}.", { ...W, m: db }));
       if (ref.fullBrake - me.fullBrake >= 15) out.push(tip("brakePressure", "Brake pressure: {who} stays above 90% brake for {ref} m; you do for {me} m. Brake hard at the start of the zone, then ease off.", { ...W, ref: ref.fullBrake, me: me.fullBrake }));
+      // the mirror: hard braking held far longer than the reference's, the costliest braking habit in the analysis
+      else if (me.fullBrake - ref.fullBrake >= 20 && me.fullBrake > 2 * ref.fullBrake) out.push(tip("brakeOver", "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.", { ...W, ref: ref.fullBrake, me: me.fullBrake }));
       if (ref.brakeAtTurnIn >= 15 && me.brakeAtTurnIn < ref.brakeAtTurnIn / 2) {
         const trail = ref.release !== null && ref.turnIn !== null ? ref.release - ref.turnIn : 0;
         const v = { ...W, ref: r0(ref.brakeAtTurnIn), me: r0(me.brakeAtTurnIn), m: trail };
@@ -375,7 +377,7 @@ const Coach = (() => {
   // a tip is shown only if its theme is at least this share of the corner's split and this many seconds
   const TIP_SHARE = 0.15, TIP_MIN_S = 0.03;
   // which theme each kind of tip is about
-  const TIP_THEME = { brakingPoint: "braking", brakePressure: "braking", trail: "braking", brakeRelease: "braking", lock: "braking",
+  const TIP_THEME = { brakingPoint: "braking", brakePressure: "braking", brakeOver: "braking", trail: "braking", brakeRelease: "braking", lock: "braking",
     refBrakes: "braking", refNoBrake: "braking", lift: "braking", minSpeed: "braking", steering: "braking",
     throttle: "exit", fullThrottle: "exit", throttleControl: "exit", wheelspin: "exit", exit: "exit",
     line: "line", lifts: "straight", extraBrake: "straight", extraLift: "straight", start: "straight" };
