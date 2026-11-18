@@ -93,8 +93,9 @@ Super License tests: keep it simple, and only take on what one person can look a
            reference starts to apply throttle, so the Audio cues tab now says so ("start squeezing it on, not flat
            out"). Asked for downshift markers on the dots close-up (added: the gear number where each lap shifts
            down; then every gear shift, up or down, at the owner's suggestion, #85). Asked for other languages
-           (Spanish first, then Portuguese, French and German): **Spanish done** (17 November, #86), not yet checked
-           by a native speaker; Portuguese, French and German later, if Spanish speakers use it.
+           (Spanish first, then Portuguese, French and German): **Spanish done** (17 November, #86), then French,
+           Italian, German, Japanese and Simplified Chinese (18 November, #89), none yet checked by a native speaker;
+           Portuguese not yet.
    - [x] Before production: lead the Play listing and posts with what the app does: **easy and convenient**,
          for time trials, daily races and licenses. Keep it neutral about who it's for (no "for beginners" or "for
          experts"): people can decide for themselves. The others: GT7's own Data Logger (since November
@@ -127,6 +128,13 @@ Super License tests: keep it simple, and only take on what one person can look a
          laps, need a PC, or charge a subscription). The features follow from that: tips in plain words, the charts
          (brake, throttle, steering, speed, wheel lock and spin), audio cues for the braking points.
          - Play figures by 7 November (the day after the update post): 18 monthly active users, 4 on the day.
+         - Mention the seven languages ("translated by AI, corrections welcome"): it widens who can use it and
+           invites the native-speaker checks the translations need.
+   - [x] **The translated Play listing** (owner, 18 November): Spanish, French, Italian, German, Japanese and
+         Simplified Chinese, plus the updated English, from `docs/play-listing.md`, in Play Console's Manage
+         translations.
+   - [ ] Next app update (no hurry): the app's own few English texts (the recording notification, two error messages,
+         the sound output names, the file picker title) in the phone's language.
 
    Website changes (including reference laps) reach the app straight away. Only changes to the app's own code
    (`android/`) need a new `.aab` uploaded to the Play Console; each build's version number goes up by itself.
@@ -134,7 +142,8 @@ Super License tests: keep it simple, and only take on what one person can look a
 3. **More graphs like GT7's own telemetry** (a tester asked for them): the owner is looking at what GT7 shows to decide
    what else is worth adding. Owner, 5 November: wait for feedback; no whole-lap view (a lap trace means watching it
    through and is easily forgotten), the corner-by-corner view stays the way in: an overall picture you can click
-   through and take in. Candidates if asked for: gear or revs under the speed chart. (Steering is done: see Done.)
+   through and take in. Done: steering (see Done) and gear shifts (#85: a square with the new gear wherever either
+   lap changes gear, on the dots close-up). Candidate if asked for: revs.
 
 4. **Line feedback** (going wide, missing the apex, not using the track at the exit). The close-ups already draw both
    lines; the tips say little about the line itself.
@@ -162,7 +171,8 @@ Super License tests: keep it simple, and only take on what one person can look a
      towards the WR's (for example 25%, then 50%), so the cues stretch you a step at a time rather than asking for the
      WR's points straight away.
 
-6. **Valid laps.** Extend the cut-corner check (today: a lap more than 1% and 30 m shorter than the reference is marked
+6. **Valid laps.** Spins and crashes are done (#87: speed under half the reference's; the corner says so and the lap
+   is left out like a cut lap). Extend the cut-corner check (today: a lap more than 1% and 30 m shorter than the reference is marked
    as a likely cut) to collisions with walls or other cars, and to running off the track, so such laps are flagged
    and left out of Across your laps and the best composite lap.
    - Ground truth first: as far as the community's decoding of GT7's telemetry goes, there's no flag for an invalid
@@ -204,6 +214,10 @@ Kept short; the details are in the pull requests and the git history.
   recording's clean laps, for the chosen lap, and for each corner, whose tips are ordered by it and shown only when
   their theme matters (none within 0.5% of the reference). Also spins and crashes: one line for the corner, the lap
   left out like a cut lap (#87).
+- **French, Italian, German, Japanese and Simplified Chinese** (18 November, #89), with every site text, the advice
+  included; Automatic picks the phone's language, Settings lists each in its own name. Written by the assistant, not
+  yet checked by native speakers (the terms each was least sure of are in the pull request and the session); the
+  tests check every language has every text. The Play listing is translated too (`docs/play-listing.md`).
 - **Spanish and a Settings tab** (17 November, #86): the whole website, lap comparison included, in Spanish;
   Automatic follows the phone's language. Written by the assistant, not yet checked by a native speaker:
   corrections from testers go into `site/lang/es.js`. The app's own notification text is still English (next app
