@@ -872,6 +872,8 @@ const I18N_ES = {
     "Giro de volante",
   "Exit speed":
     "Velocidad de salida",
+  "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
+    "Presión de freno: te mantienes por encima del 90% de freno durante {me} m; {who}, durante {ref} m, y frena con más suavidad. Frenas más de lo necesario: frena más suave y entra con más velocidad.",
 };
 (globalThis.I18N_TABLES ||= {}).es = I18N_ES;
 if (typeof module !== "undefined") module.exports = I18N_ES;

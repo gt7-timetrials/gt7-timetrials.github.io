@@ -871,6 +871,8 @@ const I18N_IT = {
     "Angolo di sterzo",
   "Exit speed":
     "Velocità d'uscita",
+  "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
+    "Pressione del freno: resti sopra il 90% di freno per {me} m; {who} per {ref} m, e frena più dolcemente. Rallenti più del necessario: frena più leggero e porta più velocità in curva.",
 };
 (globalThis.I18N_TABLES ||= {}).it = I18N_IT;
 if (typeof module !== "undefined") module.exports = I18N_IT;

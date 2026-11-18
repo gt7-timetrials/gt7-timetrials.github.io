@@ -871,6 +871,8 @@ const I18N_ZH = {
     "转向角",
   "Exit speed":
     "出弯速度",
+  "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
+    "刹车力度：你保持 90% 以上刹车 {me} m；{who}只有 {ref} m，刹车更轻。你减速超过了需要：刹车轻一些，带着更高的速度入弯。",
 };
 (globalThis.I18N_TABLES ||= {}).zh = I18N_ZH;
 if (typeof module !== "undefined") module.exports = I18N_ZH;

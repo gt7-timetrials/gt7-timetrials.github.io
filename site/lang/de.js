@@ -871,6 +871,8 @@ const I18N_DE = {
     "Lenkeinschlag",
   "Exit speed":
     "Ausgangstempo",
+  "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
+    "Bremsdruck: Du bleibst {me} m lang über 90 % Bremse, {who} nur {ref} m lang und bremst sanfter. Du wirst langsamer als nötig: Bremse leichter und nimm mehr Geschwindigkeit mit in die Kurve.",
 };
 (globalThis.I18N_TABLES ||= {}).de = I18N_DE;
 if (typeof module !== "undefined") module.exports = I18N_DE;

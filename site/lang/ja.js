@@ -871,6 +871,8 @@ const I18N_JA = {
     "ステアリング切れ角",
   "Exit speed":
     "立ち上がり速度",
+  "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
+    "ブレーキの強さ: あなたは {me} m にわたってブレーキ 90% 以上を保っていますが、{who} は {ref} m で、もっと穏やかにブレーキをかけています。必要以上に減速しています。ブレーキを弱めて、より速い速度でコーナーに進入しましょう。",
 };
 (globalThis.I18N_TABLES ||= {}).ja = I18N_JA;
 if (typeof module !== "undefined") module.exports = I18N_JA;
