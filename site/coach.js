@@ -324,6 +324,16 @@ const Coach = (() => {
     const split = themeSplit(R, M, delta, corners, recordedGap);
     out.themes = split.totals;
     for (const sg of split.segments) out.corners[sg.i].themes = sg;
+    // each corner's tips, most important first: by the size of their theme in the corner's stretch (a corner without
+    // braking is part of the stretch before), keeping the order within a theme
+    let stretch = split.segments[split.segments.length - 1];
+    for (const c of out.corners) {
+      if (c.themes) stretch = c.themes;
+      if (!stretch || c.tips.length < 2) continue;
+      const size = k => Math.abs(stretch.signed[TIP_THEME[k]] ?? 0);
+      const order = c.tips.map((t, i) => i).sort((x, y) => size(c.tipKinds[y]) - size(c.tipKinds[x]) || x - y);
+      c.tips = order.map(i => c.tips[i]); c.tipKinds = order.map(i => c.tipKinds[i]);
+    }
     return out;
   }
 
@@ -339,8 +349,15 @@ const Coach = (() => {
   // no carry-over: arriving slower costs only the time until the reference slows to your speed (you'd brake less), and
   // that goes back to the stretch before. Then a stretch's net loss (or gain) is shared by the themes' sizes, all with
   // its sign: in a stretch slower than the reference, a quicker entry followed by a slow exit counts as time lost, not
-  // as a gain. A stretch within THEME_CLOSE of the reference's time isn't split.
+  // as a gain. A stretch within THEME_CLOSE of the reference's time isn't split. The last stretch runs over the line to
+  // the first braking point, and the start of the lap counts as the last corner's (from your crossing speed).
   const THEMES = ["braking", "exit", "straight", "line"], THEME_CLOSE = 0.005;
+  // which theme each kind of tip is about
+  const TIP_THEME = { brakingPoint: "braking", brakePressure: "braking", trail: "braking", brakeRelease: "braking", lock: "braking",
+    refBrakes: "braking", refNoBrake: "braking", lift: "braking", minSpeed: "braking", steering: "braking",
+    throttle: "exit", fullThrottle: "exit", throttleControl: "exit", wheelspin: "exit", exit: "exit",
+    line: "line", lifts: "straight", extraBrake: "straight", extraLift: "straight", start: "straight",
+    extraBrakeExit: "exit", extraLiftExit: "exit" }; // a lift or brake before the corner exit is in the exit's time
   function themeSplit(R, M, delta, corners, gap) {
     const n = delta.length - 1, sec = v => 1 / Math.max(1, v / 3.6);
     const bins = {};
@@ -375,13 +392,19 @@ const Coach = (() => {
         carried += cr; p.braking += L - cr;
       }
       const fromApex = refWay(ks, ja, M.v[a]), fromExit = refWay(ks, jx, M.v[x]);
+      // over the line (the last stretch): your speed there comes from the lap before's last exit, so the reference's
+      // way from your crossing speed is the last corner's too (not exact: it was the lap before's)
+      const jw = last ? n - b : ks.length, fromLine = last ? refWay(ks, jw, M.v[0]) : [];
       const dvx = M.v[x] - R.v[x], ca = fromApex[jx - ja] - R.v[x], own = dvx - ca;
       const shareB = Math.abs(dvx) < 0.5 ? (Math.abs(ca) + Math.abs(own) ? Math.abs(ca) / (Math.abs(ca) + Math.abs(own)) : 0.5)
         : Math.sign(ca) === Math.sign(own) ? ca / dvx : Math.abs(ca) / (Math.abs(ca) + Math.abs(own));
       for (let j = ja; j < ks.length; j++) {
         const k = ks[j], L = sec(M.v[k]) - sec(R.v[k]); speed += L;
         if (j < jx) { const fb = sec(fromApex[j - ja]) - sec(R.v[k]); p.braking += fb; p.exit += L - fb; }
-        else { const fx = sec(fromExit[j - jx]) - sec(R.v[k]); p.braking += fx * shareB; p.exit += fx * (1 - shareB); p.straight += L - fx; }
+        else {
+          const fx = sec(j < jw ? fromExit[j - jx] : fromLine[j - jw]) - sec(R.v[k]);
+          p.braking += fx * shareB; p.exit += fx * (1 - shareB); p.straight += L - fx;
+        }
       }
       p.line = lost - speed;
       return { i, n: i + 1, refTime: ks.reduce((t, k) => t + sec(R.v[k]), 0), signed: p, carried };
@@ -463,10 +486,8 @@ const Coach = (() => {
       if (lt) t.push(lt);
       const mine = lifts.filter(z => z.corner === i);
       if (mine.some(z => z.kind === "brake")) t = t.filter(x => x.kind !== "refNoBrake"); // said more precisely below
-      if (mine.length >= 3) t.push(liftsTip(mine, apex, who)); else mine.forEach(z => t.push(liftTip(z, apex, who)));
-      const after = straightTip(entry - z0, approachLost, cornerLost, z1 - exit, lost - cornerLost - approachLost, me_m, ref_m,
-        mine.some(z => z.from >= exit), i === corners.length - 1);
-      if (after) { t = t.filter(x => x.kind !== "exit"); t.unshift(after); }
+      if (mine.length >= 3) t.push(liftsTip(mine, apex, who)); else mine.forEach(z => t.push(liftTip(z, apex, who, exit)));
+      // (where the time goes: the stretch's theme bar shows it, above the tips)
       if (t.length > 1) t = t.filter(quiet);
       // faster than the reference here (as shown, so a "−0.05 s" chip counts), or within 0.05 s of it: no advice; at
       // that level the charts show the differences
@@ -479,7 +500,7 @@ const Coach = (() => {
       }
       // a spin or crash: everything else in the corner follows from it, so no advice
       if (incident) t = [tip("incident", "You spin out or crash on this corner.")];
-      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, incident, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t.map(x => x.text), lifts: mine, line };
+      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, incident, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t.map(x => x.text), tipKinds: t.map(x => x.kind), lifts: mine, line };
     }) };
   }
 
@@ -603,22 +624,6 @@ const Coach = (() => {
 
   // Each section is a corner plus the straight after it (the first one also has the run from the start line):
   // when they're long, say which part the time went in.
-  function straightTip(before, onApproach, inCorner, length, onStraight, me, ref, lifted, last) {
-    if (length < 150) { inCorner += onStraight; onStraight = 0; }
-    if ((!before || Math.abs(onApproach) < 0.1) && (length < 150 || Math.abs(onStraight) < 0.1)) return null;
-    const why = [];
-    if (me.exitSpeed <= ref.exitSpeed - 2 && onStraight > 0) why.push(tr("you leave the corner {d} km/h slower ({me} vs {ref} km/h), and that carries all the way down the straight",
-      { d: r0(ref.exitSpeed - me.exitSpeed), me: r0(me.exitSpeed), ref: r0(ref.exitSpeed) }));
-    if (lifted) why.push(tr("you lift on the straight (below)"));
-    const parts = [];
-    if (before) parts.push(tr("{lost} on the {m} m from the start line to the braking zone", { lost: fmtLost(onApproach), m: before }));
-    parts.push(tr("{lost} in the corner", { lost: fmtLost(inCorner) }));
-    if (length >= 150) parts.push(last ? tr("{lost} on the {m} m straight after it to the finish line", { lost: fmtLost(onStraight), m: length })
-      : tr("{lost} on the {m} m straight after it", { lost: fmtLost(onStraight), m: length }));
-    return why.length && length >= 150 ? tip("where", "Where the time goes: {parts}: {why}.", { parts: parts.join(", "), why: joinAnd(why) })
-      : tip("where", "Where the time goes: {parts}.", { parts: parts.join(", ") });
-  }
-
   function liftsTip(zs, apex, who) {
     const braking = zs.filter(z => z.kind === "brake").length;
     return tip("lifts", "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.", {
@@ -626,13 +631,15 @@ const Coach = (() => {
       where: zs.map(z => metres(z.from, apex)).join(", "), s: zs.reduce((a, z) => a + z.cost, 0).toFixed(2) });
   }
 
-  function liftTip(z, apex, who) {
+  function liftTip(z, apex, who, exit) {
     const where = z.from < apex - 300 ? tr("{m} m after the start line", { m: z.from })
       : z.from <= apex ? tr("{m} m before the apex", { m: apex - z.from }) : tr("{m} m after the apex", { m: z.from - apex });
     const v = { p: r0(z.peakBrake), m: z.length, where, who, ref: r0(z.refThr), me: r0(z.thr), s: z.cost.toFixed(2) };
-    return z.kind === "brake"
+    const t = z.kind === "brake"
       ? tip("extraBrake", "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.", v)
       : tip("extraLift", "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.", v);
+    if (z.from < exit) t.kind += "Exit"; // before the corner exit: part of the exit's time
+    return t;
   }
 
   // --- drawing ---
@@ -833,6 +840,14 @@ const Coach = (() => {
       idealMs: Math.round(refMs + 1000 * sections.reduce((a, x) => a + x.best, 0)),
       bestMs: Math.min(...runs.map(r => r.lapMs)),
     };
+  }
+
+  // Where the time goes across a recording's clean laps (no cut corner, spin or crash), averaged per lap: null with
+  // fewer than 2
+  function themesAcross(refLap, laps) {
+    const runs = laps.filter(l => !l.cut && !l.incident?.length).map(l => analyse(refLap, l.lap)).filter(r => !r.error && r.themes);
+    if (runs.length < 2) return null;
+    return { laps: runs.length, parts: Object.fromEntries(THEMES.map(k => [k, mean(runs.map(r => r.themes[k]))])) };
   }
 
   // Audio cues (the app): where the reference starts braking (dabs too), lifts without braking, and gets back on the
@@ -1080,8 +1095,8 @@ const Coach = (() => {
     const row = (name, f) => `<tr><th>${name}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
     return `<div class="corner-head"><b>${tr("Corner {n}", { n: c.n })}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span>
       <span class="muted">${tr("{share} in this section", { share: fmtShare(c.share) })}</span></div>
-      <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
       ${c.incident ? "" : stretchThemes(c, who === "Reference" ? tr("the reference") : label)}
+      <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
       ${result ? cornerWidths(result, c, who) + cornerLines(result, c, who) + pedalChart(result, c, who) : ""}
       <table class="corner-table"><thead><tr><th>${tr("Distances from the apex")}</th><th class="num">${tr("You")}</th><th class="num">${label}</th></tr></thead><tbody>
         ${row(tr("Braking point"), m => (m.brakeAt === null ? (m.liftAt === null ? tr("no braking") : tr("lift only")) : metres(m.brakeAt, c.apex)))}
@@ -1116,7 +1131,7 @@ const Coach = (() => {
     return NEEDED.every(h => head.includes(h));
   }
 
-  return { parseCsv, fastestLap, lapChoices, analyse, acrossLaps, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost, useLanguage, themeBar };
+  return { parseCsv, fastestLap, lapChoices, analyse, acrossLaps, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost, useLanguage, themeBar, themesAcross };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;

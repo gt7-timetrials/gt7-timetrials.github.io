@@ -22,7 +22,7 @@ assert.deepStrictEqual(r.corners.map(c => c.colour), ["warn", "good", "good", "g
 assert.ok(r.corners.every(c => c.colour === (c.lost < 0.1 ? "good" : c.share < 0.03 ? "good" : c.share < 0.05 ? "warn" : "bad")));
 assert.ok(Math.abs(r.corners[6].share - 0.045) < 0.002, "corner 7: 0.43 s of about 9.6 s");
 assert.ok(Coach.cornerDetail(r.corners[6], "the reference", r).includes("4.5% slower in this section"));
-assert.ok(r.corners[0].tips[0].startsWith("Start of the lap"), "slow start-line speed is called out");
+assert.ok(r.corners[0].tips.some(t => t.startsWith("Start of the lap")), "slow start-line speed is called out");
 assert.ok(r.corners[6].tips.some(t => t.startsWith("Brake pressure")), "corner 7: WR holds full brake longer");
 assert.ok(Coach.trackMap(r).startsWith("<svg"));
 // the long fast left after turn 1: 34% throttle where the WR averages 80%; early braking into a corner isn't a "lift"
@@ -170,13 +170,24 @@ assert.ok(Math.abs(s1.gameGap - 6.712) < 1e-9);
 // High Speed Ring: each section is a corner plus the straight after it, with the time split between the two
 assert.deepStrictEqual(s1.corners.map(c => c.apex), [1779, 2481, 2705, 3605]);
 s1.corners.slice(1).forEach(c => assert.ok(c.from < c.ref.brakeAt && c.ref.brakeAt - c.from <= 10 + 150, `corner ${c.n} starts at its braking zone`));
-assert.ok(/^Where the time goes: \+0\.74 s in the corner, \+1\.40 s on the 712 m straight after it to the finish line: you leave the corner 17 km\/h slower/
-  .test(s1.corners[3].tips[0]), s1.corners[3].tips[0]);
-assert.ok(/^Where the time goes: \+1\.64 s on the 1500 m from the start line to the braking zone, \+1\.04 s in the corner, \+0\.33 s/
-  .test(s1.corners[0].tips[0]), s1.corners[0].tips[0]);
+// where the time goes is the stretch's theme bar now, not a tip; the exit speed is the exit tip's
+assert.ok([...r.corners, ...s1.corners].every(c => !c.tips.some(t => t.startsWith("Where the time goes"))));
+assert.ok(s1.corners[3].tips.some(t => /^Exit: you leave the corner at 159 km\/h vs 176 km\/h/.test(t)), s1.corners[3].tips.join(" | "));
 assert.ok(s1.corners[0].tips.some(t => t.includes("517 m, starting 573 m after the start line")), "the coast before corner 1");
 assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several lifts are one tip");
-assert.ok(!s1.corners[2].tips.some(t => t.startsWith("Exit:")), "the straight tip says it instead");
+// tips in order of importance: by the size of their theme in the corner's stretch
+for (const res of [r, s1]) {
+  let st = res.corners.filter(c => c.themes).at(-1).themes;
+  for (const c of res.corners) {
+    if (c.themes) st = c.themes;
+    const THEME = { brakingPoint: "braking", brakePressure: "braking", trail: "braking", brakeRelease: "braking", lock: "braking", refBrakes: "braking",
+      refNoBrake: "braking", lift: "braking", minSpeed: "braking", steering: "braking", throttle: "exit", fullThrottle: "exit", throttleControl: "exit",
+      wheelspin: "exit", exit: "exit", line: "line", lifts: "straight", extraBrake: "straight", extraLift: "straight", start: "straight",
+      extraBrakeExit: "exit", extraLiftExit: "exit" };
+    const sizes = c.tipKinds.map(k => Math.abs(st.signed[THEME[k]] ?? 0));
+    assert.ok(sizes.every((v, i) => i === 0 || v <= sizes[i - 1]), `corner ${c.n}: ${c.tipKinds}`);
+  }
+}
 assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "one colour per section");
 
 // A spin or crash: under half the reference's speed at the same point. That corner gets one line and no advice, and

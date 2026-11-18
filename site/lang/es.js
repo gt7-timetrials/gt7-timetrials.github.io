@@ -22,10 +22,10 @@ const I18N_ES = {
     "Acerca de la app",
   "Settings":
     "Ajustes",
-  "Compare your laps in this week's daily races with a fast lap, corner by corner. <span>Record your laps with the free recorder for <a>Windows</a> or <a>Mac</a> (or the <a>Python script</a>; <a>how to record</a>), then upload the file under the race. Your file stays on your device.</span><span>Tap Record on this phone under a race, or upload a recording.</span>":
-    "Compara tus vueltas en las carreras diarias de esta semana con una vuelta rápida, curva a curva. <span>Graba tus vueltas con el grabador gratuito para <a>Windows</a> o <a>Mac</a> (o el <a>script de Python</a>; <a>cómo grabar</a>) y sube el archivo debajo de la carrera. El archivo no sale de tu dispositivo.</span><span>Toca Grabar en este móvil debajo de una carrera, o sube una grabación.</span>",
   "Loading…":
     "Cargando…",
+  "Compare your laps in this week's daily races with a fast lap, corner by corner. <span>Record your laps with the free recorder for <a>Windows</a> or <a>Mac</a> (or the <a>Python script</a>; <a>how to record</a>), then upload the file under the race. Your file stays on your device.</span><span>Tap Record on this phone under a race, or upload a recording.</span>":
+    "Compara tus vueltas en las carreras diarias de esta semana con una vuelta rápida, curva a curva. <span>Graba tus vueltas con el grabador gratuito para <a>Windows</a> o <a>Mac</a> (o el <a>script de Python</a>; <a>cómo grabar</a>) y sube el archivo debajo de la carrera. El archivo no sale de tu dispositivo.</span><span>Toca Grabar en este móvil debajo de una carrera, o sube una grabación.</span>",
   "Prediction scorecard":
     "Resultados de las predicciones",
   "Past time trials":
@@ -480,8 +480,12 @@ const I18N_ES = {
     "la más rápida",
   "⚠ short":
     "⚠ corta",
+  "⚠ spin or crash":
+    "⚠ trompo o choque",
   "This lap is {note}. The comparison may be misleading.":
     "Esta vuelta es {note}. La comparación puede llevar a error.",
+  "This lap has a spin or crash (corner {n}), so it's left out of Across your laps.":
+    "Esta vuelta tiene un trompo o un choque (curva {n}), así que queda fuera de «En tus vueltas».",
   "Lap {n} ({time}) was faster, but it's {note}. Comparing lap {chosen} instead: tap lap {n} to compare it anyway.":
     "La vuelta {n} ({time}) fue más rápida, pero es {note}. Se compara la vuelta {chosen} en su lugar: toca la vuelta {n} para compararla de todos modos.",
   "Corner {n}":
@@ -500,6 +504,12 @@ const I18N_ES = {
     "Tu mejor tiempo en cada tramo suma <b>{ideal}</b>{faster}. Se dejan fuera las vueltas que parecen atajadas o que tienen un trompo o un choque.",
   ", {gap} faster than your best lap ({best})":
     ", {gap} más rápido que tu mejor vuelta ({best})",
+  "From each of the reference's braking points to the next: <b>braking</b> is the speed you lose to the apex and what it costs after, <b>exit</b> what you lose from the apex out and down the straight after it, <b>straight</b> lifting or a slower car on the straight, <b>line</b> the extra distance of a different line.":
+    "De cada punto de frenada de la referencia al siguiente: <b>frenada</b> es la velocidad que pierdes hasta el vértice y lo que cuesta después, <b>salida</b> lo que pierdes desde el vértice hacia fuera y en la recta siguiente, <b>recta</b> levantar el pie o un coche más lento en la recta, <b>trazada</b> la distancia de más de otra trazada.",
+  "Where your time goes: average over your {n} laps":
+    "Dónde se va tu tiempo: media de tus {n} vueltas",
+  "Where your time goes on this lap":
+    "Dónde se va tu tiempo en esta vuelta",
   "Your lap <b>{lap}</b> vs {ref}: <b>{gap}</b>.":
     "Tu vuelta <b>{lap}</b> frente a {ref}: <b>{gap}</b>.",
   "Saved to Downloads as {file}.":
@@ -702,6 +712,8 @@ const I18N_ES = {
     "Aquí eres {s} s más rápido que {who}.",
   "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
     "Inicio de la vuelta: cruzaste la línea a {me} km/h frente a {ref} km/h, lo que costó unos {s} s antes del primer punto de frenada. Viene de tu salida de la última curva en la vuelta anterior.",
+  "You spin out or crash on this corner.":
+    "En esta curva haces un trompo o chocas.",
   "wheels":
     "ruedas",
   "front wheels":
@@ -726,22 +738,6 @@ const I18N_ES = {
     "Patinan las ruedas {where}: tus {wheels} patinan más que las de {who}. {why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "Control de tracción {where}: el tuyo actúa y el de {who} no. {why}",
-  "you leave the corner {d} km/h slower ({me} vs {ref} km/h), and that carries all the way down the straight":
-    "sales de la curva {d} km/h más lento ({me} frente a {ref} km/h), y eso se arrastra por toda la recta",
-  "you lift on the straight (below)":
-    "levantas el pie en la recta (más abajo)",
-  "{lost} on the {m} m from the start line to the braking zone":
-    "{lost} en los {m} m desde la línea de salida hasta la frenada",
-  "{lost} in the corner":
-    "{lost} en la curva",
-  "{lost} on the {m} m straight after it to the finish line":
-    "{lost} en la recta de {m} m que sigue, hasta la meta",
-  "{lost} on the {m} m straight after it":
-    "{lost} en la recta de {m} m que sigue",
-  "Where the time goes: {parts}: {why}.":
-    "Dónde se va el tiempo: {parts}: {why}.",
-  "Where the time goes: {parts}.":
-    "Dónde se va el tiempo: {parts}.",
   "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
     "Levantadas: {n} veces en este tramo sueltas el acelerador{brake} donde {who} no lo hace, {m} m en total (empezando {where} del vértice). En conjunto cuesta unos {s} s. Mantén el acelerador a fondo hasta el punto de frenada.",
   "or brake":
@@ -842,6 +838,18 @@ const I18N_ES = {
     "<b></b>tú, <b></b>{who}",
   "Drawn to scale, the same way round as the lap map. Your line is a dot every {step} m comparing your pedals with {who}'s at the same point: the brake wherever either of you is braking, the throttle everywhere else. Bigger dots = bigger difference ({same}–30, 30–60, 60+ points of pedal travel).":
     "Dibujado a escala, con la misma orientación que el mapa de la vuelta. Tu trazada es un punto cada {step} m que compara tus pedales con los de {who} en el mismo sitio: el freno donde cualquiera de los dos frena, el acelerador en el resto. Puntos más grandes = más diferencia ({same}–30, 30–60, 60+ puntos de recorrido del pedal).",
+  "Braking":
+    "Frenada",
+  "Exit":
+    "Salida",
+  "Straight":
+    "Recta",
+  "Line":
+    "Trazada",
+  "From this braking point to the next: <b>{lost}</b>":
+    "De este punto de frenada al siguiente: <b>{lost}</b>",
+  "Within 0.5% of {who}'s time here, so it isn't split into themes.":
+    "A menos de un 0,5% del tiempo de {who} aquí, así que no se reparte por temas.",
   "{share} in this section":
     "{share} en este tramo",
   "Distances from the apex":
@@ -866,27 +874,5 @@ const I18N_ES = {
     "Giro de volante",
   "Exit speed":
     "Velocidad de salida",
-  "⚠ spin or crash":
-    "⚠ trompo o choque",
-  "This lap has a spin or crash (corner {n}), so it's left out of Across your laps.":
-    "Esta vuelta tiene un trompo o un choque (curva {n}), así que queda fuera de «En tus vueltas».",
-  "You spin out or crash on this corner.":
-    "En esta curva haces un trompo o chocas.",
-  "Where your time goes":
-    "Dónde se va tu tiempo",
-  "From each of the reference's braking points to the next: <b>braking</b> is the speed you lose to the apex and what it costs after, <b>exit</b> what you lose from the apex out and down the straight after it, <b>straight</b> lifting or a slower car on the straight, <b>line</b> the extra distance of a different line. Where you're slower overall, a quicker part counts as time lost too: braking less only to exit slower isn't a gain.":
-    "De cada punto de frenada de la referencia al siguiente: <b>frenada</b> es la velocidad que pierdes hasta el vértice y lo que cuesta después, <b>salida</b> lo que pierdes desde el vértice hacia fuera y en la recta siguiente, <b>recta</b> levantar el pie o un coche más lento en la recta, <b>trazada</b> la distancia de más de otra trazada. Donde vas más lento en conjunto, una parte más rápida también cuenta como tiempo perdido: frenar menos para luego salir más lento no es una ganancia.",
-  "Braking":
-    "Frenada",
-  "Exit":
-    "Salida",
-  "Straight":
-    "Recta",
-  "Line":
-    "Trazada",
-  "From this braking point to the next: <b>{lost}</b>":
-    "De este punto de frenada al siguiente: <b>{lost}</b>",
-  "Within 0.5% of {who}'s time here, so it isn't split into themes.":
-    "A menos de un 0,5% del tiempo de {who} aquí, así que no se reparte por temas.",
 };
 if (typeof module !== "undefined") module.exports = I18N_ES;
