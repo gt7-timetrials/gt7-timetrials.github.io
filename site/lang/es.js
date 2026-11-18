@@ -873,4 +873,5 @@ const I18N_ES = {
   "Exit speed":
     "Velocidad de salida",
 };
+(globalThis.I18N_TABLES ||= {}).es = I18N_ES;
 if (typeof module !== "undefined") module.exports = I18N_ES;
