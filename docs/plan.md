@@ -178,12 +178,32 @@ Super License tests: keep it simple, and only take on what one person can look a
      Across your laps and the best composite lap; traffic is harder (lifting or braking where the reference doesn't,
      with no other explanation) and may only be worth a hint.
 
-7. **Skills that matter most for you**: in **Later, maybe**, as a significant build to specify first.
+7. **How your skills are changing** (owner, 18 November): what's left of the skills build (done: see **Done**). Keep
+   each recording's "Where your time goes" on the device (time, event, car, and the four themes as a % of the
+   reference's time, so tracks compare) and show how each theme moves over sessions: is braking shrinking, is exit?
+   - [ ] Specify with the owner: what's kept (the average over a recording's clean laps, its best lap, or both), where
+     (the browser's local storage on the website, the app's own files in the app; nothing uploaded), how it's shown
+     (a small trend per theme, overall and per track), and how much history.
+   - [ ] Then build it on beta, from the owner's own history in gt7laps first (the recordings since 22 October).
+   - [ ] The analysis keeps going in gt7laps (`analysis/report.md`): a noise test (the same replay recorded twice, to
+     see how much of the variation is measurement), more laps from the owner and top drivers, and whether a curved
+     braking cost (small over-braking nearly free, heavy dragging costly) transfers to top drivers. The models'
+     out-of-sample fit is about 0.4-0.5 for braking and exit (the aim was 0.7): good enough to rank what matters,
+     not to quote seconds from the model.
 
 ## Done
 
 Kept short; the details are in the pull requests and the git history.
 
+- **Skills that matter most: Where your time goes** (18 November, #87, #88). The analysis of the owner's laps and top
+  drivers' replays (gt7laps `analysis/report.md`) found over-braking after the braking point the biggest cost, then
+  too little throttle on the way out (worth twice as much per km/h at the exit as at the apex). On the website, each
+  lap's gap is split into braking, exit, straight and line with the reference lap's own physics (no fitted numbers;
+  the owner's rules: no carry-over before the apex, the reference's way from your speed after it, the start of the lap
+  counted as the last corner's, and in a slower section every part counts as time lost). Shown as the average over a
+  recording's clean laps, for the chosen lap, and for each corner, whose tips are ordered by it and shown only when
+  their theme matters (none within 0.5% of the reference). Also spins and crashes: one line for the corner, the lap
+  left out like a cut lap (#87).
 - **Spanish and a Settings tab** (17 November, #86): the whole website, lap comparison included, in Spanish;
   Automatic follows the phone's language. Written by the assistant, not yet checked by a native speaker:
   corrections from testers go into `site/lang/es.js`. The app's own notification text is still English (next app
@@ -233,44 +253,15 @@ Kept short; the details are in the pull requests and the git history.
 
 ## Later, maybe
 
-- **Skills that matter most for you** (owner, 6 November; a significant build, to specify properly before starting).
-  Which skills, out of the things the comparison measures, would gain a driver the most time, ranked from most to
-  least important, and whether they're improving over time.
-  - **The laps kept for it** (since 8 November): every reference lap stays in `data/archive/` with an index
-    (`index.json`: track, car, driver, lap time, the event's dates) instead of being deleted, including the three
-    recovered from git history (Barcelona's SFE_Asteria and tropicalarea laps, SUGO's AMS__Andrew). The model also
-    needs the owner's own laps against them: the owner keeps their recordings until then.
-  - **Where the owner's own laps go** (owner, 10 November; set up 15 November): the separate, **private**
-    repository `nghiepluu75-alt/gt7laps`, not this one, one folder per track with an `index.csv` tagging each
-    recording to its reference lap here. Started with 9 recordings (Fuji, Blue Moon Bay, Barcelona, S-1). This repository is public, and every test run and session
-    downloads all of it: a lap is about 1.2 MB (about 0.3 MB once git compresses it), so a thousand practice laps
-    would add over a gigabyte, past GitHub's suggested size of about 1 GB. The reference laps stay in
-    `data/archive/` here (about 5 MB a week); the model reads from both.
-  - **Exploratory, not pre-labelled** (owner, 15 November): no documenting each lap to fit a pattern; laps only
-    need tagging to the right reference. The owner will record a variety of laps, and the analysis (for example
-    principal component analysis over the per-corner differences from the reference) finds the patterns, to be
-    specified and explored together.
-  - **First, a model from the owner's own laps:** the owner records many laps across tracks and cars; fit a
-    statistical model of the time lost in each corner against the corner's and car's characteristics (corner type,
-    speed, braking zone length, car class and so on) and the differences from the reference lap (braking point,
-    peak brake, minimum speed, back on the throttle, line, consistency between laps). Its output: which differences
-    explain the most lost time, as themes (for example "braking too early into slow corners", "late on the
-    throttle out of fast ones").
-  - **Then, per driver over time:** as people drive and record, their own laps update their themes, so they see
-    where to focus overall (not just in this lap) and whether each theme is shrinking.
-  - **To work out:** what to collect and how to analyse it (how many laps, which measures, how to keep the model
-    simple and honest about its uncertainty); and how each person's history is kept on their own device only, with
-    nothing uploaded. Both the app and the website can keep data in the phone's or browser's own storage (the
-    website through the browser's local storage, kept per browser and lost if the browser's data is cleared; the app
-    more dependably in its own files), so this needn't be app-only; deciding which, and how much, is part of the
-    specification.
-  - Overlaps with "Progress between sessions" below, which it would replace or build on.
+- **Skills that matter most for you** (owner, 6 November): built (see **Done**); how skills change over time is item 7
+  in **Next up**. The laps are kept for it: reference laps in `data/archive/` here, the owner's recordings and top
+  drivers' replays in the private `nghiepluu75-alt/gt7laps`.
 - **Circuit Experiences**, like the Super License tab: medal times and a gold reference run for the full lap only (not
   each segment), recorded by the owner, so it grows track by track.
 - **Try it with a sample lap**: a ready-made comparison for new users and Play's reviewers, before they set up
   recording.
 - **Progress between sessions**: with recordings kept on the phone, what changed since last time ("gained 0.3 s in
-  corner 3").
+  corner 3"). Would build on item 7's stored history.
 - **Automating the weekly recordings** (a separate project, later): today the owner downloads each new time trial's WR
   replay and each daily race's best-time replay, plays it with the recorder running, and sends the CSV. Automating
   it means driving GT7 from a computer through PlayStation Remote Play (for example with an open-source Remote Play
