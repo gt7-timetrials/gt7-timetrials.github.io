@@ -144,6 +144,10 @@ function standIn({ withCues, csv }) {
     const keys = new Set([...keysInCode(), ...(await p.evaluate(`(${keysOnPage})()`))]);
     assert.deepStrictEqual([...keys].filter(k => !(k in ES)), [], "texts without a Spanish translation (site/lang/es.js)");
     assert.deepStrictEqual(Object.keys(ES).filter(k => !keys.has(k)), [], "Spanish translations of texts no longer used");
+    // the other languages match the Spanish text for text (tests/lang_check.js, run by test_coach.js), and each is
+    // loaded by the page and offered in Settings
+    const files = require("./lang_check.js").languages();
+    assert.deepStrictEqual((await p.evaluate(() => Object.keys(I18N.LANGS))).sort(), ["en", ...files].sort(), "every site/lang file is loaded");
     assert.strictEqual(await p.locator('nav a[data-tab="settings"]').innerText(), "Settings");
     await p.context().close();
 

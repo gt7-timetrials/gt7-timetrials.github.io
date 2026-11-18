@@ -1,5 +1,5 @@
 // Languages. The website (and so the app, which shows it) is written in English; other languages are a list of
-// translations keyed by the English text (site/lang/es.js). The language is chosen on the Settings tab: Automatic (the
+// translations keyed by the English text (site/lang/<code>.js, each adding itself to I18N_TABLES). The language is chosen on the Settings tab: Automatic (the
 // phone's or browser's language, if we have it) by default. Run in the browser before coach.js and app.js.
 //
 // tr("English text {name}", { name }) gives the text in the chosen language. The key is the text with its whitespace
@@ -8,7 +8,10 @@
 // same order. Elements in index.html marked data-t are translated the same way when the page loads.
 // A text with no translation stays in English and is listed in I18N.missing (the tests check it's empty).
 const I18N = (() => {
-  const LANGS = { en: "English", es: "Español" };
+  // each language's own name; offered once its file (site/lang/<code>.js, loaded before this) is there
+  const NAMES = { en: "English", es: "Español", fr: "Français", it: "Italiano", de: "Deutsch", ja: "日本語", zh: "中文" };
+  const TABLES = (typeof globalThis !== "undefined" && globalThis.I18N_TABLES) || {};
+  const LANGS = Object.fromEntries(Object.entries(NAMES).filter(([code]) => code === "en" || TABLES[code]));
   const TAG = /<([a-zA-Z][a-zA-Z0-9]*)(\s[^>]*?)?(\/?)>/g;
   // the lookup key, and the attributes taken out of its tags, in order
   function split(text) {
@@ -49,14 +52,14 @@ const I18N = (() => {
     }
     return "en";
   };
-  const { t, lang, missing } = create(pref === "auto" ? automatic() : pref, { es: typeof I18N_ES !== "undefined" ? I18N_ES : {} });
+  const { t, lang, missing } = create(pref === "auto" ? automatic() : pref, TABLES);
   // dates and numbers: the phone's own variant of the language if it has one (es-MX, en-AU), else the language
   const locale = wanted().find(l => String(l).toLowerCase().split("-")[0] === lang) || lang;
 
   // the page's own text, marked data-t in index.html
   const pageKeys = []; // what was looked up, for the tests
   function translatePage(root = document) {
-    document.documentElement.lang = lang;
+    document.documentElement.lang = lang === "zh" ? "zh-Hans" : lang; // Simplified Chinese glyphs, not Japanese ones
     root.querySelectorAll("[data-t]").forEach(el => {
       const placeholder = el.hasAttribute("placeholder"), text = placeholder ? el.placeholder : el.innerHTML;
       pageKeys.push(split(text).key);

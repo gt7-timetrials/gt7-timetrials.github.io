@@ -283,6 +283,28 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   console.log("Spanish advice ok");
 }
 
+// Every other language (site/lang/<code>.js): the same texts as the Spanish, with the same placeholders and tags, and
+// nothing in the advice, charts or panels left untranslated
+{
+  const I18N = require("../site/i18n.js"), { languages, check } = require("./lang_check.js");
+  for (const code of languages().filter(c => c !== "es")) {
+    assert.deepStrictEqual(check(code), [], `site/lang/${code}.js`);
+    const tr = I18N.create(code, { [code]: require(`../site/lang/${code}.js`) });
+    Coach.useLanguage(tr.t);
+    try {
+      for (const [a, b, who] of [[ref, me, "the WR"], [s1ref, s1me, "the reference lap"]]) {
+        const res = Coach.analyse(a, b, who);
+        for (const c of res.corners) Coach.cornerDetail(c, who === "the WR" ? "WR" : "Reference", res);
+        Coach.themeBar(res.themes);
+      }
+      assert.deepStrictEqual(tr.missing, [], `${code}: texts with no translation`);
+    } finally {
+      Coach.useLanguage(I18N.create("en").t);
+    }
+  }
+  console.log("other languages ok");
+}
+
 // Steering, between throttle and speed, in degrees clockwise up
 {
   const chart7 = Coach.cornerDetail(r.corners[6], "the WR", r);
