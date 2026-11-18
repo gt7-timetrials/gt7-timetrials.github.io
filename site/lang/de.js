@@ -128,7 +128,7 @@ const I18N_DE = {
   "What the numbers mean":
     "Was die Zahlen bedeuten",
   "<b>Gold</b> is the world record + 3%, as in the game. Silver is +5% and bronze +10%.":
-    "<b>Gold</b> ist der Weltrekord + 3 %, wie im Spiel. Silber ist +5 % und Bronze +10 %.",
+    "<b>Gold</b> ist der Weltrekord + 3 %, wie im Spiel. Silber ist +5 % und Bronze +10 %.",
   "<b>Predicted gold</b> is where the gold time is likely to end up when the event closes. The world record usually keeps falling for the first week, so gold gets harder. The range covers 8 out of 10 past events.":
     "<b>Gold-Prognose</b> zeigt, wo die Goldzeit voraussichtlich landet, wenn das Event endet. Der Weltrekord fällt meist in der ersten Woche weiter, Gold wird also schwerer. Die Spanne deckt 8 von 10 früheren Events ab.",
   "<b>Entrants</b> is everyone who has set a time so far, PS4 and PS5 combined.":
@@ -136,7 +136,7 @@ const I18N_DE = {
   "<b>Safe target</b> beats the fast end of the predicted range. In 9 out of 10 past events the final gold time was slower than that.":
     "<b>Sicheres Ziel</b> ist schneller als das schnelle Ende der prognostizierten Spanne. In 9 von 10 früheren Events war die finale Goldzeit langsamer.",
   "<b>Course difficulty</b> is how far 100th place is behind the world record: the bigger the gap, the harder the course is to master. It's rated against all past events: <b>Easy</b> is the closest quarter, <b>Medium</b> up to 70% of them, <b>Hard</b> up to 90%, and <b>V.hard</b> (very hard) the widest 10%.":
-    "<b>Streckenschwierigkeit</b> ist, wie weit Platz 100 hinter dem Weltrekord liegt: Je größer der Abstand, desto schwerer ist die Strecke zu meistern. Eingestuft wird im Vergleich mit allen früheren Events: <b>Leicht</b> ist das knappste Viertel, <b>Mittel</b> bis 70 % davon, <b>Schwer</b> bis 90 % und <b>S.schwer</b> (sehr schwer) die größten 10 %.",
+    "<b>Streckenschwierigkeit</b> ist, wie weit Platz 100 hinter dem Weltrekord liegt: Je größer der Abstand, desto schwerer ist die Strecke zu meistern. Eingestuft wird im Vergleich mit allen früheren Events: <b>Leicht</b> ist das knappste Viertel, <b>Mittel</b> bis 70 % davon, <b>Schwer</b> bis 90 % und <b>S.schwer</b> (sehr schwer) die größten 10 %.",
   "<b>Gold time on the day</b> in the chart is rebuilt from when each current top-100 time was set.":
     "<b>Goldzeit am Tag</b> im Diagramm wird daraus rekonstruiert, wann jede aktuelle Top-100-Zeit gesetzt wurde.",
   "How the prediction works":
@@ -144,7 +144,7 @@ const I18N_DE = {
   "It learns from every regular time trial since March 2023 (<span></span> events) how much the world record still falls after each day of an event. It adjusts for how many of the top-rated drivers have already set a time: if the fastest drivers haven't driven yet, expect more to come off. As daily snapshots build up, it also uses the top-100 spread.":
     "Sie lernt aus jedem regulären Zeitrennen seit März 2023 (<span></span> Events), wie stark der Weltrekord nach jedem Tag eines Events noch fällt. Sie berücksichtigt, wie viele der bestbewerteten Fahrer schon eine Zeit gesetzt haben: Wenn die schnellsten Fahrer noch nicht gefahren sind, fällt die Zeit wohl noch weiter. Je mehr tägliche Snapshots zusammenkommen, desto mehr nutzt sie auch die Streuung der Top 100.",
   "Typical error in the final gold time, tested on past events: 0.16% after day 1, 0.12% after day 3 and 0.08% after day 7. On a 1:50 lap, that's about 0.18 s, 0.13 s and 0.09 s.":
-    "Typischer Fehler bei der finalen Goldzeit, getestet an früheren Events: 0,16 % nach Tag 1, 0,12 % nach Tag 3 und 0,08 % nach Tag 7. Bei einer Runde von 1:50 sind das etwa 0,18 s, 0,13 s und 0,09 s.",
+    "Typischer Fehler bei der finalen Goldzeit, getestet an früheren Events: 0,16 % nach Tag 1, 0,12 % nach Tag 3 und 0,08 % nach Tag 7. Bei einer Runde von 1:50 sind das etwa 0,18 s, 0,13 s und 0,09 s.",
   "Languages":
     "Sprachen",
   "Choose the language on the <a>Settings</a> tab. The translations are new: if something reads wrong, please say so.<span> For other languages, most browsers can translate this site: in Chrome, tap ⋮ and then Translate.</span><span> For other languages, open gt7-timetrials.github.io in Chrome and translate it there.</span>":
@@ -170,7 +170,7 @@ const I18N_DE = {
   "Safe target":
     "Sicheres Ziel",
   "Medal times are the world record + 3% (gold), 5% (silver) and 10% (bronze), so they get harder as the record falls. \"Safe target\" beats the fast end of the predicted range, which 9 out of 10 past events stayed within.":
-    "Medaillenzeiten sind der Weltrekord + 3 % (Gold), 5 % (Silber) und 10 % (Bronze), sie werden also schwerer, wenn der Rekord fällt. „Sicheres Ziel“ ist schneller als das schnelle Ende der prognostizierten Spanne, in der 9 von 10 früheren Events blieben.",
+    "Medaillenzeiten sind der Weltrekord + 3 % (Gold), 5 % (Silber) und 10 % (Bronze), sie werden also schwerer, wenn der Rekord fällt. „Sicheres Ziel“ ist schneller als das schnelle Ende der prognostizierten Spanne, in der 9 von 10 früheren Events blieben.",
   "Easy":
     "Leicht",
   "Medium":
@@ -216,9 +216,9 @@ const I18N_DE = {
   "TBD":
     "Offen",
   "rated from day {day}, once the top 100 settles · 100th place {pct}% behind now":
-    "eingestuft ab Tag {day}, wenn sich die Top 100 eingependelt haben · Platz 100 liegt jetzt {pct} % zurück",
+    "eingestuft ab Tag {day}, wenn sich die Top 100 eingependelt haben · Platz 100 liegt jetzt {pct} % zurück",
   "100th place {pct}% behind the record":
-    "Platz 100 {pct} % hinter dem Rekord",
+    "Platz 100 {pct} % hinter dem Rekord",
   "Top-rated drivers who've set a time":
     "Bestbewertete Fahrer mit Zeit",
   "{n} of {total}":
@@ -524,15 +524,15 @@ const I18N_DE = {
   "Hover over or click a corner on the map.":
     "Fahr mit der Maus über eine Kurve auf der Karte oder klick sie an.",
   "within 3% of the reference":
-    "innerhalb von 3 % der Referenz",
+    "innerhalb von 3 % der Referenz",
   "3–5% slower":
-    "3–5 % langsamer",
+    "3–5 % langsamer",
   "over 5% slower":
-    "über 5 % langsamer",
+    "über 5 % langsamer",
   "gold pace (within 3%)":
-    "Gold-Tempo (innerhalb von 3 %)",
+    "Gold-Tempo (innerhalb von 3 %)",
   "silver pace (3–5%)":
-    "Silber-Tempo (3–5 %)",
+    "Silber-Tempo (3–5 %)",
   "slower than silver":
     "langsamer als Silber",
   "The colours compare your time through each section with the reference's.":
@@ -602,7 +602,7 @@ const I18N_DE = {
   "Final time":
     "Endzeit",
   "The medal times when the event closed: the final world record + 3%, 5% and 10%.":
-    "Die Medaillenzeiten bei Eventende: der finale Weltrekord + 3 %, 5 % und 10 %.",
+    "Die Medaillenzeiten bei Eventende: der finale Weltrekord + 3 %, 5 % und 10 %.",
   "median for past events {n}":
     "Median früherer Events {n}",
   "100th place":
@@ -650,21 +650,21 @@ const I18N_DE = {
   "Braking point: you brake {m} m later than {who}.":
     "Bremspunkt: Du bremst {m} m später als {who}.",
   "Brake pressure: {who} stays above 90% brake for {ref} m; you do for {me} m. Brake hard at the start of the zone, then ease off.":
-    "Bremsdruck: {who} bleibt {ref} m lang über 90 % Bremse, du {me} m lang. Bremse am Anfang der Bremszone hart und lass dann nach.",
+    "Bremsdruck: {who} bleibt {ref} m lang über 90 % Bremse, du {me} m lang. Bremse am Anfang der Bremszone hart und lass dann nach.",
   "Trail braking: {who} is still at {ref}% brake when starting to turn and keeps easing it off for {m} m into the corner; you're at {me}%.":
-    "Trail-Braking: {who} hat beim Einlenken noch {ref} % Bremse und löst sie über {m} m in die Kurve hinein; du hast {me} %.",
+    "Trail-Braking: {who} hat beim Einlenken noch {ref} % Bremse und löst sie über {m} m in die Kurve hinein; du hast {me} %.",
   "Trail braking: {who} is still at {ref}% brake when starting to turn; you're at {me}%.":
-    "Trail-Braking: {who} hat beim Einlenken noch {ref} % Bremse; du hast {me} %.",
+    "Trail-Braking: {who} hat beim Einlenken noch {ref} % Bremse; du hast {me} %.",
   "Brake release: you're still at {me}% brake when starting to turn; {who} is at {ref}%. Release more before turning in.":
-    "Bremse lösen: Du hast beim Einlenken noch {me} % Bremse, {who} hat {ref} %. Löse die Bremse mehr, bevor du einlenkst.",
+    "Bremse lösen: Du hast beim Einlenken noch {me} % Bremse, {who} hat {ref} %. Löse die Bremse mehr, bevor du einlenkst.",
   "{Who} brakes here (up to {p}%); you only lift off the throttle.":
-    "{Who} bremst hier (bis {p} %); du gehst nur vom Gas.",
+    "{Who} bremst hier (bis {p} %); du gehst nur vom Gas.",
   "{Who} doesn't brake here, only easing to {t}% throttle; you brake to {p}%.":
-    "{Who} bremst hier nicht, sondern geht nur auf {t} % Gas zurück; du bremst bis {p} %.",
+    "{Who} bremst hier nicht, sondern geht nur auf {t} % Gas zurück; du bremst bis {p} %.",
   "{Who} doesn't brake here, just lifting off; you brake to {p}%.":
-    "{Who} bremst hier nicht, sondern lupft nur; du bremst bis {p} %.",
+    "{Who} bremst hier nicht, sondern lupft nur; du bremst bis {p} %.",
   "Lift: you come off the throttle to {me}%; {who} only to {ref}%.":
-    "Lupfen: Du gehst auf {me} % Gas zurück, {who} nur auf {ref} %.",
+    "Lupfen: Du gehst auf {me} % Gas zurück, {who} nur auf {ref} %.",
   "Minimum speed: {me} km/h vs {ref} km/h. You're slowing the car more than you need to.":
     "Mindesttempo: {me} km/h gegenüber {ref} km/h. Du bremst das Auto stärker ab als nötig.",
   "Minimum speed: you carry {me} km/h vs {ref} km/h but lose time afterwards. Too fast on entry can mean a wide, slow exit.":
@@ -676,7 +676,7 @@ const I18N_DE = {
   "Throttle control: your throttle goes on and off {n} times before full throttle; {who} squeezes it on smoothly. Smooth, progressive throttle keeps the car balanced.":
     "Gasdosierung: Dein Gas geht {n}-mal auf und zu, bevor du Vollgas gibst; {who} gibt gleichmäßig Gas. Sanftes, progressives Gas hält das Auto im Gleichgewicht.",
   "Steering: here you use {p}% more steering lock than you do elsewhere on the lap, compared with {who}. The front is sliding (understeer) or you're on a tighter line. Try a little less speed on entry, and unwind the wheel as you add throttle.":
-    "Lenkung: Hier lenkst du, verglichen mit dem Rest der Runde, {p} % stärker ein als {who}. Die Front rutscht (Untersteuern), oder du fährst eine engere Linie. Versuch es mit etwas weniger Tempo am Eingang und öffne die Lenkung, während du Gas gibst.",
+    "Lenkung: Hier lenkst du, verglichen mit dem Rest der Runde, {p} % stärker ein als {who}. Die Front rutscht (Untersteuern), oder du fährst eine engere Linie. Versuch es mit etwas weniger Tempo am Eingang und öffne die Lenkung, während du Gas gibst.",
   "Exit: you leave the corner at {me} km/h vs {ref} km/h, and that costs time all the way down the straight after it.":
     "Ausgang: Du verlässt die Kurve mit {me} km/h gegenüber {ref} km/h, und das kostet Zeit auf der ganzen folgenden Geraden.",
   "Close to {who} here.":
@@ -748,17 +748,17 @@ const I18N_DE = {
   "{m} m after the apex":
     "{m} m nach dem Scheitelpunkt",
   "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "Unnötiges Bremsen: Du bremst (bis {p} %) über {m} m, ab {where}, wo {who} nicht bremst und im Schnitt {ref} % Gas gibt. Das kostet etwa {s} s.",
+    "Unnötiges Bremsen: Du bremst (bis {p} %) über {m} m, ab {where}, wo {who} nicht bremst und im Schnitt {ref} % Gas gibt. Das kostet etwa {s} s.",
   "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "Lupfen: Du gibst über {m} m im Schnitt {me} % Gas, ab {where}, wo {who} im Schnitt {ref} % gibt. Das kostet etwa {s} s.",
+    "Lupfen: Du gibst über {m} m im Schnitt {me} % Gas, ab {where}, wo {who} im Schnitt {ref} % gibt. Das kostet etwa {s} s.",
   "Corner {n}, {lost}":
     "Kurve {n}, {lost}",
   "Track map coloured by time lost":
     "Streckenkarte, eingefärbt nach Zeitverlust",
   "{p}% slower":
-    "{p} % langsamer",
+    "{p} % langsamer",
   "{p}% faster":
-    "{p} % schneller",
+    "{p} % schneller",
   "{m} m before":
     "{m} m vorher",
   "{m} m after":
@@ -768,9 +768,9 @@ const I18N_DE = {
   "apex":
     "Scheitelpunkt",
   "Brake %":
-    "Bremse %",
+    "Bremse %",
   "Throttle %":
-    "Gas %",
+    "Gas %",
   "Steering °, clockwise up":
     "Lenkung °, rechts nach oben",
   "({who}'s recording has none)":
@@ -804,7 +804,7 @@ const I18N_DE = {
   "full throttle":
     "Vollgas",
   "Drawn to scale, the same way round as the lap map. Line thickness: the brake from the braking point until the throttle is pressed again, the throttle everywhere else (thin = none, full = 100%).":
-    "Maßstabsgetreu, gleich ausgerichtet wie die Rundenkarte. Liniendicke: die Bremse vom Bremspunkt, bis wieder Gas gegeben wird, sonst das Gas (dünn = nichts, voll = 100 %).",
+    "Maßstabsgetreu, gleich ausgerichtet wie die Rundenkarte. Liniendicke: die Bremse vom Bremspunkt, bis wieder Gas gegeben wird, sonst das Gas (dünn = nichts, voll = 100 %).",
   "Hatched: your wheels lock or spin, or traction control cuts in, more than the reference's.":
     "Schraffiert: Deine Räder blockieren oder drehen durch, oder die Traktionskontrolle greift ein, mehr als bei der Referenz.",
   "the reference":
@@ -846,7 +846,7 @@ const I18N_DE = {
   "Line":
     "Linie",
   "Within 0.5% of {who}'s time in this section, so it isn't split into themes.":
-    "In diesem Abschnitt bist du auf 0,5 % genau so schnell wie {who}, daher keine Aufteilung nach Themen.",
+    "In diesem Abschnitt bist du auf 0,5 % genau so schnell wie {who}, daher keine Aufteilung nach Themen.",
   "{share} in this section":
     "{share} in diesem Abschnitt",
   "Distances from the apex":
