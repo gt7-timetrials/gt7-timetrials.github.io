@@ -17,8 +17,8 @@
       "lost": "+0.32 s",
       "colour": "good",
       "tips": [
-        "Minimum speed: 133 km/h vs 144 km/h. You're slowing the car more than you need to.",
         "Lift: you average 34% throttle for 65 m, starting 38 m before the apex, where the WR averages 80%. That costs about 0.09 s.",
+        "Minimum speed: 133 km/h vs 144 km/h. You're slowing the car more than you need to.",
         "Track use: on exit you run 1.8 m wider than the WR."
       ]
     },
@@ -30,8 +30,8 @@
         "Braking point: you brake 11 m earlier than the WR.",
         "Minimum speed: 92 km/h vs 103 km/h. You're slowing the car more than you need to.",
         "Throttle: you get back on the throttle 10 m later than the WR.",
-        "Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line.",
-        "Exit: you leave the corner at 98 km/h vs 108 km/h, and that costs time all the way down the straight after it."
+        "Exit: you leave the corner at 98 km/h vs 108 km/h, and that costs time all the way down the straight after it.",
+        "Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line."
       ]
     },
     {
@@ -40,9 +40,9 @@
       "colour": "good",
       "tips": [
         "Throttle: you get back on the throttle 10 m later than the WR.",
+        "Exit: you leave the corner at 85 km/h vs 91 km/h, and that costs time all the way down the straight after it.",
         "Full throttle: you reach full throttle 15 m later than the WR.",
-        "Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line.",
-        "Exit: you leave the corner at 85 km/h vs 91 km/h, and that costs time all the way down the straight after it."
+        "Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line."
       ]
     },
     {
@@ -99,8 +99,8 @@
       "tips": [
         "Lift: you average 4% throttle for 517 m, starting 573 m after the start line, where the reference lap averages 96%. That costs about 0.60 s.",
         "Braking point: you brake 13 m earlier than the reference lap.",
-        "Brake pressure: the reference lap stays above 90% brake for 142 m; you do for 105 m. Brake hard at the start of the zone, then ease off.",
-        "Minimum speed: 123 km/h vs 143 km/h. You're slowing the car more than you need to."
+        "Minimum speed: 123 km/h vs 143 km/h. You're slowing the car more than you need to.",
+        "Brake pressure: the reference lap stays above 90% brake for 142 m; you do for 105 m. Brake hard at the start of the zone, then ease off."
       ]
     },
     {
@@ -123,8 +123,8 @@
       "tips": [
         "Lifts: 5 times in this section you come off the throttle where the reference lap doesn't, for 172 m in all (starting 64 m after, 207 m after, 395 m after, 491 m after, 534 m after the apex). Together that costs about 0.63 s. Stay flat out until the braking point.",
         "Throttle: you get back on the throttle 8 m later than the reference lap.",
-        "Full throttle: you reach full throttle 32 m later than the reference lap.",
-        "Exit: you leave the corner at 111 km/h vs 126 km/h, and that costs time all the way down the straight after it."
+        "Exit: you leave the corner at 111 km/h vs 126 km/h, and that costs time all the way down the straight after it.",
+        "Full throttle: you reach full throttle 32 m later than the reference lap."
       ]
     },
     {
