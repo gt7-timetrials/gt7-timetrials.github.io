@@ -113,6 +113,7 @@ function standIn({ withCues, csv }) {
     await coach(p).locator(".coach-summary").waitFor();
     assert.match(await coach(p).locator(".coach-summary").innerText(), /Your lap 1:18\.521/);
     assert.strictEqual(await coach(p).locator(".across").count(), 0, "one lap: no across-your-laps box");
+    assert.match(await coach(p).locator(".themes").innerText(), /Where your time goes[\s\S]*Braking\s+[+−]\d/, "the lap's time by theme");
     // the first comparison explains itself until "Got it"; the next one doesn't
     assert.match(await coach(p).locator(".guide").innerText(), /How to read this/);
     await coach(p).locator(".guide-ok").click();

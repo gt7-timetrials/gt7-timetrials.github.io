@@ -22,8 +22,11 @@ assert.deepStrictEqual(r.corners.map(c => c.colour), ["warn", "good", "good", "g
 assert.ok(r.corners.every(c => c.colour === (c.lost < 0.1 ? "good" : c.share < 0.03 ? "good" : c.share < 0.05 ? "warn" : "bad")));
 assert.ok(Math.abs(r.corners[6].share - 0.045) < 0.002, "corner 7: 0.43 s of about 9.6 s");
 assert.ok(Coach.cornerDetail(r.corners[6], "the reference", r).includes("4.5% slower in this section"));
-assert.ok(r.corners[0].tips[0].startsWith("Start of the lap"), "slow start-line speed is called out");
-assert.ok(r.corners[6].tips.some(t => t.startsWith("Brake pressure")), "corner 7: WR holds full brake longer");
+assert.ok(r.corners[0].tips.some(t => t.startsWith("Start of the lap")), "slow start-line speed is called out");
+// corner 7: you brake 20 m early but gain it back before the apex (braking ≈ 0); the 0.43 s goes on the exit, so only
+// the exit and line tips are shown, exit first
+assert.ok(Math.abs(r.corners[6].themes.signed.braking) < 0.03 && r.corners[6].themes.signed.exit > 0.3);
+assert.deepStrictEqual(r.corners[6].tips.map(t => t.split(":")[0]), ["Throttle", "Exit", "Track use"]);
 assert.ok(Coach.trackMap(r).startsWith("<svg"));
 // the long fast left after turn 1: 34% throttle where the WR averages 80%; early braking into a corner isn't a "lift"
 assert.strictEqual(r.lifts.length, 1);
@@ -170,13 +173,18 @@ assert.ok(Math.abs(s1.gameGap - 6.712) < 1e-9);
 // High Speed Ring: each section is a corner plus the straight after it, with the time split between the two
 assert.deepStrictEqual(s1.corners.map(c => c.apex), [1779, 2481, 2705, 3605]);
 s1.corners.slice(1).forEach(c => assert.ok(c.from < c.ref.brakeAt && c.ref.brakeAt - c.from <= 10 + 150, `corner ${c.n} starts at its braking zone`));
-assert.ok(/^Where the time goes: \+0\.74 s in the corner, \+1\.40 s on the 712 m straight after it to the finish line: you leave the corner 17 km\/h slower/
-  .test(s1.corners[3].tips[0]), s1.corners[3].tips[0]);
-assert.ok(/^Where the time goes: \+1\.64 s on the 1500 m from the start line to the braking zone, \+1\.04 s in the corner, \+0\.33 s/
-  .test(s1.corners[0].tips[0]), s1.corners[0].tips[0]);
+// where the time goes is the stretch's theme bar now, not a tip; the exit speed is the exit tip's
+assert.ok([...r.corners, ...s1.corners].every(c => !c.tips.some(t => t.startsWith("Where the time goes"))));
+// S-1 corner 4: 17 km/h slower out, but it's the apex's (154 vs 169 km/h): braking's time, so no exit tip; the lifts lead
+assert.ok(s1.corners[3].themes.signed.braking > 5 * s1.corners[3].themes.signed.exit);
+assert.deepStrictEqual(s1.corners[3].tips.map(t => t.split(":")[0]), ["Lifts", "Braking point", "Minimum speed"]);
 assert.ok(s1.corners[0].tips.some(t => t.includes("517 m, starting 573 m after the start line")), "the coast before corner 1");
 assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several lifts are one tip");
-assert.ok(!s1.corners[2].tips.some(t => t.startsWith("Exit:")), "the straight tip says it instead");
+// tips in order of importance: by the size of their theme in the corner (and only tips about a theme that matters)
+for (const res of [r, s1]) for (const c of res.corners) {
+  const sizes = c.tipThemes.map(th => Math.abs(c.themes.signed[th] ?? 0));
+  assert.ok(sizes.every((v, i) => i === 0 || v <= sizes[i - 1]), `corner ${c.n}: ${c.tipKinds}`);
+}
 assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "one colour per section");
 
 // A spin or crash: under half the reference's speed at the same point. That corner gets one line and no advice, and
@@ -206,6 +214,32 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   assert.strictEqual(ch.pick, 0, "the fastest lap without a spin is compared first");
   assert.strictEqual(Coach.acrossLaps(ref, ch.laps, "the WR").laps, 3, "left out of across your laps");
   console.log("spins ok");
+}
+
+// Where the time goes, by theme: split with the reference's own physics (from each braking point to the next), then
+// added up over each corner's section (the one its time and colour are for), so every corner has a split that adds up
+// to its time, and the corners to the lap's gap; in a section slower overall every part counts as time lost (and the
+// mirror when quicker); a section within 0.5% of the reference's time isn't split
+{
+  for (const res of [r, s1]) {
+    const sum = Object.values(res.themes).reduce((a, b) => a + b, 0);
+    assert.ok(Math.abs(sum - res.recordedGap) < 1e-6, `themes add up to the gap: ${sum} vs ${res.recordedGap}`);
+    for (const c of res.corners) {
+      assert.ok(Math.abs(c.themes.lost - c.lost) < 1e-6, `corner ${c.n}: the split adds up to its time (${c.themes.lost} vs ${c.lost})`);
+      const parts = Object.values(c.themes.parts);
+      assert.ok(parts.every(v => Math.sign(v) === Math.sign(c.themes.lost) || Math.abs(v) < 1e-12), "all with the section's sign");
+    }
+  }
+  // a section where a part was quicker but the section slower overall: that part counts as time lost
+  assert.ok([...r.corners, ...s1.corners].some(c => Object.values(c.themes.signed).some(v => v < -0.01) && c.themes.lost > 0));
+  // a corner without braking (Barcelona's 2 and 6) gets its own split too
+  assert.ok(r.corners[1].themes && !r.corners[1].themes.close && r.corners[1].ref.brakeAt === null);
+  // the reference against itself: every section within 0.5%, nothing split
+  assert.ok(self.corners.every(c => c.themes.close));
+  // shown under the lap and in the corner's panel (not for a corner with a spin)
+  assert.ok(Coach.cornerDetail(r.corners[0], "WR", r).includes('class="th-bar"'));
+  assert.ok(Coach.cornerDetail(self.corners[0], "WR", self).includes("Within 0.5% of WR's time in this section"));
+  console.log("themes ok");
 }
 
 // The advice, word for word, for the two real comparisons above (Barcelona against the WR, the S-1 bronze attempt
@@ -280,13 +314,14 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
 }
 
 // Wheelspin: the driven wheels (read from the lap: the Elantra is front-wheel drive) spinning well beyond the
-// reference's at the same point, on the throttle; or traction control cutting in where the reference's doesn't
+// reference's at the same point, on the throttle; or traction control cutting in where the reference's doesn't. (What's
+// detected: c.me.wheelspin; the tip itself is shown when exit matters in that corner, see TIP_SHARE.)
 {
+  const spin = c => c.me.wheelspin?.text ?? "";
   const c6 = r.corners[5];
-  assert.ok(c6.tips.includes("Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line."),
-    c6.tips.join(" | "));
-  assert.ok(r.corners.filter(c => c.tips.some(t => t.startsWith("Wheelspin "))).length >= 3, "several corners");
-  assert.ok(!r.corners.some(c => c.tips.some(t => /rear wheels/.test(t))), "not the rear wheels on a front-wheel-drive car");
+  assert.strictEqual(spin(c6), "Wheelspin on exit: your front wheels spin more than the WR's. More throttle or steering than the tyres can take: see the bold throttle line.");
+  assert.ok(r.corners.filter(c => spin(c).startsWith("Wheelspin ")).length >= 3, "several corners");
+  assert.ok(!r.corners.some(c => /rear wheels/.test(spin(c))), "not the rear wheels on a front-wheel-drive car");
   const html = Coach.cornerDetail(c6, "the WR", r);
   assert.ok(html.includes('class="pc-me throttle spin"') && html.includes("bold: wheel lock or spin"), "bold on the throttle chart");
   assert.ok(html.includes('class="cw-spin"') && html.includes("Hatched: your wheels lock or spin"), "hatched on the line close-up");
@@ -299,11 +334,10 @@ assert.strictEqual((Coach.trackMap(s1).match(/class="seg /g) || []).length, 4, "
   };
   const i0 = near(R.x[c2.apex + 10], R.z[c2.apex + 10]), i1 = near(R.x[c2.apex + 50], R.z[c2.apex + 50]);
   const tcs = { ...me, tcs_active: me.tcs_active.map((v, i) => (i >= i0 && i <= i1 ? 1 : v)) };
-  const t2 = Coach.analyse(ref, tcs).corners[1].tips;
-  assert.ok(t2.includes("Traction control on exit: yours cuts in, the WR's doesn't. More throttle or steering than the tyres can take: see the bold throttle line."), t2.join(" | "));
+  assert.strictEqual(spin(Coach.analyse(ref, tcs).corners[1]), "Traction control on exit: yours cuts in, the WR's doesn't. More throttle or steering than the tyres can take: see the bold throttle line.");
   // a recording without the front wheels' speeds (an older recorder): no wheelspin read from them, and no error
   const noFront = Coach.analyse(ref, { ...me, wheel_fl_kmh: undefined, wheel_fr_kmh: undefined });
-  assert.ok(!noFront.corners.some(c => c.tips.some(t => /front wheels/.test(t))));
+  assert.ok(!noFront.corners.some(c => /front wheels/.test(spin(c))));
   // lock-up: corner 1, full brake while turning in where the WR is at about half: the front wheels lock more
   const c1 = r.corners[0], h1 = Coach.cornerDetail(c1, "the WR", r);
   assert.ok(c1.tips.includes("Lock-up on entry: your front wheels lock more than the WR's. More brake than the tyres can take with the steering: see the bold brake line."),

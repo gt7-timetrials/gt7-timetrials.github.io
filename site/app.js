@@ -236,12 +236,13 @@ async function compareLap(e, file, out, save) {
     }
     out._corner = null; // a new recording: start from its worst corner
     const across = Coach.acrossLaps(ref, choices.laps, tipWho(e)); // with 3+ clean laps
+    const themesAll = Coach.themesAcross(ref, choices.laps); // with 2+ clean laps
     // the fastest lap that doesn't look like a cut corner, unless the player picks another one
     const show = i => {
       const lap = choices.laps[i].lap, res = Coach.analyse(ref, lap, tipWho(e));
       if (res.error) { out.innerHTML = `<p class="miss">${res.error}</p>`; return; }
       // a time trial with free car choice: another car than the reference's is normal, so no warning
-      renderComparison(out, res, e, !e.free_choice && lap.car_code !== ref.car_code, { ...choices, chosen: i, show, across }, save);
+      renderComparison(out, res, e, !e.free_choice && lap.car_code !== ref.car_code, { ...choices, chosen: i, show, across, themesAll }, save);
     };
     show(choices.pick);
   } catch (err) {
@@ -653,10 +654,27 @@ function acrossLaps(a) {
       faster: a.idealMs < a.bestMs ? tr(", {gap} faster than your best lap ({best})", { gap: secs(a.bestMs - a.idealMs), best: fmt(a.bestMs) }) : "" })}</p></div>`;
 }
 
+// Where the time goes, by theme (coach.js themeSplit): averaged over the recording's clean laps, then for the lap
+// being compared (just the bar: the description is above it, or under it with one lap). Not for a lap with a spin.
+const THEMES_ABOUT = () => tr(`<b>Braking</b> is the speed you lose from the braking point to the apex and what it costs
+  after, <b>exit</b> what you lose from the apex out and down the straight after it, <b>straight</b> lifting or a slower car
+  on the straight, <b>line</b> the extra distance of a different line.`);
+function themesAcrossBox(all) {
+  if (!all) return "";
+  return `<div class="themes"><h4>${tr("Where your time goes: average over your {n} laps", { n: all.laps })}</h4>${Coach.themeBar(all.parts)}
+    <p class="hint">${THEMES_ABOUT()}</p></div>`;
+}
+function themesLapBox(res, withAbout) {
+  if (!res.themes || res.corners.some(c => c.incident)) return "";
+  return `<div class="themes themes-lap"><h4>${tr("Where your time goes on this lap")}</h4>${Coach.themeBar(res.themes)}
+    ${withAbout ? `<p class="hint">${THEMES_ABOUT()}</p>` : ""}</div>`;
+}
+
 function renderComparison(out, res, e, otherCar, picker, save) {
   const total = (res.lapMs - res.refMs) / 1000;
   const worst = res.corners.reduce((a, c) => (c.lost > a.lost ? c : a), res.corners[0]);
   out.innerHTML = `
+    ${themesAcrossBox(picker?.themesAll)}
     ${lapPicker(picker)}
     <p class="coach-summary">${tr("Your lap <b>{lap}</b> vs {ref}: <b>{gap}</b>.", { lap: fmt(res.lapMs), ref: fmt(res.refMs), gap: Coach.fmtLost(total) })}${save
       ? ` <span class="rec-save">${save.saved ? `<span class="muted">${tr("Saved to Downloads as {file}.", { file: esc(save.saved) })}</span>`
@@ -666,6 +684,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     ${Math.abs(res.gameGap - res.recordedGap) > 0.1 ? `<p class="hint">${tr(`The game's times include
       {s} s that isn't in the recorded laps (in a license test the timer can
       start before the car reaches the line), so the corners below add up to {total}.`, { s: Math.abs(res.gameGap - res.recordedGap).toFixed(2), total: Coach.fmtLost(res.recordedGap) })}</p>` : ""}
+    ${themesLapBox(res, !picker?.themesAll)}
     ${guide()}
     ${acrossLaps(picker?.across)}
     <p class="hint tap-hint">${phone() ? tr("Tap a corner to see where you lose time.") : tr("Hover over or click a corner on the map.")}</p>
