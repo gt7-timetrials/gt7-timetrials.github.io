@@ -515,7 +515,8 @@ const GUIDE_STEPS = `<ol>
       lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the
       apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and
       <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are
-      bars for each lap and corner below.`)}</li>
+      bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part
+      first, and a corner within 0.5% of the reference isn't split.`)}</li>
     <li>${tr(`<b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and
       steering drawn against the reference's.`)}</li>
     <li>${tr(`<b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see
@@ -714,9 +715,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
           <button class="nav-btn" data-lapstep="1" aria-label="${tr("Next lap")}">›</button></div>` : ""}
         <div class="detail-body"></div>
       </div>
-    </div>
-    <p class="hint">${tr(`Distances are measured along the reference lap. Steering angles depend on your controller or wheel
-      settings, so the steering tip compares each corner with your own lap.`)}</p>`;
+    </div>`;
   const detail = out.querySelector(".corner-detail"), body = detail.querySelector(".detail-body");
   const svg = out.querySelector(".trackmap");
   const who = shortWho(e);

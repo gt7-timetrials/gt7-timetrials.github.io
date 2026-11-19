@@ -553,8 +553,6 @@ const I18N_FR = {
     "Tour précédent",
   "Next lap":
     "Tour suivant",
-  "Distances are measured along the reference lap. Steering angles depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.":
-    "Les distances sont mesurées le long du tour de référence. Les angles de braquage dépendent des réglages de ta manette ou de ton volant, donc le conseil de direction compare chaque virage avec ton propre tour.",
   "Show your line":
     "Afficher ta trajectoire",
   "Hide your line":
@@ -873,8 +871,8 @@ const I18N_FR = {
     "Vitesse de sortie",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "Pression de freinage : tu restes au-dessus de 90 % de frein sur {me} m ; {who}, sur {ref} m, et freine plus doucement. Tu ralentis plus que nécessaire : freine moins fort et entre avec plus de vitesse.",
-  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below.":
-    "<b>Où part ton temps</b> divise ton écart avec la référence en quatre parts : <b>freinage</b>, la vitesse que tu perds du point de freinage à la corde et ce qu'elle te coûte ensuite ; <b>sortie</b>, la vitesse que tu perds de la corde à la sortie et dans la ligne droite qui suit ; <b>ligne droite</b>, lever le pied ou freiner dans la ligne droite (ou une voiture plus lente) ; et <b>trajectoire</b>, la distance en plus d'une trajectoire différente. La barre du haut est pour tes tours enregistrés, puis il y a des barres pour chaque tour et chaque virage en dessous.",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
+    "<b>Où part ton temps</b> divise ton écart avec la référence en quatre parts : <b>freinage</b>, la vitesse que tu perds du point de freinage à la corde et ce qu'elle te coûte ensuite ; <b>sortie</b>, la vitesse que tu perds de la corde à la sortie et dans la ligne droite qui suit ; <b>ligne droite</b>, lever le pied ou freiner dans la ligne droite (ou une voiture plus lente) ; et <b>trajectoire</b>, la distance en plus d'une trajectoire différente. La barre du haut est pour tes tours enregistrés, puis il y a des barres pour chaque tour et chaque virage en dessous. Touche un virage pour voir sa propre barre au-dessus de ses conseils : les conseils viennent dans l'ordre de la plus grande part, et un virage à moins de 0,5 % de la référence n'est pas divisé.",
 };
 (globalThis.I18N_TABLES ||= {}).fr = I18N_FR;
 if (typeof module !== "undefined") module.exports = I18N_FR;

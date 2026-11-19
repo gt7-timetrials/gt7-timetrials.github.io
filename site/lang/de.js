@@ -553,8 +553,6 @@ const I18N_DE = {
     "Vorherige Runde",
   "Next lap":
     "Nächste Runde",
-  "Distances are measured along the reference lap. Steering angles depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.":
-    "Distanzen werden entlang der Referenzrunde gemessen. Lenkwinkel hängen von den Einstellungen deines Controllers oder Lenkrads ab, daher vergleicht der Lenkungstipp jede Kurve mit deiner eigenen Runde.",
   "Show your line":
     "Deine Linie zeigen",
   "Hide your line":
@@ -873,8 +871,8 @@ const I18N_DE = {
     "Ausgangstempo",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "Bremsdruck: Du bleibst {me} m lang über 90 % Bremse, {who} nur {ref} m lang und bremst sanfter. Du wirst langsamer als nötig: Bremse leichter und nimm mehr Geschwindigkeit mit in die Kurve.",
-  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below.":
-    "<b>Wo deine Zeit bleibt</b> teilt deinen Rückstand auf die Referenz in vier Teile: <b>Bremsen</b>, die Geschwindigkeit, die du vom Bremspunkt bis zum Scheitelpunkt verlierst, und was sie dich danach kostet; <b>Ausgang</b>, die Geschwindigkeit, die du ab dem Scheitelpunkt und auf der Geraden danach verlierst; <b>Gerade</b>, Gaswegnehmen oder Bremsen auf der Geraden (oder ein langsameres Auto); und <b>Linie</b>, die zusätzliche Strecke einer anderen Linie. Der Balken oben gilt für deine aufgezeichneten Runden, darunter gibt es Balken für jede Runde und jede Kurve.",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
+    "<b>Wo deine Zeit bleibt</b> teilt deinen Rückstand auf die Referenz in vier Teile: <b>Bremsen</b>, die Geschwindigkeit, die du vom Bremspunkt bis zum Scheitelpunkt verlierst, und was sie dich danach kostet; <b>Ausgang</b>, die Geschwindigkeit, die du ab dem Scheitelpunkt und auf der Geraden danach verlierst; <b>Gerade</b>, Gaswegnehmen oder Bremsen auf der Geraden (oder ein langsameres Auto); und <b>Linie</b>, die zusätzliche Strecke einer anderen Linie. Der Balken oben gilt für deine aufgezeichneten Runden, darunter gibt es Balken für jede Runde und jede Kurve. Tippe auf eine Kurve, um ihren eigenen Balken über ihren Tipps zu sehen: Die Tipps kommen nach dem größten Teil zuerst, und eine Kurve innerhalb von 0,5 % der Referenz wird nicht aufgeteilt.",
 };
 (globalThis.I18N_TABLES ||= {}).de = I18N_DE;
 if (typeof module !== "undefined") module.exports = I18N_DE;

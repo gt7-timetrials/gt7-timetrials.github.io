@@ -554,8 +554,6 @@ const I18N_ES = {
     "Vuelta anterior",
   "Next lap":
     "Vuelta siguiente",
-  "Distances are measured along the reference lap. Steering angles depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.":
-    "Las distancias se miden a lo largo de la vuelta de referencia. Los ángulos de dirección dependen de los ajustes de tu mando o volante, así que el consejo de dirección compara cada curva con tu propia vuelta.",
   "Show your line":
     "Mostrar tu trazada",
   "Hide your line":
@@ -874,8 +872,8 @@ const I18N_ES = {
     "Velocidad de salida",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "Presión de freno: te mantienes por encima del 90% de freno durante {me} m; {who}, durante {ref} m, y frena con más suavidad. Frenas más de lo necesario: frena más suave y entra con más velocidad.",
-  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below.":
-    "<b>Dónde se va tu tiempo</b> divide tu diferencia con la referencia en cuatro partes: <b>frenada</b>, la velocidad que pierdes desde el punto de frenada hasta el vértice y lo que te cuesta después; <b>salida</b>, la velocidad que pierdes desde el vértice hacia fuera y por la recta siguiente; <b>recta</b>, levantar o frenar en la recta (o un coche más lento); y <b>trazada</b>, la distancia extra de una trazada distinta. La barra de arriba es para tus vueltas grabadas, y debajo hay barras para cada vuelta y cada curva.",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
+    "<b>Dónde se va tu tiempo</b> divide tu diferencia con la referencia en cuatro partes: <b>frenada</b>, la velocidad que pierdes desde el punto de frenada hasta el vértice y lo que te cuesta después; <b>salida</b>, la velocidad que pierdes desde el vértice hacia fuera y por la recta siguiente; <b>recta</b>, levantar o frenar en la recta (o un coche más lento); y <b>trazada</b>, la distancia extra de una trazada distinta. La barra de arriba es para tus vueltas grabadas, y debajo hay barras para cada vuelta y cada curva. Toca una curva para ver su propia barra encima de sus consejos: los consejos van de la parte más grande a la más pequeña, y una curva a menos del 0,5% de la referencia no se divide.",
 };
 (globalThis.I18N_TABLES ||= {}).es = I18N_ES;
 if (typeof module !== "undefined") module.exports = I18N_ES;
