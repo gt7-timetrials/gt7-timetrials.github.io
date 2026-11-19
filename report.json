@@ -1,51 +1,14 @@
 {
- "generated_at": "2026-11-18T21:37:49.532701+00:00",
- "history_events": 205,
- "snapshot_events": 3,
+ "generated_at": "2026-11-19T21:38:13.284750+00:00",
+ "history_events": 206,
+ "snapshot_events": 4,
  "historical_entrants": {
-  "median": 162485,
-  "p10": 128541,
-  "p90": 196007,
-  "events": 205
+  "median": 162596,
+  "p10": 128561,
+  "p90": 195985,
+  "events": 206
  },
  "events": [
-  {
-   "event_id": 15251,
-   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15251/",
-   "track": "Fuji International Speedway",
-   "category": "circuit",
-   "car": "Dodge Viper SRT GT3-R '15",
-   "starts": "2026-11-05T18:00:00+11:00",
-   "ends": "2026-11-19T17:59:59+11:00",
-   "days_elapsed": 13.6,
-   "days_left": 0.4,
-   "entrants": 180956,
-   "entrants_projection": {
-    "projected": 182801,
-    "low": 182713,
-    "high": 182868,
-    "events": 3
-   },
-   "wr_ms": 99865,
-   "wr_holder": "N2_HyperzWC",
-   "gold_now_ms": 102860,
-   "top100_spread_pct": 0.594,
-   "strong_drivers_posted": [
-    "Akagi_1942mi",
-    "pirata666pirata"
-   ],
-   "strong_drivers_total": 25,
-   "regular_event": true,
-   "predicted": {
-    "final_wr_ms": 99829,
-    "gold_ms": 102823,
-    "gold_fast_ms": 102737,
-    "gold_slow_ms": 102860,
-    "final_wr_fast_ms": 99745,
-    "final_wr_slow_ms": 99865,
-    "method": "history: time elapsed + top drivers + top-100 spread"
-   }
-  },
   {
    "event_id": 15376,
    "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15376/",
@@ -54,14 +17,19 @@
    "car": "Mazda ɛ̃fini RX-7 Type R (FD) '91",
    "starts": "2026-11-12T18:00:00+11:00",
    "ends": "2026-11-26T17:59:59+11:00",
-   "days_elapsed": 6.6,
-   "days_left": 7.4,
-   "entrants": 113149,
-   "entrants_projection": null,
+   "days_elapsed": 7.6,
+   "days_left": 6.4,
+   "entrants": 119633,
+   "entrants_projection": {
+    "projected": 161784,
+    "low": 155705,
+    "high": 165867,
+    "events": 3
+   },
    "wr_ms": 128786,
    "wr_holder": "MetalGear9493",
    "gold_now_ms": 132649,
-   "top100_spread_pct": 0.929,
+   "top100_spread_pct": 0.908,
    "strong_drivers_posted": [
     "AT__1826",
     "MetalGear9493",
@@ -70,12 +38,43 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 128641,
-    "gold_ms": 132500,
-    "gold_fast_ms": 132237,
+    "final_wr_ms": 128705,
+    "gold_ms": 132566,
+    "gold_fast_ms": 132337,
     "gold_slow_ms": 132649,
-    "final_wr_fast_ms": 128386,
+    "final_wr_fast_ms": 128483,
     "final_wr_slow_ms": 128786,
+    "method": "history: time elapsed + top drivers + top-100 spread"
+   }
+  },
+  {
+   "event_id": 15401,
+   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15401/",
+   "track": "Tokyo Expressway - Central Counterclockwise",
+   "category": "city",
+   "car": "Suzuki Swift Sport KATANA Edition Gr.4",
+   "starts": "2026-11-19T18:00:00+11:00",
+   "ends": "2026-12-03T17:59:59+11:00",
+   "days_elapsed": 0.6,
+   "days_left": 13.4,
+   "entrants": 25628,
+   "entrants_projection": null,
+   "wr_ms": 81752,
+   "wr_holder": "MetalGear9493",
+   "gold_now_ms": 84204,
+   "top100_spread_pct": 1.556,
+   "strong_drivers_posted": [
+    "MetalGear9493"
+   ],
+   "strong_drivers_total": 25,
+   "regular_event": true,
+   "predicted": {
+    "final_wr_ms": 81464,
+    "gold_ms": 83907,
+    "gold_fast_ms": 83676,
+    "gold_slow_ms": 84122,
+    "final_wr_fast_ms": 81239,
+    "final_wr_slow_ms": 81672,
     "method": "history: time elapsed + top drivers"
    }
   }
