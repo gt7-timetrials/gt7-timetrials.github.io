@@ -553,8 +553,6 @@ const I18N_DE = {
     "Vorherige Runde",
   "Next lap":
     "Nächste Runde",
-  "Distances are measured along the reference lap. Steering angles depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.":
-    "Distanzen werden entlang der Referenzrunde gemessen. Lenkwinkel hängen von den Einstellungen deines Controllers oder Lenkrads ab, daher vergleicht der Lenkungstipp jede Kurve mit deiner eigenen Runde.",
   "Show your line":
     "Deine Linie zeigen",
   "Hide your line":
@@ -709,8 +707,8 @@ const I18N_DE = {
     "Nutze mehr Strecke: {list}.",
   "You're {s} s faster than {who} here.":
     "Hier bist du {s} s schneller als {who}.",
-  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
-    "Rundenstart: Du hast die Linie mit {me} km/h gegenüber {ref} km/h überquert, das hat bis zum ersten Bremspunkt etwa {s} s gekostet. Das kommt von deinem Ausgang aus der letzten Kurve in der Runde davor.",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.":
+    "Rundenstart: Du hast die Linie mit {me} km/h gegenüber {ref} km/h überquert. Das kommt von deinem Ausgang aus der letzten Kurve in der Runde davor.",
   "You spin out or crash on this corner.":
     "In dieser Kurve hast du einen Dreher oder Unfall.",
   "wheels":
@@ -737,8 +735,8 @@ const I18N_DE = {
     "Durchdrehende Räder {where}: Du lässt die {wheels} stärker durchdrehen als {who}. {why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "Traktionskontrolle {where}: Sie greift bei dir ein, {who} kommt ohne aus. {why}",
-  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
-    "Lupfer: {n}-mal gehst du in diesem Abschnitt vom Gas{brake}, wo {who} es nicht tut, insgesamt {m} m (Beginn relativ zum Scheitelpunkt: {where}). Zusammen kostet das etwa {s} s. Bleib bis zum Bremspunkt voll auf dem Gas.",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.":
+    "Lupfer: {n}-mal gehst du in diesem Abschnitt vom Gas{brake}, wo {who} es nicht tut, insgesamt {m} m (Beginn relativ zum Scheitelpunkt: {where}). Bleib bis zum Bremspunkt voll auf dem Gas.",
   "or brake":
     "oder bremst",
   "{m} m after the start line":
@@ -747,10 +745,10 @@ const I18N_DE = {
     "{m} m vor dem Scheitelpunkt",
   "{m} m after the apex":
     "{m} m nach dem Scheitelpunkt",
-  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "Unnötiges Bremsen: Du bremst (bis {p} %) über {m} m, ab {where}, wo {who} nicht bremst und im Schnitt {ref} % Gas gibt. Das kostet etwa {s} s.",
-  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "Lupfen: Du gibst über {m} m im Schnitt {me} % Gas, ab {where}, wo {who} im Schnitt {ref} % gibt. Das kostet etwa {s} s.",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.":
+    "Unnötiges Bremsen: Du bremst (bis {p} %) über {m} m, ab {where}, wo {who} nicht bremst und im Schnitt {ref} % Gas gibt.",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.":
+    "Lupfen: Du gibst über {m} m im Schnitt {me} % Gas, ab {where}, wo {who} im Schnitt {ref} % gibt.",
   "Corner {n}, {lost}":
     "Kurve {n}, {lost}",
   "Track map coloured by time lost":
@@ -873,6 +871,8 @@ const I18N_DE = {
     "Ausgangstempo",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "Bremsdruck: Du bleibst {me} m lang über 90 % Bremse, {who} nur {ref} m lang und bremst sanfter. Du wirst langsamer als nötig: Bremse leichter und nimm mehr Geschwindigkeit mit in die Kurve.",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
+    "<b>Wo deine Zeit bleibt</b> teilt deinen Rückstand auf die Referenz in vier Teile: <b>Bremsen</b>, die Geschwindigkeit, die du vom Bremspunkt bis zum Scheitelpunkt verlierst, und was sie dich danach kostet; <b>Ausgang</b>, die Geschwindigkeit, die du ab dem Scheitelpunkt und auf der Geraden danach verlierst; <b>Gerade</b>, Gaswegnehmen oder Bremsen auf der Geraden (oder ein langsameres Auto); und <b>Linie</b>, die zusätzliche Strecke einer anderen Linie. Der Balken oben gilt für deine aufgezeichneten Runden, darunter gibt es Balken für jede Runde und jede Kurve. Tippe auf eine Kurve, um ihren eigenen Balken über ihren Tipps zu sehen: Die Tipps kommen nach dem größten Teil zuerst, und eine Kurve innerhalb von 0,5 % der Referenz wird nicht aufgeteilt.",
 };
 (globalThis.I18N_TABLES ||= {}).de = I18N_DE;
 if (typeof module !== "undefined") module.exports = I18N_DE;

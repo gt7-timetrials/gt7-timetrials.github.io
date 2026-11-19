@@ -553,8 +553,6 @@ const I18N_JA = {
     "前のラップ",
   "Next lap":
     "次のラップ",
-  "Distances are measured along the reference lap. Steering angles depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.":
-    "距離はリファレンスラップに沿って測っています。ステアリング角はコントローラーやハンドルの設定によって変わるので、ステアリングのアドバイスは各コーナーを自分のラップ内で比較しています。",
   "Show your line":
     "自分のラインを表示",
   "Hide your line":
@@ -709,8 +707,8 @@ const I18N_JA = {
     "コースをもっと広く使いましょう: {list}。",
   "You're {s} s faster than {who} here.":
     "ここでは {who} より {s} s 速いです。",
-  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
-    "ラップの始まり: {me} km/h 対 {ref} km/h でラインを通過しており、最初のブレーキングポイントまでに約 {s} s 失っています。これは前の周の最終コーナーの立ち上がりが原因です。",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.":
+    "ラップの始まり: {me} km/h 対 {ref} km/h でラインを通過しています。これは前の周の最終コーナーの立ち上がりが原因です。",
   "You spin out or crash on this corner.":
     "このコーナーでスピンまたはクラッシュしています。",
   "wheels":
@@ -737,8 +735,8 @@ const I18N_JA = {
     "ホイールスピン（{where}）: {wheels}が {who} より空転しています。{why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "トラクションコントロール（{where}）: あなたは介入していますが、{who} は介入していません。{why}",
-  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
-    "アクセルオフ: この区間で {who} が踏み続けている所で、あなたは {n}回アクセルを戻しています{brake}。合計 {m} m（エイペックスの {where} から）。合わせて約 {s} s のロスです。ブレーキングポイントまで全開を保ちましょう。",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.":
+    "アクセルオフ: この区間で {who} が踏み続けている所で、あなたは {n}回アクセルを戻しています{brake}。合計 {m} m（エイペックスの {where} から）。ブレーキングポイントまで全開を保ちましょう。",
   "or brake":
     "（またはブレーキ）",
   "{m} m after the start line":
@@ -747,10 +745,10 @@ const I18N_JA = {
     "エイペックスの {m} m 手前",
   "{m} m after the apex":
     "エイペックスの {m} m 先",
-  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "余分なブレーキ: {where}から {m} m にわたってブレーキを踏んでいます（最大 {p}%）。そこで {who} はブレーキを踏まず、平均 {ref}% のアクセルです。約 {s} s のロスです。",
-  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "アクセルオフ: {where}から {m} m にわたって平均 {me}% のアクセルです。そこで {who} は平均 {ref}% です。約 {s} s のロスです。",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.":
+    "余分なブレーキ: {where}から {m} m にわたってブレーキを踏んでいます（最大 {p}%）。そこで {who} はブレーキを踏まず、平均 {ref}% のアクセルです。",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.":
+    "アクセルオフ: {where}から {m} m にわたって平均 {me}% のアクセルです。そこで {who} は平均 {ref}% です。",
   "Corner {n}, {lost}":
     "コーナー {n}、{lost}",
   "Track map coloured by time lost":
@@ -873,6 +871,8 @@ const I18N_JA = {
     "立ち上がり速度",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "ブレーキの強さ: あなたは {me} m にわたってブレーキ 90% 以上を保っていますが、{who} は {ref} m で、もっと穏やかにブレーキをかけています。必要以上に減速しています。ブレーキを弱めて、より速い速度でコーナーに進入しましょう。",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
+    "<b>タイムロスの内訳</b>は、リファレンスとの差を4つに分けます。<b>ブレーキング</b>: ブレーキングポイントからエイペックスまでに失う速度と、それがその後に与える損失。<b>立ち上がり</b>: エイペックスから先と、その後のストレートで失う速度。<b>ストレート</b>: ストレートでのアクセルオフやブレーキ（または遅い車）。<b>ライン</b>: 違うラインによる余分な距離。一番上のバーは記録したラップ全体のもので、その下に各ラップと各コーナーのバーがあります。コーナーをタップすると、アドバイスの上にそのコーナーのバーが表示されます。アドバイスは大きい項目の順に並び、リファレンスとの差が0.5%以内のコーナーは分けられません。",
 };
 (globalThis.I18N_TABLES ||= {}).ja = I18N_JA;
 if (typeof module !== "undefined") module.exports = I18N_JA;

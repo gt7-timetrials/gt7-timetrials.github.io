@@ -553,8 +553,6 @@ const I18N_FR = {
     "Tour précédent",
   "Next lap":
     "Tour suivant",
-  "Distances are measured along the reference lap. Steering angles depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.":
-    "Les distances sont mesurées le long du tour de référence. Les angles de braquage dépendent des réglages de ta manette ou de ton volant, donc le conseil de direction compare chaque virage avec ton propre tour.",
   "Show your line":
     "Afficher ta trajectoire",
   "Hide your line":
@@ -709,8 +707,8 @@ const I18N_FR = {
     "Utilise plus de piste : {list}.",
   "You're {s} s faster than {who} here.":
     "Tu es {s} s plus rapide que {who} ici.",
-  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
-    "Début du tour : tu as franchi la ligne à {me} km/h contre {ref} km/h, ce qui a coûté environ {s} s avant le premier point de freinage. Ça vient de ta sortie du dernier virage du tour précédent.",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.":
+    "Début du tour : tu as franchi la ligne à {me} km/h contre {ref} km/h. Ça vient de ta sortie du dernier virage du tour précédent.",
   "You spin out or crash on this corner.":
     "Tu fais un tête-à-queue ou un accident dans ce virage.",
   "wheels":
@@ -737,8 +735,8 @@ const I18N_FR = {
     "Patinage {where} : tes {wheels} patinent plus que celles de {who}. {why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "Antipatinage {where} : le tien intervient, pas celui de {who}. {why}",
-  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
-    "Levers de pied : {n} fois dans cette section, tu lâches l'accélérateur{brake} là où {who} ne le fait pas, sur {m} m au total (à partir de {where} le point de corde). Au total, ça coûte environ {s} s. Reste à fond jusqu'au point de freinage.",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.":
+    "Levers de pied : {n} fois dans cette section, tu lâches l'accélérateur{brake} là où {who} ne le fait pas, sur {m} m au total (à partir de {where} le point de corde). Reste à fond jusqu'au point de freinage.",
   "or brake":
     "ou freines",
   "{m} m after the start line":
@@ -747,10 +745,10 @@ const I18N_FR = {
     "{m} m avant le point de corde",
   "{m} m after the apex":
     "{m} m après le point de corde",
-  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "Freinage en trop : tu freines (jusqu'à {p} %) sur {m} m, à partir de {where}, là où {who} ne freine pas et reste en moyenne à {ref} % d'accélérateur. Ça coûte environ {s} s.",
-  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "Lever de pied : tu es en moyenne à {me} % d'accélérateur sur {m} m, à partir de {where}, là où {who} est à {ref} %. Ça coûte environ {s} s.",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.":
+    "Freinage en trop : tu freines (jusqu'à {p} %) sur {m} m, à partir de {where}, là où {who} ne freine pas et reste en moyenne à {ref} % d'accélérateur.",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.":
+    "Lever de pied : tu es en moyenne à {me} % d'accélérateur sur {m} m, à partir de {where}, là où {who} est à {ref} %.",
   "Corner {n}, {lost}":
     "Virage {n}, {lost}",
   "Track map coloured by time lost":
@@ -873,6 +871,8 @@ const I18N_FR = {
     "Vitesse de sortie",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "Pression de freinage : tu restes au-dessus de 90 % de frein sur {me} m ; {who}, sur {ref} m, et freine plus doucement. Tu ralentis plus que nécessaire : freine moins fort et entre avec plus de vitesse.",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
+    "<b>Où part ton temps</b> divise ton écart avec la référence en quatre parts : <b>freinage</b>, la vitesse que tu perds du point de freinage à la corde et ce qu'elle te coûte ensuite ; <b>sortie</b>, la vitesse que tu perds de la corde à la sortie et dans la ligne droite qui suit ; <b>ligne droite</b>, lever le pied ou freiner dans la ligne droite (ou une voiture plus lente) ; et <b>trajectoire</b>, la distance en plus d'une trajectoire différente. La barre du haut est pour tes tours enregistrés, puis il y a des barres pour chaque tour et chaque virage en dessous. Touche un virage pour voir sa propre barre au-dessus de ses conseils : les conseils viennent dans l'ordre de la plus grande part, et un virage à moins de 0,5 % de la référence n'est pas divisé.",
 };
 (globalThis.I18N_TABLES ||= {}).fr = I18N_FR;
 if (typeof module !== "undefined") module.exports = I18N_FR;

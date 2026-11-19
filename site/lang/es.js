@@ -554,8 +554,6 @@ const I18N_ES = {
     "Vuelta anterior",
   "Next lap":
     "Vuelta siguiente",
-  "Distances are measured along the reference lap. Steering angles depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.":
-    "Las distancias se miden a lo largo de la vuelta de referencia. Los ángulos de dirección dependen de los ajustes de tu mando o volante, así que el consejo de dirección compara cada curva con tu propia vuelta.",
   "Show your line":
     "Mostrar tu trazada",
   "Hide your line":
@@ -710,8 +708,8 @@ const I18N_ES = {
     "Usa más pista: {list}.",
   "You're {s} s faster than {who} here.":
     "Aquí eres {s} s más rápido que {who}.",
-  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
-    "Inicio de la vuelta: cruzaste la línea a {me} km/h frente a {ref} km/h, lo que costó unos {s} s antes del primer punto de frenada. Viene de tu salida de la última curva en la vuelta anterior.",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.":
+    "Inicio de la vuelta: cruzaste la línea a {me} km/h frente a {ref} km/h. Viene de tu salida de la última curva en la vuelta anterior.",
   "You spin out or crash on this corner.":
     "En esta curva haces un trompo o chocas.",
   "wheels":
@@ -738,8 +736,8 @@ const I18N_ES = {
     "Patinan las ruedas {where}: tus {wheels} patinan más que las de {who}. {why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "Control de tracción {where}: el tuyo actúa y el de {who} no. {why}",
-  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
-    "Levantadas: {n} veces en este tramo sueltas el acelerador{brake} donde {who} no lo hace, {m} m en total (empezando {where} del vértice). En conjunto cuesta unos {s} s. Mantén el acelerador a fondo hasta el punto de frenada.",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.":
+    "Levantadas: {n} veces en este tramo sueltas el acelerador{brake} donde {who} no lo hace, {m} m en total (empezando {where} del vértice). Mantén el acelerador a fondo hasta el punto de frenada.",
   "or brake":
     "o frenas",
   "{m} m after the start line":
@@ -748,10 +746,10 @@ const I18N_ES = {
     "{m} m antes del vértice",
   "{m} m after the apex":
     "{m} m después del vértice",
-  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "Frenada de más: frenas (hasta un {p}%) durante {m} m, empezando {where}, donde {who} no frena y lleva de media un {ref}% de acelerador. Cuesta unos {s} s.",
-  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "Levantar el pie: llevas de media un {me}% de acelerador durante {m} m, empezando {where}, donde {who} lleva un {ref}%. Cuesta unos {s} s.",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.":
+    "Frenada de más: frenas (hasta un {p}%) durante {m} m, empezando {where}, donde {who} no frena y lleva de media un {ref}% de acelerador.",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.":
+    "Levantar el pie: llevas de media un {me}% de acelerador durante {m} m, empezando {where}, donde {who} lleva un {ref}%.",
   "Corner {n}, {lost}":
     "Curva {n}, {lost}",
   "Track map coloured by time lost":
@@ -874,6 +872,8 @@ const I18N_ES = {
     "Velocidad de salida",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "Presión de freno: te mantienes por encima del 90% de freno durante {me} m; {who}, durante {ref} m, y frena con más suavidad. Frenas más de lo necesario: frena más suave y entra con más velocidad.",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
+    "<b>Dónde se va tu tiempo</b> divide tu diferencia con la referencia en cuatro partes: <b>frenada</b>, la velocidad que pierdes desde el punto de frenada hasta el vértice y lo que te cuesta después; <b>salida</b>, la velocidad que pierdes desde el vértice hacia fuera y por la recta siguiente; <b>recta</b>, levantar o frenar en la recta (o un coche más lento); y <b>trazada</b>, la distancia extra de una trazada distinta. La barra de arriba es para tus vueltas grabadas, y debajo hay barras para cada vuelta y cada curva. Toca una curva para ver su propia barra encima de sus consejos: los consejos van de la parte más grande a la más pequeña, y una curva a menos del 0,5% de la referencia no se divide.",
 };
 (globalThis.I18N_TABLES ||= {}).es = I18N_ES;
 if (typeof module !== "undefined") module.exports = I18N_ES;

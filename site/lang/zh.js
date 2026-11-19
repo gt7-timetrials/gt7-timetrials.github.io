@@ -553,8 +553,6 @@ const I18N_ZH = {
     "上一圈",
   "Next lap":
     "下一圈",
-  "Distances are measured along the reference lap. Steering angles depend on your controller or wheel settings, so the steering tip compares each corner with your own lap.":
-    "距离沿参考圈测量。转向角取决于你的手柄或方向盘设置，所以转向建议是将每个弯道与你自己这一圈的其他部分比较。",
   "Show your line":
     "显示你的走线",
   "Hide your line":
@@ -709,8 +707,8 @@ const I18N_ZH = {
     "多利用赛道：{list}。",
   "You're {s} s faster than {who} here.":
     "你在这里比{who}快 {s} s。",
-  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
-    "圈的起点：你以 {me} km/h（对比 {ref} km/h）通过起点线，在第一个刹车点之前损失了约 {s} s。这源于你上一圈最后一个弯道的出弯。",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.":
+    "圈的起点：你以 {me} km/h（对比 {ref} km/h）通过起点线。这源于你上一圈最后一个弯道的出弯。",
   "You spin out or crash on this corner.":
     "你在这个弯道打转或碰撞了。",
   "wheels":
@@ -737,8 +735,8 @@ const I18N_ZH = {
     "{where}空转：你的{wheels}比{who}的空转更多。{why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "{where}牵引力控制：你的介入了，{who}的没有。{why}",
-  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
-    "松油门：在这个区段中，你有 {n} 次松开油门{brake}，而{who}没有，共计 {m} m（分别从弯心{where}开始）。合计损失约 {s} s。保持全油门直到刹车点。",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.":
+    "松油门：在这个区段中，你有 {n} 次松开油门{brake}，而{who}没有，共计 {m} m（分别从弯心{where}开始）。保持全油门直到刹车点。",
   "or brake":
     "或刹车",
   "{m} m after the start line":
@@ -747,10 +745,10 @@ const I18N_ZH = {
     "弯心前 {m} m",
   "{m} m after the apex":
     "弯心后 {m} m",
-  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "多余刹车：你从{where}开始刹车（最多 {p}%）{m} m，而{who}在这里不刹车，平均油门 {ref}%。损失约 {s} s。",
-  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "松油门：你从{where}开始的 {m} m 平均油门 {me}%，而{who}平均 {ref}%。损失约 {s} s。",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.":
+    "多余刹车：你从{where}开始刹车（最多 {p}%）{m} m，而{who}在这里不刹车，平均油门 {ref}%。",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.":
+    "松油门：你从{where}开始的 {m} m 平均油门 {me}%，而{who}平均 {ref}%。",
   "Corner {n}, {lost}":
     "第 {n} 弯，{lost}",
   "Track map coloured by time lost":
@@ -873,6 +871,8 @@ const I18N_ZH = {
     "出弯速度",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "刹车力度：你保持 90% 以上刹车 {me} m；{who}只有 {ref} m，刹车更轻。你减速超过了需要：刹车轻一些，带着更高的速度入弯。",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
+    "<b>时间损失分布</b>把你与参考圈的差距分成四部分：<b>刹车</b>，从刹车点到弯心损失的速度及其之后造成的损失；<b>出弯</b>，从弯心出弯以及之后直道上损失的速度；<b>直道</b>，在直道上松油门或刹车（或车更慢）；<b>走线</b>，不同走线多跑的距离。顶部的条形图是你所有记录圈的，下面还有每一圈和每个弯的条形图。点击一个弯，可以在建议上方看到它自己的条形图：建议按最大的部分排在前面，与参考圈相差在 0.5% 以内的弯不做拆分。",
 };
 (globalThis.I18N_TABLES ||= {}).zh = I18N_ZH;
 if (typeof module !== "undefined") module.exports = I18N_ZH;
