@@ -511,6 +511,11 @@ const GUIDE_STEPS = `<ol>
     <li>${tr("<b>The top line</b> is your lap against the reference, and the total time between them.")}</li>
     <li>${tr(`<b>The map</b> colours each section by how much slower you are there than the reference: green is close, yellow
       and red are where the time goes. Start with the red ones.`)}</li>
+    <li>${tr(`<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you
+      lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the
+      apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and
+      <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are
+      bars for each lap and corner below.`)}</li>
     <li>${tr(`<b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and
       steering drawn against the reference's.`)}</li>
     <li>${tr(`<b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see

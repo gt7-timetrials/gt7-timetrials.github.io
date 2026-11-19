@@ -873,6 +873,8 @@ const I18N_JA = {
     "立ち上がり速度",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "ブレーキの強さ: あなたは {me} m にわたってブレーキ 90% 以上を保っていますが、{who} は {ref} m で、もっと穏やかにブレーキをかけています。必要以上に減速しています。ブレーキを弱めて、より速い速度でコーナーに進入しましょう。",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below.":
+    "<b>タイムロスの内訳</b>は、リファレンスとの差を4つに分けます。<b>ブレーキング</b>: ブレーキングポイントからエイペックスまでに失う速度と、それがその後に与える損失。<b>立ち上がり</b>: エイペックスから先と、その後のストレートで失う速度。<b>ストレート</b>: ストレートでのアクセルオフやブレーキ（または遅い車）。<b>ライン</b>: 違うラインによる余分な距離。一番上のバーは記録したラップ全体のもので、その下に各ラップと各コーナーのバーがあります。",
 };
 (globalThis.I18N_TABLES ||= {}).ja = I18N_JA;
 if (typeof module !== "undefined") module.exports = I18N_JA;

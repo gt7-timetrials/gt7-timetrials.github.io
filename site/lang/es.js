@@ -874,6 +874,8 @@ const I18N_ES = {
     "Velocidad de salida",
   "Brake pressure: you stay above 90% brake for {me} m; {who} does for {ref} m and brakes more gently. You slow down more than you need to: brake more lightly and carry more speed in.":
     "Presión de freno: te mantienes por encima del 90% de freno durante {me} m; {who}, durante {ref} m, y frena con más suavidad. Frenas más de lo necesario: frena más suave y entra con más velocidad.",
+  "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below.":
+    "<b>Dónde se va tu tiempo</b> divide tu diferencia con la referencia en cuatro partes: <b>frenada</b>, la velocidad que pierdes desde el punto de frenada hasta el vértice y lo que te cuesta después; <b>salida</b>, la velocidad que pierdes desde el vértice hacia fuera y por la recta siguiente; <b>recta</b>, levantar o frenar en la recta (o un coche más lento); y <b>trazada</b>, la distancia extra de una trazada distinta. La barra de arriba es para tus vueltas grabadas, y debajo hay barras para cada vuelta y cada curva.",
 };
 (globalThis.I18N_TABLES ||= {}).es = I18N_ES;
 if (typeof module !== "undefined") module.exports = I18N_ES;
