@@ -707,8 +707,8 @@ const I18N_ZH = {
     "多利用赛道：{list}。",
   "You're {s} s faster than {who} here.":
     "你在这里比{who}快 {s} s。",
-  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
-    "圈的起点：你以 {me} km/h（对比 {ref} km/h）通过起点线，在第一个刹车点之前损失了约 {s} s。这源于你上一圈最后一个弯道的出弯。",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.":
+    "圈的起点：你以 {me} km/h（对比 {ref} km/h）通过起点线。这源于你上一圈最后一个弯道的出弯。",
   "You spin out or crash on this corner.":
     "你在这个弯道打转或碰撞了。",
   "wheels":
@@ -735,8 +735,8 @@ const I18N_ZH = {
     "{where}空转：你的{wheels}比{who}的空转更多。{why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "{where}牵引力控制：你的介入了，{who}的没有。{why}",
-  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
-    "松油门：在这个区段中，你有 {n} 次松开油门{brake}，而{who}没有，共计 {m} m（分别从弯心{where}开始）。合计损失约 {s} s。保持全油门直到刹车点。",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.":
+    "松油门：在这个区段中，你有 {n} 次松开油门{brake}，而{who}没有，共计 {m} m（分别从弯心{where}开始）。保持全油门直到刹车点。",
   "or brake":
     "或刹车",
   "{m} m after the start line":
@@ -745,10 +745,10 @@ const I18N_ZH = {
     "弯心前 {m} m",
   "{m} m after the apex":
     "弯心后 {m} m",
-  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "多余刹车：你从{where}开始刹车（最多 {p}%）{m} m，而{who}在这里不刹车，平均油门 {ref}%。损失约 {s} s。",
-  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "松油门：你从{where}开始的 {m} m 平均油门 {me}%，而{who}平均 {ref}%。损失约 {s} s。",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.":
+    "多余刹车：你从{where}开始刹车（最多 {p}%）{m} m，而{who}在这里不刹车，平均油门 {ref}%。",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.":
+    "松油门：你从{where}开始的 {m} m 平均油门 {me}%，而{who}平均 {ref}%。",
   "Corner {n}, {lost}":
     "第 {n} 弯，{lost}",
   "Track map coloured by time lost":

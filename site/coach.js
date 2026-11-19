@@ -527,8 +527,8 @@ const Coach = (() => {
       if (shown <= -FASTER * 100) t = [tip("faster", "You're {s} s faster than {who} here.", { s: (-lost).toFixed(2), who })];
       else if (Math.abs(shown) < FASTER * 100) t = [tip("close", "Close to {who} here.", { who })];
       else if (i === 0 && R.v[0] - M.v[0] >= 5) {
-        t.unshift(tip("start", "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.",
-          { me: r0(M.v[0]), ref: r0(R.v[0]), s: delta[ref_m.top].toFixed(2) }));
+        t.unshift(tip("start", "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.",
+          { me: r0(M.v[0]), ref: r0(R.v[0]) }));
       }
       // a spin or crash: everything else in the corner follows from it, so no advice
       if (incident) t = [tip("incident", "You spin out or crash on this corner.")];
@@ -658,9 +658,9 @@ const Coach = (() => {
   // when they're long, say which part the time went in.
   function liftsTip(zs, apex, who) {
     const braking = zs.filter(z => z.kind === "brake").length;
-    const t = tip("lifts", "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.", {
+    const t = tip("lifts", "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.", {
       n: zs.length, brake: braking ? " " + tr("or brake") : "", who, m: zs.reduce((a, z) => a + z.length, 0),
-      where: zs.map(z => metres(z.from, apex)).join(", "), s: zs.reduce((a, z) => a + z.cost, 0).toFixed(2) });
+      where: zs.map(z => metres(z.from, apex)).join(", ") });
     t.span = [Math.min(...zs.map(z => z.from)), Math.max(...zs.map(z => z.to))];
     return t;
   }
@@ -668,10 +668,10 @@ const Coach = (() => {
   function liftTip(z, apex, who) {
     const where = z.from < apex - 300 ? tr("{m} m after the start line", { m: z.from })
       : z.from <= apex ? tr("{m} m before the apex", { m: apex - z.from }) : tr("{m} m after the apex", { m: z.from - apex });
-    const v = { p: r0(z.peakBrake), m: z.length, where, who, ref: r0(z.refThr), me: r0(z.thr), s: z.cost.toFixed(2) };
+    const v = { p: r0(z.peakBrake), m: z.length, where, who, ref: r0(z.refThr), me: r0(z.thr) };
     const t = z.kind === "brake"
-      ? tip("extraBrake", "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.", v)
-      : tip("extraLift", "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.", v);
+      ? tip("extraBrake", "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.", v)
+      : tip("extraLift", "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.", v);
     t.span = [z.from, z.to]; // its theme is the one its metres' time went to
     return t;
   }

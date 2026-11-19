@@ -707,8 +707,8 @@ const I18N_JA = {
     "コースをもっと広く使いましょう: {list}。",
   "You're {s} s faster than {who} here.":
     "ここでは {who} より {s} s 速いです。",
-  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
-    "ラップの始まり: {me} km/h 対 {ref} km/h でラインを通過しており、最初のブレーキングポイントまでに約 {s} s 失っています。これは前の周の最終コーナーの立ち上がりが原因です。",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.":
+    "ラップの始まり: {me} km/h 対 {ref} km/h でラインを通過しています。これは前の周の最終コーナーの立ち上がりが原因です。",
   "You spin out or crash on this corner.":
     "このコーナーでスピンまたはクラッシュしています。",
   "wheels":
@@ -735,8 +735,8 @@ const I18N_JA = {
     "ホイールスピン（{where}）: {wheels}が {who} より空転しています。{why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "トラクションコントロール（{where}）: あなたは介入していますが、{who} は介入していません。{why}",
-  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
-    "アクセルオフ: この区間で {who} が踏み続けている所で、あなたは {n}回アクセルを戻しています{brake}。合計 {m} m（エイペックスの {where} から）。合わせて約 {s} s のロスです。ブレーキングポイントまで全開を保ちましょう。",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.":
+    "アクセルオフ: この区間で {who} が踏み続けている所で、あなたは {n}回アクセルを戻しています{brake}。合計 {m} m（エイペックスの {where} から）。ブレーキングポイントまで全開を保ちましょう。",
   "or brake":
     "（またはブレーキ）",
   "{m} m after the start line":
@@ -745,10 +745,10 @@ const I18N_JA = {
     "エイペックスの {m} m 手前",
   "{m} m after the apex":
     "エイペックスの {m} m 先",
-  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "余分なブレーキ: {where}から {m} m にわたってブレーキを踏んでいます（最大 {p}%）。そこで {who} はブレーキを踏まず、平均 {ref}% のアクセルです。約 {s} s のロスです。",
-  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "アクセルオフ: {where}から {m} m にわたって平均 {me}% のアクセルです。そこで {who} は平均 {ref}% です。約 {s} s のロスです。",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.":
+    "余分なブレーキ: {where}から {m} m にわたってブレーキを踏んでいます（最大 {p}%）。そこで {who} はブレーキを踏まず、平均 {ref}% のアクセルです。",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.":
+    "アクセルオフ: {where}から {m} m にわたって平均 {me}% のアクセルです。そこで {who} は平均 {ref}% です。",
   "Corner {n}, {lost}":
     "コーナー {n}、{lost}",
   "Track map coloured by time lost":

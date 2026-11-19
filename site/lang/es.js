@@ -708,8 +708,8 @@ const I18N_ES = {
     "Usa más pista: {list}.",
   "You're {s} s faster than {who} here.":
     "Aquí eres {s} s más rápido que {who}.",
-  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
-    "Inicio de la vuelta: cruzaste la línea a {me} km/h frente a {ref} km/h, lo que costó unos {s} s antes del primer punto de frenada. Viene de tu salida de la última curva en la vuelta anterior.",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.":
+    "Inicio de la vuelta: cruzaste la línea a {me} km/h frente a {ref} km/h. Viene de tu salida de la última curva en la vuelta anterior.",
   "You spin out or crash on this corner.":
     "En esta curva haces un trompo o chocas.",
   "wheels":
@@ -736,8 +736,8 @@ const I18N_ES = {
     "Patinan las ruedas {where}: tus {wheels} patinan más que las de {who}. {why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "Control de tracción {where}: el tuyo actúa y el de {who} no. {why}",
-  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
-    "Levantadas: {n} veces en este tramo sueltas el acelerador{brake} donde {who} no lo hace, {m} m en total (empezando {where} del vértice). En conjunto cuesta unos {s} s. Mantén el acelerador a fondo hasta el punto de frenada.",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.":
+    "Levantadas: {n} veces en este tramo sueltas el acelerador{brake} donde {who} no lo hace, {m} m en total (empezando {where} del vértice). Mantén el acelerador a fondo hasta el punto de frenada.",
   "or brake":
     "o frenas",
   "{m} m after the start line":
@@ -746,10 +746,10 @@ const I18N_ES = {
     "{m} m antes del vértice",
   "{m} m after the apex":
     "{m} m después del vértice",
-  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "Frenada de más: frenas (hasta un {p}%) durante {m} m, empezando {where}, donde {who} no frena y lleva de media un {ref}% de acelerador. Cuesta unos {s} s.",
-  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "Levantar el pie: llevas de media un {me}% de acelerador durante {m} m, empezando {where}, donde {who} lleva un {ref}%. Cuesta unos {s} s.",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.":
+    "Frenada de más: frenas (hasta un {p}%) durante {m} m, empezando {where}, donde {who} no frena y lleva de media un {ref}% de acelerador.",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.":
+    "Levantar el pie: llevas de media un {me}% de acelerador durante {m} m, empezando {where}, donde {who} lleva un {ref}%.",
   "Corner {n}, {lost}":
     "Curva {n}, {lost}",
   "Track map coloured by time lost":

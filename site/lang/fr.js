@@ -707,8 +707,8 @@ const I18N_FR = {
     "Utilise plus de piste : {list}.",
   "You're {s} s faster than {who} here.":
     "Tu es {s} s plus rapide que {who} ici.",
-  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h, which cost about {s} s before the first braking point. That comes from your exit of the last corner on the lap before.":
-    "Début du tour : tu as franchi la ligne à {me} km/h contre {ref} km/h, ce qui a coûté environ {s} s avant le premier point de freinage. Ça vient de ta sortie du dernier virage du tour précédent.",
+  "Start of the lap: you crossed the line at {me} km/h vs {ref} km/h. That comes from your exit of the last corner on the lap before.":
+    "Début du tour : tu as franchi la ligne à {me} km/h contre {ref} km/h. Ça vient de ta sortie du dernier virage du tour précédent.",
   "You spin out or crash on this corner.":
     "Tu fais un tête-à-queue ou un accident dans ce virage.",
   "wheels":
@@ -735,8 +735,8 @@ const I18N_FR = {
     "Patinage {where} : tes {wheels} patinent plus que celles de {who}. {why}",
   "Traction control {where}: yours cuts in, {who}'s doesn't. {why}":
     "Antipatinage {where} : le tien intervient, pas celui de {who}. {why}",
-  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Together that costs about {s} s. Stay flat out until the braking point.":
-    "Levers de pied : {n} fois dans cette section, tu lâches l'accélérateur{brake} là où {who} ne le fait pas, sur {m} m au total (à partir de {where} le point de corde). Au total, ça coûte environ {s} s. Reste à fond jusqu'au point de freinage.",
+  "Lifts: {n} times in this section you come off the throttle{brake} where {who} doesn't, for {m} m in all (starting {where} the apex). Stay flat out until the braking point.":
+    "Levers de pied : {n} fois dans cette section, tu lâches l'accélérateur{brake} là où {who} ne le fait pas, sur {m} m au total (à partir de {where} le point de corde). Reste à fond jusqu'au point de freinage.",
   "or brake":
     "ou freines",
   "{m} m after the start line":
@@ -745,10 +745,10 @@ const I18N_FR = {
     "{m} m avant le point de corde",
   "{m} m after the apex":
     "{m} m après le point de corde",
-  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle. That costs about {s} s.":
-    "Freinage en trop : tu freines (jusqu'à {p} %) sur {m} m, à partir de {where}, là où {who} ne freine pas et reste en moyenne à {ref} % d'accélérateur. Ça coûte environ {s} s.",
-  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%. That costs about {s} s.":
-    "Lever de pied : tu es en moyenne à {me} % d'accélérateur sur {m} m, à partir de {where}, là où {who} est à {ref} %. Ça coûte environ {s} s.",
+  "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.":
+    "Freinage en trop : tu freines (jusqu'à {p} %) sur {m} m, à partir de {where}, là où {who} ne freine pas et reste en moyenne à {ref} % d'accélérateur.",
+  "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.":
+    "Lever de pied : tu es en moyenne à {me} % d'accélérateur sur {m} m, à partir de {where}, là où {who} est à {ref} %.",
   "Corner {n}, {lost}":
     "Virage {n}, {lost}",
   "Track map coloured by time lost":
