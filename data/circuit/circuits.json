@@ -1,0 +1,5 @@
+{
+ "title": "Circuit Experience",
+ "note": "The full lap of each Circuit Experience: medal times in milliseconds, as shown in GT7, and the car. GT7's demonstration run of the full lap goes in data/circuit/laps/<id>.csv (id: the track in lower case, words joined by -). A track is shown once it has both.",
+ "circuits": []
+}
