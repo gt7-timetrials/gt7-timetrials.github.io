@@ -65,8 +65,8 @@ Control). When the owner asks:
 
 - `git pull` first (the cloud agent commits every morning).
 - Record one replay per run: copy `tools/telemetry.py` to the scratchpad and run it there in the background
-  (`py -u telemetry.py <PlayStation IP>`; without the IP it finds the PlayStation and saves it in
-  `telemetry_ip.txt` next to the script). Confirm it says "Connected" before the owner starts the replay, and stop the
+  (`py -u telemetry.py`, without an address: it finds the PlayStation each time, and the router can give the
+  PlayStation a different address from one day to the next). Confirm it says "Connected" before the owner starts the replay, and stop the
   process when the owner says the lap is done.
 - Check the recording: one complete lap, no dropout (about 60 samples a second for the lap time), and the car from
   its `car_code` (`gt7tt.store.Store().car(code)`). The car shown at the top of GT7's menus is the owner's own car, not
@@ -74,8 +74,8 @@ Control). When the owner asks:
 - The owner may send photos of the race list or the driver's name; copy names exactly, including non-Latin
   characters (zoom into the photo if needed).
 - Then follow the reference lap and archive rules above (time trials: `data/reference_laps/` and `drivers.json`;
-  daily races: `data/daily/`), run `python -m gt7tt daily` and the tests, commit to main and push. On the laptop three
-  Python tests fail for local reasons (javac, Windows text encoding, the network test); GitHub's run is the one that
+  daily races: `data/daily/`), run `python -m gt7tt daily` and the tests, commit to main and push. On the laptop four
+  Python tests fail for local reasons (javac, Windows text encoding, the two network tests); GitHub's run is the one that
   counts. Then check the live site has the change.
 - If a push hangs, Git Credential Manager is waiting for a GitHub sign-in on the laptop's screen, which only the owner
   can do. Say so instead of waiting; the commit is safe locally until it's pushed.
