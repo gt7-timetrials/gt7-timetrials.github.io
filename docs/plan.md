@@ -5,6 +5,16 @@ Super License tests: keep it simple, and only take on what one person can look a
 
 ## Next up
 
+0. **Circuit Experience** (owner, 20 November: the biggest step for wider use, so players can learn every track).
+   A tab like Super License: each track's **full lap only** (not the sectors), with its gold, silver and bronze times,
+   against **GT7's own demonstration run** of the full lap. Only the tracks recorded so far are shown, added one by one.
+   - [x] The tab on beta (20 November): `data/circuit/circuits.json` (track, car, medal times, an `id` such as
+         `suzuka`) and the demonstration run in `data/circuit/laps/<id>.csv`; a track shows once it has both. Until
+         then the tab says they're coming.
+   - [ ] Owner: record the first demonstration runs and send the medal times (a photo of the Circuit Experience
+         screen); then merge the tab.
+   - [ ] Once there are a few: the site's subtitle and description, the Play listing and the About page mention them.
+
 1. **Daily races** (live since 3 November 2026): each week's three races (A, B, C) with a reference lap each, to
    record or upload against; free car choice races are flagged, so a different car gets no warning.
    - [ ] Each week: the owner sends the new races and laps (straight to main, like reference laps).
@@ -277,8 +287,6 @@ Kept short; the details are in the pull requests and the git history.
 - **Skills that matter most for you** (owner, 6 November): built (see **Done**); how skills change over time is item 7
   in **Next up**. The laps are kept for it: reference laps in `data/archive/` here, the owner's recordings and top
   drivers' replays in the private `nghiepluu75-alt/gt7laps`.
-- **Circuit Experiences**, like the Super License tab: medal times and a gold reference run for the full lap only (not
-  each segment), recorded by the owner, so it grows track by track.
 - **Try it with a sample lap**: a ready-made comparison for new users and Play's reviewers, before they set up
   recording.
 - **Progress between sessions**: with recordings kept on the phone, what changed since last time ("gained 0.3 s in
