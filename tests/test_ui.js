@@ -86,6 +86,10 @@ function standIn({ withCues, csv }) {
       { id: "A", track: "High Speed Ring", car: "Gr.3", free_choice: true,
         reference: { lap_ms: 71809, url: "license/S-1.json", key: "daily-A", driver: "Fast_One", car: "Some car" } },
       { id: "B", track: "Monza", car: "Mazda Roadster", reference: null }] } }));
+    // a Circuit Experience (the full lap, with medal times), given S-1's gold run as GT7's demonstration
+    await ctx.route("**/circuits.json", route => route.fulfill({ json: { circuits: [
+      { id: "high-speed-ring", track: "High Speed Ring", car: "Gr.4", gold: 73000, silver: 75200, bronze: 80700,
+        reference: { lap_ms: 71809, url: "license/S-1.json", key: "circuit-high-speed-ring" } }] } }));
   };
   // Record on this phone on a card: the app is asked to start, a lap comes in, Stop and compare shows the comparison
   const recordLap = async (p, card, label, start = ["start", ""]) => {
@@ -98,8 +102,9 @@ function standIn({ withCues, csv }) {
     await card.locator(".rec-stop").click();
     await card.locator(".coach-summary").waitFor();
     assert.match(await card.locator(".coach-summary").innerText(), /Your lap 1:18\.521/, `${label}: compared`);
-    // against this card's event: a daily race has no medals (the time trial and daily references are the same lap here)
-    assert.strictEqual(/within 3% of the reference/.test(await card.locator(".map-box .legend").innerText()), label.endsWith("daily race"),
+    // against this card's event: a time trial's map key is gold pace, the others' the reference (the references are
+    // the same lap here)
+    assert.strictEqual(/within 3% of the reference/.test(await card.locator(".map-box .legend").innerText()), !label.endsWith("time trial"),
       `${label}: compared for this card's event`);
   };
 
@@ -126,6 +131,10 @@ function standIn({ withCues, csv }) {
     assert.ok(await p.locator("#tab-license .license-intro .app-only").isHidden(), "website: no app wording");
     await p.goto(url + "#howto");
     assert.match(await p.locator("#howto-guide").innerText(), /The map/, "How to use: how to read the comparison");
+    // Circuit Experience: none recorded in the data yet, so it says they're coming (with one: see the apps below)
+    await p.goto(url + "#circuits");
+    if (!(await p.evaluate(() => fetch("circuits.json").then(r => r.json()))).circuits.length)
+      await p.locator("#circuit-list", { hasText: "coming soon" }).waitFor();
     await p.goto(url + "#current");
     await p.locator("#current-list .stat").first().waitFor();
     assert.strictEqual(await p.locator("form.checker").count(), 0, "no Check my time");
@@ -165,7 +174,7 @@ function standIn({ withCues, csv }) {
     // the corner's tips and charts too
     const panel = await es.locator("#license-list .detail-body").first().innerHTML();
     assert.ok(/Curva \d/.test(panel) && panel.includes("Velocidad km/h") && panel.includes("Ocultar la trazada de referencia"), "the corner panel in Spanish");
-    for (const tab of ["current", "daily", "past", "drivers", "howto", "about", "settings"]) {
+    for (const tab of ["current", "daily", "circuits", "past", "drivers", "howto", "about", "settings"]) {
       await es.evaluate(t => { location.hash = t; }, tab);
       await es.locator(`#tab-${tab}`).waitFor();
     }
@@ -227,6 +236,11 @@ function standIn({ withCues, csv }) {
     const daily = q.locator("#daily-list .coach").first();
     await daily.locator(".record-btn").waitFor();
     await recordLap(q, daily, `${label}, daily race`);
+    await q.goto(url + "#circuits");
+    const circuit = q.locator("#circuit-list .coach").first();
+    await circuit.locator(".record-btn").waitFor();
+    await recordLap(q, circuit, `${label}, Circuit Experience`);
+    assert.match(await circuit.locator(".medal-result").innerText(), /needs/, `${label}: the Circuit Experience's medals`);
     for (const name of new Set((await calls(q)).map(c => c[0]))) assert.ok(has(name), `${label}: the website asked it for ${name}`);
     await q.context().close();
   }

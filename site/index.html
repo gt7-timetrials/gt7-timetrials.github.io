@@ -20,6 +20,7 @@
       <a data-t href="#daily" data-tab="daily">Daily races</a>
       <a data-t href="#past" data-tab="past">Past trials</a>
       <a data-t href="#license" data-tab="license">Super License</a>
+      <a data-t href="#circuits" data-tab="circuits">Circuit Experience</a>
       <a data-t href="#drivers" data-tab="drivers">Top drivers</a>
       <a data-t href="#cues" data-tab="cues" hidden>Audio cues</a>
       <a data-t href="#howto" data-tab="howto">How to use</a>
@@ -74,6 +75,16 @@
     <div id="license-list"><p data-t class="muted">Loading…</p></div>
   </section>
 
+  <section id="tab-circuits" class="tab" hidden>
+    <p data-t class="muted license-intro">Learn every track: compare your full laps in each Circuit Experience with GT7's own
+      demonstration run, corner by corner. <span class="web-only">Record your laps with the free recorder for <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-windows.exe">Windows</a>
+      or <a href="https://github.com/gt7-timetrials/gt7-timetrials.github.io/releases/download/recorder/gt7-recorder-mac.zip">Mac</a> (or the <a href="telemetry.py" download>Python script</a>;
+      <a href="readme.txt" target="_blank" rel="noopener">how to record</a>), then upload the file under the track. Your
+      file stays on your device.</span><span class="app-only" hidden>Tap Record on this phone under a track, or upload a
+      recording.</span></p>
+    <div id="circuit-list"><p data-t class="muted">Loading…</p></div>
+  </section>
+
   <section id="tab-drivers" class="tab" hidden>
     <p data-t class="muted">The 50 most consistently fast drivers across past time trials, ranked by their typical
       gap to the world record when they make the top 100. Drivers with few events are pulled towards the
@@ -98,6 +109,7 @@
       <li data-t><b>Daily races</b>: a fast lap for each of this week's daily races, to compare your laps with.</li>
       <li data-t><b>Past trials</b>: how earlier time trials finished, and how close the predictions were.</li>
       <li data-t><b>Super License</b>: a gold-medal run for each test, to compare your runs with.</li>
+      <li data-t><b>Circuit Experience</b>: GT7's demonstration run of each track's full lap, to learn the track with.</li>
       <li data-t><b>Top drivers</b>: the most consistently fast time trial drivers.</li>
       <li data-t><b>Audio cues</b> (Android app): beeps that count you down to the reference's braking points while you drive.</li>
     </ul>
@@ -127,7 +139,8 @@
     </ol>
     <p data-t>A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The
       record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that
-      race, and a Super License reference is a gold-medal run.</p>
+      race, a Super License reference is a gold-medal run, and a Circuit Experience's is GT7's own
+      demonstration run.</p>
     <h2 data-t>Read the comparison</h2>
     <div id="howto-guide"></div>
     <h2 data-t>Audio cues (Android app)</h2>

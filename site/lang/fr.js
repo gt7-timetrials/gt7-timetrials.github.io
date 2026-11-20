@@ -97,8 +97,6 @@ const I18N_FR = {
     "Lance-le (double-clic), puis fais autant de tours que tu veux. Appuie sur Ctrl+C quand tu as fini : il enregistre un fichier .csv à côté de lui.",
   "Upload the file under the event or test. It's read in your browser and isn't uploaded anywhere.":
     "Importe le fichier sous l'épreuve ou le test. Il est lu dans ton navigateur et n'est envoyé nulle part.",
-  "A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that race, and a Super License reference is a gold-medal run.":
-    "La référence d'un contre-la-montre est un des meilleurs tours, en général le record du monde au moment de l'enregistrement, avec le nom de son pilote. Le record a pu tomber depuis, donc l'actuel est peut-être plus rapide. La référence d'une course quotidienne est un tour rapide de cette course, et celle d'une Super Licence est un essai médaille d'or.",
   "Read the comparison":
     "Lire la comparaison",
   "Audio cues (Android app)":
@@ -873,6 +871,20 @@ const I18N_FR = {
     "Pression de freinage : tu restes au-dessus de 90 % de frein sur {me} m ; {who}, sur {ref} m, et freine plus doucement. Tu ralentis plus que nécessaire : freine moins fort et entre avec plus de vitesse.",
   "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
     "<b>Où part ton temps</b> divise ton écart avec la référence en quatre parts : <b>freinage</b>, la vitesse que tu perds du point de freinage à la corde et ce qu'elle te coûte ensuite ; <b>sortie</b>, la vitesse que tu perds de la corde à la sortie et dans la ligne droite qui suit ; <b>ligne droite</b>, lever le pied ou freiner dans la ligne droite (ou une voiture plus lente) ; et <b>trajectoire</b>, la distance en plus d'une trajectoire différente. La barre du haut est pour tes tours enregistrés, puis il y a des barres pour chaque tour et chaque virage en dessous. Touche un virage pour voir sa propre barre au-dessus de ses conseils : les conseils viennent dans l'ordre de la plus grande part, et un virage à moins de 0,5 % de la référence n'est pas divisé.",
+  "Circuit Experience":
+    "Expérience circuit",
+  "Learn every track: compare your full laps in each Circuit Experience with GT7's own demonstration run, corner by corner. <span>Record your laps with the free recorder for <a>Windows</a> or <a>Mac</a> (or the <a>Python script</a>; <a>how to record</a>), then upload the file under the track. Your file stays on your device.</span><span>Tap Record on this phone under a track, or upload a recording.</span>":
+    "Apprends chaque circuit : compare tes tours complets de chaque Expérience circuit à la démonstration de GT7, virage par virage. <span>Enregistre tes tours avec l'enregistreur gratuit pour <a>Windows</a> ou <a>Mac</a> (ou le <a>script Python</a> ; <a>comment enregistrer</a>), puis importe le fichier sous le circuit. Ton fichier reste sur ton appareil.</span><span>Appuie sur Enregistrer sur ce téléphone sous un circuit, ou importe un enregistrement.</span>",
+  "<b>Circuit Experience</b>: GT7's demonstration run of each track's full lap, to learn the track with.":
+    "<b>Expérience circuit</b> : la démonstration de GT7 du tour complet de chaque circuit, pour apprendre le circuit.",
+  "A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that race, a Super License reference is a gold-medal run, and a Circuit Experience's is GT7's own demonstration run.":
+    "La référence d'un contre-la-montre est un des meilleurs tours, en général le record du monde au moment de l'enregistrement, avec le nom de son pilote. Le record a pu tomber depuis, donc l'actuel est peut-être plus rapide. La référence d'une course quotidienne est un tour rapide de cette course, celle d'une Super Licence est un essai médaille d'or, et celle d'une Expérience circuit est la démonstration de GT7.",
+  "The Circuit Experiences are coming soon, added track by track.":
+    "Les Expériences circuit arrivent bientôt, circuit par circuit.",
+  "Reference: GT7's demonstration run of {time}.":
+    "Référence : la démonstration de GT7, en {time}.",
+  "Could not load the Circuit Experiences.":
+    "Impossible de charger les Expériences circuit.",
 };
 (globalThis.I18N_TABLES ||= {}).fr = I18N_FR;
 if (typeof module !== "undefined") module.exports = I18N_FR;

@@ -193,6 +193,27 @@ class SiteTest(unittest.TestCase):
             self.assertIsNone(b["reference"], "no lap yet")
             self.assertEqual(site.daily_races(Store(os.path.join(d, "none")), out), {"races": []})
 
+    def test_circuit_experiences(self):
+        """The Circuit Experience tab: only the tracks with both medal times and a demonstration run, by name."""
+        with tempfile.TemporaryDirectory() as d:
+            store = Store(d)
+            os.makedirs(os.path.join(d, "circuit", "laps"))
+            with open(os.path.join(d, "circuit", "circuits.json"), "w") as f:
+                json.dump({"circuits": [
+                    {"id": "suzuka", "track": "Suzuka Circuit", "car": "Gr.3", "gold": 120000, "silver": 123000, "bronze": 130000},
+                    {"id": "fuji", "track": "Fuji International Speedway", "car": "Gr.4", "gold": 110000, "silver": 113000, "bronze": 120000},
+                    {"id": "monza", "track": "Monza", "car": "Gr.4", "gold": 115000, "silver": 118000, "bronze": 125000},
+                    {"id": "spa", "track": "Spa", "car": "Gr.3"}]}, f)
+            for c in ("suzuka", "fuji", "spa"):  # monza: no run yet; spa: no medal times yet
+                shutil.copy(TelemetryTest.REF, os.path.join(d, "circuit", "laps", f"{c}.csv"))
+            out = os.path.join(d, "_site")
+            circuits = site.circuit_experiences(store, out)["circuits"]
+            self.assertEqual([c["id"] for c in circuits], ["fuji", "suzuka"], "complete ones only, by track name")
+            self.assertEqual(circuits[0]["reference"], {"lap_ms": 110133, "url": "circuit/fuji.json", "key": "circuit-fuji"})
+            self.assertEqual(circuits[0]["gold"], 110000)
+            self.assertTrue(os.path.exists(os.path.join(out, "circuit", "fuji.json")))
+            self.assertEqual(site.circuit_experiences(Store(os.path.join(d, "none")), out), {"circuits": []})
+
     def test_names_prefer_official_list(self):
         store = Store()  # real data/ref
         self.assertEqual(store.course(1340)[0], "SUGO International Racing Course")

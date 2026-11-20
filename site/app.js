@@ -376,7 +376,8 @@ document.addEventListener("click", ev => {
   const b = ev.target.closest(".record-btn");
   if (!b) return;
   const e = b.dataset.kind === "license" ? licenseEvent(+b.dataset.i)
-    : b.dataset.kind === "daily" ? dailyEvent(+b.dataset.i) : DATA.current[+b.dataset.i];
+    : b.dataset.kind === "daily" ? dailyEvent(+b.dataset.i)
+    : b.dataset.kind === "circuit" ? circuitEvent(+b.dataset.i) : DATA.current[+b.dataset.i];
   startRecording(e, b.closest(".coach").querySelector(".coach-result"));
 });
 
@@ -591,6 +592,34 @@ function renderLicense() {
   }).join("");
   el.querySelectorAll("input.license-file").forEach(inp => inp.addEventListener("change", () => {
     if (inp.files[0]) compareLap(licenseEvent(+inp.dataset.i), inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
+    inp.value = "";
+  }));
+}
+
+// --- Circuit Experience tab: the full lap of each Circuit Experience, against GT7's own demonstration run, with its
+// medal times (data/circuit/circuits.json). Only the tracks recorded so far, added one by one. ---
+let CIRCUITS;
+const circuitEvent = i => {
+  const c = CIRCUITS.circuits[i];
+  return { reference: c.reference, medals: { gold: c.gold, silver: c.silver, bronze: c.bronze } };
+};
+function renderCircuits() {
+  const el = document.getElementById("circuit-list");
+  if (!CIRCUITS.circuits.length) {
+    el.innerHTML = `<p class="muted">${tr("The Circuit Experiences are coming soon, added track by track.")}</p>`;
+    return;
+  }
+  el.innerHTML = CIRCUITS.circuits.map((c, i) => `<article class="event license-test">
+      <h2>${gameName(c.track)}</h2><div class="meta">${gameName(c.car)}</div>
+      <div class="license-medals">${MEDAL_KEYS.map(([k, name]) => `<span><b class="medal ${k}">${name}</b> ${fmt(c[k])}</span>`).join("")}</div>
+      <section class="coach">
+        <p class="hint">${tr("Reference: GT7's demonstration run of {time}.", { time: fmt(c.reference.lap_ms) })}</p>
+        <div class="coach-actions">${APP ? recordButton("circuit", i) : ""}<label class="button-link${APP ? "" : " primary"}">${tr("Upload your run (.csv)")}<input type="file"
+          accept=".csv,text/csv" class="circuit-file" data-i="${i}" hidden></label></div>
+        <div class="coach-result" aria-live="polite"></div></section>
+    </article>`).join("");
+  el.querySelectorAll("input.circuit-file").forEach(inp => inp.addEventListener("change", () => {
+    if (inp.files[0]) compareLap(circuitEvent(+inp.dataset.i), inp.files[0], inp.closest(".coach").querySelector(".coach-result"));
     inp.value = "";
   }));
 }
@@ -994,6 +1023,8 @@ fetch("data.json")
       .catch(() => { document.getElementById("daily-list").innerHTML = `<p class="muted">${tr("Could not load the daily races.")}</p>`; });
     fetch("license.json").then(r => r.json()).then(d => { LICENSE = d; renderLicense(); })
       .catch(() => { document.getElementById("license-list").innerHTML = `<p class="muted">${tr("Could not load the tests.")}</p>`; });
+    fetch("circuits.json").then(r => r.json()).then(d => { CIRCUITS = d; renderCircuits(); })
+      .catch(() => { document.getElementById("circuit-list").innerHTML = `<p class="muted">${tr("Could not load the Circuit Experiences.")}</p>`; });
     if (shownEvent) renderEvent(shownEvent); // opened by a direct link before data.json arrived
     let lastWidth = window.innerWidth;
     window.addEventListener("resize", () => {
