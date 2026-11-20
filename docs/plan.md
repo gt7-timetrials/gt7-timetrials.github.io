@@ -120,8 +120,9 @@ Super License tests: keep it simple, and only take on what one person can look a
          android-test release, built 15 November: the name "Laps for GT7" under the icon, and the recorder keeping the
          steering after a slow start), and at the same time rename the listing **Lap Companion for GT7** and paste the
          new short and full description.
-   - [x] **The launch post, 20 November 2026** (the week GTA 6 came out), in two subreddits, including r/GranTurismo7:
+   - [x] **The launch post, 20 November 2026** (the week GTA 6 came out), in r/GranTurismo7 and r/granturismo:
          https://www.reddit.com/r/GranTurismo7/comments/1y1dv1v/gta_6_is_out_and_so_is_this_free_app_to_help_with/
+         https://www.reddit.com/r/granturismo/s/3JVUETLitj
          Led with what's easy (jump in and record, the world record laps already in, free with no ads or account),
          then Where your time goes, the tips, the charts and audio cues; seven languages; an AI note (built with
          Claude, 50+ hours of the owner's testing and changes from feedback). Screenshots from the owner's Fuji laps.
