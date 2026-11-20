@@ -126,7 +126,8 @@ Super License tests: keep it simple, and only take on what one person can look a
          Led with what's easy (jump in and record, the world record laps already in, free with no ads or account),
          then Where your time goes, the tips, the charts and audio cues; seven languages; an AI note (built with
          Claude, 50+ hours of the owner's testing and changes from feedback). Screenshots from the owner's Fuji laps.
-   - [ ] After that, about one post a month (GTPlanet too).
+   - **No more regular posts** (owner, 20 November: not to spam people): a new post on Reddit only for a major new
+     feature.
          **Positioning for it** (owner, 16 November: Reddit is getting crowded with similar apps): lead with what's
          easy, and with what's hard to copy, without claiming to be unique: **free** (no account, no ads), **just
          your phone** (no PC or setup), and **this week's reference laps already in** for the time trials, daily
