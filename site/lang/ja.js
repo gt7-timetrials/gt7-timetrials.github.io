@@ -97,8 +97,6 @@ const I18N_JA = {
     "ダブルクリックで起動し、好きなだけ周回します。終わったら Ctrl+C を押すと、同じフォルダに .csv ファイルが保存されます。",
   "Upload the file under the event or test. It's read in your browser and isn't uploaded anywhere.":
     "イベントやテストの下からファイルをアップロードします。ファイルはブラウザ内で読み込まれ、どこにも送信されません。",
-  "A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that race, and a Super License reference is a gold-medal run.":
-    "タイムトライアルのリファレンスは、ドライバー名付きの上位ラップで、通常は記録時点の世界記録です。その後に記録が更新されることもあるので、現在の世界記録の方が速い場合があります。デイリーレースのリファレンスはそのレースの速いラップ、スーパーライセンスのリファレンスはゴールドメダルの走りです。",
   "Read the comparison":
     "比較の見方",
   "Audio cues (Android app)":
@@ -873,6 +871,20 @@ const I18N_JA = {
     "ブレーキの強さ: あなたは {me} m にわたってブレーキ 90% 以上を保っていますが、{who} は {ref} m で、もっと穏やかにブレーキをかけています。必要以上に減速しています。ブレーキを弱めて、より速い速度でコーナーに進入しましょう。",
   "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
     "<b>タイムロスの内訳</b>は、リファレンスとの差を4つに分けます。<b>ブレーキング</b>: ブレーキングポイントからエイペックスまでに失う速度と、それがその後に与える損失。<b>立ち上がり</b>: エイペックスから先と、その後のストレートで失う速度。<b>ストレート</b>: ストレートでのアクセルオフやブレーキ（または遅い車）。<b>ライン</b>: 違うラインによる余分な距離。一番上のバーは記録したラップ全体のもので、その下に各ラップと各コーナーのバーがあります。コーナーをタップすると、アドバイスの上にそのコーナーのバーが表示されます。アドバイスは大きい項目の順に並び、リファレンスとの差が0.5%以内のコーナーは分けられません。",
+  "Circuit Experience":
+    "サーキットエクスペリエンス",
+  "Learn the track and get gold: compare your full laps in each Circuit Experience with GT7's own demonstration run, corner by corner. More tracks are added over time. <span>Record your laps with the free recorder for <a>Windows</a> or <a>Mac</a> (or the <a>Python script</a>; <a>how to record</a>), then upload the file under the track. Your file stays on your device.</span><span>Tap Record on this phone under a track, or upload a recording.</span>":
+    "コースを覚えてゴールドを目指しましょう: 各サーキットエクスペリエンスのフルラップを、GT7 のデモンストレーション走行とコーナーごとに比較できます。コースは順次追加されます。<span>無料のレコーダー（<a>Windows</a> 版・<a>Mac</a> 版、または <a>Python スクリプト</a>、<a>記録方法</a>）で走行を記録し、コースの下からファイルをアップロードしてください。ファイルはお使いの端末から外に出ません。</span><span>コースの下の「このスマホで記録」をタップするか、記録ファイルをアップロードしてください。</span>",
+  "<b>Circuit Experience</b>: GT7's demonstration run of each track's full lap, to learn the track with.":
+    "<b>サーキットエクスペリエンス</b>: 各コースのフルラップの GT7 デモンストレーション走行。コースを覚えるのに使えます。",
+  "A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that race, a Super License reference is a gold-medal run, and a Circuit Experience's is GT7's own demonstration run.":
+    "タイムトライアルのリファレンスは、ドライバー名付きの上位ラップで、通常は記録時点の世界記録です。その後に記録が更新されることもあるので、現在の世界記録の方が速い場合があります。デイリーレースのリファレンスはそのレースの速いラップ、スーパーライセンスのリファレンスはゴールドメダルの走り、サーキットエクスペリエンスのリファレンスは GT7 のデモンストレーション走行です。",
+  "The Circuit Experiences are coming soon, added track by track.":
+    "サーキットエクスペリエンスは、コースごとに順次追加予定です。",
+  "Reference: GT7's demonstration run of {time}.":
+    "リファレンス: GT7 のデモンストレーション走行（{time}）。",
+  "Could not load the Circuit Experiences.":
+    "サーキットエクスペリエンスを読み込めませんでした。",
 };
 (globalThis.I18N_TABLES ||= {}).ja = I18N_JA;
 if (typeof module !== "undefined") module.exports = I18N_JA;

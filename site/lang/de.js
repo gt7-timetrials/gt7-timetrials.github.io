@@ -97,8 +97,6 @@ const I18N_DE = {
     "Starte ihn (Doppelklick) und fahr so viele Runden, wie du willst. Drück Ctrl+C, wenn du fertig bist: Er speichert eine .csv-Datei im selben Ordner.",
   "Upload the file under the event or test. It's read in your browser and isn't uploaded anywhere.":
     "Lade die Datei unter dem Event bzw. der Prüfung hoch. Sie wird in deinem Browser gelesen und nirgendwohin hochgeladen.",
-  "A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that race, and a Super License reference is a gold-medal run.":
-    "Die Referenz eines Zeitrennens ist eine Top-Runde, meist der Weltrekord zum Zeitpunkt der Aufnahme, mit dem Namen ihres Fahrers. Der Rekord kann danach fallen, der aktuelle ist also eventuell schneller. Die Referenz eines Täglichen Rennens ist eine schnelle Runde aus diesem Rennen, und eine Super-Lizenz-Referenz ist ein Goldmedaillen-Versuch.",
   "Read the comparison":
     "So liest du den Vergleich",
   "Audio cues (Android app)":
@@ -873,6 +871,20 @@ const I18N_DE = {
     "Bremsdruck: Du bleibst {me} m lang über 90 % Bremse, {who} nur {ref} m lang und bremst sanfter. Du wirst langsamer als nötig: Bremse leichter und nimm mehr Geschwindigkeit mit in die Kurve.",
   "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
     "<b>Wo deine Zeit bleibt</b> teilt deinen Rückstand auf die Referenz in vier Teile: <b>Bremsen</b>, die Geschwindigkeit, die du vom Bremspunkt bis zum Scheitelpunkt verlierst, und was sie dich danach kostet; <b>Ausgang</b>, die Geschwindigkeit, die du ab dem Scheitelpunkt und auf der Geraden danach verlierst; <b>Gerade</b>, Gaswegnehmen oder Bremsen auf der Geraden (oder ein langsameres Auto); und <b>Linie</b>, die zusätzliche Strecke einer anderen Linie. Der Balken oben gilt für deine aufgezeichneten Runden, darunter gibt es Balken für jede Runde und jede Kurve. Tippe auf eine Kurve, um ihren eigenen Balken über ihren Tipps zu sehen: Die Tipps kommen nach dem größten Teil zuerst, und eine Kurve innerhalb von 0,5 % der Referenz wird nicht aufgeteilt.",
+  "Circuit Experience":
+    "Streckenerfahrung",
+  "Learn the track and get gold: compare your full laps in each Circuit Experience with GT7's own demonstration run, corner by corner. More tracks are added over time. <span>Record your laps with the free recorder for <a>Windows</a> or <a>Mac</a> (or the <a>Python script</a>; <a>how to record</a>), then upload the file under the track. Your file stays on your device.</span><span>Tap Record on this phone under a track, or upload a recording.</span>":
+    "Lerne die Strecke und hol dir Gold: Vergleiche deine vollen Runden in jeder Streckenerfahrung mit der Demonstrationsfahrt von GT7, Kurve für Kurve. Mit der Zeit kommen weitere Strecken dazu. <span>Nimm deine Runden mit dem kostenlosen Recorder für <a>Windows</a> oder <a>Mac</a> auf (oder mit dem <a>Python-Skript</a>; <a>so nimmst du auf</a>) und lade die Datei unter der Strecke hoch. Deine Datei bleibt auf deinem Gerät.</span><span>Tippe unter einer Strecke auf „Mit dem Handy aufnehmen“ oder lade eine Aufnahme hoch.</span>",
+  "<b>Circuit Experience</b>: GT7's demonstration run of each track's full lap, to learn the track with.":
+    "<b>Streckenerfahrung</b>: die Demonstrationsfahrt von GT7 über die volle Runde jeder Strecke, um die Strecke zu lernen.",
+  "A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that race, a Super License reference is a gold-medal run, and a Circuit Experience's is GT7's own demonstration run.":
+    "Die Referenz eines Zeitrennens ist eine Top-Runde, meist der Weltrekord zum Zeitpunkt der Aufnahme, mit dem Namen ihres Fahrers. Der Rekord kann danach fallen, der aktuelle ist also eventuell schneller. Die Referenz eines Täglichen Rennens ist eine schnelle Runde aus diesem Rennen, eine Super-Lizenz-Referenz ist ein Goldmedaillen-Versuch, und die einer Streckenerfahrung ist die Demonstrationsfahrt von GT7.",
+  "The Circuit Experiences are coming soon, added track by track.":
+    "Die Streckenerfahrungen kommen bald, Strecke für Strecke.",
+  "Reference: GT7's demonstration run of {time}.":
+    "Referenz: die Demonstrationsfahrt von GT7 in {time}.",
+  "Could not load the Circuit Experiences.":
+    "Die Streckenerfahrungen konnten nicht geladen werden.",
 };
 (globalThis.I18N_TABLES ||= {}).de = I18N_DE;
 if (typeof module !== "undefined") module.exports = I18N_DE;

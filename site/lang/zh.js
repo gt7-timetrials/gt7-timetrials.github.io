@@ -97,8 +97,6 @@ const I18N_ZH = {
     "启动它（双击），然后想跑多少圈都可以。完成后按 Ctrl+C：它会在自身所在的文件夹中保存一个 .csv 文件。",
   "Upload the file under the event or test. It's read in your browser and isn't uploaded anywhere.":
     "在赛事或测试下上传该文件。文件在你的浏览器中读取，不会上传到任何地方。",
-  "A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that race, and a Super License reference is a gold-medal run.":
-    "计时赛的参考圈是一个顶尖圈速，通常是记录时的世界纪录，并标明车手名字。之后纪录可能被打破，所以当前纪录可能更快。每日赛事的参考圈是该赛事中的一个快速圈，超级驾照的参考则是一次金牌成绩。",
   "Read the comparison":
     "解读对比结果",
   "Audio cues (Android app)":
@@ -873,6 +871,20 @@ const I18N_ZH = {
     "刹车力度：你保持 90% 以上刹车 {me} m；{who}只有 {ref} m，刹车更轻。你减速超过了需要：刹车轻一些，带着更高的速度入弯。",
   "<b>Where your time goes</b> splits your gap to the reference into four parts: <b>braking</b>, the speed you lose from the braking point to the apex and what that costs you afterwards; <b>exit</b>, the speed you lose from the apex out and down the straight after it; <b>straight</b>, lifting or braking on the straight (or a slower car); and <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part first, and a corner within 0.5% of the reference isn't split.":
     "<b>时间损失分布</b>把你与参考圈的差距分成四部分：<b>刹车</b>，从刹车点到弯心损失的速度及其之后造成的损失；<b>出弯</b>，从弯心出弯以及之后直道上损失的速度；<b>直道</b>，在直道上松油门或刹车（或车更慢）；<b>走线</b>，不同走线多跑的距离。顶部的条形图是你所有记录圈的，下面还有每一圈和每个弯的条形图。点击一个弯，可以在建议上方看到它自己的条形图：建议按最大的部分排在前面，与参考圈相差在 0.5% 以内的弯不做拆分。",
+  "Circuit Experience":
+    "赛道体验",
+  "Learn the track and get gold: compare your full laps in each Circuit Experience with GT7's own demonstration run, corner by corner. More tracks are added over time. <span>Record your laps with the free recorder for <a>Windows</a> or <a>Mac</a> (or the <a>Python script</a>; <a>how to record</a>), then upload the file under the track. Your file stays on your device.</span><span>Tap Record on this phone under a track, or upload a recording.</span>":
+    "熟悉赛道，拿下金牌：将你在每个赛道体验中的完整圈与 GT7 自己的示范驾驶逐弯对比。更多赛道会陆续加入。<span>用免费的记录器（<a>Windows</a> 或 <a>Mac</a> 版，或 <a>Python 脚本</a>；<a>记录方法</a>）记录，然后在对应赛道下上传文件。文件只保存在你的设备上。</span><span>在赛道下点击“用本机记录”，或上传一份记录。</span>",
+  "<b>Circuit Experience</b>: GT7's demonstration run of each track's full lap, to learn the track with.":
+    "<b>赛道体验</b>：GT7 对每条赛道完整一圈的示范驾驶，用来熟悉赛道。",
+  "A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that race, a Super License reference is a gold-medal run, and a Circuit Experience's is GT7's own demonstration run.":
+    "计时赛的参考圈是一个顶尖圈速，通常是记录时的世界纪录，并标明车手名字。之后纪录可能被打破，所以当前纪录可能更快。每日赛事的参考圈是该赛事中的一个快速圈，超级驾照的参考是一次金牌成绩，赛道体验的参考则是 GT7 自己的示范驾驶。",
+  "The Circuit Experiences are coming soon, added track by track.":
+    "赛道体验即将推出，将逐条赛道添加。",
+  "Reference: GT7's demonstration run of {time}.":
+    "参考：GT7 的示范驾驶，{time}。",
+  "Could not load the Circuit Experiences.":
+    "无法加载赛道体验。",
 };
 (globalThis.I18N_TABLES ||= {}).zh = I18N_ZH;
 if (typeof module !== "undefined") module.exports = I18N_ZH;

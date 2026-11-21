@@ -150,6 +150,7 @@ def build_site(store, at, rep, out_dir):
         write_json(os.path.join(out_dir, "events", f"{ev.id}.json"), event_detail(store, ev, b))
     write_json(os.path.join(out_dir, "license.json"), license_tests(store, out_dir))
     write_json(os.path.join(out_dir, "daily.json"), daily_races(store, out_dir))
+    write_json(os.path.join(out_dir, "circuits.json"), circuit_experiences(store, out_dir))
 
 
 def license_tests(store, out_dir):
@@ -166,6 +167,25 @@ def license_tests(store, out_dir):
             ref = {"lap_ms": lap["lap_ms"], "url": f"license/{t['id']}.json", "key": t["id"]}
         tests.append({**t, "reference": ref})
     return {"title": info.get("title", "Super License"), "tests": tests}
+
+
+def circuit_experiences(store, out_dir):
+    """The Circuit Experience tab: data/circuit/circuits.json (each full lap's medal times and car) plus GT7's
+    demonstration run of the full lap from data/circuit/laps/<id>.csv. Only the tracks with both are shown, by name."""
+    info = telemetry.load_json(os.path.join(store.root, "circuit", "circuits.json")) or {"circuits": []}
+    os.makedirs(os.path.join(out_dir, "circuit"), exist_ok=True)
+    circuits = []
+    for c in info["circuits"]:
+        path = os.path.join(store.root, "circuit", "laps", f"{c['id']}.csv")
+        if not (c.get("gold") and os.path.exists(path)):
+            continue
+        lap = telemetry.fastest_lap(telemetry.read_csv(path))
+        if not lap:
+            continue
+        write_json(os.path.join(out_dir, "circuit", f"{c['id']}.json"), lap)
+        circuits.append({**c, "reference": {"lap_ms": lap["lap_ms"], "url": f"circuit/{c['id']}.json", "key": f"circuit-{c['id']}"}})
+    circuits.sort(key=lambda c: c["track"].lower())
+    return {"circuits": circuits}
 
 
 def daily_races(store, out_dir):
