@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T21:38:27.056905+00:00",
+ "generated_at": "2026-11-21T21:37:59.285313+00:00",
  "history_events": 206,
  "snapshot_events": 4,
  "historical_entrants": {
@@ -17,19 +17,19 @@
    "car": "Mazda ɛ̃fini RX-7 Type R (FD) '91",
    "starts": "2026-11-12T18:00:00+11:00",
    "ends": "2026-11-26T17:59:59+11:00",
-   "days_elapsed": 8.6,
-   "days_left": 5.4,
-   "entrants": 124513,
+   "days_elapsed": 9.6,
+   "days_left": 4.4,
+   "entrants": 129942,
    "entrants_projection": {
-    "projected": 158814,
-    "low": 154060,
-    "high": 163377,
-    "events": 3
+    "projected": 155848,
+    "low": 152375,
+    "high": 160082,
+    "events": 4
    },
    "wr_ms": 128786,
    "wr_holder": "MetalGear9493",
    "gold_now_ms": 132649,
-   "top100_spread_pct": 0.907,
+   "top100_spread_pct": 0.893,
    "strong_drivers_posted": [
     "AT__1826",
     "MetalGear9493",
@@ -38,11 +38,11 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 128709,
-    "gold_ms": 132570,
-    "gold_fast_ms": 132376,
+    "final_wr_ms": 128703,
+    "gold_ms": 132564,
+    "gold_fast_ms": 132392,
     "gold_slow_ms": 132649,
-    "final_wr_fast_ms": 128521,
+    "final_wr_fast_ms": 128536,
     "final_wr_slow_ms": 128786,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
@@ -55,26 +55,31 @@
    "car": "Suzuki Swift Sport KATANA Edition Gr.4",
    "starts": "2026-11-19T18:00:00+11:00",
    "ends": "2026-12-03T17:59:59+11:00",
-   "days_elapsed": 1.6,
-   "days_left": 12.4,
-   "entrants": 44267,
-   "entrants_projection": null,
+   "days_elapsed": 2.6,
+   "days_left": 11.4,
+   "entrants": 58702,
+   "entrants_projection": {
+    "projected": 126917,
+    "low": 122802,
+    "high": 133514,
+    "events": 3
+   },
    "wr_ms": 81508,
    "wr_holder": "sirvia",
    "gold_now_ms": 83953,
-   "top100_spread_pct": 1.52,
+   "top100_spread_pct": 1.32,
    "strong_drivers_posted": [
     "MetalGear9493"
    ],
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 81219,
-    "gold_ms": 83655,
-    "gold_fast_ms": 83485,
-    "gold_slow_ms": 83821,
-    "final_wr_fast_ms": 81054,
-    "final_wr_slow_ms": 81380,
+    "final_wr_ms": 81301,
+    "gold_ms": 83740,
+    "gold_fast_ms": 83586,
+    "gold_slow_ms": 83900,
+    "final_wr_fast_ms": 81152,
+    "final_wr_slow_ms": 81457,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
   }
