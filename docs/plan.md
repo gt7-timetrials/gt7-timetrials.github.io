@@ -11,8 +11,8 @@ Super License tests: keep it simple, and only take on what one person can look a
    - [x] The tab on beta (20 November): `data/circuit/circuits.json` (track, car, medal times, an `id` such as
          `suzuka`) and the demonstration run in `data/circuit/laps/<id>.csv`; a track shows once it has both. Until
          then the tab says they're coming.
-   - [ ] Owner: record the first demonstration runs and send the medal times (a photo of the Circuit Experience
-         screen); then merge the tab.
+   - [x] Live on 21 November (#92), with Nürburgring Nordschleife and Red Bull Ring. More tracks as the owner records
+         them (straight to main, like reference laps).
    - [ ] Once there are a few: the site's subtitle and description, the Play listing and the About page mention them.
 
 1. **Daily races** (live since 3 November 2026): each week's three races (A, B, C) with a reference lap each, to
