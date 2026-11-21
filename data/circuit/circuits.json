@@ -25,6 +25,14 @@
    "gold": 70000,
    "silver": 72000,
    "bronze": 77500
+  },
+  {
+   "id": "weathertech-raceway-laguna-seca",
+   "track": "WeatherTech Raceway Laguna Seca",
+   "car": "Dodge Viper Gr.4",
+   "gold": 90400,
+   "silver": 92200,
+   "bronze": 98400
   }
  ]
 }
