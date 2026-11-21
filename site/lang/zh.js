@@ -873,8 +873,8 @@ const I18N_ZH = {
     "<b>时间损失分布</b>把你与参考圈的差距分成四部分：<b>刹车</b>，从刹车点到弯心损失的速度及其之后造成的损失；<b>出弯</b>，从弯心出弯以及之后直道上损失的速度；<b>直道</b>，在直道上松油门或刹车（或车更慢）；<b>走线</b>，不同走线多跑的距离。顶部的条形图是你所有记录圈的，下面还有每一圈和每个弯的条形图。点击一个弯，可以在建议上方看到它自己的条形图：建议按最大的部分排在前面，与参考圈相差在 0.5% 以内的弯不做拆分。",
   "Circuit Experience":
     "赛道体验",
-  "Learn every track: compare your full laps in each Circuit Experience with GT7's own demonstration run, corner by corner. <span>Record your laps with the free recorder for <a>Windows</a> or <a>Mac</a> (or the <a>Python script</a>; <a>how to record</a>), then upload the file under the track. Your file stays on your device.</span><span>Tap Record on this phone under a track, or upload a recording.</span>":
-    "熟悉每条赛道：将你在每个赛道体验中的完整圈与 GT7 自己的示范驾驶逐弯对比。<span>用免费的记录器（<a>Windows</a> 或 <a>Mac</a> 版，或 <a>Python 脚本</a>；<a>记录方法</a>）记录，然后在对应赛道下上传文件。文件只保存在你的设备上。</span><span>在赛道下点击“用本机记录”，或上传一份记录。</span>",
+  "Learn the track and get gold: compare your full laps in each Circuit Experience with GT7's own demonstration run, corner by corner. More tracks are added over time. <span>Record your laps with the free recorder for <a>Windows</a> or <a>Mac</a> (or the <a>Python script</a>; <a>how to record</a>), then upload the file under the track. Your file stays on your device.</span><span>Tap Record on this phone under a track, or upload a recording.</span>":
+    "熟悉赛道，拿下金牌：将你在每个赛道体验中的完整圈与 GT7 自己的示范驾驶逐弯对比。更多赛道会陆续加入。<span>用免费的记录器（<a>Windows</a> 或 <a>Mac</a> 版，或 <a>Python 脚本</a>；<a>记录方法</a>）记录，然后在对应赛道下上传文件。文件只保存在你的设备上。</span><span>在赛道下点击“用本机记录”，或上传一份记录。</span>",
   "<b>Circuit Experience</b>: GT7's demonstration run of each track's full lap, to learn the track with.":
     "<b>赛道体验</b>：GT7 对每条赛道完整一圈的示范驾驶，用来熟悉赛道。",
   "A time trial's reference is a top lap, usually the world record when it was recorded, named by its driver. The record can fall after that, so the current one may be faster. A daily race's reference is a fast lap from that race, a Super License reference is a gold-medal run, and a Circuit Experience's is GT7's own demonstration run.":
