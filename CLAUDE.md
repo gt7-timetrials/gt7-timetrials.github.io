@@ -39,7 +39,8 @@ app, builds and keys are in `docs/android.md`.
   (GT7's demonstration of the full lap in `data/circuit/laps/<id>.csv`, with the track, car and medal times in
   `data/circuit/circuits.json`), and
   running `python -m gt7tt daily` by hand so a new event
-  shows the same day. The beta website can't show them anyway. Only data: any code change still goes through beta.
+  shows the same day. Both websites read main's data, so they show it on both, with no beta step or merge. Only data:
+  any code change still goes through beta.
   Check first that the lap matches the event (car, and the world record time) and run the tests.
 - **Reference laps are never deleted:** they're kept for the owner's analysis of what makes the most difference to lap
   time. A time trial lap moves to `data/archive/time_trials/` when its event ends or a better lap replaces it, and each
@@ -76,7 +77,7 @@ Control). When the owner asks:
 - The owner may send photos of the race list or the driver's name; copy names exactly, including non-Latin
   characters (zoom into the photo if needed).
 - Then follow the reference lap and archive rules above (time trials: `data/reference_laps/` and `drivers.json`;
-  daily races: `data/daily/`), run `python -m gt7tt daily` and the tests, commit to main and push. On the laptop four
+  daily races: `data/daily/`; Circuit Experiences: `data/circuit/`, live on main since 21 November), run `python -m gt7tt daily` and the tests, commit to main and push. On the laptop four
   Python tests fail for local reasons (javac, Windows text encoding, the two network tests); GitHub's run is the one that
   counts. Then check the live site has the change.
 - If a push hangs, Git Credential Manager is waiting for a GitHub sign-in on the laptop's screen, which only the owner
