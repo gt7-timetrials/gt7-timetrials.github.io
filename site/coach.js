@@ -703,12 +703,12 @@ const Coach = (() => {
       for (let s = a; s <= b; s += 4) { const [x, z] = pts(s); d += (d ? "L" : "M") + x.toFixed(1) + "," + z.toFixed(1); }
       const [x, z] = pts(b); return d + "L" + x.toFixed(1) + "," + z.toFixed(1);
     };
-    const zones = corners.map(c => `<g class="zone" data-n="${c.n}" tabindex="0" role="button" aria-label="${tr("Corner {n}, {lost}", { n: c.n, lost: fmtLost(c.lost) })}">
+    const zones = corners.map(c => `<g class="zone" data-n="${c.n}">
         <path d="${path(c.from, c.to)}" class="hit" style="stroke-width:${sw * 5}"/>
         <path d="${path(c.from, c.to)}" class="seg ${c.colour}" style="stroke-width:${sw * 1.6}"/></g>`).join("");
     const labels = corners.map((c, i) => {
       const [lx, lz] = spots[i];
-      return `<g class="label" data-n="${c.n}"><circle cx="${lx.toFixed(1)}" cy="${lz.toFixed(1)}" r="${r}" class="${c.colour}"/>
+      return `<g class="label" data-n="${c.n}" tabindex="0" role="button" aria-label="${tr("Corner {n}, {lost}", { n: c.n, lost: fmtLost(c.lost) })}"><circle cx="${lx.toFixed(1)}" cy="${lz.toFixed(1)}" r="${r}" class="${c.colour}"/>
         <text x="${lx.toFixed(1)}" y="${(lz + sw * 0.95).toFixed(1)}" style="font-size:${sw * 2.8}px">${c.n}</text></g>`;
     }).join("");
     // extra lifts and braking: a short dark band over the track
@@ -731,8 +731,8 @@ const Coach = (() => {
   function pedalChart(result, c, who) {
     who = named(who);
     const { R, M, delta } = result.grid, n = R.v.length;
-    const anchor = c.ref.brakeAt ?? c.apex;
-    const anchorName = c.ref.brakeAt !== null ? tr("{who} brakes", { who }) : tr("apex");
+    const anchor = c.win ? c.apex : c.ref.brakeAt ?? c.apex;
+    const anchorName = c.win ? tr("here") : c.ref.brakeAt !== null ? tr("{who} brakes", { who }) : tr("apex");
     let x0 = Math.min(anchor - 100, (c.me.brakeAt ?? c.me.liftAt ?? anchor) - 30);
     let x1 = Math.max(c.ref.fullGas ?? c.to, c.me.fullGas ?? c.to) + 30;
     // include extra lifts, but never so far back that the corner itself drops out of the chart
@@ -740,6 +740,7 @@ const Coach = (() => {
     // and the section's wheelspin, to its end
     for (let k = c.from; k < c.to; k++) if (result.grid.spinM && result.grid.spinM[k]) x1 = Math.max(x1, k + 10);
     x0 = Math.max(0, x0); x1 = Math.min(n - 1, x1, x0 + 700);
+    if (c.win) [x0, x1] = c.win; // a stretch of track: just its window
     let braking = false;
     for (let k = x0; k <= x1 && !braking; k++) braking = R.brk[k] > 5 || M.brk[k] > 5;
     const W = 360, L = 30, Rt = 8, H1 = 62, gap = 18, H2 = 70, H3 = 54, top = 12;
@@ -845,7 +846,7 @@ const Coach = (() => {
         ${markers}${ticks.join("")}
       </svg>
       <figcaption class="pc-legend"><span><i class="k-me"></i>${tr("You")}</span><span><i class="k-ref"></i>${who}</span>
-        <span>${c.ref.brakeAt === null ? tr("metres from the apex (no braking here)") : tr("metres from where {who} starts braking", { who })}</span>
+        <span>${c.win ? tr("metres from the point you tapped") : c.ref.brakeAt === null ? tr("metres from the apex (no braking here)") : tr("metres from where {who} starts braking", { who })}</span>
         ${c.lifts.length ? `<span><i class="k-lift"></i>${tr("extra lift or braking")}</span>` : ""}
         ${spinShown ? `<span><i class="k-spin"></i>${tr("bold: wheel lock or spin")}</span>` : ""}
         ${steering && result.otherCar ? `<span>${tr("Steering: another car than {who}'s, and cars have different steering lock", { who })}</span>` : ""}</figcaption>
@@ -944,6 +945,7 @@ const Coach = (() => {
     const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
     let a = Math.max(0, Math.min(...starts) - 15), b = Math.min(n - 1, c.line.exit + 25);
     if (b - a > 450) a = Math.max(0, b - 450);
+    if (c.win) [a, b] = c.win; // a stretch of track: just its window
     const xs = [], zs = [];
     for (let k = a; k <= b; k++) xs.push(R.x[k], M.x[k]), zs.push(R.z[k], M.z[k]);
     const pad = 8, minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad, minZ = Math.min(...zs) - pad, maxZ = Math.max(...zs) + pad;
@@ -1036,6 +1038,7 @@ const Coach = (() => {
     const starts = [c.ref.brakeAt, c.me.brakeAt, c.ref.liftAt, c.me.liftAt, c.line.turnIn, c.me.turnIn].filter(k => k !== null);
     let a = Math.max(0, Math.min(...starts) - 15), b = Math.min(n - 1, c.line.exit + 25);
     if (b - a > 450) a = Math.max(0, b - 450);
+    if (c.win) [a, b] = c.win; // a stretch of track: just its window
     const xs = [], zs = [];
     for (let k = a; k <= b; k++) xs.push(R.x[k], M.x[k]), zs.push(R.z[k], M.z[k]);
     const pad = 12, minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad, minZ = Math.min(...zs) - pad, maxZ = Math.max(...zs) + pad;
@@ -1144,9 +1147,9 @@ const Coach = (() => {
       </tbody></table>`;
   }
 
-  // The corner whose section of track is nearest to a point on the map (map units), or null if
-  // the point is further than maxDist from the track. Lets a tap anywhere near the line select it.
-  function cornerAt(result, x, z, maxDist) {
+  // The point of the track nearest a point on the map (map units): its distance from the line in metres (s) and the
+  // corner whose section it's in, or null if it's further than maxDist from the track. A tap on the track zooms in there.
+  function pointAt(result, x, z, maxDist) {
     const { ref, corners } = result;
     let best = Infinity, bi = 0;
     for (let i = 0; i < ref.x.length; i++) {
@@ -1154,8 +1157,52 @@ const Coach = (() => {
       if (d < best) { best = d; bi = i; }
     }
     if (Math.sqrt(best) > maxDist) return null;
-    const s = ref.s[bi];
-    return corners.find(c => s >= c.from && s < c.to) || corners[corners.length - 1];
+    const s = Math.round(ref.s[bi]);
+    return { s, corner: corners.find(c => s >= c.from && s < c.to) || corners[corners.length - 1] };
+  }
+
+  // Zoomed in anywhere on the track: about 3 seconds of driving at the reference's speed, centred on metre s (at
+  // least 60 m). Sometimes the difference isn't at a corner: a kink or sweeper taken flat out by the reference.
+  const SPOT_S = 3, SPOT_MIN = 60;
+  function spotWindow(result, s) {
+    const { R } = result.grid, n = R.v.length, k = Math.max(0, Math.min(n - 1, Math.round(s)));
+    const len = Math.max(SPOT_MIN, Math.round((R.v[k] / 3.6) * SPOT_S));
+    let a = Math.max(0, k - Math.round(len / 2)), b = Math.min(n - 1, a + len);
+    a = Math.max(0, b - len);
+    return { k, a, b, len };
+  }
+  // the badges in a window: where each lap starts braking, is back on the gas and reaches full throttle in it
+  function spotMarks(L, a, b) {
+    let brakeAt = null, onGas = null, fullGas = null;
+    for (let k = a + 1; k <= b; k++) {
+      if (brakeAt === null && L.brk[k] > 5 && L.brk[k - 1] <= 5) brakeAt = k;
+      if (brakeAt !== null && onGas === null && k > brakeAt && L.thr[k] >= 20 && L.thr[k - 1] < 20) onGas = k;
+      if (fullGas === null && L.thr[k] >= 95 && L.thr[k - 1] < 95) fullGas = k;
+    }
+    return { brakeAt, onGas, fullGas, liftAt: null, turnIn: null, minAt: null };
+  }
+  function spotDetail(result, s, who) {
+    const { R, M } = result.grid, { k, a, b } = spotWindow(result, s);
+    const corner = result.corners.find(c => k >= c.from && k < c.to) || result.corners[result.corners.length - 1];
+    const lifts = (result.lifts || []).filter(z => z.to > a && z.from < b);
+    const c = { n: corner.n, apex: k, from: a, to: b, win: [a, b], ref: spotMarks(R, a, b), me: spotMarks(M, a, b),
+      line: { turnIn: null, exit: null }, lifts };
+    return `<div class="corner-head spot-head"><b>${tr("Track from {a} to {b} m", { a, b })}</b>
+      <span class="muted">${tr("in corner {n}'s section", { n: corner.n })}</span></div>
+      <p class="hint">${tr("Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.")}</p>
+      ${cornerWidths(result, c, who) + cornerLines(result, c, who) + pedalChart(result, c, who)}`;
+  }
+  // the stretch on the lap map: the window drawn over the track, and a pin at the point tapped
+  function spotMark(result, s) {
+    const { ref } = result, { k, a, b } = spotWindow(result, s);
+    const minX = Math.min(...ref.x), maxX = Math.max(...ref.x), minZ = Math.min(...ref.z), maxZ = Math.max(...ref.z);
+    const sw = (maxX - minX + 2 * 0.06 * Math.max(maxX - minX, maxZ - minZ)) / 110; // as trackMap
+    const pt = m => [interp(ref.s, ref.x, m), interp(ref.s, ref.z, m)];
+    let d = "";
+    for (let m = a; m <= b; m += 2) { const [x, z] = pt(m); d += (d ? "L" : "M") + x.toFixed(1) + "," + z.toFixed(1); }
+    const [px, pz] = pt(k);
+    return `<g class="spot-mark"><path d="${d}" class="spot-seg" style="stroke-width:${sw * 2.4}"/>
+      <circle cx="${px.toFixed(1)}" cy="${pz.toFixed(1)}" r="${sw * 1.6}" class="spot-pin" style="stroke-width:${sw * 0.6}"/></g>`;
   }
 
   // Does this text start like a telemetry.py recording? (The column headings it always writes.)
@@ -1165,7 +1212,7 @@ const Coach = (() => {
     return NEEDED.every(h => head.includes(h));
   }
 
-  return { parseCsv, fastestLap, lapChoices, analyse, acrossLaps, cuePoints, trackMap, cornerDetail, cornerAt, isRecording, fmtLost, useLanguage, themeBar, themesAcross };
+  return { parseCsv, fastestLap, lapChoices, analyse, acrossLaps, cuePoints, trackMap, cornerDetail, pointAt, spotDetail, spotWindow, spotMark, isRecording, fmtLost, useLanguage, themeBar, themesAcross };
 })();
 
 if (typeof module !== "undefined") module.exports = Coach;

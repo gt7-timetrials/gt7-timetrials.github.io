@@ -518,8 +518,9 @@ const GUIDE_STEPS = `<ol>
       <b>line</b>, the extra distance of a different line. The bar at the top is for your recorded laps, then there are
       bars for each lap and corner below. Tap a corner to see its own bar above its tips: the tips come biggest part
       first, and a corner within 0.5% of the reference isn't split.`)}</li>
-    <li>${tr(`<b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and
-      steering drawn against the reference's.`)}</li>
+    <li>${tr(`<b>Tap a corner's number</b> on the map or under it to see why: tips first, then your line, pedals and
+      steering drawn against the reference's. <b>Tap anywhere else on the track</b> to zoom in on that stretch (about 3
+      seconds of driving): the line and charts, without tips.`)}</li>
     <li>${tr(`<b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see
       the same corner on each. With 3 or more laps, <b>Across your laps</b> shows where you lose most on average and
       where you're least consistent.`)}</li>
@@ -722,7 +723,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     ${themesLapBox(res, !picker?.themesAll)}
     ${guide()}
     ${acrossLaps(picker?.across)}
-    <p class="hint tap-hint">${phone() ? tr("Tap a corner to see where you lose time.") : tr("Hover over or click a corner on the map.")}</p>
+    <p class="hint tap-hint">${phone() ? tr("Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.") : tr("Hover over or click a corner's number, or click anywhere on the track to zoom in.")}</p>
     <div class="coach-grid">
       <div class="map-box">${Coach.trackMap(res)}
         <div class="legend">${e.medals || e.daily
@@ -751,6 +752,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
   // the corner being looked at stays selected when another lap is chosen, so laps can be compared corner by corner
   const kept = out._corner && res.corners.some(c => c.n === out._corner.n) ? out._corner : null;
   let pinned = kept ? kept.n : worst.n;
+  let spot = kept?.spot ?? null; // zoomed in on a stretch of track (its middle, in metres), or null for a corner
   let hideRef = false; // the close-ups' buttons, kept while moving between corners: the reference's line in the dots
   let hideMine = false; // close-up, your line in the line-width close-up
   const applyHide = () => {
@@ -775,14 +777,49 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     hideRef = !hideRef;
     applyHide();
   });
+  // Prev and Next step through the corners, or along the track when zoomed in on a stretch
+  const navLabels = () => {
+    const [prev, next] = detail.querySelectorAll("[data-step]");
+    prev.setAttribute("aria-label", spot === null ? tr("Previous corner") : tr("Earlier on the track"));
+    next.setAttribute("aria-label", spot === null ? tr("Next corner") : tr("Later on the track"));
+  };
   const show = n => {
     body.innerHTML = Coach.cornerDetail(res.corners[n - 1], who, res);
     applyHide();
     out.querySelectorAll("[data-n]").forEach(el => el.classList.toggle("selected", +el.dataset.n === n));
     svg.classList.add("has-selection");
+    svg.querySelector(".spot-mark")?.remove();
+  };
+  const showSpot = m => {
+    body.innerHTML = Coach.spotDetail(res, m, who);
+    applyHide();
+    out.querySelectorAll("[data-n]").forEach(el => el.classList.remove("selected"));
+    svg.classList.add("has-selection");
+    svg.querySelector(".spot-mark")?.remove();
+    svg.insertAdjacentHTML("beforeend", Coach.spotMark(res, m));
+  };
+  const open = (focus, scroll) => {
+    if (!phone()) return;
+    detail.classList.add("open");
+    document.body.classList.add("sheet-open");
+    body.scrollTop = 0;
+    if (!scroll) return;
+    // scroll so what was chosen sits in the middle of the space above the sheet
+    const mark = focus.getBoundingClientRect();
+    const visible = innerHeight - detail.getBoundingClientRect().height;
+    window.scrollBy({ top: mark.top + mark.height / 2 - visible / 2, behavior: "smooth" });
+  };
+  const selectSpot = (m, scroll = true) => {
+    spot = Math.max(0, Math.min(res.length - 1, Math.round(m)));
+    out._corner = { n: pinned, open: phone(), spot };
+    navLabels();
+    showSpot(spot);
+    open(svg.querySelector(".spot-pin"), scroll);
   };
   const select = (n, scroll = true) => {
     pinned = n;
+    spot = null;
+    navLabels();
     out._corner = { n, open: phone() };
     show(n);
     if (phone()) {
@@ -801,21 +838,26 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     document.body.classList.remove("sheet-open");
     if (out._corner) out._corner.open = false;
   };
-  out.querySelectorAll(".zone, .label, .chip").forEach(el => {
+  // the corner numbers (on the map and under it) open a corner, with its tips; hovering one shows it on wider screens
+  const restore = () => (spot === null ? show(pinned) : showSpot(spot));
+  out.querySelectorAll(".label, .chip").forEach(el => {
     const n = +el.dataset.n;
     el.addEventListener("mouseenter", () => { if (!phone()) show(n); });
-    el.addEventListener("mouseleave", () => { if (!phone()) show(pinned); });
+    el.addEventListener("mouseleave", () => { if (!phone()) restore(); });
     el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(n); } });
   });
   out.querySelectorAll(".chip, .sh-corner").forEach(el => el.addEventListener("click", () => select(+el.dataset.n)));
-  // a click or tap anywhere near the track selects the nearest corner's section
+  // a click or tap on a corner's number opens the corner; anywhere else near the track zooms in on that stretch
   svg.addEventListener("click", ev => {
+    const label = ev.target.closest(".label");
+    if (label) { select(+label.dataset.n); return; }
     const pt = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(svg.getScreenCTM().inverse());
     const vb = svg.viewBox.baseVal;
-    const c = Coach.cornerAt(res, pt.x, pt.y, 0.08 * Math.max(vb.width, vb.height));
-    if (c) select(c.n);
+    const p = Coach.pointAt(res, pt.x, pt.y, 0.05 * Math.max(vb.width, vb.height));
+    if (p) selectSpot(p.s);
   });
   detail.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => {
+    if (spot !== null) { selectSpot(spot + +b.dataset.step * Math.round(Coach.spotWindow(res, spot).len / 2), false); return; }
     const n = ((pinned - 1 + +b.dataset.step + res.corners.length) % res.corners.length) + 1;
     select(n);
   }));
@@ -836,7 +878,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
   out.querySelectorAll(".lap-btn").forEach(b => b.addEventListener("click", () => picker.show(+b.dataset.lap)));
   // in the corner's panel: step through the laps on the same corner
   detail.querySelectorAll("[data-lapstep]").forEach(b => b.addEventListener("click", () => {
-    out._corner = { n: pinned, open: phone() };
+    out._corner = { n: pinned, open: phone(), spot };
     picker.show((picker.chosen + +b.dataset.lapstep + picker.laps.length) % picker.laps.length);
   }));
   // Wider screens: hovering swaps the panel's contents, so give it the height of the tallest corner. Otherwise a
@@ -846,7 +888,9 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     for (const c of res.corners) { show(c.n); tallest = Math.max(tallest, detail.offsetHeight); }
     detail.style.minHeight = `${tallest}px`;
   }
-  if (kept?.open && phone()) select(pinned, false); // the corner's sheet was open: keep it open, where it was
+  if (spot !== null) { // zoomed in on a stretch: the same stretch on this lap
+    if (kept.open || !phone()) selectSpot(spot, false); else show(pinned);
+  } else if (kept?.open && phone()) select(pinned, false); // the corner's sheet was open: keep it open, where it was
   else show(pinned);
 }
 

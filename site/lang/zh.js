@@ -429,8 +429,6 @@ const I18N_ZH = {
     "<b>顶部一行</b>是你的圈速与参考圈的对比，以及两者之间的总时间差。",
   "<b>The map</b> colours each section by how much slower you are there than the reference: green is close, yellow and red are where the time goes. Start with the red ones.":
     "<b>地图</b>按你在每个区段比参考圈慢多少来着色：绿色表示接近，黄色和红色是丢时间的地方。先从红色区段开始。",
-  "<b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and steering drawn against the reference's.":
-    "<b>点击地图上的弯道</b>或地图下方的弯道编号，查看原因：先是建议，然后是你的走线、踏板和转向与参考圈的对比图。",
   "<b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see the same corner on each. With 3 or more laps, <b>Across your laps</b> shows where you lose most on average and where you're least consistent.":
     "<b>不止一圈？</b>在顶部选择一圈，或在弯道面板中用 ‹ › 逐圈切换，查看每圈的同一个弯道。有 3 圈或以上时，<b>各圈汇总</b>会显示你平均损失最多和最不稳定的地方。",
   "How to read this":
@@ -517,10 +515,6 @@ const I18N_ZH = {
     "这一圈使用的车辆与参考圈不同。",
   "The game's times include {s} s that isn't in the recorded laps (in a license test the timer can start before the car reaches the line), so the corners below add up to {total}.":
     "游戏的时间包含 {s} s 记录中没有的部分（驾照测试中计时器可能在车辆到达起点线之前就开始），所以下面各弯道加起来是 {total}。",
-  "Tap a corner to see where you lose time.":
-    "点击弯道，查看你在哪里丢了时间。",
-  "Hover over or click a corner on the map.":
-    "将鼠标悬停在地图的弯道上或点击它。",
   "within 3% of the reference":
     "与参考圈相差 3% 以内",
   "3–5% slower":
@@ -885,6 +879,26 @@ const I18N_ZH = {
     "参考：GT7 的示范驾驶，{time}。",
   "Could not load the Circuit Experiences.":
     "无法加载赛道体验。",
+  "<b>Tap a corner's number</b> on the map or under it to see why: tips first, then your line, pedals and steering drawn against the reference's. <b>Tap anywhere else on the track</b> to zoom in on that stretch (about 3 seconds of driving): the line and charts, without tips.":
+    "点击地图上或地图下方的<b>弯道编号</b>查看原因：先是建议，然后是你的走线、踏板和转向与参考圈的对比。<b>点击赛道上的其他任意位置</b>可放大该路段（约 3 秒的驾驶）：只显示走线和图表，没有建议。",
+  "Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.":
+    "点击弯道编号查看你在哪里损失时间，或点击赛道上任意位置放大查看。",
+  "Hover over or click a corner's number, or click anywhere on the track to zoom in.":
+    "将鼠标悬停在弯道编号上或点击它，或点击赛道上任意位置放大查看。",
+  "Earlier on the track":
+    "赛道上更早处",
+  "Later on the track":
+    "赛道上更后处",
+  "here":
+    "此处",
+  "metres from the point you tapped":
+    "距点击位置的米数",
+  "Track from {a} to {b} m":
+    "赛道 {a}–{b} m",
+  "in corner {n}'s section":
+    "位于第 {n} 弯的路段",
+  "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
+    "赛道上的任意位置：只有走线和图表，没有建议。点击弯道编号查看其建议。",
 };
 (globalThis.I18N_TABLES ||= {}).zh = I18N_ZH;
 if (typeof module !== "undefined") module.exports = I18N_ZH;

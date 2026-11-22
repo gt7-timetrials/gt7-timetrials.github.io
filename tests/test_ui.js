@@ -119,6 +119,28 @@ function standIn({ withCues, csv }) {
     assert.match(await coach(p).locator(".coach-summary").innerText(), /Your lap 1:18\.521/);
     assert.strictEqual(await coach(p).locator(".across").count(), 0, "one lap: no across-your-laps box");
     assert.match(await coach(p).locator(".themes").innerText(), /Where your time goes[\s\S]*Braking\s+[+−]\d/, "the lap's time by theme");
+    // a corner's number opens the corner, with tips; a tap anywhere else on the track zooms in there, without tips
+    const tapTrack = async f => {
+      await coach(p).locator(".trackmap").scrollIntoViewIfNeeded();
+      const [x, y] = await coach(p).locator(".trackmap").evaluate((svg, f) => {
+        const base = svg.querySelector(".base"), pt = base.getPointAtLength(base.getTotalLength() * f);
+        const s = new DOMPoint(pt.x, pt.y).matrixTransform(svg.getScreenCTM());
+        return [s.x, s.y];
+      }, f);
+      await p.mouse.click(x, y);
+    };
+    await tapTrack(0.3);
+    await coach(p).locator(".spot-head").waitFor();
+    assert.match(await coach(p).locator(".spot-head").innerText(), /Track from \d+ to \d+ m[\s\S]*in corner \d+'s section/, "a stretch of track");
+    assert.strictEqual(await coach(p).locator(".detail-body .tips").count(), 0, "no tips on a stretch");
+    assert.ok(await coach(p).locator(".detail-body .corner-lines").count() && await coach(p).locator(".detail-body .pedal-chart").count(), "its line and charts");
+    assert.strictEqual(await coach(p).locator(".trackmap .spot-pin").count(), 1, "a pin where it was tapped");
+    const first = await coach(p).locator(".spot-head b").innerText();
+    await coach(p).locator('.corner-detail [data-step="1"]').click();
+    assert.notStrictEqual(await coach(p).locator(".spot-head b").innerText(), first, "Next moves along the track");
+    await coach(p).locator('.trackmap .label[data-n="1"]').click();
+    assert.match(await coach(p).locator(".corner-head").innerText(), /Corner 1/, "a corner's number opens the corner");
+    assert.strictEqual(await coach(p).locator(".trackmap .spot-pin").count(), 0, "and the pin goes");
     // the first comparison explains itself until "Got it"; the next one doesn't
     assert.match(await coach(p).locator(".guide").innerText(), /How to read this/);
     await coach(p).locator(".guide-ok").click();

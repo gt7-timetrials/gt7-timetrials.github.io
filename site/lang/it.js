@@ -429,8 +429,6 @@ const I18N_IT = {
     "<b>La riga in alto</b> è il tuo giro rispetto al riferimento, e il distacco totale tra i due.",
   "<b>The map</b> colours each section by how much slower you are there than the reference: green is close, yellow and red are where the time goes. Start with the red ones.":
     "<b>La mappa</b> colora ogni tratto in base a quanto sei più lento lì rispetto al riferimento: verde è vicino, giallo e rosso sono dove si perde tempo. Inizia da quelli rossi.",
-  "<b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and steering drawn against the reference's.":
-    "<b>Tocca una curva</b> sulla mappa, o il suo numero sotto la mappa, per vedere perché: prima i consigli, poi la tua traiettoria, i pedali e lo sterzo disegnati rispetto a quelli del riferimento.",
   "<b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see the same corner on each. With 3 or more laps, <b>Across your laps</b> shows where you lose most on average and where you're least consistent.":
     "<b>Più di un giro?</b> Scegli un giro in alto, o passa da un giro all'altro con ‹ › nel pannello della curva per vedere la stessa curva in ciascuno. Con 3 o più giri, <b>Sui tuoi giri</b> mostra dove perdi di più in media e dove sei meno costante.",
   "How to read this":
@@ -517,10 +515,6 @@ const I18N_IT = {
     "Questo giro è con un'auto diversa da quella del riferimento.",
   "The game's times include {s} s that isn't in the recorded laps (in a license test the timer can start before the car reaches the line), so the corners below add up to {total}.":
     "I tempi del gioco includono {s} s che non sono nei giri registrati (in un test della patente il cronometro può partire prima che l'auto raggiunga la linea), quindi le curve qui sotto danno in totale {total}.",
-  "Tap a corner to see where you lose time.":
-    "Tocca una curva per vedere dove perdi tempo.",
-  "Hover over or click a corner on the map.":
-    "Passa il mouse su una curva della mappa o fai clic.",
   "within 3% of the reference":
     "entro il 3% dal riferimento",
   "3–5% slower":
@@ -885,6 +879,26 @@ const I18N_IT = {
     "Riferimento: la dimostrazione di GT7, in {time}.",
   "Could not load the Circuit Experiences.":
     "Impossibile caricare le Esperienze in pista.",
+  "<b>Tap a corner's number</b> on the map or under it to see why: tips first, then your line, pedals and steering drawn against the reference's. <b>Tap anywhere else on the track</b> to zoom in on that stretch (about 3 seconds of driving): the line and charts, without tips.":
+    "<b>Tocca il numero di una curva</b> sulla mappa o sotto di essa per capire perché: prima i consigli, poi la tua traiettoria, i pedali e lo sterzo confrontati con quelli del riferimento. <b>Tocca qualsiasi altro punto del circuito</b> per ingrandire quel tratto (circa 3 secondi di guida): la traiettoria e i grafici, senza consigli.",
+  "Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.":
+    "Tocca il numero di una curva per vedere dove perdi tempo, o qualsiasi punto del circuito per ingrandirlo.",
+  "Hover over or click a corner's number, or click anywhere on the track to zoom in.":
+    "Passa il mouse sul numero di una curva o cliccalo, oppure clicca in qualsiasi punto del circuito per ingrandirlo.",
+  "Earlier on the track":
+    "Prima sul circuito",
+  "Later on the track":
+    "Più avanti sul circuito",
+  "here":
+    "qui",
+  "metres from the point you tapped":
+    "metri dal punto toccato",
+  "Track from {a} to {b} m":
+    "Circuito da {a} a {b} m",
+  "in corner {n}'s section":
+    "nel tratto della curva {n}",
+  "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
+    "Qualsiasi punto del circuito: la traiettoria e i grafici, senza consigli. Tocca il numero di una curva per i suoi consigli.",
 };
 (globalThis.I18N_TABLES ||= {}).it = I18N_IT;
 if (typeof module !== "undefined") module.exports = I18N_IT;

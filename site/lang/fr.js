@@ -429,8 +429,6 @@ const I18N_FR = {
     "<b>La ligne du haut</b> : ton tour face à la référence, et l'écart total entre les deux.",
   "<b>The map</b> colours each section by how much slower you are there than the reference: green is close, yellow and red are where the time goes. Start with the red ones.":
     "<b>La carte</b> colore chaque section selon ton retard sur la référence : vert, c'est proche ; jaune et rouge, c'est là que part le temps. Commence par les rouges.",
-  "<b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and steering drawn against the reference's.":
-    "<b>Appuie sur un virage</b> sur la carte, ou sur son numéro sous la carte, pour voir pourquoi : d'abord les conseils, puis ta trajectoire, tes pédales et ta direction tracées face à celles de la référence.",
   "<b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see the same corner on each. With 3 or more laps, <b>Across your laps</b> shows where you lose most on average and where you're least consistent.":
     "<b>Plus d'un tour ?</b> Choisis un tour en haut, ou passe d'un tour à l'autre avec ‹ › dans le panneau du virage pour voir le même virage sur chacun. À partir de 3 tours, <b>Sur tes tours</b> montre où tu perds le plus en moyenne et où tu es le moins régulier.",
   "How to read this":
@@ -517,10 +515,6 @@ const I18N_FR = {
     "Ce tour a été fait avec une autre voiture que la référence.",
   "The game's times include {s} s that isn't in the recorded laps (in a license test the timer can start before the car reaches the line), so the corners below add up to {total}.":
     "Les temps du jeu incluent {s} s absentes des tours enregistrés (dans un test de licence, le chrono peut démarrer avant que la voiture atteigne la ligne), donc les virages ci-dessous totalisent {total}.",
-  "Tap a corner to see where you lose time.":
-    "Appuie sur un virage pour voir où tu perds du temps.",
-  "Hover over or click a corner on the map.":
-    "Survole ou clique sur un virage de la carte.",
   "within 3% of the reference":
     "à moins de 3 % de la référence",
   "3–5% slower":
@@ -885,6 +879,26 @@ const I18N_FR = {
     "Référence : la démonstration de GT7, en {time}.",
   "Could not load the Circuit Experiences.":
     "Impossible de charger les Expériences circuit.",
+  "<b>Tap a corner's number</b> on the map or under it to see why: tips first, then your line, pedals and steering drawn against the reference's. <b>Tap anywhere else on the track</b> to zoom in on that stretch (about 3 seconds of driving): the line and charts, without tips.":
+    "<b>Touche le numéro d'un virage</b> sur la carte ou en dessous pour voir pourquoi : d'abord les conseils, puis ta trajectoire, tes pédales et ta direction comparées à celles de la référence. <b>Touche n'importe quel autre point du circuit</b> pour zoomer sur ce passage (environ 3 secondes de conduite) : la trajectoire et les graphiques, sans conseils.",
+  "Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.":
+    "Touche le numéro d'un virage pour voir où tu perds du temps, ou n'importe quel point du circuit pour zoomer.",
+  "Hover over or click a corner's number, or click anywhere on the track to zoom in.":
+    "Survole ou clique sur le numéro d'un virage, ou clique n'importe où sur le circuit pour zoomer.",
+  "Earlier on the track":
+    "Plus tôt sur le circuit",
+  "Later on the track":
+    "Plus loin sur le circuit",
+  "here":
+    "ici",
+  "metres from the point you tapped":
+    "mètres depuis le point touché",
+  "Track from {a} to {b} m":
+    "Circuit de {a} à {b} m",
+  "in corner {n}'s section":
+    "dans la section du virage {n}",
+  "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
+    "N'importe quel point du circuit : la trajectoire et les graphiques, sans conseils. Touche le numéro d'un virage pour ses conseils.",
 };
 (globalThis.I18N_TABLES ||= {}).fr = I18N_FR;
 if (typeof module !== "undefined") module.exports = I18N_FR;
