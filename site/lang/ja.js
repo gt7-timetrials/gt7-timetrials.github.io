@@ -429,8 +429,6 @@ const I18N_JA = {
     "<b>一番上の行</b>は、自分のラップとリファレンスのタイム、その合計差です。",
   "<b>The map</b> colours each section by how much slower you are there than the reference: green is close, yellow and red are where the time goes. Start with the red ones.":
     "<b>マップ</b>は各区間を、リファレンスよりどれだけ遅いかで色分けしています。緑は差が小さく、黄色と赤はタイムを失っている所です。まずは赤から。",
-  "<b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and steering drawn against the reference's.":
-    "マップ上の<b>コーナーをタップ</b>するか、マップ下の番号をタップすると、その理由がわかります。まずアドバイス、次に自分のライン、ペダル、ステアリングをリファレンスと重ねて表示します。",
   "<b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see the same corner on each. With 3 or more laps, <b>Across your laps</b> shows where you lose most on average and where you're least consistent.":
     "<b>複数ラップある場合</b>は、上でラップを選ぶか、コーナーパネルの ‹ › でラップを切り替えて、同じコーナーを各ラップで見られます。3周以上あれば、<b>全ラップの傾向</b>で平均して最もタイムを失っている所と、最もばらつきが大きい所がわかります。",
   "How to read this":
@@ -517,10 +515,6 @@ const I18N_JA = {
     "このラップはリファレンスと違う車で走っています。",
   "The game's times include {s} s that isn't in the recorded laps (in a license test the timer can start before the car reaches the line), so the corners below add up to {total}.":
     "ゲーム内のタイムには記録されたラップに含まれない {s} s が含まれている（ライセンステストでは車がラインに達する前に計測が始まることがあります）ため、下のコーナーの合計は {total} になります。",
-  "Tap a corner to see where you lose time.":
-    "コーナーをタップすると、どこでタイムを失っているかがわかります。",
-  "Hover over or click a corner on the map.":
-    "マップ上のコーナーにマウスを重ねるか、クリックしてください。",
   "within 3% of the reference":
     "リファレンスとの差 3% 以内",
   "3–5% slower":
@@ -885,6 +879,28 @@ const I18N_JA = {
     "リファレンス: GT7 のデモンストレーション走行（{time}）。",
   "Could not load the Circuit Experiences.":
     "サーキットエクスペリエンスを読み込めませんでした。",
+  "<b>Tap a corner's number</b> on the map or under it to see why: tips first, then your line, pedals and steering drawn against the reference's. <b>Tap anywhere else on the track</b> to zoom in on that stretch (about 3 seconds of driving): the line and charts, without tips.":
+    "マップ上またはマップ下の<b>コーナー番号をタップ</b>すると、その理由がわかります。まずアドバイス、次に自分のライン、ペダル、ステアリングをリファレンスと重ねて表示します。<b>コース上のそれ以外の場所をタップ</b>すると、その区間（約 3 秒分の走行）を拡大して、ラインとグラフをアドバイスなしで表示します。",
+  "Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.":
+    "コーナー番号をタップするとどこでタイムを失っているかがわかり、コース上の任意の場所をタップすると拡大表示します。",
+  "Hover over or click a corner's number, or click anywhere on the track to zoom in.":
+    "コーナー番号にマウスを重ねるかクリックしてください。コース上の任意の場所をクリックすると拡大表示します。",
+  "Earlier on the track":
+    "コースの手前へ",
+  "Later on the track":
+    "コースの先へ",
+  "here":
+    "ここ",
+  "metres from the point you tapped":
+    "タップした地点からの距離 m",
+  "Track from {a} to {b} m":
+    "コース {a}〜{b} m",
+  "in corner {n}'s section":
+    "コーナー {n} の区間",
+  "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
+    "コース上の任意の地点: ラインとグラフのみで、アドバイスはありません。アドバイスはコーナー番号をタップしてください。",
+  "Show on the track":
+    "コース上で表示",
 };
 (globalThis.I18N_TABLES ||= {}).ja = I18N_JA;
 if (typeof module !== "undefined") module.exports = I18N_JA;

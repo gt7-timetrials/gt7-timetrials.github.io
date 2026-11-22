@@ -429,8 +429,6 @@ const I18N_DE = {
     "<b>Die oberste Zeile</b> zeigt deine Runde im Vergleich zur Referenz und den Gesamtabstand.",
   "<b>The map</b> colours each section by how much slower you are there than the reference: green is close, yellow and red are where the time goes. Start with the red ones.":
     "<b>Die Karte</b> färbt jeden Abschnitt danach, wie viel langsamer du dort bist als die Referenz: Grün ist nah dran, Gelb und Rot zeigen, wo die Zeit verloren geht. Fang mit den roten an.",
-  "<b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and steering drawn against the reference's.":
-    "<b>Tippe auf eine Kurve</b> auf der Karte oder auf ihre Nummer unter der Karte, um den Grund zu sehen: zuerst Tipps, dann deine Linie, Pedale und Lenkung im Vergleich zur Referenz.",
   "<b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see the same corner on each. With 3 or more laps, <b>Across your laps</b> shows where you lose most on average and where you're least consistent.":
     "<b>Mehr als eine Runde?</b> Wähle oben eine Runde oder blättere mit ‹ › im Kurvenfenster durch die Runden, um dieselbe Kurve in jeder Runde zu sehen. Ab 3 Runden zeigt <b>Über deine Runden</b>, wo du im Schnitt am meisten verlierst und wo du am wenigsten konstant bist.",
   "How to read this":
@@ -517,10 +515,6 @@ const I18N_DE = {
     "Diese Runde ist mit einem anderen Auto gefahren als die Referenz.",
   "The game's times include {s} s that isn't in the recorded laps (in a license test the timer can start before the car reaches the line), so the corners below add up to {total}.":
     "Die Zeiten im Spiel enthalten {s} s, die in den aufgenommenen Runden fehlen (in einer Lizenzprüfung kann die Uhr starten, bevor das Auto die Linie erreicht), daher ergeben die Kurven unten zusammen {total}.",
-  "Tap a corner to see where you lose time.":
-    "Tippe auf eine Kurve, um zu sehen, wo du Zeit verlierst.",
-  "Hover over or click a corner on the map.":
-    "Fahr mit der Maus über eine Kurve auf der Karte oder klick sie an.",
   "within 3% of the reference":
     "innerhalb von 3 % der Referenz",
   "3–5% slower":
@@ -885,6 +879,28 @@ const I18N_DE = {
     "Referenz: die Demonstrationsfahrt von GT7 in {time}.",
   "Could not load the Circuit Experiences.":
     "Die Streckenerfahrungen konnten nicht geladen werden.",
+  "<b>Tap a corner's number</b> on the map or under it to see why: tips first, then your line, pedals and steering drawn against the reference's. <b>Tap anywhere else on the track</b> to zoom in on that stretch (about 3 seconds of driving): the line and charts, without tips.":
+    "<b>Tippe auf die Nummer einer Kurve</b> auf der Karte oder darunter, um zu sehen, warum: zuerst die Tipps, dann deine Linie, Pedale und Lenkung im Vergleich zur Referenz. <b>Tippe auf eine beliebige andere Stelle der Strecke</b>, um diesen Abschnitt zu vergrößern (etwa 3 Sekunden Fahrt): Linie und Diagramme, ohne Tipps.",
+  "Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.":
+    "Tippe auf die Nummer einer Kurve, um zu sehen, wo du Zeit verlierst, oder auf eine beliebige Stelle der Strecke, um sie zu vergrößern.",
+  "Hover over or click a corner's number, or click anywhere on the track to zoom in.":
+    "Fahre mit der Maus über die Nummer einer Kurve oder klicke darauf, oder klicke auf eine beliebige Stelle der Strecke, um sie zu vergrößern.",
+  "Earlier on the track":
+    "Früher auf der Strecke",
+  "Later on the track":
+    "Später auf der Strecke",
+  "here":
+    "hier",
+  "metres from the point you tapped":
+    "Meter vom angetippten Punkt",
+  "Track from {a} to {b} m":
+    "Strecke von {a} bis {b} m",
+  "in corner {n}'s section":
+    "im Abschnitt von Kurve {n}",
+  "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
+    "Eine beliebige Stelle der Strecke: Linie und Diagramme, ohne Tipps. Tippe auf die Nummer einer Kurve für ihre Tipps.",
+  "Show on the track":
+    "Auf der Strecke zeigen",
 };
 (globalThis.I18N_TABLES ||= {}).de = I18N_DE;
 if (typeof module !== "undefined") module.exports = I18N_DE;

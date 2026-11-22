@@ -430,8 +430,6 @@ const I18N_ES = {
     "<b>La primera línea</b> es tu vuelta frente a la referencia, y la diferencia total entre ambas.",
   "<b>The map</b> colours each section by how much slower you are there than the reference: green is close, yellow and red are where the time goes. Start with the red ones.":
     "<b>El mapa</b> colorea cada tramo según cuánto más lento vas ahí que la referencia: verde es cerca; amarillo y rojo, donde se va el tiempo. Empieza por los rojos.",
-  "<b>Tap a corner</b> on the map, or its number under the map, to see why: tips first, then your line, pedals and steering drawn against the reference's.":
-    "<b>Toca una curva</b> en el mapa, o su número debajo del mapa, para ver por qué: primero los consejos y luego tu trazada, tus pedales y tu dirección dibujados frente a los de la referencia.",
   "<b>More than one lap?</b> Choose a lap at the top, or step through laps with ‹ › in the corner's panel to see the same corner on each. With 3 or more laps, <b>Across your laps</b> shows where you lose most on average and where you're least consistent.":
     "<b>¿Más de una vuelta?</b> Elige una vuelta arriba, o pasa de una a otra con ‹ › en el panel de la curva para ver la misma curva en cada una. Con 3 vueltas o más, <b>En todas tus vueltas</b> muestra dónde pierdes más de media y dónde eres menos constante.",
   "How to read this":
@@ -518,10 +516,6 @@ const I18N_ES = {
     "Esta vuelta es con otro coche que la referencia.",
   "The game's times include {s} s that isn't in the recorded laps (in a license test the timer can start before the car reaches the line), so the corners below add up to {total}.":
     "Los tiempos del juego incluyen {s} s que no están en las vueltas grabadas (en una prueba de licencia el cronómetro puede empezar antes de que el coche llegue a la línea), así que las curvas de abajo suman {total}.",
-  "Tap a corner to see where you lose time.":
-    "Toca una curva para ver dónde pierdes tiempo.",
-  "Hover over or click a corner on the map.":
-    "Pasa el ratón por una curva del mapa o haz clic en ella.",
   "within 3% of the reference":
     "a menos de un 3% de la referencia",
   "3–5% slower":
@@ -886,6 +880,28 @@ const I18N_ES = {
     "Referencia: la demostración de GT7, de {time}.",
   "Could not load the Circuit Experiences.":
     "No se pudieron cargar las Experiencias en circuito.",
+  "<b>Tap a corner's number</b> on the map or under it to see why: tips first, then your line, pedals and steering drawn against the reference's. <b>Tap anywhere else on the track</b> to zoom in on that stretch (about 3 seconds of driving): the line and charts, without tips.":
+    "<b>Toca el número de una curva</b> en el mapa o debajo de él para ver por qué: primero los consejos y luego tu trazada, tus pedales y tu dirección dibujados frente a los de la referencia. <b>Toca cualquier otro punto del circuito</b> para ampliar ese tramo (unos 3 segundos de conducción): la trazada y los gráficos, sin consejos.",
+  "Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.":
+    "Toca el número de una curva para ver dónde pierdes tiempo, o cualquier punto del circuito para ampliarlo.",
+  "Hover over or click a corner's number, or click anywhere on the track to zoom in.":
+    "Pasa el ratón por el número de una curva o haz clic en él, o haz clic en cualquier punto del circuito para ampliarlo.",
+  "Earlier on the track":
+    "Antes en el circuito",
+  "Later on the track":
+    "Después en el circuito",
+  "here":
+    "aquí",
+  "metres from the point you tapped":
+    "metros desde el punto que tocaste",
+  "Track from {a} to {b} m":
+    "Circuito de {a} a {b} m",
+  "in corner {n}'s section":
+    "en el tramo de la curva {n}",
+  "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
+    "Cualquier punto del circuito: la trazada y los gráficos, sin consejos. Toca el número de una curva para ver sus consejos.",
+  "Show on the track":
+    "Ver en el circuito",
 };
 (globalThis.I18N_TABLES ||= {}).es = I18N_ES;
 if (typeof module !== "undefined") module.exports = I18N_ES;

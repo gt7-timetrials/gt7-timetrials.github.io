@@ -180,6 +180,17 @@ assert.ok(s1.corners[3].themes.signed.braking > 5 * s1.corners[3].themes.signed.
 assert.deepStrictEqual(s1.corners[3].tips.map(t => t.split(":")[0]), ["Lifts", "Braking point", "Minimum speed"]);
 assert.ok(s1.corners[0].tips.some(t => t.includes("517 m, starting 573 m after the start line")), "the coast before corner 1");
 assert.ok(s1.corners[2].tips.some(t => t.startsWith("Lifts: 5 times")), "several lifts are one tip");
+// a lift tip can be shown on the track: one place for a lift, one for each of several lifts, none for other tips
+for (const c of [...r.corners, ...s1.corners]) c.tips.forEach((t, j) => {
+  const spots = c.tipSpots[j], lift = /^(Lifts?|Extra braking):/.test(t);
+  assert.strictEqual(!!spots, lift, `corner ${c.n}: ${t.slice(0, 30)}`);
+  if (lift) assert.ok(spots.every(m => m >= 0 && m < s1.length + r.length), "places on the track");
+});
+{
+  const lifts = s1.corners[2], j = lifts.tips.findIndex(t => t.startsWith("Lifts: 5 times"));
+  assert.strictEqual(lifts.tipSpots[j].length, 5, "each of the 5 lifts");
+  assert.match(Coach.cornerDetail(lifts, "Reference", s1), /Show on the track: (<button[^>]*data-spot="\d+"[^>]*>\d<\/button> ?){5}/);
+}
 // tips in order of importance: by the size of their theme in the corner (and only tips about a theme that matters)
 for (const res of [r, s1]) for (const c of res.corners) {
   const sizes = c.tipThemes.map(th => Math.abs(c.themes.signed[th] ?? 0));

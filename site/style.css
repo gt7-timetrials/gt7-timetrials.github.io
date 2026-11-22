@@ -235,7 +235,7 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .trackmap path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .trackmap .base { stroke: var(--line); }
 .trackmap .hit { stroke: transparent; cursor: pointer; }
-.trackmap .zone { cursor: pointer; outline: none; }
+.trackmap .zone { cursor: zoom-in; outline: none; }
 .trackmap .seg.good { stroke: var(--good); }
 .trackmap .seg.warn { stroke: var(--warn); }
 .trackmap .seg.bad { stroke: var(--bad); }
@@ -246,6 +246,15 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .trackmap .label circle.warn { fill: var(--warn); }
 .trackmap .label circle.bad { fill: var(--bad); }
 .trackmap .label.selected circle { stroke: var(--text); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+.trackmap .label:focus { outline: none; }
+.trackmap .label:focus circle { stroke: var(--text); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+/* zoomed in on a stretch of track: the stretch drawn over the map, a pin at the point tapped */
+.trackmap .spot-mark { pointer-events: none; }
+.trackmap .spot-seg { stroke: var(--text); opacity: 0.55; }
+.trackmap .spot-pin { fill: var(--card); stroke: var(--text); }
+.spot-head { flex-direction: column; align-items: flex-start; gap: 0; }
+.spot-links { white-space: nowrap; }
+.spot-link { border: 0; background: none; padding: 0 2px; font: inherit; color: var(--wr); text-decoration: underline; cursor: pointer; }
 .trackmap .label text { fill: #fff; text-anchor: middle; font-weight: 700; font-family: inherit; }
 .trackmap .sf { stroke: var(--text); }
 .trackmap .arrow { fill: var(--muted); }
