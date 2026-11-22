@@ -141,6 +141,11 @@ function standIn({ withCues, csv }) {
     await coach(p).locator('.trackmap .label[data-n="1"]').click();
     assert.match(await coach(p).locator(".corner-head").innerText(), /Corner 1/, "a corner's number opens the corner");
     assert.strictEqual(await coach(p).locator(".trackmap .spot-pin").count(), 0, "and the pin goes");
+    // a lift tip's "Show on the track" zooms in on the lift (S-1's corner 4 has lifts)
+    await coach(p).locator('.trackmap .label[data-n="4"]').click();
+    await coach(p).locator(".detail-body .spot-link").first().click();
+    await coach(p).locator(".spot-head").waitFor();
+    assert.strictEqual(await coach(p).locator(".trackmap .spot-pin").count(), 1, "a lift shown on the track");
     // the first comparison explains itself until "Got it"; the next one doesn't
     assert.match(await coach(p).locator(".guide").innerText(), /How to read this/);
     await coach(p).locator(".guide-ok").click();

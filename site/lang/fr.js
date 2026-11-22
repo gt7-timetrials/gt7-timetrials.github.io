@@ -899,6 +899,8 @@ const I18N_FR = {
     "dans la section du virage {n}",
   "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
     "N'importe quel point du circuit : la trajectoire et les graphiques, sans conseils. Touche le numéro d'un virage pour ses conseils.",
+  "Show on the track":
+    "Voir sur le circuit",
 };
 (globalThis.I18N_TABLES ||= {}).fr = I18N_FR;
 if (typeof module !== "undefined") module.exports = I18N_FR;

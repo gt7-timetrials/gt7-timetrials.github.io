@@ -899,6 +899,8 @@ const I18N_JA = {
     "コーナー {n} の区間",
   "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
     "コース上の任意の地点: ラインとグラフのみで、アドバイスはありません。アドバイスはコーナー番号をタップしてください。",
+  "Show on the track":
+    "コース上で表示",
 };
 (globalThis.I18N_TABLES ||= {}).ja = I18N_JA;
 if (typeof module !== "undefined") module.exports = I18N_JA;

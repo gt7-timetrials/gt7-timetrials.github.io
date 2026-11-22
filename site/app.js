@@ -772,6 +772,8 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     b.setAttribute("aria-pressed", String(!hideRef));
   });
   body.addEventListener("click", ev => {
+    const link = ev.target.closest(".spot-link"); // a lift tip's "Show on the track"
+    if (link) { selectSpot(+link.dataset.spot); return; }
     if (ev.target.closest(".cw-toggle")) { hideMine = !hideMine; applyHide(); }
     if (!ev.target.closest(".cl-toggle")) return;
     hideRef = !hideRef;

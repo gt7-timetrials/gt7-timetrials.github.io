@@ -900,6 +900,8 @@ const I18N_ES = {
     "en el tramo de la curva {n}",
   "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
     "Cualquier punto del circuito: la trazada y los gráficos, sin consejos. Toca el número de una curva para ver sus consejos.",
+  "Show on the track":
+    "Ver en el circuito",
 };
 (globalThis.I18N_TABLES ||= {}).es = I18N_ES;
 if (typeof module !== "undefined") module.exports = I18N_ES;

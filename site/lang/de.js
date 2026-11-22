@@ -899,6 +899,8 @@ const I18N_DE = {
     "im Abschnitt von Kurve {n}",
   "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
     "Eine beliebige Stelle der Strecke: Linie und Diagramme, ohne Tipps. Tippe auf die Nummer einer Kurve für ihre Tipps.",
+  "Show on the track":
+    "Auf der Strecke zeigen",
 };
 (globalThis.I18N_TABLES ||= {}).de = I18N_DE;
 if (typeof module !== "undefined") module.exports = I18N_DE;

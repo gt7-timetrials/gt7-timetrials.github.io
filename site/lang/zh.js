@@ -899,6 +899,8 @@ const I18N_ZH = {
     "位于第 {n} 弯的路段",
   "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
     "赛道上的任意位置：只有走线和图表，没有建议。点击弯道编号查看其建议。",
+  "Show on the track":
+    "在赛道上显示",
 };
 (globalThis.I18N_TABLES ||= {}).zh = I18N_ZH;
 if (typeof module !== "undefined") module.exports = I18N_ZH;

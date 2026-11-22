@@ -899,6 +899,8 @@ const I18N_IT = {
     "nel tratto della curva {n}",
   "Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.":
     "Qualsiasi punto del circuito: la traiettoria e i grafici, senza consigli. Tocca il numero di una curva per i suoi consigli.",
+  "Show on the track":
+    "Mostra sul circuito",
 };
 (globalThis.I18N_TABLES ||= {}).it = I18N_IT;
 if (typeof module !== "undefined") module.exports = I18N_IT;

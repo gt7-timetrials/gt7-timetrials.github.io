@@ -253,6 +253,8 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .trackmap .spot-seg { stroke: var(--text); opacity: 0.55; }
 .trackmap .spot-pin { fill: var(--card); stroke: var(--text); }
 .spot-head { flex-direction: column; align-items: flex-start; gap: 0; }
+.spot-links { white-space: nowrap; }
+.spot-link { border: 0; background: none; padding: 0 2px; font: inherit; color: var(--wr); text-decoration: underline; cursor: pointer; }
 .trackmap .label text { fill: #fff; text-anchor: middle; font-weight: 700; font-family: inherit; }
 .trackmap .sf { stroke: var(--text); }
 .trackmap .arrow { fill: var(--muted); }

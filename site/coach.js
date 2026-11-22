@@ -339,12 +339,12 @@ const Coach = (() => {
       // the tips, most important first: by the size of their theme in this corner, keeping the order within a theme
       const size = th => Math.abs(c.themes.signed[th] ?? 0);
       const order = c.tips.map((t, j) => j).sort((x, y) => size(c.tipThemes[y]) - size(c.tipThemes[x]) || x - y);
-      for (const key of ["tips", "tipKinds", "tipThemes"]) c[key] = order.map(j => c[key][j]);
+      for (const key of ["tips", "tipKinds", "tipThemes", "tipSpots"]) c[key] = order.map(j => c[key][j]);
     });
     out.corners.forEach(c => {
       delete c.tipSpans;
       if (c.incident) return;
-      const one = t => { c.tips = [t.text]; c.tipKinds = [t.kind]; c.tipThemes = [TIP_THEME[t.kind]]; };
+      const one = t => { c.tips = [t.text]; c.tipKinds = [t.kind]; c.tipThemes = [TIP_THEME[t.kind]]; c.tipSpots = [null]; };
       // a corner within 0.5% of the reference's time: no advice, like the bar
       if (c.themes.close) { one(tip("close", "Close to {who} here.", { who })); return; }
       // only tips about a theme that matters here: at least TIP_SHARE of the corner's split and TIP_MIN_S
@@ -354,7 +354,7 @@ const Coach = (() => {
         return !th || (Math.abs(c.themes.signed[th]) >= TIP_SHARE * sizes && Math.abs(c.themes.parts[th]) >= TIP_MIN_S);
       });
       if (!keep.some(Boolean)) { one(tip("noSingle", "No single big difference: small losses through the whole section.")); return; }
-      for (const key of ["tips", "tipKinds", "tipThemes"]) c[key] = c[key].filter((t, j) => keep[j]);
+      for (const key of ["tips", "tipKinds", "tipThemes", "tipSpots"]) c[key] = c[key].filter((t, j) => keep[j]);
     });
     return out;
   }
@@ -532,7 +532,7 @@ const Coach = (() => {
       }
       // a spin or crash: everything else in the corner follows from it, so no advice
       if (incident) t = [tip("incident", "You spin out or crash on this corner.")];
-      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, incident, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t.map(x => x.text), tipKinds: t.map(x => x.kind), tipSpans: t.map(x => x.span ?? null), lifts: mine, line };
+      return { n: i + 1, apex, from: z0, to: z1, entry, exit, lost, incident, share, approachLost, cornerLost, colour: colour(lost, share), me: me_m, ref: ref_m, tips: t.map(x => x.text), tipKinds: t.map(x => x.kind), tipSpans: t.map(x => x.span ?? null), tipSpots: t.map(x => x.spots ?? null), lifts: mine, line };
     }) };
   }
 
@@ -662,6 +662,7 @@ const Coach = (() => {
       n: zs.length, brake: braking ? " " + tr("or brake") : "", who, m: zs.reduce((a, z) => a + z.length, 0),
       where: zs.map(z => metres(z.from, apex)).join(", ") });
     t.span = [Math.min(...zs.map(z => z.from)), Math.max(...zs.map(z => z.to))];
+    t.spots = zs.map(z => Math.round((z.from + z.to) / 2)); // each lift can be shown on the track
     return t;
   }
 
@@ -673,6 +674,7 @@ const Coach = (() => {
       ? tip("extraBrake", "Extra braking: you brake (up to {p}%) for {m} m, starting {where}, where {who} doesn't brake and averages {ref}% throttle.", v)
       : tip("extraLift", "Lift: you average {me}% throttle for {m} m, starting {where}, where {who} averages {ref}%.", v);
     t.span = [z.from, z.to]; // its theme is the one its metres' time went to
+    t.spots = [Math.round((z.from + z.to) / 2)]; // and it can be shown on the track
     return t;
   }
 
@@ -1127,13 +1129,21 @@ const Coach = (() => {
       : themeBar(t.parts)}</div>`;
   }
 
+  // a lift or extra braking tip: a link to zoom in on it (one per lift: "Show on the track: 1 2 3")
+  function spotLinks(spots) {
+    if (!spots?.length) return "";
+    const link = (m, text) => `<button type="button" class="spot-link" data-spot="${m}">${text}</button>`;
+    return ` <span class="spot-links">${spots.length === 1 ? link(spots[0], tr("Show on the track"))
+      : `${tr("Show on the track")}: ${spots.map((m, i) => link(m, i + 1)).join(" ")}`}</span>`;
+  }
+
   function cornerDetail(c, who, result) {
     const label = named(who);
     const row = (name, f) => `<tr><th>${name}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
     return `<div class="corner-head"><b>${tr("Corner {n}", { n: c.n })}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span>
       <span class="muted">${tr("{share} in this section", { share: fmtShare(c.share) })}</span></div>
       ${c.incident ? "" : cornerThemes(c, who === "Reference" ? tr("the reference") : label)}
-      <ul class="tips">${c.tips.map(t => `<li>${t}</li>`).join("")}</ul>
+      <ul class="tips">${c.tips.map((t, j) => `<li>${t}${spotLinks(c.tipSpots?.[j])}</li>`).join("")}</ul>
       ${result ? cornerWidths(result, c, who) + cornerLines(result, c, who) + pedalChart(result, c, who) : ""}
       <table class="corner-table"><thead><tr><th>${tr("Distances from the apex")}</th><th class="num">${tr("You")}</th><th class="num">${label}</th></tr></thead><tbody>
         ${row(tr("Braking point"), m => (m.brakeAt === null ? (m.liftAt === null ? tr("no braking") : tr("lift only")) : metres(m.brakeAt, c.apex)))}
