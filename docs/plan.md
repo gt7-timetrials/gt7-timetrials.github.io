@@ -173,7 +173,7 @@ Super License tests: keep it simple, and only take on what one person can look a
      slower for understeer, smoother throttle on exit for oversteer. Needs steering and yaw (or speed against
      steering) from the telemetry, compared with the reference's at the same point.
 
-   - **Zoom in anywhere on the track** (owner, 22 November): tap the track itself, not a corner, to see about 100 m
+   - [x] **Zoom in anywhere on the track** (live 22 November, #93; the window is 3 s of driving): tap the track itself, not a corner, to see about 100 m
      centred on that point, with the usual close-up and charts (line, pedals, steering, speed) but no tips and no bar.
      Sometimes the difference isn't at a corner: on Tokyo Expressway Central (this week's trial) the sections are
      long (only 4 corners found, two of them over 1 km) and the time goes on the kinks and sweepers between them.
