@@ -173,6 +173,19 @@ Super License tests: keep it simple, and only take on what one person can look a
      slower for understeer, smoother throttle on exit for oversteer. Needs steering and yaw (or speed against
      steering) from the telemetry, compared with the reference's at the same point.
 
+   - **Zoom in anywhere on the track** (owner, 22 November): tap the track itself, not a corner, to see about 100 m
+     centred on that point, with the usual close-up and charts (line, pedals, steering, speed) but no tips and no bar.
+     Sometimes the difference isn't at a corner: on Tokyo Expressway Central (this week's trial) the sections are
+     long (only 4 corners found, two of them over 1 km) and the time goes on the kinks and sweepers between them.
+     The owner's best lap there (1:28.143 vs 1:21.752) brakes for 125 m and 95 m where MetalGear9493 is flat out,
+     but the corner close-up is around the apex, so the line there can't be seen.
+     - Clear what was tapped: the corner numbers stay the way into a corner (with its tips); a tap on the line drops
+       a pin and opens a panel headed by the distance ("1,180-1,280 m, in corner 2's section"), styled apart from
+       the corner panel. A wide enough touch target on the line, and the pin and corner numbers kept apart.
+     - Step along with ‹ › (half a window at a time), and a wider window on fast stretches (about 3 s of driving
+       rather than a fixed 100 m) if 100 m turns out too short at 250 km/h.
+     - A lift or extra braking tip could open this view at its spot ("show on the track").
+
 5. **Comparing several laps, and your own best lap as a reference.**
    - Show two or more laps against the reference at once, for example your best and worst (asked for by a tester).
    - With several laps recorded, your **best composite lap** (your best section from each lap, put together) as a
