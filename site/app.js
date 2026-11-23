@@ -235,6 +235,7 @@ async function compareLap(e, file, out, save) {
       return;
     }
     out._corner = null; // a new recording: start from its worst corner
+    counted();
     const across = Coach.acrossLaps(ref, choices.laps, tipWho(e)); // with 3+ clean laps
     const themesAll = Coach.themesAcross(ref, choices.laps); // with 2+ clean laps
     // the fastest lap that doesn't look like a cut corner, unless the player picks another one
@@ -506,6 +507,26 @@ function calibrationEvent(ev) {
   } else if (ev.type === "error") endCalibration(ev.message, "miss");
   else if (ev.type === "stopped" && calibrating) endCalibration(tr("Stopped before the end. Try again."), "miss");
 }
+// In the app, once: after a third comparison, one line asking for a rating on Google Play, gone for good once its link or
+// its ✕ is tapped. Never a pop-up, never during recording.
+const RATE_COUNT = "comparisons", RATE_ASKED = "rate-asked", RATE_AFTER = 3;
+const PLAY_URL = "https://play.google.com/store/apps/details?id=io.github.gt7timetrials";
+function counted() {
+  if (!APP) return;
+  try { localStorage.setItem(RATE_COUNT, String(+(localStorage.getItem(RATE_COUNT) || 0) + 1)); } catch (err) { /* not kept */ }
+}
+function rateLine() {
+  if (!APP) return "";
+  try { if (localStorage.getItem(RATE_ASKED) || +(localStorage.getItem(RATE_COUNT) || 0) < RATE_AFTER) return ""; } catch (err) { return ""; }
+  return `<p class="rate-ask">${tr('Finding this useful? <a href="{url}">Rate it on Google Play</a>', { url: PLAY_URL })}
+    <button type="button" class="rate-x" aria-label="${tr("No thanks")}">✕</button></p>`;
+}
+document.addEventListener("click", ev => {
+  if (!ev.target.closest(".rate-ask a, .rate-x")) return;
+  try { localStorage.setItem(RATE_ASKED, "1"); } catch (err) { /* asked again next time */ }
+  document.querySelectorAll(".rate-ask").forEach(el => el.remove());
+});
+
 // How to read a comparison: shown above the first ones, until "Got it". The same steps are on the How to use tab.
 const GUIDE_SEEN = "guide-seen";
 const GUIDE_STEPS = `<ol>
@@ -721,6 +742,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
       {s} s that isn't in the recorded laps (in a license test the timer can
       start before the car reaches the line), so the corners below add up to {total}.`, { s: Math.abs(res.gameGap - res.recordedGap).toFixed(2), total: Coach.fmtLost(res.recordedGap) })}</p>` : ""}
     ${themesLapBox(res, !picker?.themesAll)}
+    ${rateLine()}
     ${guide()}
     ${acrossLaps(picker?.across)}
     <p class="hint tap-hint">${phone() ? tr("Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.") : tr("Hover over or click a corner's number, or click anywhere on the track to zoom in.")}</p>

@@ -901,6 +901,12 @@ const I18N_DE = {
     "Eine beliebige Stelle der Strecke: Linie und Diagramme, ohne Tipps. Tippe auf die Nummer einer Kurve für ihre Tipps.",
   "Show on the track":
     "Auf der Strecke zeigen",
+  "<b>Finding it useful?</b> A rating or review on <a>Google Play</a> helps other players find it. It only takes a moment, and it's the best way to support the app.":
+    "<b>Findest du sie nützlich?</b> Eine Bewertung oder Rezension bei <a>Google Play</a> hilft anderen Fahrern, sie zu finden. Das dauert nur einen Moment und ist die beste Art, die App zu unterstützen.",
+  "Finding this useful? <a>Rate it on Google Play</a>":
+    "Findest du sie nützlich? <a>Bewerte sie bei Google Play</a>",
+  "No thanks":
+    "Nein danke",
 };
 (globalThis.I18N_TABLES ||= {}).de = I18N_DE;
 if (typeof module !== "undefined") module.exports = I18N_DE;

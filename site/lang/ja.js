@@ -901,6 +901,12 @@ const I18N_JA = {
     "コース上の任意の地点: ラインとグラフのみで、アドバイスはありません。アドバイスはコーナー番号をタップしてください。",
   "Show on the track":
     "コース上で表示",
+  "<b>Finding it useful?</b> A rating or review on <a>Google Play</a> helps other players find it. It only takes a moment, and it's the best way to support the app.":
+    "<b>役に立っていますか？</b> <a>Google Play</a> で評価やレビューをいただけると、ほかのプレイヤーが見つけやすくなります。すぐに済みますし、アプリを応援するいちばんの方法です。",
+  "Finding this useful? <a>Rate it on Google Play</a>":
+    "役に立っていますか？ <a>Google Play で評価する</a>",
+  "No thanks":
+    "表示しない",
 };
 (globalThis.I18N_TABLES ||= {}).ja = I18N_JA;
 if (typeof module !== "undefined") module.exports = I18N_JA;

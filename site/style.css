@@ -254,6 +254,9 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .trackmap .spot-pin { fill: var(--card); stroke: var(--text); }
 .spot-head { flex-direction: column; align-items: flex-start; gap: 0; }
 .spot-links { white-space: nowrap; }
+.rate-ask { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin: 8px 0; padding: 6px 10px;
+  border: 1px solid var(--line); border-radius: 8px; font-size: 0.92rem; }
+.rate-x { border: 0; background: none; font: inherit; color: var(--muted); cursor: pointer; padding: 2px 6px; }
 .spot-link { border: 0; background: none; padding: 0 2px; font: inherit; color: var(--wr); text-decoration: underline; cursor: pointer; }
 .trackmap .label text { fill: #fff; text-anchor: middle; font-weight: 700; font-family: inherit; }
 .trackmap .sf { stroke: var(--text); }
