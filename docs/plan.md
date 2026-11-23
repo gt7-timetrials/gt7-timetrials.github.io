@@ -233,6 +233,15 @@ Super License tests: keep it simple, and only take on what one person can look a
 
 ## Done
 
+- **Easier to read** (#95, 23 November): a headline under the lap (the corner with most to gain and where in it,
+  with See why); explanations (bars, colours, medal times) open on a first visit and folded after Got it; the corner
+  panel shows three tips then More tips, the dots close-up first with the pedals along both lines folded, and the
+  distances table folded. Still to consider from the same review: a simpler lap picker (fastest selected, ‹ ›, a
+  list on tap), fewer tabs (Past trials and Top drivers as Stats; How to use, About and Settings behind a menu), and
+  Try it with a sample lap (in Later).
+- **Asking for a Google Play rating** (#94): a paragraph on About, and in the app one line after a third comparison,
+  gone for good once tapped.
+
 Kept short; the details are in the pull requests and the git history.
 
 - **Skills that matter most: Where your time goes** (18 November, #87, #88). The analysis of the owner's laps and top
