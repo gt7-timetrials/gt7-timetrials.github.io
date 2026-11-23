@@ -907,6 +907,26 @@ const I18N_JA = {
     "役に立っていますか？ <a>Google Play で評価する</a>",
   "No thanks":
     "表示しない",
+  "What do these mean?":
+    "これはどういう意味？",
+  "mostly braking":
+    "主にブレーキング",
+  "mostly on the exit":
+    "主に立ち上がり",
+  "mostly on the straight":
+    "主にストレート",
+  "mostly your line":
+    "主にライン",
+  "Biggest gain: <b>corner {n}</b> ({lost}), {where}.":
+    "いちばん縮められるのは<b>コーナー {n}</b>（{lost}）、{where}です。",
+  "Biggest gain: <b>corner {n}</b> ({lost}).":
+    "いちばん縮められるのは<b>コーナー {n}</b>（{lost}）です。",
+  "See why":
+    "理由を見る",
+  "More tips ({n})":
+    "ほかのアドバイス（{n}）",
+  "Pedals along both lines":
+    "両方のラインに沿ったペダル",
 };
 (globalThis.I18N_TABLES ||= {}).ja = I18N_JA;
 if (typeof module !== "undefined") module.exports = I18N_JA;

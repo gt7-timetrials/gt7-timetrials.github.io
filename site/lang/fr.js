@@ -907,6 +907,26 @@ const I18N_FR = {
     "Tu la trouves utile ? <a>Note-la sur Google Play</a>",
   "No thanks":
     "Non merci",
+  "What do these mean?":
+    "Qu'est-ce que ça veut dire ?",
+  "mostly braking":
+    "surtout au freinage",
+  "mostly on the exit":
+    "surtout en sortie",
+  "mostly on the straight":
+    "surtout dans la ligne droite",
+  "mostly your line":
+    "surtout ta trajectoire",
+  "Biggest gain: <b>corner {n}</b> ({lost}), {where}.":
+    "Le plus à gagner : <b>virage {n}</b> ({lost}), {where}.",
+  "Biggest gain: <b>corner {n}</b> ({lost}).":
+    "Le plus à gagner : <b>virage {n}</b> ({lost}).",
+  "See why":
+    "Voir pourquoi",
+  "More tips ({n})":
+    "Plus de conseils ({n})",
+  "Pedals along both lines":
+    "Pédales le long des deux trajectoires",
 };
 (globalThis.I18N_TABLES ||= {}).fr = I18N_FR;
 if (typeof module !== "undefined") module.exports = I18N_FR;
