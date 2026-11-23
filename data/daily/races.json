@@ -3,23 +3,23 @@
   "races": [
     {
       "id": "A",
-      "track": "Blue Moon Bay Speedway - Infield A",
-      "car": "Gr.4 cars",
-      "free_choice": true,
-      "driver": "holl01"
+      "track": "Kyoto Driving Park - Miyabi",
+      "car": "Gran Turismo Racing Kart 125 Shifter",
+      "driver": "BW-_ららぴぴ"
     },
     {
       "id": "B",
-      "track": "Deep Forest Raceway",
-      "car": "Gr.3 cars",
+      "track": "Kyoto Driving Park - Yamagiwa",
+      "car": "Gr.4 cars",
       "free_choice": true,
-      "driver": "Monkis"
+      "driver": "Baglianza Corse"
     },
     {
       "id": "C",
-      "track": "Suzuka Circuit",
-      "car": "Dallara SF23 Super Formula / Toyota '23",
-      "driver": "F. Bertani"
+      "track": "24 Heures du Mans Racing Circuit",
+      "car": "Le Mans Hypercars",
+      "free_choice": true,
+      "driver": "Benno3003"
     }
   ]
 }

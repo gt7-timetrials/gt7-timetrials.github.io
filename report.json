@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-22T21:38:09.591609+00:00",
+ "generated_at": "2026-11-23T11:02:25.399107+00:00",
  "history_events": 206,
  "snapshot_events": 4,
  "historical_entrants": {
@@ -17,13 +17,13 @@
    "car": "Mazda ɛ̃fini RX-7 Type R (FD) '91",
    "starts": "2026-11-12T18:00:00+11:00",
    "ends": "2026-11-26T17:59:59+11:00",
-   "days_elapsed": 10.6,
-   "days_left": 3.4,
-   "entrants": 135554,
+   "days_elapsed": 11.2,
+   "days_left": 2.8,
+   "entrants": 137351,
    "entrants_projection": {
-    "projected": 153550,
-    "low": 151435,
-    "high": 157092,
+    "projected": 149362,
+    "low": 148369,
+    "high": 151583,
     "events": 4
    },
    "wr_ms": 128779,
@@ -38,11 +38,11 @@
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 128700,
-    "gold_ms": 132561,
-    "gold_fast_ms": 132392,
+    "final_wr_ms": 128710,
+    "gold_ms": 132571,
+    "gold_fast_ms": 132448,
     "gold_slow_ms": 132642,
-    "final_wr_fast_ms": 128536,
+    "final_wr_fast_ms": 128591,
     "final_wr_slow_ms": 128779,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
@@ -55,31 +55,31 @@
    "car": "Suzuki Swift Sport KATANA Edition Gr.4",
    "starts": "2026-11-19T18:00:00+11:00",
    "ends": "2026-12-03T17:59:59+11:00",
-   "days_elapsed": 3.6,
-   "days_left": 10.4,
-   "entrants": 70047,
+   "days_elapsed": 4.2,
+   "days_left": 9.8,
+   "entrants": 73205,
    "entrants_projection": {
-    "projected": 128308,
-    "low": 122376,
-    "high": 133372,
+    "projected": 121697,
+    "low": 115950,
+    "high": 126106,
     "events": 3
    },
    "wr_ms": 81409,
    "wr_holder": "Blackwing-_rako",
    "gold_now_ms": 83851,
-   "top100_spread_pct": 1.336,
+   "top100_spread_pct": 1.309,
    "strong_drivers_posted": [
     "MetalGear9493"
    ],
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 81196,
-    "gold_ms": 83631,
-    "gold_fast_ms": 83471,
-    "gold_slow_ms": 83784,
-    "final_wr_fast_ms": 81040,
-    "final_wr_slow_ms": 81344,
+    "final_wr_ms": 81222,
+    "gold_ms": 83658,
+    "gold_fast_ms": 83500,
+    "gold_slow_ms": 83800,
+    "final_wr_fast_ms": 81068,
+    "final_wr_slow_ms": 81360,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
   }
