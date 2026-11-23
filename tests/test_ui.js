@@ -148,6 +148,13 @@ function standIn({ withCues, csv }) {
     await coach(p).locator(".detail-body .spot-link").first().click();
     await coach(p).locator(".spot-head").waitFor();
     assert.strictEqual(await coach(p).locator(".trackmap .spot-pin").count(), 1, "a lift shown on the track");
+    // the headline: the corner with most to gain and where in it; See why opens it
+    assert.match(await coach(p).locator(".headline-gain").innerText(), /Biggest gain:\s+corner \d+\s+\(\+\d\.\d\d s\)/);
+    const why = await coach(p).locator(".see-why").getAttribute("data-n");
+    await coach(p).locator(".see-why").click();
+    assert.match(await coach(p).locator(".corner-head").innerText(), new RegExp(`Corner ${why}\\b`), "See why opens the corner");
+    // explanations are open the first time, and folded away after Got it (below)
+    assert.ok(await coach(p).locator("details.explain").first().evaluate(d => d.open), "explanations open at first");
     // the first comparison explains itself until "Got it"; the next one doesn't
     assert.match(await coach(p).locator(".guide").innerText(), /How to read this/);
     await coach(p).locator(".guide-ok").click();
@@ -155,6 +162,7 @@ function standIn({ withCues, csv }) {
     await p.locator('input.license-file[data-i="0"]').setInputFiles(s1File);
     await coach(p).locator(".coach-summary").waitFor();
     assert.strictEqual(await p.locator(".guide").count(), 0, "and it stays hidden");
+    assert.ok(await coach(p).locator("details.explain").first().evaluate(d => !d.open), "explanations folded after Got it");
     // the website's own wording: the recorder link, no app notes
     assert.ok(await p.locator("#tab-license .license-intro .web-only").isVisible(), "website: the recorder link");
     assert.ok(await p.locator("#tab-license .license-intro .app-only").isHidden(), "website: no app wording");

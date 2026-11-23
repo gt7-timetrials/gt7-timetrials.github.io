@@ -254,6 +254,13 @@ table.compact td.name { white-space: nowrap; width: 100%; }
 .trackmap .spot-pin { fill: var(--card); stroke: var(--text); }
 .spot-head { flex-direction: column; align-items: flex-start; gap: 0; }
 .spot-links { white-space: nowrap; }
+/* folded explanations and extras: a quiet summary line */
+details.explain, details.more-tips, details.more-widths, details.more-table { margin: 6px 0; }
+details.explain > summary, details.more-tips > summary, details.more-widths > summary, details.more-table > summary {
+  cursor: pointer; color: var(--muted); font-size: 0.9rem; }
+details.explain[open] > summary, details.more-widths[open] > summary, details.more-table[open] > summary { margin-bottom: 4px; }
+.headline-gain { margin: 8px 0; padding: 8px 12px; border-left: 4px solid var(--accent); background: var(--card);
+  border-radius: 6px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
 .rate-ask { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin: 8px 0; padding: 6px 10px;
   border: 1px solid var(--line); border-radius: 8px; font-size: 0.92rem; }
 .rate-x { border: 0; background: none; font: inherit; color: var(--muted); cursor: pointer; padding: 2px 6px; }

@@ -907,6 +907,26 @@ const I18N_ZH = {
     "觉得有用吗？<a>在 Google Play 上评分</a>",
   "No thanks":
     "不用了",
+  "What do these mean?":
+    "这些是什么意思？",
+  "mostly braking":
+    "主要在刹车",
+  "mostly on the exit":
+    "主要在出弯",
+  "mostly on the straight":
+    "主要在直道",
+  "mostly your line":
+    "主要是走线",
+  "Biggest gain: <b>corner {n}</b> ({lost}), {where}.":
+    "最大提升空间：<b>第 {n} 弯</b>（{lost}），{where}。",
+  "Biggest gain: <b>corner {n}</b> ({lost}).":
+    "最大提升空间：<b>第 {n} 弯</b>（{lost}）。",
+  "See why":
+    "查看原因",
+  "More tips ({n})":
+    "更多建议（{n}）",
+  "Pedals along both lines":
+    "两条走线上的踏板",
 };
 (globalThis.I18N_TABLES ||= {}).zh = I18N_ZH;
 if (typeof module !== "undefined") module.exports = I18N_ZH;

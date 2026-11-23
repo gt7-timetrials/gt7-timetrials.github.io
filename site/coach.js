@@ -1137,15 +1137,26 @@ const Coach = (() => {
       : `${tr("Show on the track")}: ${spots.map((m, i) => link(m, i + 1)).join(" ")}`}</span>`;
   }
 
+  // the tips: the three that matter most, then the rest folded away
+  const TIPS_SHOWN = 3;
+  function tipList(c) {
+    const li = (t, j) => `<li>${t}${spotLinks(c.tipSpots?.[j])}</li>`;
+    const first = c.tips.slice(0, TIPS_SHOWN).map(li).join(""), rest = c.tips.slice(TIPS_SHOWN).map((t, j) => li(t, j + TIPS_SHOWN)).join("");
+    return `<ul class="tips">${first}</ul>${rest ? `<details class="more-tips"><summary>${tr("More tips ({n})", { n: c.tips.length - TIPS_SHOWN })}</summary>
+      <ul class="tips">${rest}</ul></details>` : ""}`;
+  }
+  // the pedals drawn along both lines: folded away under the dots close-up, which shows the same corner
+  const moreWidths = (result, c, who) => `<details class="more-widths"><summary>${tr("Pedals along both lines")}</summary>${cornerWidths(result, c, who)}</details>`;
+
   function cornerDetail(c, who, result) {
     const label = named(who);
     const row = (name, f) => `<tr><th>${name}</th><td class="num">${f(c.me)}</td><td class="num">${f(c.ref)}</td></tr>`;
     return `<div class="corner-head"><b>${tr("Corner {n}", { n: c.n })}</b> <span class="pill ${c.colour}">${fmtLost(c.lost)}</span>
       <span class="muted">${tr("{share} in this section", { share: fmtShare(c.share) })}</span></div>
       ${c.incident ? "" : cornerThemes(c, who === "Reference" ? tr("the reference") : label)}
-      <ul class="tips">${c.tips.map((t, j) => `<li>${t}${spotLinks(c.tipSpots?.[j])}</li>`).join("")}</ul>
-      ${result ? cornerWidths(result, c, who) + cornerLines(result, c, who) + pedalChart(result, c, who) : ""}
-      <table class="corner-table"><thead><tr><th>${tr("Distances from the apex")}</th><th class="num">${tr("You")}</th><th class="num">${label}</th></tr></thead><tbody>
+      ${tipList(c)}
+      ${result ? cornerLines(result, c, who) + moreWidths(result, c, who) + pedalChart(result, c, who) : ""}
+      <details class="more-table"><summary>${tr("Distances from the apex")}</summary><table class="corner-table"><thead><tr><th>${tr("Distances from the apex")}</th><th class="num">${tr("You")}</th><th class="num">${label}</th></tr></thead><tbody>
         ${row(tr("Braking point"), m => (m.brakeAt === null ? (m.liftAt === null ? tr("no braking") : tr("lift only")) : metres(m.brakeAt, c.apex)))}
         ${row(tr("Peak brake"), m => (m.brakeAt === null ? "—" : pct(m.peakBrake)))}
         ${row(tr("Brake when turning in"), m => pct(m.brakeAtTurnIn))}
@@ -1154,7 +1165,7 @@ const Coach = (() => {
         ${row(tr("Full throttle"), m => metres(m.fullGas, c.apex))}
         ${row(tr("Steering lock"), m => `${Math.round(m.maxSteerDeg)}°`)}
         ${row(tr("Exit speed"), m => `${Math.round(m.exitSpeed)} km/h`)}
-      </tbody></table>`;
+      </tbody></table></details>`;
   }
 
   // The point of the track nearest a point on the map (map units): its distance from the line in metres (s) and the
@@ -1200,7 +1211,7 @@ const Coach = (() => {
     return `<div class="corner-head spot-head"><b>${tr("Track from {a} to {b} m", { a, b })}</b>
       <span class="muted">${tr("in corner {n}'s section", { n: corner.n })}</span></div>
       <p class="hint">${tr("Any point on the track: the line and charts, without tips. Tap a corner's number for its tips.")}</p>
-      ${cornerWidths(result, c, who) + cornerLines(result, c, who) + pedalChart(result, c, who)}`;
+      ${cornerLines(result, c, who) + moreWidths(result, c, who) + pedalChart(result, c, who)}`;
   }
   // the stretch on the lap map: the window drawn over the track, and a pin at the point tapped
   function spotMark(result, s) {

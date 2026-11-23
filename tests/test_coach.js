@@ -103,11 +103,13 @@ assert.ok(closeUp.includes("gear shift to that gear"));
   const h = Coach.cornerDetail(ng.corners[6], "WR", ng);
   assert.ok(!h.includes("cl-shift") && !h.includes("gear shift to that gear"), "no gear recorded: no gear shift squares");
 }
-const dots = closeUp.slice(closeUp.indexOf('class="corner-lines"'));
+const dots = closeUp.slice(closeUp.indexOf('class="corner-lines"'), closeUp.indexOf('class="more-widths"')); // the dots close-up alone
 assert.ok(dots.includes('class="cl-legend"') && !dots.includes("slowest"), "legend; no slowest-point marker");
-// the line-width close-up comes first: both lines, thickness following the pedals, both braking points, its own button
-const widthsUp = closeUp.slice(closeUp.indexOf('class="corner-widths"'), closeUp.indexOf('class="corner-lines"'));
-assert.ok(closeUp.indexOf('class="corner-widths"') >= 0 && closeUp.indexOf('class="corner-widths"') < closeUp.indexOf('class="corner-lines"'));
+// the line-width close-up, folded away under the dots: both lines, thickness following the pedals, both braking points,
+// its own button
+const widthsUp = closeUp.slice(closeUp.indexOf('class="corner-widths"'), closeUp.indexOf('class="pedal-chart"'));
+assert.ok(closeUp.indexOf('class="corner-lines"') < closeUp.indexOf('<details class="more-widths">') &&
+  closeUp.indexOf('<details class="more-widths">') < closeUp.indexOf('class="corner-widths"'), "the dots first, the line widths folded after");
 assert.strictEqual((widthsUp.match(/cw-dot brake/g) || []).length, 2);
 assert.ok(new Set([...widthsUp.matchAll(/class="cw-me"[^>]*stroke-width:([\d.]+)/g)].map(m => m[1])).size > 5, "line thickness follows the pedals");
 assert.ok(widthsUp.includes('class="cw-toggle"') && widthsUp.includes("Hide your line"));
@@ -190,6 +192,15 @@ for (const c of [...r.corners, ...s1.corners]) c.tips.forEach((t, j) => {
   const lifts = s1.corners[2], j = lifts.tips.findIndex(t => t.startsWith("Lifts: 5 times"));
   assert.strictEqual(lifts.tipSpots[j].length, 5, "each of the 5 lifts");
   assert.match(Coach.cornerDetail(lifts, "Reference", s1), /Show on the track: (<button[^>]*data-spot="\d+"[^>]*>\d<\/button> ?){5}/);
+}
+// the tips: the three that matter most, the rest folded under "More tips"; the distances table folded too
+{
+  const many = [...r.corners, ...s1.corners].find(c => c.tips.length > 3);
+  const h = Coach.cornerDetail(many, "WR", r.corners.includes(many) ? r : s1);
+  const shown = h.slice(0, h.indexOf('<details class="more-tips">'));
+  assert.strictEqual((shown.match(/<li>/g) || []).length, 3, "three tips shown");
+  assert.ok(h.includes(`More tips (${many.tips.length - 3})`), "the rest folded");
+  assert.ok(h.includes('<details class="more-table"><summary>Distances from the apex'), "the table folded");
 }
 // tips in order of importance: by the size of their theme in the corner (and only tips about a theme that matters)
 for (const res of [r, s1]) for (const c of res.corners) {

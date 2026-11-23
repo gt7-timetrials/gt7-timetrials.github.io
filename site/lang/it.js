@@ -907,6 +907,26 @@ const I18N_IT = {
     "Ti è utile? <a>Valutala su Google Play</a>",
   "No thanks":
     "No, grazie",
+  "What do these mean?":
+    "Cosa significa?",
+  "mostly braking":
+    "soprattutto in frenata",
+  "mostly on the exit":
+    "soprattutto in uscita",
+  "mostly on the straight":
+    "soprattutto sul rettilineo",
+  "mostly your line":
+    "soprattutto la traiettoria",
+  "Biggest gain: <b>corner {n}</b> ({lost}), {where}.":
+    "Dove puoi guadagnare di più: <b>curva {n}</b> ({lost}), {where}.",
+  "Biggest gain: <b>corner {n}</b> ({lost}).":
+    "Dove puoi guadagnare di più: <b>curva {n}</b> ({lost}).",
+  "See why":
+    "Vedi perché",
+  "More tips ({n})":
+    "Altri consigli ({n})",
+  "Pedals along both lines":
+    "Pedali lungo le due traiettorie",
 };
 (globalThis.I18N_TABLES ||= {}).it = I18N_IT;
 if (typeof module !== "undefined") module.exports = I18N_IT;

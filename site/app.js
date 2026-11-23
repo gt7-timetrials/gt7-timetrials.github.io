@@ -56,8 +56,8 @@ function targets(e) {
       <thead><tr><th></th><th class="num">${tr("Today")}</th><th class="num">${tr("At finish")}</th>
         <th class="num">${tr("Safe target")}</th></tr></thead>
       <tbody>${rows}</tbody></table>
-    <p class="hint">${tr(`Medal times are the world record + 3% (gold), 5% (silver) and 10% (bronze), so they get harder as the
-      record falls. "Safe target" beats the fast end of the predicted range, which 9 out of 10 past events stayed within.`)}</p>`;
+    ${explain(`<p class="hint">${tr(`Medal times are the world record + 3% (gold), 5% (silver) and 10% (bronze), so they get harder as the
+      record falls. "Safe target" beats the fast end of the predicted range, which 9 out of 10 past events stayed within.`)}</p>`)}`;
 }
 
 // Course difficulty: how far 100th place is behind the world record, rated against all past events: easy below the
@@ -527,6 +527,10 @@ document.addEventListener("click", ev => {
   document.querySelectorAll(".rate-ask").forEach(el => el.remove());
 });
 
+// Explanations (what the bars, colours and medal times mean): open until "Got it" on the guide, folded away after
+const guideSeen = () => { try { return !!localStorage.getItem(GUIDE_SEEN); } catch (err) { return false; } };
+const explain = html => `<details class="explain"${guideSeen() ? "" : " open"}><summary>${tr("What do these mean?")}</summary>${html}</details>`;
+
 // How to read a comparison: shown above the first ones, until "Got it". The same steps are on the How to use tab.
 const GUIDE_SEEN = "guide-seen";
 const GUIDE_STEPS = `<ol>
@@ -719,12 +723,24 @@ const THEMES_ABOUT = () => tr(`<b>Braking</b> is the speed you lose from the bra
 function themesAcrossBox(all) {
   if (!all) return "";
   return `<div class="themes"><h4>${tr("Where your time goes: average over your {n} laps", { n: all.laps })}</h4>${Coach.themeBar(all.parts)}
-    <p class="hint">${THEMES_ABOUT()}</p></div>`;
+    ${explain(`<p class="hint">${THEMES_ABOUT()}</p>`)}</div>`;
 }
 function themesLapBox(res, withAbout) {
   if (!res.themes || res.corners.some(c => c.incident)) return "";
   return `<div class="themes themes-lap"><h4>${tr("Where your time goes on this lap")}</h4>${Coach.themeBar(res.themes)}
-    ${withAbout ? `<p class="hint">${THEMES_ABOUT()}</p>` : ""}</div>`;
+    ${withAbout ? explain(`<p class="hint">${THEMES_ABOUT()}</p>`) : ""}</div>`;
+}
+
+// The one line to start from: the corner with the most time to gain, and the part of it (braking, exit, straight or
+// line) where most of it goes. It opens that corner.
+const THEME_WORDS = () => ({ braking: tr("mostly braking"), exit: tr("mostly on the exit"), straight: tr("mostly on the straight"), line: tr("mostly your line") });
+function headline(res) {
+  const c = res.corners.filter(c => !c.incident).reduce((a, c) => (!a || c.lost > a.lost ? c : a), null);
+  if (!c || c.lost < 0.05) return "";
+  const t = c.themes && !c.themes.close ? Object.entries(c.themes.parts).reduce((a, b) => (b[1] > a[1] ? b : a))[0] : null;
+  return `<p class="headline-gain"><span>${t ? tr("Biggest gain: <b>corner {n}</b> ({lost}), {where}.", { n: c.n, lost: Coach.fmtLost(c.lost), where: THEME_WORDS()[t] })
+    : tr("Biggest gain: <b>corner {n}</b> ({lost}).", { n: c.n, lost: Coach.fmtLost(c.lost) })}</span>
+    <button type="button" class="button-link see-why" data-n="${c.n}">${tr("See why")}</button></p>`;
 }
 
 function renderComparison(out, res, e, otherCar, picker, save) {
@@ -741,11 +757,12 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     ${Math.abs(res.gameGap - res.recordedGap) > 0.1 ? `<p class="hint">${tr(`The game's times include
       {s} s that isn't in the recorded laps (in a license test the timer can
       start before the car reaches the line), so the corners below add up to {total}.`, { s: Math.abs(res.gameGap - res.recordedGap).toFixed(2), total: Coach.fmtLost(res.recordedGap) })}</p>` : ""}
+    ${headline(res)}
     ${themesLapBox(res, !picker?.themesAll)}
     ${rateLine()}
     ${guide()}
     ${acrossLaps(picker?.across)}
-    <p class="hint tap-hint">${phone() ? tr("Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.") : tr("Hover over or click a corner's number, or click anywhere on the track to zoom in.")}</p>
+    ${guideSeen() ? "" : `<p class="hint tap-hint">${phone() ? tr("Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.") : tr("Hover over or click a corner's number, or click anywhere on the track to zoom in.")}</p>`}
     <div class="coach-grid">
       <div class="map-box">${Coach.trackMap(res)}
         <div class="legend">${e.medals || e.daily
@@ -753,7 +770,8 @@ function renderComparison(out, res, e, otherCar, picker, save) {
             <span><i class="k bad"></i>${tr("over 5% slower")}</span>`
           : `<span><i class="k good"></i>${tr("gold pace (within 3%)")}</span><span><i class="k warn"></i>${tr("silver pace (3–5%)")}</span>
             <span><i class="k bad"></i>${tr("slower than silver")}</span>`}</div>
-        <p class="hint">${tr("The colours compare your time through each section with the reference's.")}</p>
+        ${explain(`<p class="hint">${tr("The colours compare your time through each section with the reference's.")} ${phone()
+          ? tr("Tap a corner's number to see where you lose time, or anywhere on the track to zoom in.") : tr("Hover over or click a corner's number, or click anywhere on the track to zoom in.")}</p>`)}
         <div class="chips">${res.corners.map(c => `<button class="chip ${c.colour}" data-n="${c.n}">${c.n}<small>${Coach.fmtLost(c.lost)}</small></button>`).join("")}</div>
       </div>
       <div class="corner-detail" role="region" aria-label="${tr("Corner details")}">
@@ -870,7 +888,7 @@ function renderComparison(out, res, e, otherCar, picker, save) {
     el.addEventListener("mouseleave", () => { if (!phone()) restore(); });
     el.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(n); } });
   });
-  out.querySelectorAll(".chip, .sh-corner").forEach(el => el.addEventListener("click", () => select(+el.dataset.n)));
+  out.querySelectorAll(".chip, .sh-corner, .see-why").forEach(el => el.addEventListener("click", () => select(+el.dataset.n)));
   // a click or tap on a corner's number opens the corner; anywhere else near the track zooms in on that stretch
   svg.addEventListener("click", ev => {
     const label = ev.target.closest(".label");
