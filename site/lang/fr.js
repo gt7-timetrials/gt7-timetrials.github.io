@@ -901,6 +901,8 @@ const I18N_FR = {
     "N'importe quel point du circuit : la trajectoire et les graphiques, sans conseils. Touche le numéro d'un virage pour ses conseils.",
   "Show on the track":
     "Voir sur le circuit",
+  "<b>Finding it useful?</b> A rating or review on <a>Google Play</a> helps other players find it. It only takes a moment, and it's the best way to support the app.":
+    "<b>Tu la trouves utile ?</b> Une note ou un avis sur <a>Google Play</a> aide d'autres pilotes à la trouver. Ça ne prend qu'un instant, et c'est la meilleure façon de soutenir l'appli.",
 };
 (globalThis.I18N_TABLES ||= {}).fr = I18N_FR;
 if (typeof module !== "undefined") module.exports = I18N_FR;

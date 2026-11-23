@@ -902,6 +902,8 @@ const I18N_ES = {
     "Cualquier punto del circuito: la trazada y los gráficos, sin consejos. Toca el número de una curva para ver sus consejos.",
   "Show on the track":
     "Ver en el circuito",
+  "<b>Finding it useful?</b> A rating or review on <a>Google Play</a> helps other players find it. It only takes a moment, and it's the best way to support the app.":
+    "<b>¿Te resulta útil?</b> Una valoración o reseña en <a>Google Play</a> ayuda a otros pilotos a encontrarla. Solo lleva un momento, y es la mejor forma de apoyar la app.",
 };
 (globalThis.I18N_TABLES ||= {}).es = I18N_ES;
 if (typeof module !== "undefined") module.exports = I18N_ES;

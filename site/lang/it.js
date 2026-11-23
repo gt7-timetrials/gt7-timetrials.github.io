@@ -901,6 +901,8 @@ const I18N_IT = {
     "Qualsiasi punto del circuito: la traiettoria e i grafici, senza consigli. Tocca il numero di una curva per i suoi consigli.",
   "Show on the track":
     "Mostra sul circuito",
+  "<b>Finding it useful?</b> A rating or review on <a>Google Play</a> helps other players find it. It only takes a moment, and it's the best way to support the app.":
+    "<b>Ti è utile?</b> Una valutazione o una recensione su <a>Google Play</a> aiuta altri piloti a trovarla. Ci vuole solo un attimo, ed è il modo migliore per sostenere l'app.",
 };
 (globalThis.I18N_TABLES ||= {}).it = I18N_IT;
 if (typeof module !== "undefined") module.exports = I18N_IT;
