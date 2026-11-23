@@ -904,6 +904,10 @@ const I18N_ES = {
     "Ver en el circuito",
   "<b>Finding it useful?</b> A rating or review on <a>Google Play</a> helps other players find it. It only takes a moment, and it's the best way to support the app.":
     "<b>¿Te resulta útil?</b> Una valoración o reseña en <a>Google Play</a> ayuda a otros pilotos a encontrarla. Solo lleva un momento, y es la mejor forma de apoyar la app.",
+  "Finding this useful? <a>Rate it on Google Play</a>":
+    "¿Te resulta útil? <a>Valórala en Google Play</a>",
+  "No thanks":
+    "No, gracias",
 };
 (globalThis.I18N_TABLES ||= {}).es = I18N_ES;
 if (typeof module !== "undefined") module.exports = I18N_ES;

@@ -113,11 +113,13 @@ function standIn({ withCues, csv }) {
     const p = await page(null);
     assert.strictEqual(await p.locator(".record-btn").count(), 0, "website: no Record on this phone");
     assert.strictEqual(await p.locator(".cue-toggle").count(), 0, "website: no audio cues checkbox");
+    await p.evaluate(() => localStorage.setItem("comparisons", "9"));
     assert.ok(await p.locator('nav a[data-tab="cues"]').isHidden(), "website: no Audio cues tab");
     await p.locator('input.license-file[data-i="0"]').setInputFiles(s1File);
     await coach(p).locator(".coach-summary").waitFor();
     assert.match(await coach(p).locator(".coach-summary").innerText(), /Your lap 1:18\.521/);
     assert.strictEqual(await coach(p).locator(".across").count(), 0, "one lap: no across-your-laps box");
+    assert.strictEqual(await p.locator(".rate-ask").count(), 0, "website: never the rating line");
     assert.match(await coach(p).locator(".themes").innerText(), /Where your time goes[\s\S]*Braking\s+[+−]\d/, "the lap's time by theme");
     // a corner's number opens the corner, with tips; a tap anywhere else on the track zooms in there, without tips
     const tapTrack = async f => {
@@ -246,6 +248,17 @@ function standIn({ withCues, csv }) {
     assert.match(await coach(p).locator(".coach-summary").innerText(), /Your lap 1:18\.521/);
     await coach(p).locator(".save-btn").click();
     assert.strictEqual((await calls(p)).at(-1)[0], "save", `${label}: Save to Downloads`);
+    // the rating line: not after a first comparison; after a third, once, until its ✕ (or link) is tapped
+    assert.strictEqual(await p.locator(".rate-ask").count(), 0, `${label}: no rating line at first`);
+    await p.evaluate(() => localStorage.setItem("comparisons", "2"));
+    await p.locator('input.license-file[data-i="0"]').setInputFiles(s1File);
+    await coach(p).locator(".rate-ask").waitFor();
+    assert.match(await coach(p).locator(".rate-ask a").getAttribute("href"), /play\.google\.com\/store\/apps\/details\?id=io\.github\.gt7timetrials/);
+    await coach(p).locator(".rate-x").click();
+    assert.strictEqual(await p.locator(".rate-ask").count(), 0, `${label}: ✕ hides it`);
+    await p.locator('input.license-file[data-i="0"]').setInputFiles(s1File);
+    await coach(p).locator(".coach-summary").waitFor();
+    assert.strictEqual(await p.locator(".rate-ask").count(), 0, `${label}: and it doesn't come back`);
     if (has("cueState")) { // its Audio cues tab opens without asking for anything it doesn't have
       await p.goto(url + "#cues");
       await p.locator(".cue-test").first().waitFor();

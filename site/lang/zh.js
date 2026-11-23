@@ -903,6 +903,10 @@ const I18N_ZH = {
     "在赛道上显示",
   "<b>Finding it useful?</b> A rating or review on <a>Google Play</a> helps other players find it. It only takes a moment, and it's the best way to support the app.":
     "<b>觉得有用吗？</b>在 <a>Google Play</a> 上评分或评论，可以帮助其他玩家找到它。只需片刻，也是支持这个应用的最好方式。",
+  "Finding this useful? <a>Rate it on Google Play</a>":
+    "觉得有用吗？<a>在 Google Play 上评分</a>",
+  "No thanks":
+    "不用了",
 };
 (globalThis.I18N_TABLES ||= {}).zh = I18N_ZH;
 if (typeof module !== "undefined") module.exports = I18N_ZH;
