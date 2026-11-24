@@ -73,6 +73,38 @@
    "gold": 86200,
    "silver": 88600,
    "bronze": 95300
+  },
+  {
+   "id": "trial-mountain-circuit",
+   "track": "Trial Mountain Circuit",
+   "car": "MAZDA RX-VISION GT3 CONCEPT",
+   "gold": 112100,
+   "silver": 114300,
+   "bronze": 122000
+  },
+  {
+   "id": "willow-springs-big-willow",
+   "track": "Willow Springs International Raceway: Big Willow",
+   "car": "Chevrolet Corvette C7 Gr.3",
+   "gold": 74500,
+   "silver": 76700,
+   "bronze": 82500
+  },
+  {
+   "id": "willow-springs-streets",
+   "track": "Willow Springs International Raceway: Streets of Willow Springs",
+   "car": "Ford Mustang Gr.4",
+   "gold": 74400,
+   "silver": 75900,
+   "bronze": 81000
+  },
+  {
+   "id": "willow-springs-horse-thief-mile",
+   "track": "Willow Springs International Raceway: Horse Thief Mile",
+   "car": "Lancia Delta HF Integrale Evoluzione '91",
+   "gold": 65300,
+   "silver": 66600,
+   "bronze": 71000
   }
  ]
 }

@@ -240,6 +240,21 @@
       "added": "2026-11-16",
       "was": "data/daily/laps/C.csv",
       "note": "Week of 16 November, race C (Dallara SF23 Super Formula / Toyota '23). Recorded on the home laptop over Remote Control."
+    },
+    {
+      "file": "daily/2026-11-23_C_le-mans_Benno3003_3-28.895.csv",
+      "kind": "daily race",
+      "race": "C",
+      "track": "24 Heures du Mans Racing Circuit",
+      "car": "Peugeot 9X8 '25",
+      "driver": "Benno3003",
+      "lap_ms": 208895,
+      "lap": "3:28.895",
+      "event_start": "2026-11-23",
+      "event_end": "2026-11-30",
+      "added": "2026-11-23",
+      "was": "data/daily/laps/C.csv",
+      "note": "Week of 23 November, race C (Le Mans Hypercars, free choice). Replaced on 24 November by N. Lanuza's faster lap (BMW M Hybrid V8 '25, 3:27.843). Recorded on the home laptop over Remote Control."
     }
   ]
 }
