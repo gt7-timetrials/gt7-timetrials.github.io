@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T11:52:31.905776+00:00",
+ "generated_at": "2026-11-24T21:37:52.883084+00:00",
  "history_events": 206,
  "snapshot_events": 4,
  "historical_entrants": {
@@ -17,13 +17,13 @@
    "car": "Mazda ɛ̃fini RX-7 Type R (FD) '91",
    "starts": "2026-11-12T18:00:00+11:00",
    "ends": "2026-11-26T17:59:59+11:00",
-   "days_elapsed": 12.2,
-   "days_left": 1.8,
-   "entrants": 141250,
+   "days_elapsed": 12.6,
+   "days_left": 1.4,
+   "entrants": 143387,
    "entrants_projection": {
-    "projected": 147770,
-    "low": 147356,
-    "high": 148635,
+    "projected": 150005,
+    "low": 149586,
+    "high": 150883,
     "events": 4
    },
    "wr_ms": 128779,
@@ -55,31 +55,31 @@
    "car": "Suzuki Swift Sport KATANA Edition Gr.4",
    "starts": "2026-11-19T18:00:00+11:00",
    "ends": "2026-12-03T17:59:59+11:00",
-   "days_elapsed": 5.2,
-   "days_left": 8.8,
-   "entrants": 79845,
+   "days_elapsed": 5.6,
+   "days_left": 8.4,
+   "entrants": 82887,
    "entrants_projection": {
-    "projected": 123262,
-    "low": 117273,
-    "high": 127259,
+    "projected": 127958,
+    "low": 121741,
+    "high": 132107,
     "events": 3
    },
    "wr_ms": 81409,
    "wr_holder": "Blackwing-_rako",
    "gold_now_ms": 83851,
-   "top100_spread_pct": 1.255,
+   "top100_spread_pct": 1.235,
    "strong_drivers_posted": [
     "MetalGear9493"
    ],
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 81252,
-    "gold_ms": 83689,
-    "gold_fast_ms": 83534,
-    "gold_slow_ms": 83818,
-    "final_wr_fast_ms": 81101,
-    "final_wr_slow_ms": 81377,
+    "final_wr_ms": 81255,
+    "gold_ms": 83692,
+    "gold_fast_ms": 83537,
+    "gold_slow_ms": 83821,
+    "final_wr_fast_ms": 81104,
+    "final_wr_slow_ms": 81380,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
   }
