@@ -105,6 +105,38 @@
    "gold": 65300,
    "silver": 66600,
    "bronze": 71000
+  },
+  {
+   "id": "fishermans-ranch",
+   "track": "Fishermans Ranch",
+   "car": "Mitsubishi Lancer Evolution Final Edition Gr.B Rally Car",
+   "gold": 198000,
+   "silver": 203700,
+   "bronze": 219000
+  },
+  {
+   "id": "fishermans-ranch-reverse",
+   "track": "Fishermans Ranch Reverse",
+   "car": "Lancia Delta HF Integrale Rally Car '92",
+   "gold": 214800,
+   "silver": 221000,
+   "bronze": 236600
+  },
+  {
+   "id": "circuit-gilles-villeneuve",
+   "track": "Circuit Gilles-Villeneuve",
+   "car": "Mercedes-AMG GT3 '20",
+   "gold": 96000,
+   "silver": 98800,
+   "bronze": 104500
+  },
+  {
+   "id": "watkins-glen-long-course",
+   "track": "Watkins Glen Long Course",
+   "car": "Genesis X GR3",
+   "gold": 108500,
+   "silver": 110500,
+   "bronze": 118000
   }
  ]
 }
