@@ -166,5 +166,17 @@
   "gold_slow_ms": 132642,
   "top100_spread_pct": 0.865,
   "wr_ms": 128779
+ },
+ {
+  "date": "2026-11-26",
+  "day": 13.6,
+  "entrants": 147348,
+  "final_wr_ms": 128609,
+  "gold_fast_ms": 132356,
+  "gold_ms": 132467,
+  "gold_now_ms": 132509,
+  "gold_slow_ms": 132509,
+  "top100_spread_pct": 0.959,
+  "wr_ms": 128650
  }
 ]

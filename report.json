@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T21:37:52.883084+00:00",
+ "generated_at": "2026-11-25T21:38:24.106997+00:00",
  "history_events": 206,
  "snapshot_events": 4,
  "historical_entrants": {
@@ -17,33 +17,34 @@
    "car": "Mazda ɛ̃fini RX-7 Type R (FD) '91",
    "starts": "2026-11-12T18:00:00+11:00",
    "ends": "2026-11-26T17:59:59+11:00",
-   "days_elapsed": 12.6,
-   "days_left": 1.4,
-   "entrants": 143387,
+   "days_elapsed": 13.6,
+   "days_left": 0.4,
+   "entrants": 147348,
    "entrants_projection": {
-    "projected": 150005,
-    "low": 149586,
-    "high": 150883,
+    "projected": 148873,
+    "low": 148779,
+    "high": 148905,
     "events": 4
    },
-   "wr_ms": 128779,
-   "wr_holder": "AT__1826",
-   "gold_now_ms": 132642,
-   "top100_spread_pct": 0.865,
+   "wr_ms": 128650,
+   "wr_holder": "L-Shooter_RB26",
+   "gold_now_ms": 132509,
+   "top100_spread_pct": 0.959,
    "strong_drivers_posted": [
     "AT__1826",
+    "L-Shooter_RB26",
     "MetalGear9493",
     "pirata666pirata"
    ],
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 128730,
-    "gold_ms": 132591,
-    "gold_fast_ms": 132481,
-    "gold_slow_ms": 132642,
-    "final_wr_fast_ms": 128623,
-    "final_wr_slow_ms": 128779,
+    "final_wr_ms": 128609,
+    "gold_ms": 132467,
+    "gold_fast_ms": 132356,
+    "gold_slow_ms": 132509,
+    "final_wr_fast_ms": 128501,
+    "final_wr_slow_ms": 128650,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
   },
@@ -55,31 +56,31 @@
    "car": "Suzuki Swift Sport KATANA Edition Gr.4",
    "starts": "2026-11-19T18:00:00+11:00",
    "ends": "2026-12-03T17:59:59+11:00",
-   "days_elapsed": 5.6,
-   "days_left": 8.4,
-   "entrants": 82887,
+   "days_elapsed": 6.6,
+   "days_left": 7.4,
+   "entrants": 88187,
    "entrants_projection": {
-    "projected": 127958,
-    "low": 121741,
-    "high": 132107,
+    "projected": 127894,
+    "low": 122279,
+    "high": 130667,
     "events": 3
    },
    "wr_ms": 81409,
    "wr_holder": "Blackwing-_rako",
    "gold_now_ms": 83851,
-   "top100_spread_pct": 1.235,
+   "top100_spread_pct": 1.182,
    "strong_drivers_posted": [
     "MetalGear9493"
    ],
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 81255,
-    "gold_ms": 83692,
-    "gold_fast_ms": 83537,
-    "gold_slow_ms": 83821,
-    "final_wr_fast_ms": 81104,
-    "final_wr_slow_ms": 81380,
+    "final_wr_ms": 81270,
+    "gold_ms": 83708,
+    "gold_fast_ms": 83582,
+    "gold_slow_ms": 83823,
+    "final_wr_fast_ms": 81148,
+    "final_wr_slow_ms": 81382,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
   }
