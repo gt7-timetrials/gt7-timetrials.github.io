@@ -1,53 +1,14 @@
 {
- "generated_at": "2026-11-25T21:38:24.106997+00:00",
- "history_events": 206,
- "snapshot_events": 4,
+ "generated_at": "2026-11-26T11:17:37.352197+00:00",
+ "history_events": 207,
+ "snapshot_events": 5,
  "historical_entrants": {
-  "median": 162596,
-  "p10": 128561,
-  "p90": 195985,
-  "events": 206
+  "median": 162485,
+  "p10": 128580,
+  "p90": 195963,
+  "events": 207
  },
  "events": [
-  {
-   "event_id": 15376,
-   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15376/",
-   "track": "Watkins Glen Long Course",
-   "category": "circuit",
-   "car": "Mazda ɛ̃fini RX-7 Type R (FD) '91",
-   "starts": "2026-11-12T18:00:00+11:00",
-   "ends": "2026-11-26T17:59:59+11:00",
-   "days_elapsed": 13.6,
-   "days_left": 0.4,
-   "entrants": 147348,
-   "entrants_projection": {
-    "projected": 148873,
-    "low": 148779,
-    "high": 148905,
-    "events": 4
-   },
-   "wr_ms": 128650,
-   "wr_holder": "L-Shooter_RB26",
-   "gold_now_ms": 132509,
-   "top100_spread_pct": 0.959,
-   "strong_drivers_posted": [
-    "AT__1826",
-    "L-Shooter_RB26",
-    "MetalGear9493",
-    "pirata666pirata"
-   ],
-   "strong_drivers_total": 25,
-   "regular_event": true,
-   "predicted": {
-    "final_wr_ms": 128609,
-    "gold_ms": 132467,
-    "gold_fast_ms": 132356,
-    "gold_slow_ms": 132509,
-    "final_wr_fast_ms": 128501,
-    "final_wr_slow_ms": 128650,
-    "method": "history: time elapsed + top drivers + top-100 spread"
-   }
-  },
   {
    "event_id": 15401,
    "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15401/",
@@ -56,31 +17,101 @@
    "car": "Suzuki Swift Sport KATANA Edition Gr.4",
    "starts": "2026-11-19T18:00:00+11:00",
    "ends": "2026-12-03T17:59:59+11:00",
-   "days_elapsed": 6.6,
-   "days_left": 7.4,
-   "entrants": 88187,
+   "days_elapsed": 7.2,
+   "days_left": 6.8,
+   "entrants": 90410,
    "entrants_projection": {
-    "projected": 127894,
-    "low": 122279,
-    "high": 130667,
-    "events": 3
+    "projected": 119924,
+    "low": 112282,
+    "high": 125350,
+    "events": 4
    },
    "wr_ms": 81409,
    "wr_holder": "Blackwing-_rako",
    "gold_now_ms": 83851,
-   "top100_spread_pct": 1.182,
+   "top100_spread_pct": 1.164,
    "strong_drivers_posted": [
     "MetalGear9493"
    ],
    "strong_drivers_total": 25,
    "regular_event": true,
    "predicted": {
-    "final_wr_ms": 81270,
-    "gold_ms": 83708,
-    "gold_fast_ms": 83582,
-    "gold_slow_ms": 83823,
-    "final_wr_fast_ms": 81148,
-    "final_wr_slow_ms": 81382,
+    "final_wr_ms": 81267,
+    "gold_ms": 83705,
+    "gold_fast_ms": 83560,
+    "gold_slow_ms": 83816,
+    "final_wr_fast_ms": 81127,
+    "final_wr_slow_ms": 81375,
+    "method": "history: time elapsed + top drivers + top-100 spread"
+   }
+  },
+  {
+   "event_id": 15448,
+   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15448/",
+   "track": "Yas Marina Circuit",
+   "category": "unknown",
+   "car": "Peugeot L750R HYbrid Vision Gran Turismo, 2017",
+   "starts": "2026-11-26T18:00:00+11:00",
+   "ends": "2026-12-10T17:59:59+11:00",
+   "days_elapsed": 0.2,
+   "days_left": 13.8,
+   "entrants": 4959,
+   "entrants_projection": {
+    "projected": 25274,
+    "low": 25157,
+    "high": 27125,
+    "events": 3
+   },
+   "wr_ms": 97391,
+   "wr_holder": "FGR_KOLZSTEN",
+   "gold_now_ms": 100312,
+   "top100_spread_pct": 2.276,
+   "strong_drivers_posted": [],
+   "strong_drivers_total": 25,
+   "regular_event": true,
+   "predicted": {
+    "final_wr_ms": 96771,
+    "gold_ms": 99674,
+    "gold_fast_ms": 99465,
+    "gold_slow_ms": 99888,
+    "final_wr_fast_ms": 96568,
+    "final_wr_slow_ms": 96979,
+    "method": "history: time elapsed + top drivers + top-100 spread"
+   }
+  },
+  {
+   "event_id": 15450,
+   "leaderboard_url": "https://www.gran-turismo.com/gb/gt7/sportmode/event/15450/",
+   "track": "Fuji International Speedway",
+   "category": "circuit",
+   "car": "Ferrari 296 GT3 '23",
+   "starts": "2026-11-26T18:00:00+11:00",
+   "ends": "2026-12-10T17:59:59+11:00",
+   "days_elapsed": 0.2,
+   "days_left": 13.8,
+   "entrants": 6253,
+   "entrants_projection": {
+    "projected": 31869,
+    "low": 31722,
+    "high": 34203,
+    "events": 3
+   },
+   "wr_ms": 96940,
+   "wr_holder": "RyunYouTube",
+   "gold_now_ms": 99848,
+   "top100_spread_pct": 1.393,
+   "strong_drivers_posted": [
+    "MetalGear9493"
+   ],
+   "strong_drivers_total": 25,
+   "regular_event": true,
+   "predicted": {
+    "final_wr_ms": 96645,
+    "gold_ms": 99544,
+    "gold_fast_ms": 99335,
+    "gold_slow_ms": 99759,
+    "final_wr_fast_ms": 96442,
+    "final_wr_slow_ms": 96854,
     "method": "history: time elapsed + top drivers + top-100 spread"
    }
   }

@@ -1,33 +1,47 @@
 # GT7 time trials
 
-Updated 2026-11-25 21:38 UTC
-
-## Watkins Glen Long Course — Mazda ɛ̃fini RX-7 Type R (FD) '91
-
-Day 13.6 of 14 · event 15376
-
-| | |
-|---|---|
-| Entrants | 147,348  (projected final 148,873, likely 148,779-148,905) |
-| World record | 2:08.650 (L-Shooter_RB26) |
-| Gold now | 2:12.509 |
-| **Predicted gold** | **2:12.467** (likely 2:12.356 – 2:12.509) |
-| Predicted final WR | 2:08.609 |
-| Top-100 spread | 0.96% |
-| Top drivers posted | 4 of 25 |
+Updated 2026-11-26 11:17 UTC
 
 ## Tokyo Expressway - Central Counterclockwise — Suzuki Swift Sport KATANA Edition Gr.4
 
-Day 6.6 of 14 · event 15401
+Day 7.2 of 14 · event 15401
 
 | | |
 |---|---|
-| Entrants | 88,187  (projected final 127,894, likely 122,279-130,667) |
+| Entrants | 90,410  (projected final 119,924, likely 112,282-125,350) |
 | World record | 1:21.409 (Blackwing-_rako) |
 | Gold now | 1:23.851 |
-| **Predicted gold** | **1:23.708** (likely 1:23.582 – 1:23.823) |
-| Predicted final WR | 1:21.270 |
-| Top-100 spread | 1.18% |
+| **Predicted gold** | **1:23.705** (likely 1:23.560 – 1:23.816) |
+| Predicted final WR | 1:21.267 |
+| Top-100 spread | 1.16% |
 | Top drivers posted | 1 of 25 |
 
-_Prediction: history: time elapsed + top drivers + top-100 spread. History: 206 finished events, 4 with daily snapshots._
+## Yas Marina Circuit — Peugeot L750R HYbrid Vision Gran Turismo, 2017
+
+Day 0.2 of 14 · event 15448
+
+| | |
+|---|---|
+| Entrants | 4,959  (projected final 25,274, likely 25,157-27,125) |
+| World record | 1:37.391 (FGR_KOLZSTEN) |
+| Gold now | 1:40.312 |
+| **Predicted gold** | **1:39.674** (likely 1:39.465 – 1:39.888) |
+| Predicted final WR | 1:36.771 |
+| Top-100 spread | 2.28% |
+| Top drivers posted | 0 of 25 |
+
+## Fuji International Speedway — Ferrari 296 GT3 '23
+
+Day 0.2 of 14 · event 15450
+
+| | |
+|---|---|
+| Entrants | 6,253  (projected final 31,869, likely 31,722-34,203) |
+| World record | 1:36.940 (RyunYouTube) |
+| Gold now | 1:39.848 |
+| **Predicted gold** | **1:39.544** (likely 1:39.335 – 1:39.759) |
+| Predicted final WR | 1:36.645 |
+| Top-100 spread | 1.39% |
+| Top drivers posted | 1 of 25 |
+
+_Prediction: history: time elapsed + top drivers + top-100 spread. History: 207 finished events, 5 with daily snapshots._
