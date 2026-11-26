@@ -1,47 +1,47 @@
 # GT7 time trials
 
-Updated 2026-11-26 11:17 UTC
+Updated 2026-11-26 21:38 UTC
 
 ## Tokyo Expressway - Central Counterclockwise — Suzuki Swift Sport KATANA Edition Gr.4
 
-Day 7.2 of 14 · event 15401
+Day 7.6 of 14 · event 15401
 
 | | |
 |---|---|
-| Entrants | 90,410  (projected final 119,924, likely 112,282-125,350) |
+| Entrants | 94,298  (projected final 125,081, likely 117,111-130,741) |
 | World record | 1:21.409 (Blackwing-_rako) |
 | Gold now | 1:23.851 |
-| **Predicted gold** | **1:23.705** (likely 1:23.560 – 1:23.816) |
-| Predicted final WR | 1:21.267 |
+| **Predicted gold** | **1:23.706** (likely 1:23.561 – 1:23.817) |
+| Predicted final WR | 1:21.268 |
 | Top-100 spread | 1.16% |
 | Top drivers posted | 1 of 25 |
 
 ## Yas Marina Circuit — Peugeot L750R HYbrid Vision Gran Turismo, 2017
 
-Day 0.2 of 14 · event 15448
+Day 0.6 of 14 · event 15448
 
 | | |
 |---|---|
-| Entrants | 4,959  (projected final 25,274, likely 25,157-27,125) |
-| World record | 1:37.391 (FGR_KOLZSTEN) |
-| Gold now | 1:40.312 |
-| **Predicted gold** | **1:39.674** (likely 1:39.465 – 1:39.888) |
-| Predicted final WR | 1:36.771 |
-| Top-100 spread | 2.28% |
+| Entrants | 20,532  (projected final 104,642, likely 104,160-112,308) |
+| World record | 1:36.869 (Calster_25) |
+| Gold now | 1:39.775 |
+| **Predicted gold** | **1:39.239** (likely 1:39.031 – 1:39.453) |
+| Predicted final WR | 1:36.349 |
+| Top-100 spread | 1.93% |
 | Top drivers posted | 0 of 25 |
 
 ## Fuji International Speedway — Ferrari 296 GT3 '23
 
-Day 0.2 of 14 · event 15450
+Day 0.6 of 14 · event 15450
 
 | | |
 |---|---|
-| Entrants | 6,253  (projected final 31,869, likely 31,722-34,203) |
-| World record | 1:36.940 (RyunYouTube) |
-| Gold now | 1:39.848 |
-| **Predicted gold** | **1:39.544** (likely 1:39.335 – 1:39.759) |
-| Predicted final WR | 1:36.645 |
-| Top-100 spread | 1.39% |
-| Top drivers posted | 1 of 25 |
+| Entrants | 26,239  (projected final 133,728, likely 133,112-143,524) |
+| World record | 1:36.730 (CHARO_GH69) |
+| Gold now | 1:39.631 |
+| **Predicted gold** | **1:39.568** (likely 1:39.357 – 1:39.631) |
+| Predicted final WR | 1:36.668 |
+| Top-100 spread | 1.09% |
+| Top drivers posted | 3 of 25 |
 
 _Prediction: history: time elapsed + top drivers + top-100 spread. History: 207 finished events, 5 with daily snapshots._

@@ -1,6 +1,6 @@
 {
  "event_id": 15401,
- "fetched_at": "2026-11-26T11:17:37.352197+00:00",
+ "fetched_at": "2026-11-26T21:38:33.932578+00:00",
  "list": [
   {
    "display_rank": 1,
@@ -147,6 +147,20 @@
    "ranking_stats": {
     "car_code": 3480
    },
+   "score": 81853,
+   "update_time": "2026-11-26T20:55:16Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 1,
+    "np_online_id": "Schmeddi123",
+    "user_id": "8a1213eb-a784-425a-a357-f7d929f2a9eb"
+   }
+  },
+  {
+   "display_rank": 12,
+   "ranking_stats": {
+    "car_code": 3480
+   },
    "score": 81870,
    "update_time": "2026-11-21T17:53:50Z",
    "user": {
@@ -157,7 +171,7 @@
    }
   },
   {
-   "display_rank": 12,
+   "display_rank": 13,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -168,20 +182,6 @@
     "driver_rating": 4,
     "np_online_id": "BARIBARI_JAPAN09",
     "user_id": "248dda95-65be-4f23-aa5d-19efd8949ad4"
-   }
-  },
-  {
-   "display_rank": 13,
-   "ranking_stats": {
-    "car_code": 3480
-   },
-   "score": 81918,
-   "update_time": "2026-11-25T19:44:57Z",
-   "user": {
-    "country_code": "GB",
-    "driver_rating": 1,
-    "np_online_id": "Schmeddi123",
-    "user_id": "8a1213eb-a784-425a-a357-f7d929f2a9eb"
    }
   },
   {
@@ -343,6 +343,20 @@
    "ranking_stats": {
     "car_code": 3480
    },
+   "score": 82036,
+   "update_time": "2026-11-26T11:19:50Z",
+   "user": {
+    "country_code": "IT",
+    "driver_rating": 5,
+    "np_online_id": "io86io86io",
+    "user_id": "421e07a3-c825-4ed2-99e0-11b865fb8c19"
+   }
+  },
+  {
+   "display_rank": 26,
+   "ranking_stats": {
+    "car_code": 3480
+   },
    "score": 82040,
    "update_time": "2026-11-20T11:46:41Z",
    "user": {
@@ -353,7 +367,7 @@
    }
   },
   {
-   "display_rank": 26,
+   "display_rank": 27,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -367,7 +381,7 @@
    }
   },
   {
-   "display_rank": 27,
+   "display_rank": 28,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -381,7 +395,7 @@
    }
   },
   {
-   "display_rank": 28,
+   "display_rank": 29,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -395,7 +409,7 @@
    }
   },
   {
-   "display_rank": 29,
+   "display_rank": 30,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -409,7 +423,7 @@
    }
   },
   {
-   "display_rank": 30,
+   "display_rank": 31,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -423,7 +437,7 @@
    }
   },
   {
-   "display_rank": 31,
+   "display_rank": 32,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -437,7 +451,7 @@
    }
   },
   {
-   "display_rank": 32,
+   "display_rank": 33,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -451,7 +465,7 @@
    }
   },
   {
-   "display_rank": 33,
+   "display_rank": 34,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -465,7 +479,21 @@
    }
   },
   {
-   "display_rank": 34,
+   "display_rank": 35,
+   "ranking_stats": {
+    "car_code": 3480
+   },
+   "score": 82101,
+   "update_time": "2026-11-26T19:00:03Z",
+   "user": {
+    "country_code": "US",
+    "driver_rating": 4,
+    "np_online_id": "jhonnmckenzyee",
+    "user_id": "4f190aab-3463-4703-a6af-fb12691baf29"
+   }
+  },
+  {
+   "display_rank": 36,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -479,21 +507,7 @@
    }
   },
   {
-   "display_rank": 35,
-   "ranking_stats": {
-    "car_code": 3480
-   },
-   "score": 82105,
-   "update_time": "2026-11-26T10:19:22Z",
-   "user": {
-    "country_code": "IT",
-    "driver_rating": 5,
-    "np_online_id": "io86io86io",
-    "user_id": "421e07a3-c825-4ed2-99e0-11b865fb8c19"
-   }
-  },
-  {
-   "display_rank": 36,
+   "display_rank": 37,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -507,7 +521,21 @@
    }
   },
   {
-   "display_rank": 37,
+   "display_rank": 38,
+   "ranking_stats": {
+    "car_code": 3480
+   },
+   "score": 82121,
+   "update_time": "2026-11-26T20:12:35Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 4,
+    "np_online_id": "Ralph_Hoeppner",
+    "user_id": "68b9bf3c-a2e2-46f9-8274-225185b2488a"
+   }
+  },
+  {
+   "display_rank": 39,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -521,7 +549,7 @@
    }
   },
   {
-   "display_rank": 38,
+   "display_rank": 40,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -535,7 +563,7 @@
    }
   },
   {
-   "display_rank": 39,
+   "display_rank": 41,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -549,7 +577,7 @@
    }
   },
   {
-   "display_rank": 40,
+   "display_rank": 42,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -563,7 +591,7 @@
    }
   },
   {
-   "display_rank": 41,
+   "display_rank": 43,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -577,7 +605,7 @@
    }
   },
   {
-   "display_rank": 42,
+   "display_rank": 44,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -591,7 +619,21 @@
    }
   },
   {
-   "display_rank": 43,
+   "display_rank": 45,
+   "ranking_stats": {
+    "car_code": 3480
+   },
+   "score": 82151,
+   "update_time": "2026-11-26T16:43:00Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 6,
+    "np_online_id": "Sheen-gt",
+    "user_id": "7b9b633a-0311-488f-9864-101503dc658a"
+   }
+  },
+  {
+   "display_rank": 46,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -605,7 +647,7 @@
    }
   },
   {
-   "display_rank": 44,
+   "display_rank": 47,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -619,7 +661,7 @@
    }
   },
   {
-   "display_rank": 45,
+   "display_rank": 48,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -633,7 +675,7 @@
    }
   },
   {
-   "display_rank": 46,
+   "display_rank": 49,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -647,7 +689,7 @@
    }
   },
   {
-   "display_rank": 47,
+   "display_rank": 50,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -661,7 +703,7 @@
    }
   },
   {
-   "display_rank": 48,
+   "display_rank": 51,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -675,7 +717,7 @@
    }
   },
   {
-   "display_rank": 49,
+   "display_rank": 52,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -689,7 +731,7 @@
    }
   },
   {
-   "display_rank": 50,
+   "display_rank": 53,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -703,7 +745,7 @@
    }
   },
   {
-   "display_rank": 51,
+   "display_rank": 54,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -717,7 +759,7 @@
    }
   },
   {
-   "display_rank": 52,
+   "display_rank": 55,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -731,7 +773,7 @@
    }
   },
   {
-   "display_rank": 53,
+   "display_rank": 56,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -745,7 +787,7 @@
    }
   },
   {
-   "display_rank": 54,
+   "display_rank": 57,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -759,7 +801,7 @@
    }
   },
   {
-   "display_rank": 55,
+   "display_rank": 58,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -773,7 +815,7 @@
    }
   },
   {
-   "display_rank": 56,
+   "display_rank": 59,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -787,7 +829,7 @@
    }
   },
   {
-   "display_rank": 57,
+   "display_rank": 60,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -801,7 +843,7 @@
    }
   },
   {
-   "display_rank": 58,
+   "display_rank": 61,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -815,7 +857,7 @@
    }
   },
   {
-   "display_rank": 59,
+   "display_rank": 62,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -829,7 +871,7 @@
    }
   },
   {
-   "display_rank": 60,
+   "display_rank": 63,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -843,7 +885,7 @@
    }
   },
   {
-   "display_rank": 61,
+   "display_rank": 64,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -857,7 +899,7 @@
    }
   },
   {
-   "display_rank": 62,
+   "display_rank": 65,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -871,7 +913,7 @@
    }
   },
   {
-   "display_rank": 63,
+   "display_rank": 66,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -885,7 +927,7 @@
    }
   },
   {
-   "display_rank": 64,
+   "display_rank": 67,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -899,7 +941,7 @@
    }
   },
   {
-   "display_rank": 65,
+   "display_rank": 68,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -913,7 +955,7 @@
    }
   },
   {
-   "display_rank": 66,
+   "display_rank": 69,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -927,7 +969,7 @@
    }
   },
   {
-   "display_rank": 67,
+   "display_rank": 70,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -941,7 +983,7 @@
    }
   },
   {
-   "display_rank": 68,
+   "display_rank": 71,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -955,7 +997,7 @@
    }
   },
   {
-   "display_rank": 69,
+   "display_rank": 72,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -969,7 +1011,7 @@
    }
   },
   {
-   "display_rank": 70,
+   "display_rank": 73,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -983,7 +1025,7 @@
    }
   },
   {
-   "display_rank": 71,
+   "display_rank": 74,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -997,7 +1039,7 @@
    }
   },
   {
-   "display_rank": 72,
+   "display_rank": 75,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1011,7 +1053,7 @@
    }
   },
   {
-   "display_rank": 73,
+   "display_rank": 76,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1025,7 +1067,7 @@
    }
   },
   {
-   "display_rank": 74,
+   "display_rank": 77,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1039,7 +1081,7 @@
    }
   },
   {
-   "display_rank": 75,
+   "display_rank": 78,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1053,7 +1095,7 @@
    }
   },
   {
-   "display_rank": 76,
+   "display_rank": 79,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1067,7 +1109,7 @@
    }
   },
   {
-   "display_rank": 77,
+   "display_rank": 80,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1081,7 +1123,21 @@
    }
   },
   {
-   "display_rank": 78,
+   "display_rank": 81,
+   "ranking_stats": {
+    "car_code": 3480
+   },
+   "score": 82305,
+   "update_time": "2026-11-26T15:34:57Z",
+   "user": {
+    "country_code": "GB",
+    "driver_rating": 5,
+    "np_online_id": "sheen2012",
+    "user_id": "8fbc106f-e1ec-4ead-a661-1e81accc786a"
+   }
+  },
+  {
+   "display_rank": 82,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1095,7 +1151,7 @@
    }
   },
   {
-   "display_rank": 79,
+   "display_rank": 83,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1109,7 +1165,21 @@
    }
   },
   {
-   "display_rank": 80,
+   "display_rank": 84,
+   "ranking_stats": {
+    "car_code": 3480
+   },
+   "score": 82308,
+   "update_time": "2026-11-26T19:52:24Z",
+   "user": {
+    "country_code": "DE",
+    "driver_rating": 5,
+    "np_online_id": "SiPo2808TR",
+    "user_id": "07abbf7d-6f17-4067-84f7-673b36862b33"
+   }
+  },
+  {
+   "display_rank": 85,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1123,7 +1193,7 @@
    }
   },
   {
-   "display_rank": 81,
+   "display_rank": 86,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1137,7 +1207,7 @@
    }
   },
   {
-   "display_rank": 82,
+   "display_rank": 87,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1151,7 +1221,7 @@
    }
   },
   {
-   "display_rank": 83,
+   "display_rank": 88,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1165,7 +1235,7 @@
    }
   },
   {
-   "display_rank": 84,
+   "display_rank": 89,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1179,7 +1249,7 @@
    }
   },
   {
-   "display_rank": 85,
+   "display_rank": 90,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1193,7 +1263,7 @@
    }
   },
   {
-   "display_rank": 86,
+   "display_rank": 91,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1207,7 +1277,7 @@
    }
   },
   {
-   "display_rank": 87,
+   "display_rank": 92,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1221,7 +1291,7 @@
    }
   },
   {
-   "display_rank": 88,
+   "display_rank": 93,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1235,21 +1305,7 @@
    }
   },
   {
-   "display_rank": 89,
-   "ranking_stats": {
-    "car_code": 3480
-   },
-   "score": 82335,
-   "update_time": "2026-11-23T19:07:12Z",
-   "user": {
-    "country_code": "US",
-    "driver_rating": 4,
-    "np_online_id": "jhonnmckenzyee",
-    "user_id": "4f190aab-3463-4703-a6af-fb12691baf29"
-   }
-  },
-  {
-   "display_rank": 90,
+   "display_rank": 94,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1263,7 +1319,21 @@
    }
   },
   {
-   "display_rank": 91,
+   "display_rank": 95,
+   "ranking_stats": {
+    "car_code": 3480
+   },
+   "score": 82341,
+   "update_time": "2026-11-26T17:19:23Z",
+   "user": {
+    "country_code": "CH",
+    "driver_rating": 5,
+    "np_online_id": "Vampirinho77",
+    "user_id": "fd7d15f6-2d71-43a6-b4a8-d85a94e7fe9a"
+   }
+  },
+  {
+   "display_rank": 96,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1277,7 +1347,7 @@
    }
   },
   {
-   "display_rank": 92,
+   "display_rank": 97,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1291,7 +1361,7 @@
    }
   },
   {
-   "display_rank": 93,
+   "display_rank": 98,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1305,7 +1375,7 @@
    }
   },
   {
-   "display_rank": 94,
+   "display_rank": 99,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1319,7 +1389,7 @@
    }
   },
   {
-   "display_rank": 95,
+   "display_rank": 100,
    "ranking_stats": {
     "car_code": 3480
    },
@@ -1331,77 +1401,7 @@
     "np_online_id": "AVS_IngGT",
     "user_id": "cf471488-238f-48e5-bee5-1f38b33441f4"
    }
-  },
-  {
-   "display_rank": 96,
-   "ranking_stats": {
-    "car_code": 3480
-   },
-   "score": 82352,
-   "update_time": "2026-11-22T01:31:50Z",
-   "user": {
-    "country_code": "DE",
-    "driver_rating": 4,
-    "np_online_id": "Genuine_Z",
-    "user_id": "6b50ce89-2ebf-48e9-8713-48bd203817d3"
-   }
-  },
-  {
-   "display_rank": 97,
-   "ranking_stats": {
-    "car_code": 3480
-   },
-   "score": 82352,
-   "update_time": "2026-11-25T15:50:18Z",
-   "user": {
-    "country_code": "JP",
-    "driver_rating": 5,
-    "np_online_id": "baby-tora-",
-    "user_id": "f2ed5585-eee5-477c-9189-230a9d6829c8"
-   }
-  },
-  {
-   "display_rank": 98,
-   "ranking_stats": {
-    "car_code": 3480
-   },
-   "score": 82354,
-   "update_time": "2026-11-21T17:23:10Z",
-   "user": {
-    "country_code": "HU",
-    "driver_rating": 5,
-    "np_online_id": "Zsuzsika910222",
-    "user_id": "68318823-f4b1-4175-a327-02afcbb932d6"
-   }
-  },
-  {
-   "display_rank": 99,
-   "ranking_stats": {
-    "car_code": 3480
-   },
-   "score": 82354,
-   "update_time": "2026-11-24T08:10:15Z",
-   "user": {
-    "country_code": "US",
-    "driver_rating": 4,
-    "np_online_id": "zar19",
-    "user_id": "21d1e901-5e0d-452e-b33f-74c527bc7dfb"
-   }
-  },
-  {
-   "display_rank": 100,
-   "ranking_stats": {
-    "car_code": 3480
-   },
-   "score": 82357,
-   "update_time": "2026-11-22T23:58:22Z",
-   "user": {
-    "country_code": "ES",
-    "driver_rating": 6,
-    "np_online_id": "andy_rt97",
-    "user_id": "ad9a1e67-94c7-4590-aa9d-d667589b4dc0"
-   }
   }
  ],
- "total": 90410
+ "total": 94298
 }
