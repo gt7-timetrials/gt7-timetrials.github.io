@@ -270,6 +270,36 @@
       "added": "2026-11-12",
       "was": "data/reference_laps/telemetry_20261112_222741.csv",
       "note": "The world record when recorded. The event ended on 26 November with L-Shooter_RB26's 2:08.650 as the final record. The recording's car code reads as the Subaru BRZ Drift Car '17."
+    },
+    {
+      "file": "time_trials/15448_yasmarina_FGR_KOLZSTEN_1-37.391.csv",
+      "kind": "time trial",
+      "event_id": 15448,
+      "track": "Yas Marina Circuit",
+      "car": "Peugeot L750R HYbrid Vision Gran Turismo, 2017",
+      "driver": "FGR_KOLZSTEN",
+      "lap_ms": 97391,
+      "lap": "1:37.391",
+      "event_start": "2026-11-26",
+      "event_end": "2026-12-10",
+      "added": "2026-11-26",
+      "was": "data/reference_laps/telemetry_20261126_221420.csv",
+      "note": "The world record when recorded; replaced by Calster_25's 1:36.869 (the world record) on 27 November."
+    },
+    {
+      "file": "time_trials/15450_fuji_RyunYouTube_1-36.940.csv",
+      "kind": "time trial",
+      "event_id": 15450,
+      "track": "Fuji International Speedway",
+      "car": "Ferrari 296 GT3 '23",
+      "driver": "RyunYouTube",
+      "lap_ms": 96940,
+      "lap": "1:36.940",
+      "event_start": "2026-11-26",
+      "event_end": "2026-12-10",
+      "added": "2026-11-26",
+      "was": "data/reference_laps/telemetry_20261126_221032.csv",
+      "note": "The world record when recorded; replaced on 27 November by N2_SMoreno's 1:36.767, 4th at the time (the top three, led by SFE_BRacer's 1:36.590, hadn't shared their replays)."
     }
   ]
 }
